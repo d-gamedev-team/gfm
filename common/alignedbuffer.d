@@ -66,12 +66,7 @@ final class AlignedBuffer(T)
             resize(_size + other._size);
             memcpy(_data + oldSize, other._data, T.sizeof * other._size);
         }
-/*
-        ref T opIndex(size_t i) pure
-        {
-            return _data[i];
-        }
-*/
+
         @property T* ptr() nothrow
         {
             return _data;

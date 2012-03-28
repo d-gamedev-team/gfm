@@ -2,8 +2,6 @@ module gfm.common.memory;
 
 import std.c.stdlib : malloc, free, realloc;
 
-nothrow:
-
 // only works with powers of 2
 size_t nextMultipleOf(size_t n, size_t powerOfTwo)
 {

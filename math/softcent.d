@@ -2,7 +2,7 @@
  * Provide a 128-bit integer type
  * guaranteed to never allocate and expected binary layout
  * Designed to be easy to read, probably too slow for heavy use.
- * author: #ponce
+ * Relies on division algorithm from Ian Kaplan.
  */
 module softcent;
 import std.traits : Unqual, isIntegral, isSigned, isUnsigned;

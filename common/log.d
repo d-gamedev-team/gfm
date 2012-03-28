@@ -105,25 +105,6 @@ final class FileLog : Log
                 writefln("%s", e.msg);
             }
         }
-
-        ~this()
-        {
-            // HACK
-  /*          if (_logFile is null)
-                return;
-
-            try
-            {
-                _logFile.writefln("</body>");
-                _logFile.writefln("</html>");
-                _logFile.close();
-            }
-            catch(StreamException e)
-            {
-                writefln("%s", e.msg);
-                _logFile = null;
-            }*/
-        }
     }
 
     private
@@ -170,9 +151,6 @@ final class FileLog : Log
             {
                 indentString1 ~= "    ";
             }
-
-            //writefln("[%s] %s %s", topic, indentString1, message);
-
 
             if (_logFile !is null)
             {
