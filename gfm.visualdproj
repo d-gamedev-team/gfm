@@ -45,7 +45,7 @@
   <compiler>0</compiler>
   <otherDMD>0</otherDMD>
   <program>$(DMDInstallDir)windows\bin\dmd.exe</program>
-  <imppath />
+  <imppath>../../externals/Derelict2/import;..</imppath>
   <fileImppath />
   <outdir>$(ConfigurationName)</outdir>
   <objdir>$(OutDir)</objdir>
@@ -199,22 +199,10 @@
    <File path="common\queue.d" />
    <File path="common\structpool.d" />
   </Folder>
-  <Folder name="system">
-   <File path="system\cache.d" />
-   <File path="system\mutex.d" />
-   <File path="system\semaphore.d" />
-  </Folder>
-  <Folder name="sdl">
-   <File path="sdl\application.d" />
-   <File path="sdl\exception.d" />
-   <File path="sdl\framecounter.d" />
-   <File path="sdl\image.d" />
-   <File path="sdl\joystick.d" />
-   <File path="sdl\keyboard.d" />
-   <File path="sdl\overlay.d" />
-   <File path="sdl\sdl.d" />
-   <File path="sdl\sdlimage.d" />
-   <File path="sdl\surface.d" />
+  <Folder name="image">
+   <File path="image\image.d" />
+   <File path="image\plane.d" />
+   <File path="image\yv12image.d" />
   </Folder>
   <Folder name="math">
    <File path="math\box.d" />
@@ -227,10 +215,21 @@
    <File path="math\softcent.d" />
    <File path="math\statistics.d" />
   </Folder>
-  <Folder name="image">
-   <File path="image\image.d" />
-   <File path="image\plane.d" />
-   <File path="image\yv12image.d" />
+  <Folder name="sdl">
+   <File path="sdl\application.d" />
+   <File path="sdl\exception.d" />
+   <File path="sdl\framecounter.d" />
+   <File path="sdl\image.d" />
+   <File path="sdl\joystick.d" />
+   <File path="sdl\keyboard.d" />
+   <File path="sdl\overlay.d" />
+   <File path="sdl\sdl.d" />
+   <File path="sdl\surface.d" />
+  </Folder>
+  <Folder name="system">
+   <File path="system\cache.d" />
+   <File path="system\mutex.d" />
+   <File path="system\semaphore.d" />
   </Folder>
  </Folder>
 </DProject>

@@ -3,20 +3,20 @@ module gfm.common.memory;
 import std.c.stdlib : malloc, free, realloc;
 
 // only works with powers of 2
-size_t nextMultipleOf(size_t n, size_t powerOfTwo)
+size_t nextMultipleOf(size_t n, size_t powerOfTwo) pure nothrow
 {
     size_t mask = ~(powerOfTwo - 1);
     return (n + powerOfTwo - 1) & mask;
 }
 
-void* nextAlignedPointer(void* start, size_t alignment)
+void* nextAlignedPointer(void* start, size_t alignment) pure nothrow
 {
     return cast(void*)nextMultipleOf(cast(size_t)(start), alignment);
 }
 
 // allocate aligned memory
 // functionally equivalent to Visual C++ _aligned_malloc
-void* alignedMalloc(size_t size, size_t alignment)
+void* alignedMalloc(size_t size, size_t alignment) nothrow
 {
     if (size == 0)
         return null;
@@ -28,7 +28,7 @@ void* alignedMalloc(size_t size, size_t alignment)
 
 // free aligned memory
 // functionally equivalent to Visual C++ _aligned_free
-void alignedFree(void* aligned)
+void alignedFree(void* aligned) nothrow
 {
     // support for free(NULL)
     if (aligned is null)
@@ -40,7 +40,7 @@ void alignedFree(void* aligned)
 
 // realloc aligned memory
 // functionally equivalent to Visual C++ _aligned_realloc
-void* alignedRealloc(void* aligned, size_t size, size_t alignment)
+void* alignedRealloc(void* aligned, size_t size, size_t alignment) nothrow
 {
     if (aligned is null)
         return alignedMalloc(size, alignment);
@@ -64,13 +64,13 @@ void* alignedRealloc(void* aligned, size_t size, size_t alignment)
 
 // return number of bytes to actually allocate when asking
 // for a particular alignement
-private size_t requestedSize(size_t askedSize, size_t alignment)
+private size_t requestedSize(size_t askedSize, size_t alignment) pure nothrow
 {
     enum size_t pointerSize = size_t.sizeof;
     return askedSize + alignment - 1 + pointerSize;
 }
 
-private void* storeRawPointerAndReturnAligned(void* raw, size_t alignment)
+private void* storeRawPointerAndReturnAligned(void* raw, size_t alignment) nothrow
 {
     enum size_t pointerSize = size_t.sizeof;
     char* start = cast(char*)raw + pointerSize;
@@ -96,6 +96,6 @@ unittest
     {
         void* p = alignedRealloc(null, 100, 16);
         p = alignedRealloc(p, 200, 16);
+        p = alignedRealloc(p, 0, 16);
     }
 }
-
