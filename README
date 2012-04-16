@@ -1,1 +1,2 @@
 gfm is a collection of useful classes for D2 programming.
+Compilation of SDL wrapper depends on Derelict2.
