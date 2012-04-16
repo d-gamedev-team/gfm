@@ -255,13 +255,13 @@ import std.ascii : hexDigits;
     // binary layout should be what is expected on this platform
     version (LittleEndian)
     {
-        hi_t hi;
         ulong lo;
+        hi_t hi;
     }
     else
     {
-        ulong lo;
         hi_t hi;
+        ulong lo;
     }
 
     private
