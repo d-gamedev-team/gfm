@@ -62,6 +62,17 @@ class Log
     protected
     {
         abstract void logMessage(MessageType type, lazy string message);
+
+        string getTopic(MessageType type)
+        {
+            final switch (type)
+            {
+                case MessageType.DEBUG: return "CRAP";
+                case MessageType.INFO: return "INFO";
+                case MessageType.WARNING: return "WTF";
+                case MessageType.ERROR: return "EPICFAIL";
+            }
+        }
     }
 }
 
@@ -71,6 +82,17 @@ final class NullLog : Log
     {
         override void logMessage(MessageType type, lazy string message)
         {
+        }
+    }
+}
+
+final class ConsoleLog : Log
+{
+    protected
+    {
+        override void logMessage(MessageType type, lazy string message)
+        {
+            writefln("[%s] %s", getTopic(type), message);
         }
     }
 }
@@ -111,19 +133,7 @@ final class FileLog : Log
     {
         Stream _logFile;
         int _indent;
-
-        string getTopic(MessageType type)
-        {
-            final switch (type)
-            {
-                case MessageType.DEBUG: return "CRAP";
-                case MessageType.INFO: return "INFO";
-                case MessageType.WARNING: return "WTF";
-                case MessageType.ERROR: return "EPICFAIL";
-            }
-        }
     }
-
 
     public
     {
