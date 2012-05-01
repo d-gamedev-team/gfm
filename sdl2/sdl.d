@@ -29,6 +29,27 @@ final class SDL2
             return res;
         }
 
+        string getPlatform()
+        {
+            return to!string(SDL_GetPlatform());
+        }
+
+        int getL1LineSize()
+        {
+            int res = SDL_GetCPUCacheLineSize();
+            if (res <= 0)
+                res = 64;
+            return res;
+        }
+
+        int getCPUCount()
+        {
+            int res = SDL_GetCPUCount();
+            if (res <= 0)
+                res = 1;
+            return res;
+        }
+
         this(Log log)
         {
             _log = log;
@@ -46,14 +67,21 @@ final class SDL2
                 throw new SDL2Exception(e.msg);
             }
 
+            m_redirectSDL2Logging = true;
+
             // enable all logging, and pipe it to our own logger object
-            SDL_LogGetOutputFunction(_previousLogCallback, &_previousLogUserdata);
-            SDL_LogSetAllPriority(SDL_LOG_PRIORITY_VERBOSE);
-            SDL_LogSetOutputFunction(&loggingCallback, cast(void*)this);
+            if (m_redirectSDL2Logging)
+            {
+                SDL_LogGetOutputFunction(_previousLogCallback, &_previousLogUserdata);
+                SDL_LogSetAllPriority(SDL_LOG_PRIORITY_VERBOSE);
+                SDL_LogSetOutputFunction(&loggingCallback, cast(void*)this);
+            }
 
             if (0 != SDL_Init(0))
                 throw new SDL2Exception("Unable to initialize SDL: " ~ getErrorString());
 
+            _log.infof("Platform: %s, %s CPU, L1 cacheline size: %sb", getPlatform(), getCPUCount(), getL1LineSize());
+            
             subSystemInit(SDL_INIT_TIMER);
             subSystemInit(SDL_INIT_VIDEO);
             subSystemInit(SDL_INIT_JOYSTICK);
@@ -64,7 +92,7 @@ final class SDL2
                 _log.infof("Available driver: %s", driver);
 
             {
-                int res = SDL_VideoInit(null, 0);
+                int res = SDL_VideoInit(null);
                 if (res != 0)
                     throw new SDL2Exception("SDL_VideoInit failed: " ~ getErrorString());
             }
@@ -74,8 +102,12 @@ final class SDL2
 
         ~this()
         {
-            SDL_LogSetOutputFunction(_previousLogCallback, _previousLogUserdata);
+            // restore previously set logging function
+            if (m_redirectSDL2Logging)
+                SDL_LogSetOutputFunction(_previousLogCallback, _previousLogUserdata);
+
             SDL_Quit();
+            DerelictSDL2.unload();
         }
     }
 
@@ -83,6 +115,7 @@ final class SDL2
     {
         Log _log;
 
+        bool m_redirectSDL2Logging;
         SDL_LogOutputFunction _previousLogCallback;
         void* _previousLogUserdata;
 
@@ -134,7 +167,9 @@ final class SDL2
             }
 
             string formattedMessage = format("SDL (category %s, priority %s): %s", 
-                                             category, readablePriority(priority), to!string(message));
+                                             readableCategory(category), 
+                                             readablePriority(priority), 
+                                             to!string(message));
 
             if (priority == SDL_LOG_PRIORITY_WARN)
                 _log.warn(formattedMessage);
