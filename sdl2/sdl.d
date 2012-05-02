@@ -8,15 +8,77 @@ import derelict.sdl2.image;
 import derelict.util.exception;
 
 import gfm.sdl2.exception;
+import gfm.sdl2.displaymode;
 import gfm.common.log;
+import gfm.math.box;
 
 final class SDL2
 {
     public
     {
-        string getErrorString()
+        this(Log log)
         {
-            return to!string(SDL_GetError());
+            _log = log;
+            try
+            {
+                // in debug builds, use a debgu version of SDL2
+                debug
+                    DerelictSDL2.load("SDL2d.dll");
+                else
+                    DerelictSDL2.load();
+                DerelictSDL2.disableAutoUnload();
+            }
+            catch(DerelictException e)
+            {
+                throw new SDL2Exception(e.msg);
+            }
+
+            m_redirectSDL2Logging = true;
+
+            // enable all logging, and pipe it to our own logger object
+            if (m_redirectSDL2Logging)
+            {
+                SDL_LogGetOutputFunction(_previousLogCallback, &_previousLogUserdata);
+                SDL_LogSetAllPriority(SDL_LOG_PRIORITY_VERBOSE);
+                SDL_LogSetOutputFunction(&loggingCallback, cast(void*)this);
+            }
+
+            if (0 != SDL_Init(0))
+                throwSDL2UsageError("SDL_Init");
+
+            _log.infof("Platform: %s, %s CPU, L1 cacheline size: %sb", getPlatform(), getCPUCount(), getL1LineSize());
+            
+            subSystemInit(SDL_INIT_TIMER);
+            subSystemInit(SDL_INIT_VIDEO);
+            subSystemInit(SDL_INIT_JOYSTICK);
+            subSystemInit(SDL_INIT_AUDIO);
+            subSystemInit(SDL_INIT_HAPTIC);
+
+            foreach(driver;getVideoDrivers())
+                _log.infof("Available driver: %s", driver);
+
+            {
+                int res = SDL_VideoInit(null);
+                if (res != 0)
+                    throwSDL2UsageError("SDL_VideoInit");
+            }
+
+            _log.infof("Running using video driver: %s", to!string(SDL_GetCurrentVideoDriver()));
+
+            int numDisplays = SDL_GetNumVideoDisplays();
+            
+            _log.infof("%s video display(s) detected.", numDisplays);
+            
+        }
+
+        ~this()
+        {
+            // restore previously set logging function
+            if (m_redirectSDL2Logging)
+                SDL_LogSetOutputFunction(_previousLogCallback, _previousLogUserdata);
+
+            SDL_Quit();
+            DerelictSDL2.unload();
         }
 
         string[] getVideoDrivers()
@@ -50,65 +112,60 @@ final class SDL2
             return res;
         }
 
-        this(Log log)
+        void delay(int milliseconds)
         {
-            _log = log;
-            try
-            {
-                // in debug builds, use a debgu version of SDL2
-                debug
-                    DerelictSDL2.load("SDL2d.dll");
-                else
-                    DerelictSDL2.load();
-                DerelictSDL2.disableAutoUnload();
-            }
-            catch(DerelictException e)
-            {
-                throw new SDL2Exception(e.msg);
-            }
+            SDL_Delay(milliseconds);
+        }
 
-            m_redirectSDL2Logging = true;
+        uint getTicks()
+        {
+            return SDL_GetTicks();
+        }
 
-            // enable all logging, and pipe it to our own logger object
-            if (m_redirectSDL2Logging)
-            {
-                SDL_LogGetOutputFunction(_previousLogCallback, &_previousLogUserdata);
-                SDL_LogSetAllPriority(SDL_LOG_PRIORITY_VERBOSE);
-                SDL_LogSetOutputFunction(&loggingCallback, cast(void*)this);
-            }
+        SDL2VideoDisplay[] getDisplays()
+        {
+            int numDisplays = SDL_GetNumVideoDisplays();
 
-            if (0 != SDL_Init(0))
-                throw new SDL2Exception("Unable to initialize SDL: " ~ getErrorString());
-
-            _log.infof("Platform: %s, %s CPU, L1 cacheline size: %sb", getPlatform(), getCPUCount(), getL1LineSize());
+            SDL2VideoDisplay[] availableDisplays;
             
-            subSystemInit(SDL_INIT_TIMER);
-            subSystemInit(SDL_INIT_VIDEO);
-            subSystemInit(SDL_INIT_JOYSTICK);
-            subSystemInit(SDL_INIT_AUDIO);
-            subSystemInit(SDL_INIT_HAPTIC);
-
-            foreach(driver;getVideoDrivers())
-                _log.infof("Available driver: %s", driver);
-
+            for (int displayIndex = 0; displayIndex < numDisplays; ++displayIndex)
             {
-                int res = SDL_VideoInit(null);
+                SDL_Rect rect;
+                int res = SDL_GetDisplayBounds(displayIndex, &rect);
                 if (res != 0)
-                    throw new SDL2Exception("SDL_VideoInit failed: " ~ getErrorString());
+                    throwSDL2UsageError("SDL_GetDisplayBounds");
+
+                box2i bounds = box2i(rect.x, rect.y, rect.x + rect.w, rect.x + rect.h);
+                SDL2DisplayMode[] availableModes;
+
+                int numModes = SDL_GetNumDisplayModes(displayIndex);
+                for(int modeIndex = 0; modeIndex < numModes; ++modeIndex)
+                {
+                    SDL_DisplayMode mode;
+                    if (0 != SDL_GetDisplayMode(displayIndex, modeIndex, &mode))
+                        throwSDL2UsageError("SDL_GetDisplayMode");
+
+                    availableModes ~= new SDL2DisplayMode(modeIndex, mode);
+                }
+
+                availableDisplays ~= new SDL2VideoDisplay(displayIndex, bounds, availableModes);
             }
-
-            _log.infof("Running using video driver: %s", to!string(SDL_GetCurrentVideoDriver()));
+            return availableDisplays;
         }
+    }
 
-        ~this()
+    public // package
+    {
+        void throwSDL2UsageError(string callThatFailed)
         {
-            // restore previously set logging function
-            if (m_redirectSDL2Logging)
-                SDL_LogSetOutputFunction(_previousLogCallback, _previousLogUserdata);
-
-            SDL_Quit();
-            DerelictSDL2.unload();
+            string message = format("%s failed: %s", callThatFailed, getErrorString());
+            throw new SDL2Exception(message);
         }
+
+        string getErrorString()
+        {
+            return to!string(SDL_GetError());
+        } 
     }
 
     private
@@ -127,11 +184,11 @@ final class SDL2
 
         void subSystemInit(int flag)
         {
-            if (! subSystemInitialized(flag))
+            if (!subSystemInitialized(flag))
             {
                 int res = SDL_InitSubSystem(flag);
                 if (0 != res)
-                    throw new SDL2Exception("Unable to initialize SDL subsystem: " ~ getErrorString());
+                    throwSDL2UsageError("SDL_InitSubSystem");
             }
         }      
 
