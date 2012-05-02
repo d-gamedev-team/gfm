@@ -4,6 +4,7 @@
   <obj>0</obj>
   <link>0</link>
   <lib>0</lib>
+  <subsystem>0</subsystem>
   <multiobj>0</multiobj>
   <singleFileCompilation>0</singleFileCompilation>
   <oneobj>0</oneobj>
@@ -99,6 +100,7 @@
   <obj>0</obj>
   <link>0</link>
   <lib>0</lib>
+  <subsystem>0</subsystem>
   <multiobj>0</multiobj>
   <singleFileCompilation>0</singleFileCompilation>
   <oneobj>0</oneobj>
@@ -219,6 +221,7 @@
    <File path="math\statistics.d" />
   </Folder>
   <Folder name="sdl2">
+   <File path="sdl2\displaymode.d" />
    <File path="sdl2\eventqueue.d" />
    <File path="sdl2\exception.d" />
    <File path="sdl2\sdl.d" />
