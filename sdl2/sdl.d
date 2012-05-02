@@ -135,7 +135,7 @@ final class SDL2
                 if (res != 0)
                     throwSDL2UsageError("SDL_GetDisplayBounds");
 
-                box2i bounds = box2i(rect.x, rect.y, rect.x + rect.w, rect.x + rect.h);
+                box2i bounds = box2i(rect.x, rect.y, rect.x + rect.w, rect.y + rect.h);
                 SDL2DisplayMode[] availableModes;
 
                 int numModes = SDL_GetNumDisplayModes(displayIndex);
