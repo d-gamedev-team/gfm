@@ -5,6 +5,7 @@ import std.string;
 import derelict.sdl2.sdl;
 
 import gfm.sdl2.sdl;
+import gfm.sdl2.surface;
 import gfm.sdl2.exception;
 import gfm.math.smallvector;
 
@@ -24,6 +25,7 @@ final class SDL2Window
         this(SDL2 sdl2, string title, vec2i dimension, bool OpenGL)
         {
             _sdl2 = sdl2;
+            _surface = null;
             int flags = 0;
             if (OpenGL)
                 flags |= SDL_WINDOW_OPENGL;
@@ -39,7 +41,8 @@ final class SDL2Window
         }
 
         ~this()
-        {
+        {           
+            assert(SDL_DestroyWindow !is null);
             SDL_DestroyWindow(_window);
         }
 
@@ -73,20 +76,39 @@ final class SDL2Window
             SDL_MaximizeWindow(_window);
         }
 
-        void updateSurface()
+        SDL2Surface surface()
         {
-            int res = SDL_UpdateWindowSurface(_window);
-            if (res != 0)
-                throw new SDL2Exception("SDL_UpdateWindowSurface failed: " ~ _sdl2.getErrorString());
+            if (_surface is null)
+            {
+                SDL_Surface* internalSurface = SDL_GetWindowSurface(_window);
+                if (internalSurface is null)
+                    _sdl2.throwSDL2Exception("SDL_GetWindowSurface");
+
+                _surface = new SDL2Surface(_sdl2, internalSurface);
+            }
+            return _surface;
         }
 
-        uint getId();
+        void updateSurface()
+        {
+            surface();
+            int res = SDL_UpdateWindowSurface(_window);
+            if (res != 0)
+                _sdl2.throwSDL2Exception("SDL_UpdateWindowSurface");
+            
+        }
+
+        int id()
+        {
+            return _id;
+        }
     }
 
     private
     {
         SDL2 _sdl2;
         SDL_Window* _window;
+        SDL2Surface _surface;
         uint _id;
     }
 }

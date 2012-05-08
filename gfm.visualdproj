@@ -44,7 +44,7 @@
   <Dversion>2.043</Dversion>
   <ignoreUnsupportedPragmas>0</ignoreUnsupportedPragmas>
   <compiler>0</compiler>
-  <otherDMD>0</otherDMD>
+  <otherDMD>1</otherDMD>
   <program>$(DMDInstallDir)windows\bin\dmd.exe</program>
   <imppath>../../externals/Derelict3/import;..</imppath>
   <fileImppath />
@@ -91,9 +91,9 @@
   <debugworkingdir />
   <debugattach>0</debugattach>
   <debugremote />
-  <debugEngine>0</debugEngine>
+  <debugEngine>1</debugEngine>
   <debugStdOutToOutputWindow>0</debugStdOutToOutputWindow>
-  <pauseAfterRunning>0</pauseAfterRunning>
+  <pauseAfterRunning>1</pauseAfterRunning>
   <filesToClean>*.obj;*.cmd;*.build;*.json;*.dep</filesToClean>
  </Config>
  <Config name="Release" platform="Win32">
@@ -225,6 +225,7 @@
    <File path="sdl2\eventqueue.d" />
    <File path="sdl2\exception.d" />
    <File path="sdl2\sdl.d" />
+   <File path="sdl2\surface.d" />
    <File path="sdl2\window.d" />
   </Folder>
   <Folder name="system">

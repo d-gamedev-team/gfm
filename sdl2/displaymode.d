@@ -62,7 +62,7 @@ final class SDL2VideoDisplay
     private
     {
         int _displayindex;
-        SDL2DisplayMode[] _availableModes;        
+        SDL2DisplayMode[] _availableModes;
         box2i _bounds;
     }
 }

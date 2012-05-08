@@ -44,7 +44,7 @@ final class SDL2
             }
 
             if (0 != SDL_Init(0))
-                throwSDL2UsageError("SDL_Init");
+                throwSDL2Exception("SDL_Init");
 
             _log.infof("Platform: %s, %s CPU, L1 cacheline size: %sb", getPlatform(), getCPUCount(), getL1LineSize());
             
@@ -60,7 +60,7 @@ final class SDL2
             {
                 int res = SDL_VideoInit(null);
                 if (res != 0)
-                    throwSDL2UsageError("SDL_VideoInit");
+                    throwSDL2Exception("SDL_VideoInit");
             }
 
             _log.infof("Running using video driver: %s", to!string(SDL_GetCurrentVideoDriver()));
@@ -133,7 +133,7 @@ final class SDL2
                 SDL_Rect rect;
                 int res = SDL_GetDisplayBounds(displayIndex, &rect);
                 if (res != 0)
-                    throwSDL2UsageError("SDL_GetDisplayBounds");
+                    throwSDL2Exception("SDL_GetDisplayBounds");
 
                 box2i bounds = box2i(rect.x, rect.y, rect.x + rect.w, rect.y + rect.h);
                 SDL2DisplayMode[] availableModes;
@@ -143,7 +143,7 @@ final class SDL2
                 {
                     SDL_DisplayMode mode;
                     if (0 != SDL_GetDisplayMode(displayIndex, modeIndex, &mode))
-                        throwSDL2UsageError("SDL_GetDisplayMode");
+                        throwSDL2Exception("SDL_GetDisplayMode");
 
                     availableModes ~= new SDL2DisplayMode(modeIndex, mode);
                 }
@@ -154,9 +154,10 @@ final class SDL2
         }
     }
 
-    public // package
+    public
     {
-        void throwSDL2UsageError(string callThatFailed)
+        // exception mechanism that shall be used by every module here
+        void throwSDL2Exception(string callThatFailed)
         {
             string message = format("%s failed: %s", callThatFailed, getErrorString());
             throw new SDL2Exception(message);
@@ -188,7 +189,7 @@ final class SDL2
             {
                 int res = SDL_InitSubSystem(flag);
                 if (0 != res)
-                    throwSDL2UsageError("SDL_InitSubSystem");
+                    throwSDL2Exception("SDL_InitSubSystem");
             }
         }      
 
