@@ -19,6 +19,8 @@ final class SDL2
         this(Log log)
         {
             _log = log;
+            _SDLInitialized = false;
+            _SDL2LoggingRedirected = false;
             try
             {
                 // in debug builds, use a debgu version of SDL2
@@ -33,14 +35,12 @@ final class SDL2
                 throw new SDL2Exception(e.msg);
             }
 
-            m_redirectSDL2Logging = true;
-
             // enable all logging, and pipe it to our own logger object
-            if (m_redirectSDL2Logging)
             {
                 SDL_LogGetOutputFunction(_previousLogCallback, &_previousLogUserdata);
                 SDL_LogSetAllPriority(SDL_LOG_PRIORITY_VERBOSE);
                 SDL_LogSetOutputFunction(&loggingCallback, cast(void*)this);
+                _SDL2LoggingRedirected = true;
             }
 
             if (0 != SDL_Init(0))
@@ -71,14 +71,28 @@ final class SDL2
             
         }
 
-        ~this()
+        void close()
         {
             // restore previously set logging function
-            if (m_redirectSDL2Logging)
+            if (_SDL2LoggingRedirected)
+            {
                 SDL_LogSetOutputFunction(_previousLogCallback, _previousLogUserdata);
+                _SDL2LoggingRedirected = false;
+            }
 
-            SDL_Quit();
-            DerelictSDL2.unload();
+            if (_SDLInitialized)
+            {
+                SDL_Quit();
+                _SDLInitialized = false;
+            }
+
+            if (DerelictSDL2.isLoaded())
+                DerelictSDL2.unload();
+        }
+
+        ~this()
+        {
+            close();
         }
 
         string[] getVideoDrivers()
@@ -173,9 +187,12 @@ final class SDL2
     {
         Log _log;
 
-        bool m_redirectSDL2Logging;
+        bool _SDL2LoggingRedirected;
         SDL_LogOutputFunction _previousLogCallback;
         void* _previousLogUserdata;
+
+
+        bool _SDLInitialized;
 
         bool subSystemInitialized(int subSystem)
         {

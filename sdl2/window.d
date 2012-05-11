@@ -40,10 +40,18 @@ final class SDL2Window
             _id = SDL_GetWindowID(_window);
         }
 
+        void close()
+        {
+            if (_window !is null)
+            {
+                SDL_DestroyWindow(_window);
+                _window = null;
+            }
+        }
+
         ~this()
-        {           
-            assert(SDL_DestroyWindow !is null);
-            SDL_DestroyWindow(_window);
+        {
+            close();
         }
 
         void setPosition(vec2i position)
