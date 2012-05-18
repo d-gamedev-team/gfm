@@ -166,6 +166,16 @@ final class SDL2
             }
             return availableDisplays;
         }
+
+        void startTextInput()
+        {
+            SDL_StartTextInput();
+        }
+
+        void stopTextInput()
+        {
+            SDL_StopTextInput();
+        }
     }
 
     public
@@ -179,14 +189,19 @@ final class SDL2
 
         string getErrorString()
         {
-            return to!string(SDL_GetError());
+            const(char)* message = SDL_GetError();
+            SDL_ClearError(); // clear error
+            return to!string(message);
         } 
+    }
+
+    package
+    {
+        Log _log;
     }
 
     private
     {
-        Log _log;
-
         bool _SDL2LoggingRedirected;
         SDL_LogOutputFunction _previousLogCallback;
         void* _previousLogUserdata;

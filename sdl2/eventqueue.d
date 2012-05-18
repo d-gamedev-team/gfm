@@ -3,45 +3,28 @@ module gfm.sdl2.eventqueue;
 import std.string;
 
 import derelict.sdl2.sdl;
-
 import gfm.common.log;
 import gfm.sdl2.sdl;
-import gfm.sdl2.exception;
+import gfm.sdl2.window; 
+import gfm.sdl2.keyboard;
 
-interface IWindowListener
-{
-    void onShow();
-    void onHide();
-    void onExposed();
-    void onMove();
-    void onResized();
-    void onSizeChanged();
-    void onMinimized();
-    void onMaximized();
-    void onRestored();
-    void onEnter();
-    void onLeave();
-    void onFocusGained();
-    void onFocusLost();
-    void onClose();
-}
-
-// dispatch events
+// dispatch events to listeners
+// hold state for mouse, keyboard and joysticks
 final class SDL2EventQueue
 {
     public
-    {
-        
+    {        
         this(SDL2 sdl2, Log log)
         {
             _sdl2 = sdl2;
             _log = log;
             _quitWasRequested = false;
+            _keyboard = new SDL2Keyboard(sdl2);
         }
 
-        void addWindowListener(uint id, IWindowListener windowListener)
+        void registerWindow(SDL2Window window)
         {
-            _windowListeners[id] = windowListener;
+            _knownWindows[window.id()] = window;
         }
 
         void processEvents()
@@ -56,13 +39,19 @@ final class SDL2EventQueue
         {
             return _quitWasRequested;
         }
+
+        SDL2Keyboard keyboard()
+        {
+            return _keyboard;
+        }
     }
 
     private
     {
         SDL2 _sdl2;
         Log _log;
-        IWindowListener[uint] _windowListeners;
+        SDL2Keyboard _keyboard;
+        SDL2Window[uint] _knownWindows;
         bool _quitWasRequested = false;
 
         void dispatch(const (SDL_Event*) event)
@@ -79,6 +68,9 @@ final class SDL2EventQueue
 
                 case SDL_KEYDOWN:
                 case SDL_KEYUP:
+                    dispatchKeyboardEvent(&event.key);
+                    break;
+
                 //case SDL_TEXTEDITING:
                 //case SDL_TEXTINPUT:
                 
@@ -99,71 +91,94 @@ final class SDL2EventQueue
             }
         }
 
+        void dispatchKeyboardEvent(const(SDL_KeyboardEvent*) event)
+        {
+            // ignore key-repeat
+            if (event.repeat != 0)
+                return;
+
+            switch (event.type)
+            {
+                case SDL_KEYDOWN:
+                    assert(event.state == SDL_PRESSED);
+                    _keyboard.markKeyAsPressed(event.keysym.scancode);
+                    break;
+
+                case SDL_KEYUP:
+                    assert(event.state == SDL_RELEASED);
+                    _keyboard.markKeyAsReleased(event.keysym.scancode);
+                    break;
+
+                default:
+                    break;
+            }
+        }
+
         void dispatchWindowEvent(const (SDL_WindowEvent*) windowEvent)
         {
             assert(windowEvent.type == SDL_WINDOWEVENT);
 
-            IWindowListener* listener = (windowEvent.windowID in _windowListeners);
+            SDL2Window* window = (windowEvent.windowID in _knownWindows);
 
-            if (listener is null)
+            if (window is null)
                 return; // no such id known
 
             switch (windowEvent.event)
             {
                 case SDL_WINDOWEVENT_SHOWN:
-                    listener.onShow();
+                    window.onShow();
                     break;
 
                 case SDL_WINDOWEVENT_HIDDEN:
-                    listener.onHide();
+                    window.onHide();
                     break;
 
                 case SDL_WINDOWEVENT_EXPOSED:
-                    listener.onExposed();
+                    window.onExposed();
                     break;
 
                 case SDL_WINDOWEVENT_MOVED:
-                    listener.onMove();
+                    window.onMove(windowEvent.data1, windowEvent.data2);
                     break;
 
                 case SDL_WINDOWEVENT_RESIZED:
-                    listener.onResized();
+                    window.onResized(windowEvent.data1, windowEvent.data2);
                     break;
 
                 case SDL_WINDOWEVENT_SIZE_CHANGED:
-                    listener.onSizeChanged();
+                    window.onSizeChanged();
                     break;
 
                 case SDL_WINDOWEVENT_MINIMIZED:
-                    listener.onMinimized();
+                    window.onMinimized();
                     break;
 
                 case SDL_WINDOWEVENT_MAXIMIZED:
-                    listener.onMaximized();
+                    window.onMaximized();
                     break;
 
                 case SDL_WINDOWEVENT_RESTORED:
-                    listener.onRestored();
+                    window.onRestored();
                     break;
 
                 case SDL_WINDOWEVENT_ENTER:
-                    listener.onEnter();
+                    window.onEnter();
                     break;
 
                 case SDL_WINDOWEVENT_LEAVE:
-                    listener.onLeave();
+                    window.onLeave();
                     break;
 
                 case SDL_WINDOWEVENT_FOCUS_GAINED:
-                    listener.onFocusGained();
+                    window.onFocusGained();
                     break;
 
                 case SDL_WINDOWEVENT_FOCUS_LOST:
-                    listener.onFocusLost();
+                    window.onFocusLost();
                     break;
 
                 case SDL_WINDOWEVENT_CLOSE:
-                    listener.onClose();
+                    window.onClose();
                     break;
 
                 default:

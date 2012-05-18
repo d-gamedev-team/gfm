@@ -8,9 +8,10 @@ import gfm.sdl2.sdl;
 import gfm.sdl2.surface;
 import gfm.sdl2.exception;
 import gfm.math.smallvector;
+import gfm.common.log;
+import gfm.sdl2.eventqueue;
 
-
-final class SDL2Window
+class SDL2Window
 {
     public
     {
@@ -22,13 +23,18 @@ final class SDL2Window
         }
 
         // initially invisible
-        this(SDL2 sdl2, string title, vec2i dimension, bool OpenGL)
+        this(SDL2 sdl2, string title, vec2i dimension, bool OpenGL, bool resizable)
         {
             _sdl2 = sdl2;
+            _log = sdl2._log;
             _surface = null;
+            _surfaceMustBeRenewed = false;
             int flags = 0;
             if (OpenGL)
                 flags |= SDL_WINDOW_OPENGL;
+
+            if (resizable)
+                flags |= SDL_WINDOW_RESIZABLE;
 
             _window = SDL_CreateWindow(toStringz(title), 
                                        SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED,
@@ -40,7 +46,7 @@ final class SDL2Window
             _id = SDL_GetWindowID(_window);
         }
 
-        void close()
+        final void close()
         {
             if (_window !is null)
             {
@@ -54,69 +60,144 @@ final class SDL2Window
             close();
         }
 
-        void setPosition(vec2i position)
+        final void setPosition(vec2i position)
         {
             SDL_SetWindowPosition(_window, position.x, position.y);
         }
 
-        void setSize(vec2i size)
+        final void setSize(vec2i size)
         {
             SDL_SetWindowSize(_window, size.x, size.y);
         }
 
-        void show()
+        final void show()
         {
             SDL_ShowWindow(_window);
         }
 
-        void hide()
+        final void hide()
         {
             SDL_HideWindow(_window);
         }
 
-        void minimize()
+        final void minimize()
         {
             SDL_MinimizeWindow(_window);
         }
 
-        void maximize()
+        final void maximize()
         {
             SDL_MaximizeWindow(_window);
         }
 
-        SDL2Surface surface()
+        final SDL2Surface surface()
         {
-            if (_surface is null)
+            if (!hasValidSurface())
             {
                 SDL_Surface* internalSurface = SDL_GetWindowSurface(_window);
                 if (internalSurface is null)
                     _sdl2.throwSDL2Exception("SDL_GetWindowSurface");
 
+                // renews surface as needed
+                _surfaceMustBeRenewed = false;
                 _surface = new SDL2Surface(_sdl2, internalSurface);
             }
             return _surface;
         }
 
-        void updateSurface()
+        final void updateSurface()
         {
-            surface();
+            if (!hasValidSurface())
+                surface();
+
             int res = SDL_UpdateWindowSurface(_window);
             if (res != 0)
                 _sdl2.throwSDL2Exception("SDL_UpdateWindowSurface");
             
         }
 
-        int id()
+        final int id()
         {
             return _id;
+        }
+
+        void onShow()
+        {
+            _log.info("onShow");
+        }
+
+        void onHide()
+        {
+            _log.info("onHide");
+        }
+
+        void onExposed()
+        {
+            _surfaceMustBeRenewed = true;
+        }
+
+        void onMove(int x, int y)
+        {        
+        }
+        
+        void onResized(int width, int height)
+        {
+            _surfaceMustBeRenewed = true;
+        }
+
+        void onSizeChanged()
+        {
+            _surfaceMustBeRenewed = true;
+        }
+
+        void onMinimized()
+        {
+            _surfaceMustBeRenewed = true;
+        }
+
+        void onMaximized()
+        {
+            _surfaceMustBeRenewed = true;
+        }
+
+        void onRestored()
+        {            
+        }
+
+        void onEnter()
+        {
+        }
+        
+        void onLeave()
+        {
+        }
+        
+        void onFocusGained()
+        {
+        }
+
+        void onFocusLost()
+        {
+        }
+        
+        void onClose()
+        {
         }
     }
 
     private
     {
         SDL2 _sdl2;
+        Log _log;
         SDL_Window* _window;
         SDL2Surface _surface;
         uint _id;
+
+        bool _surfaceMustBeRenewed;
+
+        bool hasValidSurface()
+        {
+            return (!_surfaceMustBeRenewed) && (_surface !is null);
+        }
     }
 }
