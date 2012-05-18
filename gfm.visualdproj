@@ -221,9 +221,11 @@
    <File path="math\statistics.d" />
   </Folder>
   <Folder name="sdl2">
+   <File path="sdl2\all.d" />
    <File path="sdl2\displaymode.d" />
    <File path="sdl2\eventqueue.d" />
    <File path="sdl2\exception.d" />
+   <File path="sdl2\keyboard.d" />
    <File path="sdl2\sdl.d" />
    <File path="sdl2\surface.d" />
    <File path="sdl2\window.d" />
