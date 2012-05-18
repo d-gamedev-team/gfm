@@ -1,2 +1,23 @@
 gfm is a collection of useful classes for D2 programming.
-Compilation of SDL wrapper depends on Derelict2.
+
+common/
+- HTML logging object
+- range-based queue and locked queue
+- aligned malloc/free/realloc and buffer
+- struct pool 
+
+math/
+- small vectors
+- small matrices
+- quaternions
+- 128 bits integers (cent/ucent implentation)
+- basic fixed-point numbers
+- ...
+
+sdl/
+- SDL 1.2 wrapper based on Derelict2
+
+sdl2/
+- SDL 2.0 wrapper based on Derelict3
+
+more to come
