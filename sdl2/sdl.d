@@ -9,6 +9,7 @@ import derelict.util.exception;
 
 import gfm.sdl2.exception;
 import gfm.sdl2.displaymode;
+import gfm.sdl2.renderer;
 import gfm.common.log;
 import gfm.math.box;
 
@@ -165,6 +166,24 @@ final class SDL2
                 availableDisplays ~= new SDL2VideoDisplay(displayIndex, bounds, availableModes);
             }
             return availableDisplays;
+        }
+
+        SDL2RendererInfo[] getRenderersInfo()
+        {
+            SDL2RendererInfo[] res;
+            int num = SDL_GetNumRenderDrivers();
+            if (num < 0)
+                throwSDL2Exception("SDL_GetNumRenderDrivers");
+
+            for (int i = 0; i < num; ++i)
+            {
+                SDL_RendererInfo info;
+                int err = SDL_GetRenderDriverInfo(i, &info);
+                if (err != 0)
+                    throwSDL2Exception("SDL_GetRenderDriverInfo");
+                res ~= new SDL2RendererInfo(i, info);
+            }
+            return res;
         }
 
         void startTextInput()

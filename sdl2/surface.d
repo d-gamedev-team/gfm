@@ -33,7 +33,7 @@ final class SDL2Surface
         }
     }
 
-    private
+    package
     {
         SDL2 _sdl2;
         SDL_Surface* _surface;

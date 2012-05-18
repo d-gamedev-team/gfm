@@ -8,6 +8,7 @@ import gfm.sdl2.sdl;
 import gfm.sdl2.surface;
 import gfm.sdl2.exception;
 import gfm.math.smallvector;
+import gfm.math.box;
 import gfm.common.log;
 import gfm.sdl2.eventqueue;
 
@@ -23,22 +24,26 @@ class SDL2Window
         }
 
         // initially invisible
-        this(SDL2 sdl2, string title, vec2i dimension, bool OpenGL, bool resizable)
+        this(SDL2 sdl2, string title, box2i bounds, bool fullscreen, bool OpenGL, bool resizable)
         {
             _sdl2 = sdl2;
             _log = sdl2._log;
             _surface = null;
             _surfaceMustBeRenewed = false;
             int flags = 0;
+
             if (OpenGL)
                 flags |= SDL_WINDOW_OPENGL;
 
             if (resizable)
                 flags |= SDL_WINDOW_RESIZABLE;
 
+            if (fullscreen)
+                flags |= (SDL_WINDOW_FULLSCREEN | SDL_WINDOW_BORDERLESS);
+
             _window = SDL_CreateWindow(toStringz(title), 
-                                       SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED,
-                                       dimension.x, dimension.y,
+                                       bounds.a.x, bounds.a.y,
+                                       bounds.width, bounds.height,
                                        flags);
             if (_window == null)
                 throw new SDL2Exception("SDL_CreateWindow failed: " ~ _sdl2.getErrorString());
@@ -185,11 +190,15 @@ class SDL2Window
         }
     }
 
-    private
+    package
     {
         SDL2 _sdl2;
-        Log _log;
         SDL_Window* _window;
+    }
+
+    private
+    {
+        Log _log;
         SDL2Surface _surface;
         uint _id;
 
