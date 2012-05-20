@@ -66,7 +66,7 @@ align(1) struct Box(size_t N, T)
 
             static if (N >= 1)
             {
-                T width() pure const nothrow
+                T width() pure const nothrow @property
                 {
                     return b.x - a.x;
                 }
@@ -74,7 +74,7 @@ align(1) struct Box(size_t N, T)
 
             static if (N >= 2)
             {
-                T height() pure const nothrow
+                T height() pure const nothrow @property
                 {
                     return b.y - a.y;
                 }
@@ -82,7 +82,7 @@ align(1) struct Box(size_t N, T)
 
             static if (N >= 3)
             {
-                T depth() pure const nothrow
+                T depth() pure const nothrow @property
                 {
                     return b.z - a.z;
                 }
