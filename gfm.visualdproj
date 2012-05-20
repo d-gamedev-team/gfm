@@ -91,7 +91,7 @@
   <debugworkingdir />
   <debugattach>0</debugattach>
   <debugremote />
-  <debugEngine>1</debugEngine>
+  <debugEngine>0</debugEngine>
   <debugStdOutToOutputWindow>0</debugStdOutToOutputWindow>
   <pauseAfterRunning>1</pauseAfterRunning>
   <filesToClean>*.obj;*.cmd;*.build;*.json;*.dep</filesToClean>
@@ -226,6 +226,7 @@
    <File path="sdl2\eventqueue.d" />
    <File path="sdl2\exception.d" />
    <File path="sdl2\keyboard.d" />
+   <File path="sdl2\renderer.d" />
    <File path="sdl2\sdl.d" />
    <File path="sdl2\surface.d" />
    <File path="sdl2\window.d" />

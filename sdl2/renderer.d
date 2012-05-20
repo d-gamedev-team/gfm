@@ -131,13 +131,9 @@ final class SDL2Renderer
             SDL_SetRenderDrawColor(_renderer, r, g, b, a);
         }
 
-        void setViewport(int x, int y, int width, int height)
+        void setViewport(box2i b)
         {
-            SDL_Rect r;
-            r.x = x;
-            r.y = y;
-            r.w = width;
-            r.h = height;
+            SDL_Rect r = box2i_to_SDL_Rect(b);
             SDL_RenderSetViewport(_renderer, &r);
         }
 
@@ -165,16 +161,6 @@ final class SDL2Renderer
         {
             SDL_RenderDrawPoints(_renderer, cast(SDL_Point*)(points.ptr), points.length);
         }
-
-       /* void drawRect()
-        {
-        SDL_RenderDrawRect
-        SDL_RenderDrawRects
-        SDL_RenderFillRect
-        SDL_RenderFillRects
-        }*/
-
-        
     }
 
     private
@@ -183,5 +169,15 @@ final class SDL2Renderer
         SDL2Window _window; // not null if renderer to window
         SDL2Surface _surface; // not null if renderer to surface
         SDL_Renderer* _renderer;
+
+        static SDL_Rect box2i_to_SDL_Rect(box2i b) pure
+        {
+            SDL_Rect res = void;
+            res.x = b.a.x;
+            res.y = b.a.y;
+            res.w = b.width;
+            res.h = b.height;
+            return res;
+        }
     }
 }

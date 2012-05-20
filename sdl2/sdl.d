@@ -1,7 +1,7 @@
 module gfm.sdl2.sdl;
 
 import std.conv: to;
-import std.string: format;
+import std.string: format, toStringz;
 
 import derelict.sdl2.sdl;
 import derelict.sdl2.image;
@@ -195,9 +195,34 @@ final class SDL2
         {
             SDL_StopTextInput();
         }
+
+
+        // clipboard as a property
+        // set clipboard
+        @property string clipboard(string s)
+        {
+            int err = SDL_SetClipboardText(toStringz(s));
+            if (err != 0)
+                throwSDL2Exception("SDL_SetClipboardText");
+            return s;
+        }
+
+        // get clipboard
+        @property string clipboard()
+        {
+            if (SDL_HasClipboardText() == SDL_FALSE)
+                return null;
+
+            const(char)* s = SDL_GetClipboardText();
+            if (s is null)
+                throwSDL2Exception("SDL_GetClipboardText");
+
+            // is clipboard texte utf-8? Assuming yes.
+            return to!string(s);
+        }
     }
 
-    public
+    package
     {
         // exception mechanism that shall be used by every module here
         void throwSDL2Exception(string callThatFailed)

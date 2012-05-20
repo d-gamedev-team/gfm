@@ -19,7 +19,6 @@ final class SDL2Surface
 
         ~this()
         {
-
         }
 
         int width()
