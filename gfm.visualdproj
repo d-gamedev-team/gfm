@@ -30,7 +30,7 @@
   <useArrayBounds>0</useArrayBounds>
   <noboundscheck>0</noboundscheck>
   <useSwitchError>0</useSwitchError>
-  <useUnitTests>0</useUnitTests>
+  <useUnitTests>1</useUnitTests>
   <useInline>0</useInline>
   <release>0</release>
   <preservePaths>0</preservePaths>
@@ -91,7 +91,7 @@
   <debugworkingdir />
   <debugattach>0</debugattach>
   <debugremote />
-  <debugEngine>0</debugEngine>
+  <debugEngine>1</debugEngine>
   <debugStdOutToOutputWindow>0</debugStdOutToOutputWindow>
   <pauseAfterRunning>1</pauseAfterRunning>
   <filesToClean>*.obj;*.cmd;*.build;*.json;*.dep</filesToClean>
@@ -210,8 +210,10 @@
    <File path="image\yv12image.d" />
   </Folder>
   <Folder name="math">
+   <File path="math\all.d" />
    <File path="math\box.d" />
    <File path="math\fixedpoint.d" />
+   <File path="math\fraction.d" />
    <File path="math\funcs.d" />
    <File path="math\quaternion.d" />
    <File path="math\shapes.d" />

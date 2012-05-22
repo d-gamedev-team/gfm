@@ -4,7 +4,8 @@
  * Designed to be easy to read, probably too slow for heavy use.
  * Relies on division algorithm from Ian Kaplan.
  */
-module softcent;
+module gfm.math.softcent;
+
 import std.traits : Unqual, isIntegral, isSigned, isUnsigned;
 import std.ascii : hexDigits;
 
