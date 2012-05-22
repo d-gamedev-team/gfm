@@ -21,14 +21,19 @@ final class SDL2Surface
         {
         }
 
-        int width()
+        @property int width()
         {
             return _surface.w;
         }
 
-        int height()
+        @property int height()
         {
             return _surface.h;
+        }
+
+        void* data()
+        {
+            return _surface.pixels;
         }
     }
 
