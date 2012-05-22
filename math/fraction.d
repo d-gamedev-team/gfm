@@ -139,6 +139,8 @@ struct Fraction
 
         int opCmp(T)(T o) pure const if (is(Unqual!T == Fraction))
         {
+            assert(denom > 0);
+            assert(o.denom > 0);
             long det = num * o.denom - denom * o.num;
             if (det > 0)
                 return 1;
@@ -196,6 +198,7 @@ unittest
     assert(x < 4);
     assert(x > 2);
     assert(x > Fraction(8,3));
+    assert(x > Fraction(-8,3));
     assert(x == Fraction(-27, -9));
 
     assert(Fraction(-4, 7) + 2 == Fraction(10, 7));
