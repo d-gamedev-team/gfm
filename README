@@ -2,16 +2,19 @@ gfm is a collection of useful classes for D2 programming.
 
 common/
 - HTML logging object
-- range-based queue and locked queue
+- range-based queue/fifo/stack and locked queue
 - aligned malloc/free/realloc and buffer
-- struct pool 
+- struct pool
 
 math/
 - small vectors
 - small matrices
+- half-open intervals
 - quaternions
 - 128 bits integers (cent/ucent implentation)
 - basic fixed-point numbers
+- fractions
+- statistics
 - ...
 
 sdl/
