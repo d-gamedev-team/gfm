@@ -198,6 +198,7 @@
   </Folder>
   <Folder name="common">
    <File path="common\alignedbuffer.d" />
+   <File path="common\all.d" />
    <File path="common\lockedqueue.d" />
    <File path="common\log.d" />
    <File path="common\memory.d" />
@@ -205,6 +206,7 @@
    <File path="common\structpool.d" />
   </Folder>
   <Folder name="image">
+   <File path="image\all.d" />
    <File path="image\image.d" />
    <File path="image\plane.d" />
    <File path="image\yv12image.d" />
@@ -228,6 +230,7 @@
    <File path="sdl2\displaymode.d" />
    <File path="sdl2\eventqueue.d" />
    <File path="sdl2\exception.d" />
+   <File path="sdl2\framecounter.d" />
    <File path="sdl2\keyboard.d" />
    <File path="sdl2\renderer.d" />
    <File path="sdl2\sdl.d" />
@@ -240,6 +243,5 @@
    <File path="system\semaphore.d" />
   </Folder>
   <File path="README" />
-  <File path="test.d" />
  </Folder>
 </DProject>

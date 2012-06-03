@@ -13,6 +13,7 @@ import gfm.math.smallvector;
 // row-major order, non-resizeable
 
 // TODO: - do we need constructor from columns ?
+//       - invert square matrices
 
 align(1) struct SmallMatrix(size_t R, size_t C, T)
 {
