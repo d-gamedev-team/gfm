@@ -1,6 +1,17 @@
 module gfm.sdl2.exception;
 
-final class SDL2Exception : Exception
+class SDL2Exception : Exception
+{
+    public
+    {
+        this(string msg)
+        {
+            super(msg);
+        }
+    }
+}
+
+class SDL2ImageException : SDL2Exception
 {
     public
     {
