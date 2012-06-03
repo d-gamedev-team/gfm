@@ -24,7 +24,7 @@ final class SDL2
             _SDL2LoggingRedirected = false;
             try
             {
-                // in debug builds, use a debgu version of SDL2
+                // in debug builds, use a debug version of SDL2
                 debug
                     DerelictSDL2.load("SDL2d.dll");
                 else
