@@ -88,7 +88,7 @@
   <postBuildCommand />
   <debugtarget>$(TARGETPATH)</debugtarget>
   <debugarguments />
-  <debugworkingdir />
+  <debugworkingdir>$(OutDir)\</debugworkingdir>
   <debugattach>0</debugattach>
   <debugremote />
   <debugEngine>1</debugEngine>
@@ -184,12 +184,12 @@
   <postBuildCommand />
   <debugtarget>$(TARGETPATH)</debugtarget>
   <debugarguments />
-  <debugworkingdir />
+  <debugworkingdir>$(OutDir)\</debugworkingdir>
   <debugattach>0</debugattach>
   <debugremote />
   <debugEngine>0</debugEngine>
   <debugStdOutToOutputWindow>0</debugStdOutToOutputWindow>
-  <pauseAfterRunning>0</pauseAfterRunning>
+  <pauseAfterRunning>1</pauseAfterRunning>
   <filesToClean>*.obj;*.cmd;*.build;*.json;*.dep</filesToClean>
  </Config>
  <Folder name="gfm">
@@ -234,6 +234,7 @@
    <File path="sdl2\keyboard.d" />
    <File path="sdl2\renderer.d" />
    <File path="sdl2\sdl.d" />
+   <File path="sdl2\sdlimage.d" />
    <File path="sdl2\surface.d" />
    <File path="sdl2\window.d" />
   </Folder>

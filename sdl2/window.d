@@ -16,21 +16,15 @@ class SDL2Window
 {
     public
     {
-        enum Flags
-        {
-            FULLSCREEN,
-            SHOWN,
-            OPENGL
-        }
-
         // initially invisible
-        this(SDL2 sdl2, string title, box2i bounds, bool fullscreen, bool OpenGL, bool resizable)
+        this(SDL2 sdl2, box2i bounds, bool fullscreen, bool OpenGL, bool resizable)
         {
             _sdl2 = sdl2;
             _log = sdl2._log;
             _surface = null;
             _surfaceMustBeRenewed = false;
-            int flags = 0;
+
+            int flags = SDL_WINDOW_SHOWN;
 
             if (OpenGL)
                 flags |= SDL_WINDOW_OPENGL;
@@ -41,7 +35,7 @@ class SDL2Window
             if (fullscreen)
                 flags |= (SDL_WINDOW_FULLSCREEN | SDL_WINDOW_BORDERLESS);
 
-            _window = SDL_CreateWindow(toStringz(title), 
+            _window = SDL_CreateWindow(toStringz(""), 
                                        bounds.a.x, bounds.a.y,
                                        bounds.width, bounds.height,
                                        flags);
@@ -105,7 +99,7 @@ class SDL2Window
 
                 // renews surface as needed
                 _surfaceMustBeRenewed = false;
-                _surface = new SDL2Surface(_sdl2, internalSurface);
+                _surface = new SDL2Surface(_sdl2, internalSurface,  SDL2Surface.Owned.NO);
             }
             return _surface;
         }

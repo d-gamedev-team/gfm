@@ -11,29 +11,48 @@ final class SDL2Surface
 {
     public
     {
-        this(SDL2 sdl2, SDL_Surface* surface)
+        enum Owned
         {
+            NO, YES
+        }
+
+        this(SDL2 sdl2, SDL_Surface* surface, Owned owned)
+        {
+            assert(surface !is null);
             _sdl2 = sdl2;
             _surface = surface;
+            _owned = owned;
         }      
+
+        void close()
+        {
+            if (_surface !is null)
+            {
+                if (_owned == Owned.YES)
+                    SDL_FreeSurface(_surface);
+                _surface = null;
+            }
+        }
+
 
         ~this()
         {
+            close();
         }
 
-        @property int width()
+        @property int width() const
         {
             return _surface.w;
         }
 
-        @property int height()
+        @property int height() const
         {
             return _surface.h;
         }
 
-        void* data()
+        ubyte* pixels()
         {
-            return _surface.pixels;
+            return cast(ubyte*) _surface.pixels;
         }
     }
 
@@ -41,5 +60,6 @@ final class SDL2Surface
     {
         SDL2 _sdl2;
         SDL_Surface* _surface;
+        Owned _owned;
     }
 }
