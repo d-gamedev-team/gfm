@@ -27,6 +27,12 @@ final class SDL2EventQueue
             _knownWindows[window.id()] = window;
         }
 
+        void unregisterWindow(SDL2Window window)
+        {
+            assert((window.id() in _knownWindows) !is null);
+            _knownWindows.remove(window.id());
+        }
+
         void processEvents()
         {
             SDL_Event event;
