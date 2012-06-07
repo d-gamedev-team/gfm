@@ -124,7 +124,7 @@
   <useIn>0</useIn>
   <useOut>0</useOut>
   <useArrayBounds>0</useArrayBounds>
-  <noboundscheck>0</noboundscheck>
+  <noboundscheck>1</noboundscheck>
   <useSwitchError>0</useSwitchError>
   <useUnitTests>0</useUnitTests>
   <useInline>0</useInline>
@@ -178,7 +178,7 @@
   <libpaths />
   <deffile />
   <resfile />
-  <exefile>$(OutDir)\$(ProjectName).exe</exefile>
+  <exefile>$(OutDir)\$(ProjectName).lib</exefile>
   <additionalOptions />
   <preBuildCommand />
   <postBuildCommand />
@@ -204,6 +204,11 @@
    <File path="common\memory.d" />
    <File path="common\queue.d" />
    <File path="common\structpool.d" />
+  </Folder>
+  <Folder name="freeimage">
+   <File path="freeimage\all.d" />
+   <File path="freeimage\exception.d" />
+   <File path="freeimage\freeimage.d" />
   </Folder>
   <Folder name="image">
    <File path="image\all.d" />
