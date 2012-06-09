@@ -24,9 +24,9 @@ final class FreeImage
             catch(DerelictException e)
             {
                 throw new FreeImageException(e.msg);
-            }            
+            }
 
-            FreeImage_Initialise(useExternalPlugins ? TRUE : FALSE); // documentation says it's useless
+            //FreeImage_Initialise(useExternalPlugins ? TRUE : FALSE); // documentation says it's useless
             _libInitialized = true;
 
             _log.infof("FreeImage %s initialized.", getVersion());
@@ -42,7 +42,7 @@ final class FreeImage
         {
             if (_libInitialized)
             {
-                FreeImage_DeInitialise(); // documentation says it's useless
+                //FreeImage_DeInitialise(); // documentation says it's useless
                 DerelictFI.unload();
                 _libInitialized = false;
             }
@@ -61,9 +61,13 @@ final class FreeImage
         }
     }
 
-    private
+    package
     {
         Log _log;
+    }
+
+    private
+    {
         bool _libInitialized;
     }
 }

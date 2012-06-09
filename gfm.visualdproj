@@ -208,6 +208,7 @@
   <Folder name="freeimage">
    <File path="freeimage\all.d" />
    <File path="freeimage\exception.d" />
+   <File path="freeimage\fibitmap.d" />
    <File path="freeimage\freeimage.d" />
   </Folder>
   <Folder name="image">

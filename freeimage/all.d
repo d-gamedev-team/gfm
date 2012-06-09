@@ -4,6 +4,8 @@ module gfm.freeimage.all;
 
 public
 {
+    import derelict.freeimage.freeimage;
     import gfm.freeimage.exception;
     import gfm.freeimage.freeimage;
+    import gfm.freeimage.fibitmap;
 }
