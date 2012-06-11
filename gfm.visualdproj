@@ -245,7 +245,6 @@
    <File path="sdl2\window.d" />
   </Folder>
   <Folder name="system">
-   <File path="system\cache.d" />
    <File path="system\mutex.d" />
    <File path="system\semaphore.d" />
   </Folder>
