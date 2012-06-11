@@ -14,7 +14,7 @@ final class AlignedBuffer(T)
             _size = 0;
             _allocated = 0;
             _data = null;
-            _alignment = getL1CacheLineSize();
+            _alignment = 64;
         }
 
         this(size_t initialSize) nothrow
