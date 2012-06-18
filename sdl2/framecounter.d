@@ -4,7 +4,7 @@ import derelict.sdl2.sdl;
 import gfm.sdl2.sdl;
 
 // gets intra-frame delta time
-class FrameCounter
+final class FrameCounter
 {
     public
     {

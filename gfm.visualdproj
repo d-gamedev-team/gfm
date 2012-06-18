@@ -205,6 +205,11 @@
    <File path="common\queue.d" />
    <File path="common\structpool.d" />
   </Folder>
+  <Folder name="opengl">
+   <File path="opengl\all.d" />
+   <File path="opengl\exception.d" />
+   <File path="opengl\opengl.d" />
+  </Folder>
   <Folder name="freeimage">
    <File path="freeimage\all.d" />
    <File path="freeimage\exception.d" />
@@ -237,6 +242,7 @@
    <File path="sdl2\eventqueue.d" />
    <File path="sdl2\exception.d" />
    <File path="sdl2\framecounter.d" />
+   <File path="sdl2\glcontext.d" />
    <File path="sdl2\keyboard.d" />
    <File path="sdl2\renderer.d" />
    <File path="sdl2\sdl.d" />

@@ -11,6 +11,7 @@ import gfm.math.smallvector;
 import gfm.math.box;
 import gfm.common.log;
 import gfm.sdl2.eventqueue;
+import gfm.sdl2.glcontext;
 
 class SDL2Window
 {
@@ -22,6 +23,7 @@ class SDL2Window
             _sdl2 = sdl2;
             _log = sdl2._log;
             _surface = null;
+            _glContext = null;
             _surfaceMustBeRenewed = false;
 
             int flags = SDL_WINDOW_SHOWN;
@@ -35,6 +37,18 @@ class SDL2Window
             if (fullscreen)
                 flags |= (SDL_WINDOW_FULLSCREEN | SDL_WINDOW_BORDERLESS);
 
+            if (OpenGL)
+            {
+                // sane defaults because SDL defaults are quite scary
+                SDL_GL_SetAttribute(SDL_GL_RED_SIZE, 8);
+                SDL_GL_SetAttribute(SDL_GL_GREEN_SIZE, 8);
+                SDL_GL_SetAttribute(SDL_GL_BLUE_SIZE, 8);
+                SDL_GL_SetAttribute(SDL_GL_ALPHA_SIZE, 8);
+                SDL_GL_SetAttribute(SDL_GL_STENCIL_SIZE, 8);
+                SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 24);
+                SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
+            }
+
             _window = SDL_CreateWindow(toStringz(""), 
                                        bounds.a.x, bounds.a.y,
                                        bounds.width, bounds.height,
@@ -43,10 +57,19 @@ class SDL2Window
                 throw new SDL2Exception("SDL_CreateWindow failed: " ~ _sdl2.getErrorString());
 
             _id = SDL_GetWindowID(_window);
+
+            if (OpenGL)
+                _glContext = new SDL2GLContext(this);
         }
 
         final void close()
         {
+            if (_glContext !is null)
+            {
+                _glContext.close();
+                _glContext = null;
+            }
+
             if (_window !is null)
             {
                 SDL_DestroyWindow(_window);
@@ -194,6 +217,7 @@ class SDL2Window
     {
         Log _log;
         SDL2Surface _surface;
+        SDL2GLContext _glContext;
         uint _id;
 
         bool _surfaceMustBeRenewed;

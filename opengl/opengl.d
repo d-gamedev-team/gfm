@@ -28,6 +28,7 @@ class OpenGL
         void reload()
         {
             DerelictGL3.reload();
+            _log.infof("OpenGL reloaded, version %s", DerelictGL3.loadedVersion());
         }
 
         void close()

@@ -14,4 +14,5 @@ public
     import gfm.sdl2.sdlimage;
     import gfm.math.smallvector;
     import gfm.math.box;
+    import gfm.sdl2.glcontext;
 }
