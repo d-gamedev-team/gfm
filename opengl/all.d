@@ -6,4 +6,6 @@ public
     import gfm.opengl.exception;
     import gfm.opengl.opengl;
     import gfm.opengl.buffer;
+    import gfm.opengl.shader;
+    import gfm.opengl.program;
 }
