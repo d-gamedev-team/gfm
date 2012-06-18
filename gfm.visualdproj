@@ -210,6 +210,7 @@
    <File path="opengl\buffer.d" />
    <File path="opengl\exception.d" />
    <File path="opengl\opengl.d" />
+   <File path="opengl\shader.d" />
   </Folder>
   <Folder name="freeimage">
    <File path="freeimage\all.d" />
