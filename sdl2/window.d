@@ -205,6 +205,13 @@ class SDL2Window
         void onClose()
         {
         }
+
+        void swapBuffers()
+        {
+            if (_glContext is null)
+                throw new SDL2Exception("swapBuffers failed: not an OpenGL window");
+            SDL_GL_SwapWindow(_window);
+        }
     }
 
     package
