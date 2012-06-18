@@ -49,7 +49,7 @@ final class GLShader
             auto lengths = new GLint[lineCount];
             auto addresses = new immutable(GLchar)*[lineCount];
             auto localLines = new string[lineCount];
-            
+
             for (size_t i = 0; i < lineCount; ++i)
             {
                 localLines[i] = lines[i];
@@ -60,9 +60,9 @@ final class GLShader
                 addresses[i] = localLines[i].ptr;
             }
 
-            glShaderSource(_shader, 
-                           cast(GLint)lineCount, 
-                           cast(const(char)**)addresses.ptr, 
+            glShaderSource(_shader,
+                           cast(GLint)lineCount,
+                           cast(const(char)**)addresses.ptr,
                            cast(const(int)*)(lengths.ptr));
             _gl.runtimeCheck();
         }
@@ -71,10 +71,10 @@ final class GLShader
         {
             glCompileShader(_shader);
             _gl.runtimeCheck();
-            
+
             GLint compiled;
             glGetShaderiv(_shader, GL_COMPILE_STATUS, &compiled);
-            
+
             if (compiled != GL_TRUE)
                 throw new OpenGLException("shader did not compile");
         }

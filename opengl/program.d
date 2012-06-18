@@ -46,7 +46,7 @@ final class GLProgram
         {
             glLinkProgram(_program);
             _gl.runtimeCheck();
-        }    
+        }
 
         void use()
         {

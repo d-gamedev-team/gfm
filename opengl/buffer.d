@@ -46,7 +46,7 @@ final class GLBuffer
             }
             else
                 glBufferData(_target, size, data, _usage);
-            
+
             _gl.debugCheck();
 
             _firstLoad = false;

@@ -35,7 +35,7 @@ class OpenGL
         {
             DerelictGL3.unload();
         }
-        
+
         // for debug purpose, disabled on release build
         void debugCheck()
         {
@@ -49,7 +49,7 @@ class OpenGL
                 }
             }
         }
-        
+
         // for errors that could happen and are not logic errors
         void runtimeCheck()
         {
@@ -65,7 +65,7 @@ class OpenGL
 
     package
     {
-        static string getErrorString(GLint r) pure nothrow 
+        static string getErrorString(GLint r) pure nothrow
         {
             switch(r)
             {
