@@ -14,8 +14,9 @@ final class GLShader
 {
     public
     {
-        this(GLenum shaderType)
+        this(OpenGL gl, GLenum shaderType)
         {
+            _gl = gl;
             _shader = glCreateShader(shaderType);
             if (_shader == 0)
                 throw new OpenGLException("glCreateShader failed");
