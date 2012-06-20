@@ -26,4 +26,7 @@ sdl2/
 freeimage/
 - freeimage wrapper based on Derelict3
 
+opengl/
+- OpenGL wrapper based on Derelict3
+
 more to come
