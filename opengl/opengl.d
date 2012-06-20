@@ -2,6 +2,7 @@ module gfm.opengl.opengl;
 
 import std.string;
 import std.conv;
+import std.array;
 import derelict.opengl3.gl3;
 import derelict.opengl3.gl;
 import gfm.common.log;
@@ -20,9 +21,7 @@ class OpenGL
 
             DerelictGL.load(); // load deprecated functions too
 
-            _log.infof("OpenGL loaded, version %s", DerelictGL3.loadedVersion());
-
-
+            _log.infof("OpenGL loaded, version %s", DerelictGL3.loadedVersion());            
         }
 
         ~this()
@@ -35,6 +34,16 @@ class OpenGL
         {
             DerelictGL3.reload();
             _log.infof("OpenGL reloaded, version %s", DerelictGL3.loadedVersion());
+            _log.infof("    Version: %s", getVersionString());
+            _log.infof("    Renderer: %s", getRendererString());
+            _log.infof("    Vendor: %s", getVendorString());
+            _log.infof("    GLSL version: %s", getGLSLVersionString());            
+
+            // parse extensions
+            _extensions = std.array.split(getExtensionsString());
+
+            _log.infof("    Extensions: %s found", _extensions.length);
+
         }
 
         void close()
@@ -123,5 +132,7 @@ class OpenGL
     private
     {
         Log _log;
+
+        string[] _extensions;
     }
 }

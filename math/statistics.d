@@ -9,7 +9,7 @@ nothrow
     /**
      * Arithmetic mean.
      */
-    auto average(R)(R r) if (isInputRange!R)
+    double average(R)(R r) if (isInputRange!R)
     {
         assert(!r.empty);
         typeof(r.front()) sum = 0;
@@ -101,7 +101,7 @@ nothrow:
             return maximum(_samples.range());
         }
 
-        T computeAverage()
+        double computeAverage()
         {
             return average(_samples.range());
         }

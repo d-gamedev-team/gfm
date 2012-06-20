@@ -92,6 +92,11 @@ class SDL2Window
             SDL_SetWindowSize(_window, size.x, size.y);
         }
 
+        final void setTitle(string title)
+        {
+            SDL_SetWindowTitle(_window, toStringz(title));
+        }
+
         final void show()
         {
             SDL_ShowWindow(_window);

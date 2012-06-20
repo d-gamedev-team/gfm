@@ -1,7 +1,10 @@
 module gfm.sdl2.framecounter;
 
+import std.string;
+
 import derelict.sdl2.sdl;
 import gfm.sdl2.sdl;
+import gfm.math.statistics;
 
 // gets intra-frame delta time
 final class FrameCounter
@@ -13,6 +16,7 @@ final class FrameCounter
             _sdl = sdl;
             _firstFrame = true;
             _elapsedTime = 0;
+            _stats = new Statistics!ulong(10, 1);
         }
 
         /**
@@ -25,6 +29,7 @@ final class FrameCounter
             {
                 _lastTime = getCurrentTime();
                 _firstFrame = false;
+                _stats.eat(0);
                 return 0; // no advance for first frame
             }
             else
@@ -33,6 +38,7 @@ final class FrameCounter
                 uint delta = now - _lastTime;
                 _elapsedTime += delta;
                 _lastTime = now;
+                _stats.eat(delta);
                 return delta;
             }
         }
@@ -60,11 +66,27 @@ final class FrameCounter
         {
             return _elapsedTime * 0.001;
         }
+
+        string getFPSString()
+        {
+            double avg = _stats.computeAverage();
+            int avgFPS = cast(int)(0.5 + ( avg != 0 ? 1000 / avg : 0 ) );
+            int avgdt = cast(int)(0.5 + avg);
+
+            return format("FPS: %s dt: avg %sms min %sms max %sms stddev %s",
+                          avgFPS,
+                          avgdt,
+                          _stats.computeMinimum(),
+                          _stats.computeMaximum(),
+                          _stats.computeStdDeviation());
+
+        }
     }
 
     private
     {
         SDL2 _sdl;
+        Statistics!ulong _stats;
         bool _firstFrame;
         uint _lastTime;
         ulong _elapsedTime;
