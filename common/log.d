@@ -4,7 +4,12 @@ import std.stream;
 import std.stdio : writefln;
 import std.string;
 
-nothrow:
+
+
+version(Windows)
+{
+    import core.sys.windows.windows;
+}
 
 class Log
 {
@@ -76,6 +81,28 @@ class Log
     }
 }
 
+final class MultiLog : Log
+{
+    public
+    {
+        this(Log[] logs)
+        {
+            _logs = logs;
+        }
+    }
+
+    protected
+    {
+        override void logMessage(MessageType type, lazy string message)
+        {
+            foreach(log; _logs)
+                logMessage(type, message);
+        }
+    }
+
+    private Log[] _logs;
+}
+
 final class NullLog : Log
 {
     protected
@@ -88,11 +115,51 @@ final class NullLog : Log
 
 final class ConsoleLog : Log
 {
+    public
+    {
+        this()
+        {
+            version(Windows)
+            {
+                _console = GetStdHandle(STD_OUTPUT_HANDLE);
+            }
+        }
+    }
+
     protected
     {
         override void logMessage(MessageType type, lazy string message)
         {
+            version(Windows)
+            {
+                if (_console !is null)
+                {
+                    final switch (type)
+                    {
+                        case MessageType.DEBUG: 
+                            SetConsoleTextAttribute(_console, 11);
+                            break;
+                        case MessageType.INFO: 
+                            SetConsoleTextAttribute(_console, 15);
+                            break;
+                        case MessageType.WARNING: 
+                            SetConsoleTextAttribute(_console, 14);
+                            break;
+                        case MessageType.ERROR: 
+                            SetConsoleTextAttribute(_console, 12);
+                            break;
+                    }
+                }
+            }
             writefln("[%s] %s", getTopic(type), message);
+        }
+    }
+
+    private
+    {
+        version(Windows)
+        {
+            HANDLE _console;
         }
     }
 }
