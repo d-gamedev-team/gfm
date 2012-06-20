@@ -41,7 +41,7 @@
   <pic>0</pic>
   <cov>0</cov>
   <nofloat>0</nofloat>
-  <Dversion>2.043</Dversion>
+  <Dversion>2</Dversion>
   <ignoreUnsupportedPragmas>0</ignoreUnsupportedPragmas>
   <compiler>0</compiler>
   <otherDMD>0</otherDMD>
@@ -76,6 +76,10 @@
   <runargs />
   <runCv2pdb>1</runCv2pdb>
   <pathCv2pdb>$(VisualDInstallDir)cv2pdb\cv2pdb.exe</pathCv2pdb>
+  <cv2pdbPre2043>0</cv2pdbPre2043>
+  <cv2pdbNoDemangle>0</cv2pdbNoDemangle>
+  <cv2pdbEnumType>0</cv2pdbEnumType>
+  <cv2pdbOptions />
   <objfiles />
   <linkswitches />
   <libfiles />
@@ -86,14 +90,6 @@
   <additionalOptions />
   <preBuildCommand />
   <postBuildCommand />
-  <debugtarget>$(TARGETPATH)</debugtarget>
-  <debugarguments />
-  <debugworkingdir>$(OutDir)\</debugworkingdir>
-  <debugattach>0</debugattach>
-  <debugremote />
-  <debugEngine>1</debugEngine>
-  <debugStdOutToOutputWindow>0</debugStdOutToOutputWindow>
-  <pauseAfterRunning>1</pauseAfterRunning>
   <filesToClean>*.obj;*.cmd;*.build;*.json;*.dep</filesToClean>
  </Config>
  <Config name="Release" platform="Win32">
@@ -172,6 +168,10 @@
   <runargs />
   <runCv2pdb>0</runCv2pdb>
   <pathCv2pdb>$(VisualDInstallDir)cv2pdb\cv2pdb.exe</pathCv2pdb>
+  <cv2pdbPre2043>0</cv2pdbPre2043>
+  <cv2pdbNoDemangle>0</cv2pdbNoDemangle>
+  <cv2pdbEnumType>0</cv2pdbEnumType>
+  <cv2pdbOptions />
   <objfiles />
   <linkswitches />
   <libfiles />
@@ -182,14 +182,6 @@
   <additionalOptions />
   <preBuildCommand />
   <postBuildCommand />
-  <debugtarget>$(TARGETPATH)</debugtarget>
-  <debugarguments />
-  <debugworkingdir>$(OutDir)\</debugworkingdir>
-  <debugattach>0</debugattach>
-  <debugremote />
-  <debugEngine>0</debugEngine>
-  <debugStdOutToOutputWindow>0</debugStdOutToOutputWindow>
-  <pauseAfterRunning>1</pauseAfterRunning>
   <filesToClean>*.obj;*.cmd;*.build;*.json;*.dep</filesToClean>
  </Config>
  <Folder name="gfm">
@@ -204,14 +196,6 @@
    <File path="common\memory.d" />
    <File path="common\queue.d" />
    <File path="common\structpool.d" />
-  </Folder>
-  <Folder name="opengl">
-   <File path="opengl\all.d" />
-   <File path="opengl\buffer.d" />
-   <File path="opengl\exception.d" />
-   <File path="opengl\opengl.d" />
-   <File path="opengl\program.d" />
-   <File path="opengl\shader.d" />
   </Folder>
   <Folder name="freeimage">
    <File path="freeimage\all.d" />
@@ -238,6 +222,14 @@
    <File path="math\smallvector.d" />
    <File path="math\softcent.d" />
    <File path="math\statistics.d" />
+  </Folder>
+  <Folder name="opengl">
+   <File path="opengl\all.d" />
+   <File path="opengl\buffer.d" />
+   <File path="opengl\exception.d" />
+   <File path="opengl\opengl.d" />
+   <File path="opengl\program.d" />
+   <File path="opengl\shader.d" />
   </Folder>
   <Folder name="sdl2">
    <File path="sdl2\all.d" />

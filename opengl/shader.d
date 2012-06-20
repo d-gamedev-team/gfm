@@ -86,7 +86,7 @@ final class GLShader
             char[] log = new char[logLength + 1];
             GLint dummy;
             glGetShaderInfoLog(_shader, logLength, &dummy, log.ptr);
-            _gl.debugCheck();
+            _gl.runtimeCheck();
             return to!string(log.ptr);
         }
     }

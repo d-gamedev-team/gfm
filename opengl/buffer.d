@@ -47,7 +47,7 @@ final class GLBuffer
             else
                 glBufferData(_target, size, data, _usage);
 
-            _gl.debugCheck();
+            _gl.runtimeCheck();
 
             _firstLoad = false;
         }
@@ -56,13 +56,13 @@ final class GLBuffer
         {
             bind();
             glBufferSubData(_target, offset, size, data);
-            _gl.debugCheck();
+            _gl.runtimeCheck();
         }
 
         void bind()
         {
             glBindBuffer(_target, _buffer);
-            _gl.debugCheck();
+            _gl.runtimeCheck();
         }
 
         void unbind()

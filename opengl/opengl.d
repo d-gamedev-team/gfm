@@ -1,7 +1,9 @@
 module gfm.opengl.opengl;
 
 import std.string;
+import std.conv;
 import derelict.opengl3.gl3;
+import derelict.opengl3.gl;
 import gfm.common.log;
 import gfm.opengl.exception;
 
@@ -16,7 +18,11 @@ class OpenGL
             _log = log;
             DerelictGL3.load(); // load latest available version
 
+            DerelictGL.load(); // load deprecated functions too
+
             _log.infof("OpenGL loaded, version %s", DerelictGL3.loadedVersion());
+
+
         }
 
         ~this()
@@ -33,6 +39,7 @@ class OpenGL
 
         void close()
         {
+            DerelictGL.unload();
             DerelictGL3.unload();
         }
 
@@ -60,6 +67,40 @@ class OpenGL
                 _log.errorf("OpenGL error: %s", errorString);
                 throw new OpenGLException(errorString);
             }
+        }
+
+        string getString(GLenum name)
+        {
+            const(char)* sZ = glGetString(name);
+            if (sZ is null)
+                return "(unknown)";
+            else
+                return to!string(sZ);
+        }
+
+        string getVersionString() 
+        {
+            return getString(GL_VERSION);
+        }
+
+        string getVendorString() 
+        {
+            return getString(GL_VENDOR);
+        }
+
+        string getRendererString() 
+        {
+            return getString(GL_RENDERER);
+        }
+
+        string getGLSLVersionString() 
+        {
+            return getString(GL_SHADING_LANGUAGE_VERSION);
+        }
+
+        string getExtensionsString() 
+        {
+            return getString(GL_EXTENSIONS);
         }
     }
 

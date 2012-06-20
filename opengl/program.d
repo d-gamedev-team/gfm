@@ -36,16 +36,50 @@ final class GLProgram
             }
         }
 
-        void attach(GLShader shader)
+        void attach(GLShader[] shaders...)
         {
-            glAttachShader(_program, shader._shader);
-            _gl.runtimeCheck();
+            foreach(shader; shaders)
+            {
+                glAttachShader(_program, shader._shader);
+                _gl.runtimeCheck();
+            }
         }
 
         void link()
         {
             glLinkProgram(_program);
             _gl.runtimeCheck();
+            GLint res;
+            glGetProgramiv(_program, GL_LINK_STATUS, &res);
+            if (GL_TRUE != res)
+                throw new OpenGLException("Cannot link program");
+
+            // get active uniforms
+            {
+                GLint uniformNameMaxLength;
+                glGetProgramiv(_program, GL_ACTIVE_UNIFORM_MAX_LENGTH, &uniformNameMaxLength);
+
+                GLchar[] buffer = new GLchar[GL_ACTIVE_UNIFORM_MAX_LENGTH + 16];
+            
+                GLint numActiveUniforms;
+                glGetProgramiv(_program, GL_ACTIVE_UNIFORMS, &res);
+                _activeUniforms.length = numActiveUniforms;
+                for (GLint i = 0; i < numActiveUniforms; ++i)
+                {
+                    GLint size;
+                    GLenum type;
+                    GLsizei length;
+                    glGetActiveUniform(_program, 
+                                       cast(GLuint)i, 
+                                       cast(GLint)(buffer.length), 
+                                       &length,
+                                       &size, 
+                                       &type, 
+                                       buffer.ptr);
+                    _gl.runtimeCheck();
+                    string name = to!string(buffer.ptr);
+                }
+            }
         }
 
         void use()
@@ -66,7 +100,7 @@ final class GLProgram
             char[] log = new char[logLength + 1];
             GLint dummy;
             glGetProgramInfoLog(_program, logLength, &dummy, log.ptr);
-            _gl.debugCheck();
+            _gl.runtimeCheck();
             return to!string(log.ptr);
         }
     }
@@ -80,5 +114,18 @@ final class GLProgram
     {
         OpenGL _gl;
         bool _initialized;
+        GLUniform[] _activeUniforms;
+    }
+}
+
+
+final class GLUniform
+{
+    this(int index)
+    {
+
+
+
+
     }
 }
