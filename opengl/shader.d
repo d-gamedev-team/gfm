@@ -23,6 +23,12 @@ final class GLShader
             _initialized = true;
         }
 
+        this(OpenGL gl, GLenum shaderType, string[] lines...)
+        {
+            this(gl, shaderType);
+            load(lines);
+        }
+
         ~this()
         {
             close();
@@ -37,12 +43,7 @@ final class GLShader
             }
         }
 
-        void load(string source)
-        {
-            load( [source] );
-        }
-
-        void load(string[] lines)
+        void load(string[] lines...)
         {
             size_t lineCount = lines.length;
 
@@ -102,3 +103,5 @@ final class GLShader
         bool _initialized;
     }
 }
+
+

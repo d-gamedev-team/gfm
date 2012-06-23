@@ -90,8 +90,6 @@ final class FIBitmap
             return FreeImage_GetImageType(_bitmap);
         }
 
-
-
         uint dotsPerMeterX()
         {
             return FreeImage_GetDotsPerMeterX(_bitmap);
