@@ -29,4 +29,7 @@ freeimage/
 opengl/
 - OpenGL wrapper based on Derelict3
 
+fann/
+- FANN wrapper based on DerelictFANN
+
 more to come

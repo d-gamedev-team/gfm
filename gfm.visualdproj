@@ -46,7 +46,7 @@
   <compiler>0</compiler>
   <otherDMD>0</otherDMD>
   <program>$(DMDInstallDir)windows\bin\dmd.exe</program>
-  <imppath>../../externals/Derelict3/import;..</imppath>
+  <imppath>../../externals/Derelict3/import;..;../DerelictFANN/import</imppath>
   <fileImppath />
   <outdir>$(ConfigurationName)</outdir>
   <objdir>$(OutDir)</objdir>
@@ -196,6 +196,11 @@
    <File path="common\memory.d" />
    <File path="common\queue.d" />
    <File path="common\structpool.d" />
+  </Folder>
+  <Folder name="fann">
+   <File path="fann\all.d" />
+   <File path="fann\fann.d" />
+   <File path="fann\lib.d" />
   </Folder>
   <Folder name="freeimage">
    <File path="freeimage\all.d" />
