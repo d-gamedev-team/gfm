@@ -24,6 +24,8 @@ align(1) struct SmallMatrix(size_t R, size_t C, T)
         alias SmallVector!(C, T) row_t;
         alias SmallVector!(R, T) column_t;
 
+        enum bool isSquare = (R == C);
+
         // fields definition
         union
         {
@@ -45,7 +47,7 @@ align(1) struct SmallMatrix(size_t R, size_t C, T)
                 // construct with assignment
                 opAssign!(U[0])(values[0]);
             }
-            else static assert(false, "cannot create a matrix from given arguents");
+            else static assert(false, "cannot create a matrix from given arguments");
         }
 
         // construct with columns
@@ -213,6 +215,111 @@ align(1) struct SmallMatrix(size_t R, size_t C, T)
                 mixin("res.v[i] = " ~ op ~ "v[i];");
             return res;
         }
+
+        // matrix inversion, provided for 2x2, 3x3 and 4x4 floating point matrices
+        static if (isSquare && isFloatingPoint!T && _R == 2)
+        {
+            SmallMatrix inverse()
+            {
+                T invDet = 1 / (c[0][0] * c[1][1] - c[0][1] * c[1][0]);
+                return SmallMatrix( c[1][1] * invDet, -c[0][1] * invDet,
+                                   -c[1][0] * invDet,  c[0][0] * invDet);
+            }
+        }
+
+        static if (isSquare && isFloatingPoint!T && _R == 3)
+        {
+            SmallMatrix inverse()
+            {
+                T det = c[0][0] * (c[1][1] * c[2][2] - c[2][1] * c[1][2])
+                      - c[0][1] * (c[1][0] * c[2][2] - c[1][2] * c[2][0])
+                      + c[0][2] * (c[1][0] * c[2][1] - c[1][1] * c[2][0]);
+                T invDet = 1 / det;
+
+                SmallMatrix res = void;
+                res.c[0][0] =  (c[1][1] * c[2][2] - c[2][1] * c[1][2]) * invDet;
+                res.c[0][1] = -(c[0][1] * c[2][2] - c[0][2] * c[2][1]) * invDet;
+                res.c[0][2] =  (c[0][1] * c[1][2] - c[0][2] * c[1][1]) * invDet;
+                res.c[1][0] = -(c[1][0] * c[2][2] - c[1][2] * c[2][0]) * invDet;
+                res.c[1][1] =  (c[0][0] * c[2][2] - c[0][2] * c[2][0]) * invDet;
+                res.c[1][2] = -(c[0][0] * c[1][2] - c[1][0] * c[0][2]) * invDet;
+                res.c[2][0] =  (c[1][0] * c[2][1] - c[2][0] * c[1][1]) * invDet;
+                res.c[2][1] = -(c[0][0] * c[2][1] - c[2][0] * c[0][1]) * invDet;
+                res.c[2][2] =  (c[0][0] * c[1][1] - c[1][0] * c[0][1]) * invDet;
+                return res;
+            }
+        }
+
+        static if (isSquare && isFloatingPoint!T && _R == 4)
+        {
+            SmallMatrix inverse()
+            {
+                T det2_01_01 = c[0][0] * c[1][1] - c[0][1] * c[1][0];
+                T det2_01_02 = c[0][0] * c[1][2] - c[0][2] * c[1][0];
+                T det2_01_03 = c[0][0] * c[1][3] - c[0][3] * c[1][0];
+                T det2_01_12 = c[0][1] * c[1][2] - c[0][2] * c[1][1];
+                T det2_01_13 = c[0][1] * c[1][3] - c[0][3] * c[1][1];
+                T det2_01_23 = c[0][2] * c[1][3] - c[0][3] * c[1][2];
+
+                T det3_201_012 = c[2][0] * det2_01_12 - c[2][1] * det2_01_02 + c[2][2] * det2_01_01;
+                T det3_201_013 = c[2][0] * det2_01_13 - c[2][1] * det2_01_03 + c[2][3] * det2_01_01;
+                T det3_201_023 = c[2][0] * det2_01_23 - c[2][2] * det2_01_03 + c[2][3] * det2_01_02;
+                T det3_201_123 = c[2][1] * det2_01_23 - c[2][2] * det2_01_13 + c[2][3] * det2_01_12;
+
+                T det = - det3_201_123 * c[3][0] + det3_201_023 * c[3][1] - det3_201_013 * c[3][2] + det3_201_012 * c[3][3];
+                T invDet = 1 / det;
+
+                T det2_03_01 = c[0][0] * c[3][1] - c[0][1] * c[3][0];
+                T det2_03_02 = c[0][0] * c[3][2] - c[0][2] * c[3][0];
+                T det2_03_03 = c[0][0] * c[3][3] - c[0][3] * c[3][0];
+                T det2_03_12 = c[0][1] * c[3][2] - c[0][2] * c[3][1];
+                T det2_03_13 = c[0][1] * c[3][3] - c[0][3] * c[3][1];
+                T det2_03_23 = c[0][2] * c[3][3] - c[0][3] * c[3][2];
+                T det2_13_01 = c[1][0] * c[3][1] - c[1][1] * c[3][0];
+                T det2_13_02 = c[1][0] * c[3][2] - c[1][2] * c[3][0];
+                T det2_13_03 = c[1][0] * c[3][3] - c[1][3] * c[3][0];
+                T det2_13_12 = c[1][1] * c[3][2] - c[1][2] * c[3][1];
+                T det2_13_13 = c[1][1] * c[3][3] - c[1][3] * c[3][1];
+                T det2_13_23 = c[1][2] * c[3][3] - c[1][3] * c[3][2];
+
+                T det3_203_012 = c[2][0] * det2_03_12 - c[2][1] * det2_03_02 + c[2][2] * det2_03_01;
+                T det3_203_013 = c[2][0] * det2_03_13 - c[2][1] * det2_03_03 + c[2][3] * det2_03_01;
+                T det3_203_023 = c[2][0] * det2_03_23 - c[2][2] * det2_03_03 + c[2][3] * det2_03_02;
+                T det3_203_123 = c[2][1] * det2_03_23 - c[2][2] * det2_03_13 + c[2][3] * det2_03_12;
+
+                T det3_213_012 = c[2][0] * det2_13_12 - c[2][1] * det2_13_02 + c[2][2] * det2_13_01;
+                T det3_213_013 = c[2][0] * det2_13_13 - c[2][1] * det2_13_03 + c[2][3] * det2_13_01;
+                T det3_213_023 = c[2][0] * det2_13_23 - c[2][2] * det2_13_03 + c[2][3] * det2_13_02;
+                T det3_213_123 = c[2][1] * det2_13_23 - c[2][2] * det2_13_13 + c[2][3] * det2_13_12;
+
+                T det3_301_012 = c[3][0] * det2_01_12 - c[3][1] * det2_01_02 + c[3][2] * det2_01_01;
+                T det3_301_013 = c[3][0] * det2_01_13 - c[3][1] * det2_01_03 + c[3][3] * det2_01_01;
+                T det3_301_023 = c[3][0] * det2_01_23 - c[3][2] * det2_01_03 + c[3][3] * det2_01_02;
+                T det3_301_123 = c[3][1] * det2_01_23 - c[3][2] * det2_01_13 + c[3][3] * det2_01_12;
+
+                SmallMatrix res = void;
+                res.c[0][0] = - det3_213_123 * invDet;
+                res.c[1][0] = + det3_213_023 * invDet;
+                res.c[2][0] = - det3_213_013 * invDet;
+                res.c[3][0] = + det3_213_012 * invDet;
+
+                res.c[0][1] = + det3_203_123 * invDet;
+                res.c[1][1] = - det3_203_023 * invDet;
+                res.c[2][1] = + det3_203_013 * invDet;
+                res.c[3][1] = - det3_203_012 * invDet;
+
+                res.c[0][2] = + det3_301_123 * invDet;
+                res.c[1][2] = - det3_301_023 * invDet;
+                res.c[2][2] = + det3_301_013 * invDet;
+                res.c[3][2] = - det3_301_012 * invDet;
+
+                res.c[0][3] = - det3_201_123 * invDet;
+                res.c[1][3] = + det3_201_023 * invDet;
+                res.c[2][3] = - det3_201_013 * invDet;
+                res.c[3][3] = + det3_201_012 * invDet;
+                return res;
+            }
+        }
     }
 
     private
@@ -255,7 +362,7 @@ align(1) struct SmallMatrix(size_t R, size_t C, T)
         {
             static SmallMatrix makeIdentity() pure
             {
-                SmallMatrix res = void;
+                SmallMatrix res;
                 for (size_t i = 0; i < R; ++i)
                     for (size_t j = 0; j < C; ++j)
                         res.c[i][j] = (i == j) ? 1 : 0;
@@ -263,18 +370,18 @@ align(1) struct SmallMatrix(size_t R, size_t C, T)
             }
         }
 
-        static SmallMatrix makeConstant(T)(T x) pure
+        static SmallMatrix makeConstant(U)(U x) pure
         {
-            SmallMatrix res = void;
+            SmallMatrix res;
             for (size_t i = 0; i < _N; ++i)
-                res.v[i] = x;
+                res.v[i] = cast(T)x;
             return res;
         }
     }
 
     // put here because of order of declaration
     // TODO: is this normal?
-  /*  public
+    public
     {
         enum ZERO = makeConstant(0);
         static if (R == C)
@@ -282,7 +389,7 @@ align(1) struct SmallMatrix(size_t R, size_t C, T)
             enum IDENTITY = makeIdentity();
         }
     }
-    */
+    
 }
 
 // GLSL is a big inspiration here
