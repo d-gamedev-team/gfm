@@ -9,4 +9,5 @@ public
     import gfm.opengl.buffer;
     import gfm.opengl.shader;
     import gfm.opengl.program;
+    import gfm.opengl.matrixstack;
 }
