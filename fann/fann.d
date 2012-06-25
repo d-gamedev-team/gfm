@@ -1,5 +1,6 @@
 module gfm.fann.fann;
 
+import std.string;
 import derelict.fann.fann;
 import gfm.fann.lib;
 
@@ -114,7 +115,7 @@ final class ANN
             return fann_get_total_connections(_fann);
         }
 
-        fann_nettype_enum networkType()
+        network_type_enum networkType()
         {
             return fann_get_network_type(_fann);
         }
