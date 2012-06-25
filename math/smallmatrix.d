@@ -25,6 +25,8 @@ align(1) struct SmallMatrix(size_t R, size_t C, T)
         alias SmallVector!(R, T) column_t;
 
         enum bool isSquare = (R == C);
+        enum numRows = R;
+        enum numColumns = C;
 
         // fields definition
         union
@@ -317,6 +319,18 @@ align(1) struct SmallMatrix(size_t R, size_t C, T)
                 res.c[1][3] = + det3_201_023 * invDet;
                 res.c[2][3] = - det3_201_013 * invDet;
                 res.c[3][3] = + det3_201_012 * invDet;
+                return res;
+            }
+        }
+
+        // translation matrix
+        static if (isSquare && _R > 1)
+        {
+            SmallMatrix translate(SmallVector!(_R-1, T) v)
+            {
+                SmallMatrix res = IDENTITY;
+                for (size_t i = 0; i + 1 < _R; ++i)
+                    res.c[i][_C-1] += v[i];
                 return res;
             }
         }

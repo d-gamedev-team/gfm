@@ -9,25 +9,26 @@ import gfm.common.memory;
 // Create one for GL_PROJECTION and one for GL_MODELVIEW, and there you go.
 // For performance reason, no runtime check for emptyness/fullness, only asserts
 // M should be a matrix type
-final class MatrixStack(M) if (M.isSquare)
+final class MatrixStack(size_t R, T) if (R == 3 || R == 4)
 {
     public
     {
+        alias SmallMatrix!(R, R, T) matrix_t;
 
         this(size_t depth = 32)
         {
-            assert(depth > 0);            
-            size_t memNeeded = M.sizeof * depth * 2;
+            assert(depth > 0);
+            size_t memNeeded = matrix_t.sizeof * depth * 2;
             void* data = alignedMalloc(memNeeded * 2, 64); 
-            _matrices = cast(M*)data;
-            _invMatrices = cast(M*)(data + memNeeded);
+            _matrices = cast(matrix_t*)data;
+            _invMatrices = cast(matrix_t*)(data + memNeeded);
             _top = 0;
             loadIdentity();
         }
 
         ~this()
         {
-            alignedFree(_matrices);            
+            alignedFree(_matrices);
         }
 
         // replacement for glLoadIdentity
@@ -40,7 +41,7 @@ final class MatrixStack(M) if (M.isSquare)
         // replacement for glPushMatrix
         void push() pure nothrow
         {
-            assert(_top + 1 < _depth);            
+            assert(_top + 1 < _depth);
             _matrices[_top + 1] = _matrices[_top];
             _invMatrices[_top + 1] = _invMatrices[_top];
             ++_top;
@@ -54,22 +55,38 @@ final class MatrixStack(M) if (M.isSquare)
         }
 
         // return top matrix
-        M top() pure const nothrow 
+        matrix_t top() pure const nothrow 
         {
             return _matrices[_top];
         }
 
         // return top matrix inverted
-        M invTop() pure const nothrow
+        matrix_t invTop() pure const nothrow
         {
             return _invMatrices[_top];
         }
 
         // replacement for glMultMatrix
-        void mult(M m)
+        void mult(matrix_t m)
         {
             _matrices[_top] = _matrices[_top] * m;
-            _matrices[_top] = _matrices[_top] * m.inverse();
+            _invMatrices[_top] = _invMatrices[_top] * m.inverse();
+        }
+
+        // same as mult() but with provided inverse
+        void mult(matrix_t m, matrix_t invM)
+        {
+            _matrices[_top] = _matrices[_top] * m;
+            _invMatrices[_top] = _invMatrices[_top] * invM;
+        }
+       
+        static if (R >= 3)
+        {
+            void translate(SmallVector!(R-1, T) v)
+            {
+                _matrices[_top].translate(v);
+                _invMatrices[_top].translate(-v);
+            }
         }
     }
 
@@ -77,14 +94,14 @@ final class MatrixStack(M) if (M.isSquare)
     {
         size_t _top; // index of top matrix
         size_t _depth;
-        M* _matrices;
-        M* _invMatrices;
+        matrix_t* _matrices;
+        matrix_t* _invMatrices;
     }
 }
 
 unittest
 {
-    auto s = new MatrixStack!mat4x4d();
+    auto s = new MatrixStack!(4u, double)();
 
     s.loadIdentity();
     s.push();
