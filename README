@@ -15,6 +15,7 @@ math/
 - basic fixed-point numbers
 - fractions
 - statistics
+- a port of SimpleRNG from John D. Cook (statistical distributions random generator)
 - misc functions
 
 sdl/
