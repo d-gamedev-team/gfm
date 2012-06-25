@@ -32,6 +32,14 @@ final class ANN
             return new ANN(lib, fann);
         }
 
+        static ANN createFromFile(FANNLib lib, string filename)
+        {
+            FANN* fann = fann_create_from_file(toStringz(filename));
+            lib.runtimeCheck();
+            assert(fann !is null);
+            return new ANN(lib, fann);
+        }
+
         ~this()
         {
             close();
@@ -44,6 +52,18 @@ final class ANN
                 fann_destroy(_fann);
                 _fann = null;
             }
+        }
+
+        void save(string filename)
+        {
+            fann_save(_fann, toStringz(filename));
+            _lib.runtimeCheck();
+        }
+
+        void saveToFixed(string filename)
+        {
+            fann_save_to_fixed(_fann, toStringz(filename));
+            _lib.runtimeCheck();
         }
 
         fann_type* run(fann_type*	input)
@@ -92,6 +112,16 @@ final class ANN
         uint totalConnections()
         {
             return fann_get_total_connections(_fann);
+        }
+
+        fann_nettype_enum networkType()
+        {
+            return fann_get_network_type(_fann);
+        }
+
+        float connectionRate()
+        {
+            return fann_get_connection_rate(_fann);
         }
     }
 
