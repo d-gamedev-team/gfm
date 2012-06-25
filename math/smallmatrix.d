@@ -323,14 +323,23 @@ align(1) struct SmallMatrix(size_t R, size_t C, T)
             }
         }
 
-        // translation matrix
         static if (isSquare && _R > 1)
         {
-            SmallMatrix translate(SmallVector!(_R-1, T) v)
+            // translation matrix
+            static SmallMatrix makeTranslate(SmallVector!(_R-1, T) v)
             {
                 SmallMatrix res = IDENTITY;
                 for (size_t i = 0; i + 1 < _R; ++i)
                     res.c[i][_C-1] += v[i];
+                return res;
+            }
+
+            // scale matrix
+            static SmallMatrix makeScale(SmallVector!(_R-1, T) v)
+            {
+                SmallMatrix res = IDENTITY;
+                for (size_t i = 0; i + 1 < _R; ++i)
+                    res.c[i][_C-1] = v[i];
                 return res;
             }
         }
