@@ -17,6 +17,7 @@ math/
 - statistics
 - a port of SimpleRNG from John D. Cook (statistical distributions random generator)
 - misc functions
+- a port of easing functions from Robert Penner
 
 sdl/
 - SDL 1.2 wrapper based on Derelict2
