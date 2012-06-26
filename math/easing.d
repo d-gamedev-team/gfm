@@ -40,18 +40,17 @@ import std.traits;
 private template makeEasing(string name, string easeInBody)
 {
     string makeEasing = 
-        r" 
-            function easeIn" ~ name ~ r"(T t) if isFloatingPoint!T
+          r"T easeIn" ~ name ~ r"(T)(T t) if isFloatingPoint!T
             {"
-            ~ easeInBody ~ r"
+                ~ easeInBody ~ r"
             }
 
-            function easeOut" ~ name ~ r"(T t) if isFloatingPoint!T
+            T easeOut" ~ name ~ r"(T)(T t) if isFloatingPoint!T
             {
                 return 1 - easeIn" ~ name ~ r"(1 - t);
             }
 
-            function easeInOut" ~ name ~ r"(T t) if isFloatingPoint!T
+            T easeInOut" ~ name ~ r"(T)(T t) if isFloatingPoint!T
             {
                 t *= 2;
                 if (t < 1)
@@ -66,3 +65,43 @@ mixin makeEasing!("Quad",  "return t*t;");
 mixin makeEasing!("Cubic", "return t*t*t;");
 mixin makeEasing!("Quart", "return t*t*t*t;");
 mixin makeEasing!("Quint", "return t*t*t*t*t;");
+mixin makeEasing!("Sine",  "return 1 - cos(t * PI / 2);");
+mixin makeEasing!("Expo",  "return (t == 0) ? 0 : 2.f ^^ (10 * (t - 1));");
+mixin makeEasing!("Circ",  "return 1 - sqrt(1 - t * t);");
+mixin makeEasing!("Back",  "T s = 1.70158f; return t*t*t*((s+1)*t-s);");
+mixin makeEasing!("Bounce",  "return 1 - easeOutBounceInternal(1 - t);");
+mixin makeEasing!("Elastic",  "return easeInElasticInternal(t);");
+
+private T easeOutBounceInternal(T)(T t) if (isFloatingPoint!T)
+{
+    if (t < 1 / 2.75)
+        return 7.5625 * t * t;
+    else if (t < 2 / 2.75) 
+    {
+        t -= 1.5 / 2.75;
+        return 7.5625 * t * t + .75;
+    }
+    else if (t < 2.5 / 2.75) 
+    {
+        t -= 2.25 / 2.75;
+        return 7.5625 * t * t + .9375;
+    }
+    else 
+    {
+        t -= 2.625/2.75;
+        return 7.5625 * t * t + .984375;
+    }
+}
+
+private T easeInElasticInternal(T)(T t) if (isFloatingPoint!T)
+{
+    T p = 0.3f;
+    T a = 1;
+    if (t == 0) 
+        return 0;
+    if (t == 1) 
+        return 1;
+    T s = p / 4;
+    t -= 1;
+    return - (2 ^^ (10.f * t)) * sin( (t - s) * 2 * PI / p);
+}

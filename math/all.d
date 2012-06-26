@@ -9,7 +9,8 @@ public
     import gfm.math.softcent;
     import gfm.math.fraction;
     import gfm.math.statistics;
-    import gfm.math.quaternion;    
+    import gfm.math.quaternion;
     import gfm.math.shapes;
     import gfm.math.fixedpoint;
+    import gfm.math.easing;
 }
