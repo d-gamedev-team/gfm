@@ -217,6 +217,7 @@
   <Folder name="math">
    <File path="math\all.d" />
    <File path="math\box.d" />
+   <File path="math\easing.d" />
    <File path="math\fixedpoint.d" />
    <File path="math\fraction.d" />
    <File path="math\funcs.d" />
