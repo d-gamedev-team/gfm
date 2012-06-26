@@ -343,6 +343,41 @@ align(1) struct SmallMatrix(size_t R, size_t C, T)
                 return res;
             }
         }
+
+        // more operations for 4x4 matrices
+        static if (isSquare && _R == 4 && isFloatingPoint!T)
+        {
+            // rotations
+            SmallMatrix rotateX(T angle)
+            {
+                T cosa = cos(angle);
+                T sina = sin(angle);
+                return SmallMatrix(1,    0,     0, 0,
+                                   0, cosa, -sina, 0,
+                                   0, sina,  cosa, 0,
+                                   0,    0,     0, 1);
+            }
+
+            SmallMatrix rotateY(T angle)
+            {
+                T cosa = cos(angle);
+                T sina = sin(angle);
+                return SmallMatrix(cosa, 0, -sina, 0,
+                                   0,    1,     0, 0,
+                                   sina, 0,  cosa, 0,
+                                   0,    0,     0, 1);
+            }
+
+            SmallMatrix rotateZ(T angle)
+            {
+                T cosa = cos(angle);
+                T sina = sin(angle);
+                return SmallMatrix(cosa, -sina, 0, 0,
+                                   sina,  cosa, 0, 0,
+                                      0,     0, 1, 0,
+                                      0,     0, 0, 1);
+            }
+        }
     }
 
     private
