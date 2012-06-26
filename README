@@ -16,8 +16,8 @@ math/
 - fractions
 - statistics
 - a port of SimpleRNG from John D. Cook (statistical distributions random generator)
-- misc functions
 - a port of easing functions from Robert Penner
+- misc math functions
 
 sdl/
 - SDL 1.2 wrapper based on Derelict2
@@ -30,6 +30,7 @@ freeimage/
 
 opengl/
 - OpenGL wrapper based on Derelict3
+  - including a matrix stack to replace fixed pipeline
 
 fann/
 - FANN wrapper based on DerelictFANN
