@@ -34,3 +34,35 @@ THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 */
 
+import std.math;
+import std.traits;
+
+private template makeEasing(string name, string easeInBody)
+{
+    string makeEasing = 
+        r" 
+            function easeIn" ~ name ~ r"(T t) if isFloatingPoint!T
+            {"
+            ~ easeInBody ~ r"
+            }
+
+            function easeOut" ~ name ~ r"(T t) if isFloatingPoint!T
+            {
+                return 1 - easeIn" ~ name ~ r"(1 - t);
+            }
+
+            function easeInOut" ~ name ~ r"(T t) if isFloatingPoint!T
+            {
+                t *= 2;
+                if (t < 1)
+                    return easeIn" ~ name ~ r"(t) / 2;
+                else
+                    return 0.5f + easeOut" ~ name ~ r"(t-1) / 2;
+
+            }";
+}
+
+mixin makeEasing!("Quad",  "return t*t;");
+mixin makeEasing!("Cubic", "return t*t*t;");
+mixin makeEasing!("Quart", "return t*t*t*t;");
+mixin makeEasing!("Quint", "return t*t*t*t*t;");
