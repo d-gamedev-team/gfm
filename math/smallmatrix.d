@@ -7,10 +7,11 @@ import std.typecons;
 import std.conv;
 import gfm.math.smallvector;
 
-// generic small matrix with R rows and C columns
+// generic small non-resizeable matrix with R rows and C columns
 // N is the element count, T the contained type
 // intended for 3D (mainly size 3x3 and 4x4)
-// row-major order, non-resizeable
+// IMPORTANT: matrices here are in ROW-MAJOR order
+// while OpenGL is column-major
 
 // TODO: - do we need constructor from columns ?
 //       - invert square matrices
