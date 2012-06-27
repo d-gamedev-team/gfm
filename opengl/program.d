@@ -22,6 +22,14 @@ final class GLProgram
             _initialized = true;
         }
 
+        // one step attach/link
+        this(OpenGL gl, GLShader[] shaders...)
+        {
+            this(_gl);
+            attach(shaders);
+            link();
+        }
+
         ~this()
         {
             close();
