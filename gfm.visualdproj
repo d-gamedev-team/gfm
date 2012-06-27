@@ -196,6 +196,7 @@
    <File path="common\memory.d" />
    <File path="common\queue.d" />
    <File path="common\structpool.d" />
+   <File path="common\text.d" />
   </Folder>
   <Folder name="fann">
    <File path="fann\all.d" />
