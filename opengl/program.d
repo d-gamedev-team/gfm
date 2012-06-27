@@ -176,7 +176,7 @@ final class GLUniform
             size_t cacheSize = sizeOfUniformType(type) * size;
             if (cacheSize > 0)
             {
-                _value = new ubyte[sizeOfUniformType(type) * size]; // relying on zero initialization here
+                _value = new ubyte[cacheSize]; // relying on zero initialization here
                 _valueChanged = false;
 
                 _firstSet = true;
@@ -212,9 +212,9 @@ final class GLUniform
                 throw new OpenGLException(format("cannot set uniform '%s' of size %s with a value of size %s", _name, _size, newValue.length));
 
             // if first time or different value incoming
-            if (_firstSet || (0 != memcmp(&newValue, _value.ptr, T.sizeof)))
+            if (_firstSet || (0 != memcmp(newValue.ptr, _value.ptr, _value.length)))
             {
-                memcpy(_value.ptr, &newValue, T.sizeof);
+                memcpy(_value.ptr, newValue.ptr, _value.length);
                 _valueChanged = true;
 
                 if (_shouldUpdateImmediately)
@@ -367,6 +367,7 @@ final class GLUniform
                 default: 
                     break;
             }
+            _gl.runtimeCheck();
         }
 
         static bool typeIsCompliant(T)(GLenum type)
