@@ -21,7 +21,7 @@ class OpenGL
 
             DerelictGL.load(); // load deprecated functions too
 
-            _log.infof("OpenGL loaded, version %s", DerelictGL3.loadedVersion());            
+            _log.infof("OpenGL loaded, version %s", DerelictGL3.loadedVersion());
         }
 
         ~this()
@@ -37,7 +37,7 @@ class OpenGL
             _log.infof("    Version: %s", getVersionString());
             _log.infof("    Renderer: %s", getRendererString());
             _log.infof("    Vendor: %s", getVendorString());
-            _log.infof("    GLSL version: %s", getGLSLVersionString());            
+            _log.infof("    GLSL version: %s", getGLSLVersionString());
 
             // parse extensions
             _extensions = std.array.split(getExtensionsString());
@@ -95,27 +95,27 @@ class OpenGL
                 return to!string(sZ);
         }
 
-        string getVersionString() 
+        string getVersionString()
         {
             return getString(GL_VERSION);
         }
 
-        string getVendorString() 
+        string getVendorString()
         {
             return getString(GL_VENDOR);
         }
 
-        string getRendererString() 
+        string getRendererString()
         {
             return getString(GL_RENDERER);
         }
 
-        string getGLSLVersionString() 
+        string getGLSLVersionString()
         {
             return getString(GL_SHADING_LANGUAGE_VERSION);
         }
 
-        string getExtensionsString() 
+        string getExtensionsString()
         {
             return getString(GL_EXTENSIONS);
         }

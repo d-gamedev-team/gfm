@@ -73,7 +73,7 @@ final class GLProgram
                 glGetProgramiv(_program, GL_ACTIVE_UNIFORM_MAX_LENGTH, &uniformNameMaxLength);
 
                 GLchar[] buffer = new GLchar[GL_ACTIVE_UNIFORM_MAX_LENGTH + 16];
-            
+
                 GLint numActiveUniforms;
                 glGetProgramiv(_program, GL_ACTIVE_UNIFORMS, &numActiveUniforms);
 
@@ -82,12 +82,12 @@ final class GLProgram
                     GLint size;
                     GLenum type;
                     GLsizei length;
-                    glGetActiveUniform(_program, 
-                                       cast(GLuint)i, 
-                                       cast(GLint)(buffer.length), 
+                    glGetActiveUniform(_program,
+                                       cast(GLuint)i,
+                                       cast(GLint)(buffer.length),
                                        &length,
-                                       &size, 
-                                       &type, 
+                                       &size,
+                                       &type,
                                        buffer.ptr);
                     _gl.runtimeCheck();
                     string name = to!string(buffer.ptr);
@@ -104,13 +104,13 @@ final class GLProgram
             // upload uniform values then
             // this allow setting uniform at anytime without binding the program
             foreach(uniform; _activeUniforms)
-                uniform.use(_gl._log);            
+                uniform.use(_gl._log);
         }
 
         void unuse()
         {
             glUseProgram(0);
-        }  
+        }
 
         string getLinkLog()
         {
@@ -168,7 +168,7 @@ final class GLUniform
             _type = type;
             _size = size;
             _name = name;
-            
+
             _location = glGetUniformLocation(program, toStringz(name));
             if (_location == -1)
             {
@@ -197,7 +197,7 @@ final class GLUniform
         this(Log log, string name)
         {
             _disabled = true;
-            log.warnf("creating fake uniform '%s' which either does not exist in the shader program, or was discarded by the driver as unused", name);            
+            log.warnf("creating fake uniform '%s' which either does not exist in the shader program, or was discarded by the driver as unused", name);
         }
 
 
@@ -212,7 +212,7 @@ final class GLUniform
 
             if (newValue.length != _size)
                 throw new OpenGLException(format("cannot set uniform '%s' of size %s with a value of size %s", _name, _size, newValue.length));
-            
+
             // if first time or different value incoming
             if (_firstSet || (0 != memcmp(&newValue, _value.ptr, T.sizeof)))
             {
@@ -235,7 +235,7 @@ final class GLUniform
                 _firstSet = false;
             }
 
-            // has value changed? 
+            // has value changed?
             // if so, set OpenGL value
             if (_valueChanged)
             {
@@ -303,7 +303,7 @@ final class GLUniform
                 case GL_IMAGE_1D: .. case GL_UNSIGNED_INT_IMAGE_2D_MULTISAMPLE_ARRAY:
                     return is(T == int);
 
-                case GL_UNSIGNED_INT_ATOMIC_COUNTER: 
+                case GL_UNSIGNED_INT_ATOMIC_COUNTER:
                     return is(T == uint);
 
                 case GL_SAMPLER_1D:
@@ -321,7 +321,7 @@ final class GLUniform
                 case GL_SAMPLER_CUBE_SHADOW:
                 case GL_SAMPLER_BUFFER:
                 case GL_SAMPLER_2D_RECT:
-                case GL_SAMPLER_2D_RECT_SHADOW:        
+                case GL_SAMPLER_2D_RECT_SHADOW:
                 case GL_INT_SAMPLER_1D:
                 case GL_INT_SAMPLER_2D:
                 case GL_INT_SAMPLER_3D:
@@ -351,7 +351,7 @@ final class GLUniform
                         assert(false);
                     }
                     else
-                    {                        
+                    {
                         return true;
                     }
             }
@@ -404,7 +404,7 @@ final class GLUniform
                 case GL_IMAGE_1D: .. case GL_UNSIGNED_INT_IMAGE_2D_MULTISAMPLE_ARRAY:
                     return is(T == int);
 
-                case GL_UNSIGNED_INT_ATOMIC_COUNTER: 
+                case GL_UNSIGNED_INT_ATOMIC_COUNTER:
                     return is(T == uint);
 
                 case GL_SAMPLER_1D:
@@ -422,7 +422,7 @@ final class GLUniform
                 case GL_SAMPLER_CUBE_SHADOW:
                 case GL_SAMPLER_BUFFER:
                 case GL_SAMPLER_2D_RECT:
-                case GL_SAMPLER_2D_RECT_SHADOW:        
+                case GL_SAMPLER_2D_RECT_SHADOW:
                 case GL_INT_SAMPLER_1D:
                 case GL_INT_SAMPLER_2D:
                 case GL_INT_SAMPLER_3D:
@@ -442,7 +442,7 @@ final class GLUniform
                 case GL_UNSIGNED_INT_SAMPLER_2D_MULTISAMPLE:
                 case GL_UNSIGNED_INT_SAMPLER_2D_MULTISAMPLE_ARRAY:
                 case GL_UNSIGNED_INT_SAMPLER_BUFFER:
-                case GL_UNSIGNED_INT_SAMPLER_2D_RECT:                
+                case GL_UNSIGNED_INT_SAMPLER_2D_RECT:
                     return int.sizeof;
 
                 default:
@@ -453,7 +453,7 @@ final class GLUniform
                         assert(false);
                     }
                     else
-                    {                        
+                    {
                         return 0;
                     }
             }

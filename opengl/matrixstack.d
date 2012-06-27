@@ -19,7 +19,7 @@ final class MatrixStack(size_t R, T) if (R == 3 || R == 4)
         {
             assert(depth > 0);
             size_t memNeeded = matrix_t.sizeof * depth * 2;
-            void* data = alignedMalloc(memNeeded * 2, 64); 
+            void* data = alignedMalloc(memNeeded * 2, 64);
             _matrices = cast(matrix_t*)data;
             _invMatrices = cast(matrix_t*)(data + memNeeded);
             _top = 0;
@@ -55,7 +55,7 @@ final class MatrixStack(size_t R, T) if (R == 3 || R == 4)
         }
 
         // return top matrix
-        matrix_t top() pure const nothrow 
+        matrix_t top() pure const nothrow
         {
             return _matrices[_top];
         }
@@ -79,7 +79,7 @@ final class MatrixStack(size_t R, T) if (R == 3 || R == 4)
             _matrices[_top] = _matrices[_top] * m;
             _invMatrices[_top] = _invMatrices[_top] * invM;
         }
-       
+
         static if (R >= 3)
         {
             void translate(SmallVector!(R-1, T) v)
@@ -110,5 +110,5 @@ unittest
     s.loadIdentity();
     s.push();
     s.pop();
-    
+
 }
