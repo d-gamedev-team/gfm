@@ -75,11 +75,16 @@ final class GLShader
             glCompileShader(_shader);
             _gl.runtimeCheck();
 
+            // print info log
+            _gl._log.info(getInfoLog());
+
             GLint compiled;
             glGetShaderiv(_shader, GL_COMPILE_STATUS, &compiled);
 
             if (compiled != GL_TRUE)
                 throw new OpenGLException("shader did not compile");
+
+
         }
 
         string getInfoLog()

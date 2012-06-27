@@ -123,6 +123,8 @@ class OpenGL
 
     package
     {
+        Log _log;
+
         static string getErrorString(GLint r) pure nothrow
         {
             switch(r)
@@ -139,8 +141,6 @@ class OpenGL
 
     private
     {
-        Log _log;
-
         string[] _extensions;
     }
 }
