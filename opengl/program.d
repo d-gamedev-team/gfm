@@ -239,7 +239,7 @@ final class GLUniform
             // if so, set OpenGL value
             if (_valueChanged)
             {
-                //setUniform(_type, _value, _size);
+                setUniform();
                 _valueChanged = false;
             }
         }
@@ -255,6 +255,102 @@ final class GLUniform
         bool _firstSet; // force update to ensure we do not relie on the driver initializing uniform to zero
         bool _disabled; // allow transparent usage while not doing anything
         string _name;
+
+        void setUniform()
+        {
+            switch(_type)
+            {
+                case GL_FLOAT:      glUniform1fv(_location, _size, cast(GLfloat*)_value); break;
+                case GL_FLOAT_VEC2: glUniform2fv(_location, _size, cast(GLfloat*)_value); break;
+                case GL_FLOAT_VEC3: glUniform3fv(_location, _size, cast(GLfloat*)_value); break;
+                case GL_FLOAT_VEC4: glUniform4fv(_location, _size, cast(GLfloat*)_value); break;
+                case GL_DOUBLE:      glUniform1dv(_location, _size, cast(GLdouble*)_value); break;
+                case GL_DOUBLE_VEC2: glUniform2dv(_location, _size, cast(GLdouble*)_value); break;
+                case GL_DOUBLE_VEC3: glUniform3dv(_location, _size, cast(GLdouble*)_value); break;
+                case GL_DOUBLE_VEC4: glUniform4dv(_location, _size, cast(GLdouble*)_value); break;
+                case GL_INT:      glUniform1iv(_location, _size, cast(GLint*)_value); break;
+                case GL_INT_VEC2: glUniform2iv(_location, _size, cast(GLint*)_value); break;
+                case GL_INT_VEC3: glUniform3iv(_location, _size, cast(GLint*)_value); break;
+                case GL_INT_VEC4: glUniform4iv(_location, _size, cast(GLint*)_value); break;
+                case GL_UNSIGNED_INT:      glUniform1uiv(_location, _size, cast(GLuint*)_value); break;
+                case GL_UNSIGNED_INT_VEC2: glUniform2uiv(_location, _size, cast(GLuint*)_value); break;
+                case GL_UNSIGNED_INT_VEC3: glUniform3uiv(_location, _size, cast(GLuint*)_value); break;
+                case GL_UNSIGNED_INT_VEC4: glUniform4uiv(_location, _size, cast(GLuint*)_value); break;
+                case GL_BOOL:      glUniform1iv(_location, _size, cast(GLint*)_value); break;
+                case GL_BOOL_VEC2: glUniform2iv(_location, _size, cast(GLint*)_value); break;
+                case GL_BOOL_VEC3: glUniform3iv(_location, _size, cast(GLint*)_value); break;
+                case GL_BOOL_VEC4: glUniform4iv(_location, _size, cast(GLint*)_value); break;
+                case GL_FLOAT_MAT2:   glUniformMatrix2fv(_location, _size, GL_TRUE, cast(GLfloat*)_value); break;
+                case GL_FLOAT_MAT3:   glUniformMatrix3fv(_location, _size, GL_TRUE, cast(GLfloat*)_value); break;
+                case GL_FLOAT_MAT4:   glUniformMatrix4fv(_location, _size, GL_TRUE, cast(GLfloat*)_value); break;
+                case GL_FLOAT_MAT2x3: glUniformMatrix2x3fv(_location, _size, GL_TRUE, cast(GLfloat*)_value); break;
+                case GL_FLOAT_MAT2x4: glUniformMatrix3x2fv(_location, _size, GL_TRUE, cast(GLfloat*)_value); break;
+                case GL_FLOAT_MAT3x2: glUniformMatrix2x4fv(_location, _size, GL_TRUE, cast(GLfloat*)_value); break;
+                case GL_FLOAT_MAT3x4: glUniformMatrix4x2fv(_location, _size, GL_TRUE, cast(GLfloat*)_value); break;
+                case GL_FLOAT_MAT4x2: glUniformMatrix3x4fv(_location, _size, GL_TRUE, cast(GLfloat*)_value); break;
+                case GL_FLOAT_MAT4x3: glUniformMatrix4x3fv(_location, _size, GL_TRUE, cast(GLfloat*)_value); break;
+                case GL_DOUBLE_MAT2:   glUniformMatrix2dv(_location, _size, GL_TRUE, cast(GLdouble*)_value); break;
+                case GL_DOUBLE_MAT3:   glUniformMatrix3dv(_location, _size, GL_TRUE, cast(GLdouble*)_value); break;
+                case GL_DOUBLE_MAT4:   glUniformMatrix4dv(_location, _size, GL_TRUE, cast(GLdouble*)_value); break;
+                case GL_DOUBLE_MAT2x3: glUniformMatrix2x3dv(_location, _size, GL_TRUE, cast(GLdouble*)_value); break;
+                case GL_DOUBLE_MAT2x4: glUniformMatrix3x2dv(_location, _size, GL_TRUE, cast(GLdouble*)_value); break;
+                case GL_DOUBLE_MAT3x2: glUniformMatrix2x4dv(_location, _size, GL_TRUE, cast(GLdouble*)_value); break;
+                case GL_DOUBLE_MAT3x4: glUniformMatrix4x2dv(_location, _size, GL_TRUE, cast(GLdouble*)_value); break;
+                case GL_DOUBLE_MAT4x2: glUniformMatrix3x4dv(_location, _size, GL_TRUE, cast(GLdouble*)_value); break;
+                case GL_DOUBLE_MAT4x3: glUniformMatrix4x3dv(_location, _size, GL_TRUE, cast(GLdouble*)_value); break;
+
+                // image samplers
+                case GL_IMAGE_1D: .. case GL_UNSIGNED_INT_IMAGE_2D_MULTISAMPLE_ARRAY:
+                    glUniform1iv(_location, _size, cast(GLint*)_value);
+                    break;
+
+                case GL_UNSIGNED_INT_ATOMIC_COUNTER:
+                    glUniform1uiv(_location, _size, cast(GLuint*)_value);
+                    break;
+
+                case GL_SAMPLER_1D:
+                case GL_SAMPLER_2D:
+                case GL_SAMPLER_3D:
+                case GL_SAMPLER_CUBE:
+                case GL_SAMPLER_1D_SHADOW:
+                case GL_SAMPLER_2D_SHADOW:
+                case GL_SAMPLER_1D_ARRAY:
+                case GL_SAMPLER_2D_ARRAY:
+                case GL_SAMPLER_1D_ARRAY_SHADOW:
+                case GL_SAMPLER_2D_ARRAY_SHADOW:
+                case GL_SAMPLER_2D_MULTISAMPLE:
+                case GL_SAMPLER_2D_MULTISAMPLE_ARRAY:
+                case GL_SAMPLER_CUBE_SHADOW:
+                case GL_SAMPLER_BUFFER:
+                case GL_SAMPLER_2D_RECT:
+                case GL_SAMPLER_2D_RECT_SHADOW:
+                case GL_INT_SAMPLER_1D:
+                case GL_INT_SAMPLER_2D:
+                case GL_INT_SAMPLER_3D:
+                case GL_INT_SAMPLER_CUBE:
+                case GL_INT_SAMPLER_1D_ARRAY:
+                case GL_INT_SAMPLER_2D_ARRAY:
+                case GL_INT_SAMPLER_2D_MULTISAMPLE:
+                case GL_INT_SAMPLER_2D_MULTISAMPLE_ARRAY:
+                case GL_INT_SAMPLER_BUFFER:
+                case GL_INT_SAMPLER_2D_RECT:
+                case GL_UNSIGNED_INT_SAMPLER_1D:
+                case GL_UNSIGNED_INT_SAMPLER_2D:
+                case GL_UNSIGNED_INT_SAMPLER_3D:
+                case GL_UNSIGNED_INT_SAMPLER_CUBE:
+                case GL_UNSIGNED_INT_SAMPLER_1D_ARRAY:
+                case GL_UNSIGNED_INT_SAMPLER_2D_ARRAY:
+                case GL_UNSIGNED_INT_SAMPLER_2D_MULTISAMPLE:
+                case GL_UNSIGNED_INT_SAMPLER_2D_MULTISAMPLE_ARRAY:
+                case GL_UNSIGNED_INT_SAMPLER_BUFFER:
+                case GL_UNSIGNED_INT_SAMPLER_2D_RECT:
+                    glUniform1iv(_location, _size, cast(GLint*)_value);
+                    break;
+
+                default: 
+                    break;
+            }
+        }
 
         static bool typeIsCompliant(T)(GLenum type)
         {
