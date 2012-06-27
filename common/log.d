@@ -72,10 +72,10 @@ class Log
         {
             final switch (type)
             {
-                case MessageType.DEBUG: return "CRAP";
-                case MessageType.INFO: return "INFO";
-                case MessageType.WARNING: return "WTF";
-                case MessageType.ERROR: return "EPICFAIL";
+                case MessageType.DEBUG: return "debug";
+                case MessageType.INFO: return "info";
+                case MessageType.WARNING: return "warn";
+                case MessageType.ERROR: return "error";
             }
         }
     }
@@ -151,7 +151,7 @@ final class ConsoleLog : Log
                     }
                 }
             }
-            writefln("[%s] %s", getTopic(type), message);
+            writefln("%s: %s", getTopic(type), message);
         }
     }
 
