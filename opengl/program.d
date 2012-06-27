@@ -1,5 +1,6 @@
 module gfm.opengl.program;
 
+import core.stdc.string;
 import std.conv, std.string;
 
 import derelict.opengl3.gl3;
@@ -131,6 +132,14 @@ final class GLProgram
         GLUniform uniform(string name)
         {
             GLUniform* u = name in _activeUniforms;
+
+            if (u is null)
+            {
+                // no such variable found, either it's a type or the OpenGL driver discarded an unused uniform
+                // create a fake disabled GLUniform to allow the show to proceed
+                _activeUniforms[name] = new GLUniform(_gl._log, name);
+                return _activeUniforms[name];
+            }
             return *u;
         }
     }
@@ -183,6 +192,15 @@ final class GLUniform
             }
         }
 
+        // create fake disabled uniform variables, designed to cope with variables that are detected useless
+        // by the OpenGL driver and do not exist
+        this(Log log, string name)
+        {
+            _disabled = true;
+            log.warnf("creating fake uniform '%s' which either does not exist in the shader program, or was discarded by the driver as unused", name);            
+        }
+
+
         // T should be the exact type needed, checked at runtime
         void set(T)(T[] newValue...)
         {
@@ -190,10 +208,10 @@ final class GLUniform
                 return;
 
             if (!typeIsCompliant!T(_type))
-                throw new OpenGLException(format("using type %s for setting %s which has type %s", T.stringof, _name, _type.stringof));
+                throw new OpenGLException(format("using type %s for setting uniform '%s' which has type %s", T.stringof, _name, _type.stringof));
 
             if (newValue.length != _size)
-                throw new OpenGLException(format("cannot set uniform %s of size %s with a value of size %s", _name, _size, newValue.length));
+                throw new OpenGLException(format("cannot set uniform '%s' of size %s with a value of size %s", _name, _size, newValue.length));
             
             // if first time or different value incoming
             if (_firstSet || (0 != memcmp(&newValue, _value.ptr, T.sizeof)))
@@ -213,7 +231,7 @@ final class GLUniform
             // safety check to prevent defaults values in uniforms
             if (_firstSet)
             {
-                log.warnf("uniform %s left to default value, driver will probably zero it", _name);
+                log.warnf("uniform '%s' left to default value, driver will probably zero it", _name);
                 _firstSet = false;
             }
 
@@ -324,13 +342,6 @@ final class GLUniform
                 case GL_UNSIGNED_INT_SAMPLER_2D_MULTISAMPLE_ARRAY:
                 case GL_UNSIGNED_INT_SAMPLER_BUFFER:
                 case GL_UNSIGNED_INT_SAMPLER_2D_RECT:
-                case GL_SAMPLER_2D_RECT:
-                case GL_SAMPLER_2D_RECT_SHADOW:
-                case GL_SAMPLER_BUFFER:
-                case GL_INT_SAMPLER_2D_RECT:
-                case GL_INT_SAMPLER_BUFFER:
-                case GL_UNSIGNED_INT_SAMPLER_2D_RECT:
-                case GL_UNSIGNED_INT_SAMPLER_BUFFER:
                     return is(T == int);
 
                 default:
