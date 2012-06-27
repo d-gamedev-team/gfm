@@ -70,7 +70,7 @@ final class GLProgram
                 GLchar[] buffer = new GLchar[GL_ACTIVE_UNIFORM_MAX_LENGTH + 16];
             
                 GLint numActiveUniforms;
-                glGetProgramiv(_program, GL_ACTIVE_UNIFORMS, &res);
+                glGetProgramiv(_program, GL_ACTIVE_UNIFORMS, &numActiveUniforms);
                 _activeUniforms.length = numActiveUniforms;
                 for (GLint i = 0; i < numActiveUniforms; ++i)
                 {
