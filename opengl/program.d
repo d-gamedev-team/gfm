@@ -91,7 +91,7 @@ final class GLProgram
                                        buffer.ptr);
                     _gl.runtimeCheck();
                     string name = to!string(buffer.ptr);
-                   _activeUniforms[name] = new GLUniform(_gl._log, _program, type, name, size);
+                   _activeUniforms[name] = new GLUniform(_gl, _program, type, name, size);
                 }
             }
         }
@@ -104,11 +104,13 @@ final class GLProgram
             // upload uniform values then
             // this allow setting uniform at anytime without binding the program
             foreach(uniform; _activeUniforms)
-                uniform.use(_gl._log);
+                uniform.use();
         }
 
         void unuse()
         {
+            foreach(uniform; _activeUniforms)
+                uniform.unuse();
             glUseProgram(0);
         }
 
@@ -123,12 +125,6 @@ final class GLProgram
             return to!string(log.ptr);
         }
 
-        // set uniform variable
-        string setUniform(T)(string uniformName, T value)
-        {
-
-        }
-
         GLUniform uniform(string name)
         {
             GLUniform* u = name in _activeUniforms;
@@ -137,7 +133,7 @@ final class GLProgram
             {
                 // no such variable found, either it's a type or the OpenGL driver discarded an unused uniform
                 // create a fake disabled GLUniform to allow the show to proceed
-                _activeUniforms[name] = new GLUniform(_gl._log, name);
+                _activeUniforms[name] = new GLUniform(_gl, name);
                 return _activeUniforms[name];
             }
             return *u;
@@ -163,8 +159,9 @@ final class GLUniform
 {
     public
     {
-        this(Log log, GLuint program, GLenum type, string name, GLsizei size)
+        this(OpenGL gl, GLuint program, GLenum type, string name, GLsizei size)
         {
+            _gl = gl;
             _type = type;
             _size = size;
             _name = name;
@@ -187,17 +184,18 @@ final class GLUniform
             }
             else
             {
-                log.warnf("uniform %s is unrecognized or has size 0, disabled", _name);
+                _gl._log.warnf("uniform %s is unrecognized or has size 0, disabled", _name);
                 _disabled = true;
             }
         }
 
         // create fake disabled uniform variables, designed to cope with variables that are detected useless
         // by the OpenGL driver and do not exist
-        this(Log log, string name)
+        this(OpenGL gl, string name)
         {
+            _gl = gl;
             _disabled = true;
-            log.warnf("creating fake uniform '%s' which either does not exist in the shader program, or was discarded by the driver as unused", name);
+            _gl._log.warnf("creating fake uniform '%s' which either does not exist in the shader program, or was discarded by the driver as unused", name);
         }
 
 
@@ -218,12 +216,24 @@ final class GLUniform
             {
                 memcpy(_value.ptr, &newValue, T.sizeof);
                 _valueChanged = true;
+
+                if (_shouldUpdateImmediately)
+                    update();
             }
 
             _firstSet = false;
         }
+    }
 
-        void use(Log log)
+    package
+    {
+        void use()
+        {
+            _shouldUpdateImmediately = true;
+            update();
+        }
+
+        void update()
         {
             if (_disabled)
                 return;
@@ -231,7 +241,7 @@ final class GLUniform
             // safety check to prevent defaults values in uniforms
             if (_firstSet)
             {
-                log.warnf("uniform '%s' left to default value, driver will probably zero it", _name);
+                _gl._log.warnf("uniform '%s' left to default value, driver will probably zero it", _name);
                 _firstSet = false;
             }
 
@@ -243,10 +253,16 @@ final class GLUniform
                 _valueChanged = false;
             }
         }
+
+        void unuse()
+        {
+            _shouldUpdateImmediately = false;
+        }
     }
 
     private
     {
+        OpenGL _gl;
         GLint _location;
         GLenum _type;
         size_t _size;
@@ -254,6 +270,7 @@ final class GLUniform
         bool _valueChanged;
         bool _firstSet; // force update to ensure we do not relie on the driver initializing uniform to zero
         bool _disabled; // allow transparent usage while not doing anything
+        bool _shouldUpdateImmediately;
         string _name;
 
         void setUniform()
