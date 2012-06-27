@@ -73,7 +73,15 @@ class OpenGL
             if (r != GL_NO_ERROR)
             {
                 string errorString = getErrorString(r);
-                _log.errorf("OpenGL error: %s", errorString);
+
+                // flush out and logs others errors
+                do
+                {
+                    _log.errorf("OpenGL error: %s", errorString);
+                    r = glGetError();
+                }
+                while(r != GL_NO_ERROR);
+
                 throw new OpenGLException(errorString);
             }
         }
@@ -136,3 +144,4 @@ class OpenGL
         string[] _extensions;
     }
 }
+
