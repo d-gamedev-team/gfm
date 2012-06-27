@@ -23,10 +23,12 @@ final class GLShader
             _initialized = true;
         }
 
+        // one step load/compile
         this(OpenGL gl, GLenum shaderType, string[] lines...)
         {
             this(gl, shaderType);
             load(lines);
+            compile();
         }
 
         ~this()
