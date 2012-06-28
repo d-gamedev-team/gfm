@@ -10,7 +10,7 @@ import gfm.opengl.exception;
 
 
 // wrapper class to ensure library loading
-class OpenGL
+final class OpenGL
 {
     public
     {
