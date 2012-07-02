@@ -234,6 +234,7 @@
    <File path="opengl\all.d" />
    <File path="opengl\buffer.d" />
    <File path="opengl\exception.d" />
+   <File path="opengl\fbo.d" />
    <File path="opengl\matrixstack.d" />
    <File path="opengl\opengl.d" />
    <File path="opengl\program.d" />

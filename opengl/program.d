@@ -125,7 +125,7 @@ final class GLProgram
 
             if (u is null)
             {
-                // no such variable found, either it's a type or the OpenGL driver discarded an unused uniform
+                // no such variable found, either it's really missing or the OpenGL driver discarded an unused uniform
                 // create a fake disabled GLUniform to allow the show to proceed
                 _activeUniforms[name] = new GLUniform(_gl, name);
                 return _activeUniforms[name];
