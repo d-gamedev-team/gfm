@@ -10,5 +10,6 @@ public
     import gfm.opengl.shader;
     import gfm.opengl.program;
     import gfm.opengl.matrixstack;
+    import gfm.opengl.texture;
     import gfm.opengl.fbo;
 }

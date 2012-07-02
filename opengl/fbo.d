@@ -8,7 +8,7 @@ import gfm.common.log;
 import gfm.opengl.opengl, gfm.opengl.exception;
 
 // OpenGL FrameBuffer Object wrapper
-final class FBO
+final class GLFBO
 {
     public
     {

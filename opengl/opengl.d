@@ -43,7 +43,7 @@ final class OpenGL
             _extensions = std.array.split(getExtensionsString());
 
             _log.infof("    Extensions: %s found", _extensions.length);
-
+            getLimits();
         }
 
         void close()
@@ -66,8 +66,8 @@ final class OpenGL
             }
         }
 
-        // for errors that could happen and are not logic errors
-        void runtimeCheck()
+        // throw OpenGLException in case of error
+        void runtimeCheck(bool warning = false)
         {
             GLint r = glGetError();
             if (r != GL_NO_ERROR)
@@ -75,9 +75,13 @@ final class OpenGL
                 string errorString = getErrorString(r);
 
                 // flush out and logs others errors
+                int timeout = 0;
                 do
                 {
-                    _log.errorf("OpenGL error: %s", errorString);
+                    // avoid infinite loop in a no-driver situation
+                    if (++timeout > 5)
+                        break;
+
                     r = glGetError();
                 }
                 while(r != GL_NO_ERROR);
@@ -119,6 +123,27 @@ final class OpenGL
         {
             return getString(GL_EXTENSIONS);
         }
+
+        int getInteger(GLenum pname)
+        {
+            GLint res;
+            glGetIntegerv(pname, &res);
+            runtimeCheck();
+            return res;
+        }
+
+        int getInteger(GLenum pname, GLint defaultValue)
+        {
+            try
+            {
+                return getInteger(pname);
+            }
+            catch(OpenGLException e)
+            {
+                _log.warn(e.msg);
+                return defaultValue;
+            }
+        }
     }
 
     package
@@ -134,6 +159,9 @@ final class OpenGL
                 case GL_INVALID_VALUE:     return "GL_INVALID_VALUE";
                 case GL_INVALID_OPERATION: return "GL_INVALID_OPERATION";
                 case GL_OUT_OF_MEMORY:     return "GL_OUT_OF_MEMORY";
+                case GL_TABLE_TOO_LARGE:   return "GL_TABLE_TOO_LARGE";
+                case GL_STACK_OVERFLOW:    return "GL_STACK_OVERFLOW";
+                case GL_STACK_UNDERFLOW:   return "GL_STACK_UNDERFLOW";
                 default:                   return "Unknown OpenGL error";
             }
         }
@@ -142,6 +170,20 @@ final class OpenGL
     private
     {
         string[] _extensions;
+        int _majorVersion;
+        int _minorVersion;
+        int _maxTextureSize;
+        int _maxTextureUnits; // number of conventional units, deprecated
+        int _maxTextureImageUnits;
+
+        void getLimits()
+        {
+            _majorVersion = getInteger(GL_MAJOR_VERSION, 1);
+            _minorVersion = getInteger(GL_MINOR_VERSION, 1);
+            _maxTextureSize = getInteger(GL_MAX_TEXTURE_SIZE, 64);
+            _maxTextureUnits = getInteger(GL_MAX_TEXTURE_UNITS, 2);
+            _maxTextureImageUnits = getInteger(GL_MAX_TEXTURE_IMAGE_UNITS, 2);
+        }
     }
 }
 
