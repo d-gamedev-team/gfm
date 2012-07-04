@@ -22,6 +22,7 @@ final class OpenGL
             DerelictGL.load(); // load deprecated functions too
 
             _log.infof("OpenGL loaded, version %s", DerelictGL3.loadedVersion());
+            getLimits(false);
         }
 
         ~this()
@@ -43,7 +44,7 @@ final class OpenGL
             _extensions = std.array.split(getExtensionsString());
 
             _log.infof("    Extensions: %s found", _extensions.length);
-            getLimits();
+            getLimits(true);
         }
 
         void close()
@@ -132,7 +133,7 @@ final class OpenGL
             return res;
         }
 
-        int getInteger(GLenum pname, GLint defaultValue)
+        int getInteger(GLenum pname, GLint defaultValue, bool logging)
         {
             try
             {
@@ -140,7 +141,8 @@ final class OpenGL
             }
             catch(OpenGLException e)
             {
-                _log.warn(e.msg);
+                if (logging)
+                    _log.warn(e.msg);
                 return defaultValue;
             }
         }
@@ -176,13 +178,13 @@ final class OpenGL
         int _maxTextureUnits; // number of conventional units, deprecated
         int _maxTextureImageUnits;
 
-        void getLimits()
+        void getLimits(bool logging)
         {
-            _majorVersion = getInteger(GL_MAJOR_VERSION, 1);
-            _minorVersion = getInteger(GL_MINOR_VERSION, 1);
-            _maxTextureSize = getInteger(GL_MAX_TEXTURE_SIZE, 64);
-            _maxTextureUnits = getInteger(GL_MAX_TEXTURE_UNITS, 2);
-            _maxTextureImageUnits = getInteger(GL_MAX_TEXTURE_IMAGE_UNITS, 2);
+            _majorVersion = getInteger(GL_MAJOR_VERSION, 1, logging);
+            _minorVersion = getInteger(GL_MINOR_VERSION, 1, logging);
+            _maxTextureSize = getInteger(GL_MAX_TEXTURE_SIZE, 512, logging);
+            _maxTextureUnits = getInteger(GL_MAX_TEXTURE_UNITS, 2, logging);
+            _maxTextureImageUnits = getInteger(GL_MAX_TEXTURE_IMAGE_UNITS, 2, logging);
         }
     }
 }
