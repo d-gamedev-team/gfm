@@ -7,7 +7,7 @@ import derelict.opengl3.gl3;
 import derelict.opengl3.gl;
 import gfm.common.log;
 import gfm.opengl.exception;
-
+import gfm.opengl.textureunit;
 
 // wrapper class to ensure library loading
 final class OpenGL
@@ -23,6 +23,7 @@ final class OpenGL
 
             _log.infof("OpenGL loaded, version %s", DerelictGL3.loadedVersion());
             getLimits(false);
+            _textureUnits = new TextureUnits(this);
         }
 
         ~this()
@@ -45,6 +46,7 @@ final class OpenGL
 
             _log.infof("    Extensions: %s found", _extensions.length);
             getLimits(true);
+            _textureUnits = new TextureUnits(this);
         }
 
         void close()
@@ -146,6 +148,19 @@ final class OpenGL
                 return defaultValue;
             }
         }
+
+        // allow to use lots of glEnable/glDisable in one call
+        void enable(GLenum[] caps...)
+        {
+            foreach(cap; caps)
+                glEnable(cap);
+        }
+
+        void disable(GLenum[] caps...)
+        {
+            foreach(cap; caps)
+                glDisable(cap);
+        }
     }
 
     package
@@ -167,11 +182,22 @@ final class OpenGL
                 default:                   return "Unknown OpenGL error";
             }
         }
+
+        int maxTextureUnits() const
+        {
+            return _maxTextureUnits;
+        }
+
+        int maxTextureImageUnits() const
+        {
+            return _maxTextureImageUnits;
+        }
     }
 
     private
     {
         string[] _extensions;
+        TextureUnits _textureUnits;
         int _majorVersion;
         int _minorVersion;
         int _maxTextureSize;

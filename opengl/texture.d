@@ -7,7 +7,7 @@ import derelict.opengl3.gl3;
 import gfm.common.log;
 import gfm.opengl.opengl, gfm.opengl.exception;
 
-final class GLTexture
+class GLTexture
 {
     public
     {
@@ -26,7 +26,7 @@ final class GLTexture
             close();
         }
 
-        void close()
+        final void close()
         {
             if (_initialized)
             {
@@ -35,7 +35,7 @@ final class GLTexture
             }
         }
 
-        void use(int textureUnit = 0)
+        final void use(int textureUnit = 0)
         {
             glActiveTexture(GL_TEXTURE0 + textureUnit);
             glBindTexture(_target, _handle);
@@ -43,7 +43,7 @@ final class GLTexture
             _textureUnit = textureUnit;
         }
 
-        void unuse()
+        final void unuse()
         {   
             if (_textureUnit == -1)
                 throw new OpenGLException("Texture was not bound");
@@ -51,6 +51,26 @@ final class GLTexture
             _textureUnit = -1;
             _gl.runtimeCheck();
         }
+/*
+        final int getParam(GLenum paramName)
+        {
+            int res;
+            use();
+            glGetTexParameteriv(_target, paramName, &res);
+            unuse();
+            _gl.runtimeCheck();
+            return res;
+
+        }
+
+        final int getLevelParam(GLenum paramName, int level)
+        {
+            int res;
+            bind();
+            glGetTexLevelParameteriv(_target, level, paramName, &res);
+            _gl.runtimeCheck();
+            return res;
+        }*/
     }
 
     private

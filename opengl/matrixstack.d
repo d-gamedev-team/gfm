@@ -107,9 +107,7 @@ final class MatrixStack(size_t R, T) if (R == 3 || R == 4)
 unittest
 {
     auto s = new MatrixStack!(4u, double)();
-
     s.loadIdentity();
     s.push();
     s.pop();
-
 }

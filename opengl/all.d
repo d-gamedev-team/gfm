@@ -11,5 +11,6 @@ public
     import gfm.opengl.program;
     import gfm.opengl.matrixstack;
     import gfm.opengl.texture;
+    import gfm.opengl.textureunit;
     import gfm.opengl.fbo;
 }
