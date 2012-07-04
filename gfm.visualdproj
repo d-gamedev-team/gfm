@@ -240,6 +240,8 @@
    <File path="opengl\program.d" />
    <File path="opengl\renderbuffer.d" />
    <File path="opengl\shader.d" />
+   <File path="opengl\texture.d" />
+   <File path="opengl\textureunit.d" />
    <File path="opengl\uniform.d" />
   </Folder>
   <Folder name="sdl2">
