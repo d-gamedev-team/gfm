@@ -192,6 +192,11 @@ final class OpenGL
         {
             return _maxTextureImageUnits;
         }
+
+        TextureUnits textureUnits()
+        {
+            return textureUnits();
+        }        
     }
 
     private

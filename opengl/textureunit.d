@@ -47,6 +47,14 @@ final class TextureUnits
         {
             return _textureUnits[i];
         }
+
+        TextureUnit current()
+        {
+            if (_activeTexture == -1)
+                setActiveTexture(0);
+
+            return _textureUnits[_activeTexture];
+        }
     }
 
     private
