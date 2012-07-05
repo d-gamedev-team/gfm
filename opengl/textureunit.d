@@ -6,6 +6,7 @@ import gfm.common.log;
 import gfm.opengl.opengl, gfm.opengl.exception;
 
 // Cache state of OpenGL texture units
+// Use deprecated image units!
 final class TextureUnits
 {
     public
@@ -17,12 +18,15 @@ final class TextureUnits
 
             int imageUnits = gl.maxTextureUnits();
             int textureImageUnits = gl.maxTextureImageUnits();
-            int units = imageUnits > textureImageUnits ? imageUnits : textureImageUnits;
+
+            // use the min for more safety: the specification of 4.2 Compatibility profile is 
+            // not very clear
+            int units = imageUnits < textureImageUnits ? imageUnits : textureImageUnits;
 
             _textureUnits.length = units;
             for (int i = 0; i < units; ++i)
             {
-                bool fixedPipelineCompatible = i < imageUnits;
+                bool fixedPipelineCompatible = true;
                 _textureUnits[i] = new TextureUnit(gl, i, fixedPipelineCompatible);
             }
         }
