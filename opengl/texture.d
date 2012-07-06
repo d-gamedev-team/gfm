@@ -149,6 +149,12 @@ final class GLTexture1D : GLTexture
         {
             super(gl, GL_TEXTURE_1D);
         }
+
+        void setImage(int level, GLint internalFormat, int width, int border, GLenum format, GLenum type, void* data)
+        {
+            glTexImage1D(_target, level, internalFormat, width, border, format, type, data);
+            _gl.runtimeCheck();
+        }
     }
 
 }
@@ -160,6 +166,12 @@ final class GLTexture2D : GLTexture
         this(OpenGL gl)
         {
             super(gl, GL_TEXTURE_2D);
+        }
+
+        void setImage(int level, GLint internalFormat, int width, int height, int border, GLenum format, GLenum type, void* data)
+        {
+            glTexImage2D(_target, level, internalFormat, width, height, border, format, type, data);
+            _gl.runtimeCheck();
         }
     }
 
@@ -173,6 +185,12 @@ final class GLTexture3D : GLTexture
         {
             super(gl, GL_TEXTURE_3D);
         }
+
+        void setImage(int level, GLint internalFormat, int width, int height, int depth, int border, GLenum format, GLenum type, void* data)
+        {
+            glTexImage3D(_target, level, internalFormat, width, height, depth, border, format, type, data);
+            _gl.runtimeCheck();
+        }
     }
 
 }
@@ -185,6 +203,12 @@ final class GLTexture1DArray : GLTexture
         {
             super(gl, GL_TEXTURE_1D_ARRAY);
         }
+
+        void setImage(int level, GLint internalFormat, int width, int height, int border, GLenum format, GLenum type, void* data)
+        {
+            glTexImage2D(_target, level, internalFormat, width, height, border, format, type, null);
+            _gl.runtimeCheck();
+        }
     }
 }
 
@@ -195,6 +219,12 @@ final class GLTexture2DArray : GLTexture
         this(OpenGL gl)
         {
             super(gl, GL_TEXTURE_2D_ARRAY);
+        }
+
+        void setImage(int level, GLint internalFormat, int width, int height, int depth, int border, GLenum format, GLenum type, void* data)
+        {
+            glTexImage3D(_target, level, internalFormat, width, height, depth, border, format, type, data);
+            _gl.runtimeCheck();
         }
     }
 }
@@ -207,39 +237,11 @@ final class GLTextureRectangle : GLTexture
         {
             super(gl, GL_TEXTURE_RECTANGLE);
         }
-    }
 
-}
-
-final class GLTextureBuffer : GLTexture
-{
-    public
-    {
-        this(OpenGL gl)
+        void setImage(int level, GLint internalFormat, int width, int height, int border, GLenum format, GLenum type, void* data)
         {
-            super(gl, GL_TEXTURE_BUFFER);
-        }
-    }
-}
-
-final class GLTextureCubeMap : GLTexture
-{
-    public
-    {
-        this(OpenGL gl)
-        {
-            super(gl, GL_TEXTURE_CUBE_MAP);
-        }
-    }
-}
-
-final class GLTextureCubeMapArray : GLTexture
-{
-    public
-    {
-        this(OpenGL gl)
-        {
-            super(gl, GL_TEXTURE_CUBE_MAP_ARRAY);
+            glTexImage2D(_target, level, internalFormat, width, height, border, format, type, null);
+            _gl.runtimeCheck();
         }
     }
 }
@@ -252,6 +254,12 @@ final class GLTexture2DMultisample : GLTexture
         {
             super(gl, GL_TEXTURE_2D_MULTISAMPLE);
         }
+
+        void setStorage(int level, int samples, GLint internalFormat, int width, int height, bool fixedsamplelocations)
+        {
+            glTexImage2DMultisample(_target, samples, internalFormat, width, height, fixedsamplelocations ? GL_TRUE : GL_FALSE);
+            _gl.runtimeCheck();
+        }
     }
 }
 
@@ -263,5 +271,13 @@ final class GLTexture2DMultisampleArray : GLTexture
         {
             super(gl, GL_TEXTURE_2D_MULTISAMPLE_ARRAY);
         }
+
+        void setStorage(int level, int samples, GLint internalFormat, int width, int height, int depth, bool fixedsamplelocations)
+        {
+            glTexImage3DMultisample(_target, samples, internalFormat, width, height, depth, fixedsamplelocations ? GL_TRUE : GL_FALSE);
+            _gl.runtimeCheck();
+        }
     }
 }
+
+
