@@ -7,6 +7,8 @@ import derelict.opengl3.gl3;
 import gfm.common.log;
 import gfm.opengl.opengl, gfm.opengl.exception, gfm.opengl.textureunit;
 
+// define one texture type for each sort of texture
+
 class GLTexture
 {
     public
@@ -135,6 +137,131 @@ class GLTexture
         {
             // bind on whatever the current texture unit is
             _gl.textureUnits().current().bind(_target, _handle);
+        }
+    }
+}
+
+final class GLTexture1D : GLTexture
+{
+    public
+    {
+        this(OpenGL gl)
+        {
+            super(gl, GL_TEXTURE_1D);
+        }
+    }
+
+}
+
+final class GLTexture2D : GLTexture
+{
+    public
+    {
+        this(OpenGL gl)
+        {
+            super(gl, GL_TEXTURE_2D);
+        }
+    }
+
+}
+
+final class GLTexture3D : GLTexture
+{
+    public
+    {
+        this(OpenGL gl)
+        {
+            super(gl, GL_TEXTURE_3D);
+        }
+    }
+
+}
+
+final class GLTexture1DArray : GLTexture
+{
+    public
+    {
+        this(OpenGL gl)
+        {
+            super(gl, GL_TEXTURE_1D_ARRAY);
+        }
+    }
+}
+
+final class GLTexture2DArray : GLTexture
+{
+    public
+    {
+        this(OpenGL gl)
+        {
+            super(gl, GL_TEXTURE_2D_ARRAY);
+        }
+    }
+}
+
+final class GLTextureRectangle : GLTexture
+{
+    public
+    {
+        this(OpenGL gl)
+        {
+            super(gl, GL_TEXTURE_RECTANGLE);
+        }
+    }
+
+}
+
+final class GLTextureBuffer : GLTexture
+{
+    public
+    {
+        this(OpenGL gl)
+        {
+            super(gl, GL_TEXTURE_BUFFER);
+        }
+    }
+}
+
+final class GLTextureCubeMap : GLTexture
+{
+    public
+    {
+        this(OpenGL gl)
+        {
+            super(gl, GL_TEXTURE_CUBE_MAP);
+        }
+    }
+}
+
+final class GLTextureCubeMapArray : GLTexture
+{
+    public
+    {
+        this(OpenGL gl)
+        {
+            super(gl, GL_TEXTURE_CUBE_MAP_ARRAY);
+        }
+    }
+}
+
+final class GLTexture2DMultisample : GLTexture
+{
+    public
+    {
+        this(OpenGL gl)
+        {
+            super(gl, GL_TEXTURE_2D_MULTISAMPLE);
+        }
+    }
+}
+
+final class GLTexture2DMultisampleArray : GLTexture
+{
+    public
+    {
+        this(OpenGL gl)
+        {
+            super(gl, GL_TEXTURE_2D_MULTISAMPLE_ARRAY);
         }
     }
 }
