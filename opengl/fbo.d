@@ -142,6 +142,7 @@ final class GLFBO
     }
 }
 
+// TODO make effective attachement lazy and cached
 class GLFBOAttachment
 {
     public
@@ -151,6 +152,7 @@ class GLFBOAttachment
             _texture = tex;
             _level = level;
             _call = Call.TEXTURE_1D;
+            actualAttach();
         }
 
         void attach(GLTexture2D tex, int level = 0)
@@ -158,6 +160,7 @@ class GLFBOAttachment
             _texture = tex;
             _level = level;
             _call = Call.TEXTURE_2D;
+            actualAttach();
         }
 
         void attach(GLTexture3D tex, int layer, int level)
@@ -166,6 +169,7 @@ class GLFBOAttachment
             _level = level;
             _layer = layer;
             _call = Call.TEXTURE_3D;
+            actualAttach();
         }
 
         void attach(GLTexture1DArray tex, int layer)
@@ -174,6 +178,7 @@ class GLFBOAttachment
             _level = 0;
             _layer = layer;
             _call = Call.TEXTURE_3D;
+            actualAttach();
         }
 
         void attach(GLTexture2DArray tex, int layer)
@@ -182,6 +187,7 @@ class GLFBOAttachment
             _level = 0;
             _layer = layer;
             _call = Call.TEXTURE_3D;
+            actualAttach();
         }
 
         void attach(GLTextureRectangle tex)
@@ -189,6 +195,7 @@ class GLFBOAttachment
             _texture = tex;
             _call = Call.TEXTURE_2D;
             _level = 0;
+            actualAttach();
         }
 
         void attach(GLTexture2DMultisample tex)
@@ -196,7 +203,7 @@ class GLFBOAttachment
             _texture = tex;
             _level = 0;
             _call = Call.TEXTURE_2D;
-            
+            actualAttach();
         }
 
         void attach(GLTexture2DMultisampleArray tex, int layer)
@@ -205,12 +212,14 @@ class GLFBOAttachment
             _level = 0;
             _layer = layer;
             _call = Call.TEXTURE_3D;
+            actualAttach();
         }
 
         void attach(GLRenderBuffer buffer)
         {
             _renderbuffer = buffer;
             _call = Call.RENDERBUFFER;
+            actualAttach();
         }
 
         bool isUsed()
