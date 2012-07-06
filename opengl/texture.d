@@ -125,11 +125,15 @@ class GLTexture
         }
     }
 
+    package
+    {
+        GLuint  _handle;
+        GLuint _target;
+    }
+
     private
     {
         OpenGL _gl;
-        GLuint  _handle;
-        GLuint _target;
         bool _initialized;    
         int _textureUnit;
 
@@ -192,7 +196,6 @@ final class GLTexture3D : GLTexture
             _gl.runtimeCheck();
         }
     }
-
 }
 
 final class GLTexture1DArray : GLTexture

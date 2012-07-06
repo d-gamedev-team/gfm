@@ -8,7 +8,7 @@ import gfm.common.log;
 import gfm.math.funcs;
 import gfm.opengl.opengl, gfm.opengl.exception;
 
-final class RenderBuffer
+final class GLRenderBuffer
 {
     public
     {
@@ -89,10 +89,14 @@ final class RenderBuffer
         }
     }
 
+    package
+    {
+        GLuint _handle;
+    }
+
     private
     {
         OpenGL _gl;
-        GLuint _handle;
         GLenum _format;
         GLenum _type;
         bool _initialized;

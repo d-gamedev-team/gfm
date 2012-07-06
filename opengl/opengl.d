@@ -193,6 +193,11 @@ final class OpenGL
             return _maxTextureImageUnits;
         }
 
+        int maxColorAttachments() const
+        {
+            return _maxColorAttachments;
+        }
+
         TextureUnits textureUnits()
         {
             return textureUnits();
@@ -208,6 +213,7 @@ final class OpenGL
         int _maxTextureSize;
         int _maxTextureUnits; // number of conventional units, deprecated
         int _maxTextureImageUnits;
+        int _maxColorAttachments;
 
         void getLimits(bool logging)
         {
@@ -216,6 +222,7 @@ final class OpenGL
             _maxTextureSize = getInteger(GL_MAX_TEXTURE_SIZE, 512, logging);
             _maxTextureUnits = getInteger(GL_MAX_TEXTURE_UNITS, 2, logging);
             _maxTextureImageUnits = getInteger(GL_MAX_TEXTURE_IMAGE_UNITS, 2, logging);
+            _maxColorAttachments = getInteger(GL_MAX_COLOR_ATTACHMENTS, 4, logging);
         }
     }
 }
