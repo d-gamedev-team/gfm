@@ -26,6 +26,14 @@ nothrow:
             ++_count;
         }
 
+        void pushFront(T x)
+        {
+            assert(_count < capacity);
+            ++_count;
+            _first = (_first - 1 + _data.length) % _data.length;
+            _data[_first] = x;
+        }
+
         T popFront()
         {
             assert(_count > 0);

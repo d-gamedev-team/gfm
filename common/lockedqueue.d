@@ -36,6 +36,17 @@ final class LockedQueue(T)
             _readerSemaphore.notify();
         }
 
+        void pushFront(T x)
+        {
+            _writerSemaphore.wait();
+            {
+                _rwMutex.lock();
+                _queue.pushFront(x);
+                _rwMutex.unlock();
+            }
+            _readerSemaphore.notify();
+        }
+
         T popFront()
         {
             _readerSemaphore.wait();
