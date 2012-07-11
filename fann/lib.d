@@ -10,12 +10,11 @@ final class FANNLib
         this()
         {
             DerelictFANN.load();
-            DerelictFANN.disableAutoUnload();
         }
 
         ~this()
         {
-            close();         
+            close();
         }
 
         void close()

@@ -22,8 +22,7 @@ final class SDLImage
             
             try
             {
-                DerelictSDL2Image.load();                
-                DerelictSDL2.disableAutoUnload();
+                DerelictSDL2Image.load();
             }
             catch(DerelictException e)
             {

@@ -19,7 +19,6 @@ final class FreeImage
             try
             {
                 DerelictFI.load();
-                DerelictFI.disableAutoUnload();
             }
             catch(DerelictException e)
             {

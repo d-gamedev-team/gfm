@@ -29,8 +29,7 @@ final class SDL2
                     DerelictSDL2.load("SDL2d.dll");
                 else
                     DerelictSDL2.load();
-                DerelictSDL2.disableAutoUnload();
-            }
+           }
             catch(DerelictException e)
             {
                 throw new SDL2Exception(e.msg);
