@@ -8,6 +8,8 @@ import gfm.common.log;
 import gfm.opengl.opengl, gfm.opengl.exception, gfm.opengl.textureunit;
 
 // define one texture type for each sort of texture
+// TODO: - support partial updates
+//       - support glStorage throught pseudo-code given in the spec 
 
 class GLTexture
 {

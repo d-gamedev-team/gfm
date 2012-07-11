@@ -8,6 +8,7 @@ import gfm.opengl.opengl, gfm.opengl.exception;
 import gfm.opengl.texture, gfm.opengl.renderbuffer;
 
 // OpenGL FrameBuffer Object wrapper
+// TODO: GL_EXT_framebuffer_object fallback
 final class GLFBO
 {
     public
