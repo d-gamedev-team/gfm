@@ -12,10 +12,10 @@ string[] readTextFile(string filename)
     }
     catch(FileException e)
     {
-        return null;
+        return [];
     }
     catch(UTFException e)
     {
-        return null;
+        return [];
     }    
 }
