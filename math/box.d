@@ -93,9 +93,7 @@ align(1) struct Box(size_t N, T)
                 T res = 1;
                 bound_t size = size();
                 for(size_t i = 0; i < N; ++i)
-                {
                     res *= size[i];
-                }
                 return res;
             }
         }
@@ -104,12 +102,9 @@ align(1) struct Box(size_t N, T)
         bool contains(bound_t p) pure const nothrow
         {
             for(size_t i = 0; i < N; ++i)
-            {
                 if ((p[i] < a[i]) || (p[i] >= b[i]))
-                {
                     return false;
-                }
-            }
+
             return true;
         }
 
@@ -120,12 +115,8 @@ align(1) struct Box(size_t N, T)
             assert(o.isSorted());
 
             for(size_t i = 0; i < N; ++i)
-            {
                 if (o.a[i] >= b[i] || o.b[i] < a[i])
-                {
                     return false;
-                }
-            }
             return true;
         }
 
