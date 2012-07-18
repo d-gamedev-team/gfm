@@ -61,8 +61,7 @@ nothrow:
             return _count;
         }
 
-        // range type
-        // Todo: make it random access
+        // range type, random access
         static struct Range
         {
         nothrow:
@@ -81,7 +80,7 @@ nothrow:
                     return _index >= _count;
                 }
 
-                @property void popFront()
+                void popFront()
                 {
                     _index++;
                 }
@@ -91,11 +90,33 @@ nothrow:
                     return _data[(_first + _index) % _data.length];
                 }
 
+                void popBack()
+                {
+                    _count--;
+                }
+
+                @property T back() pure
+                {
+                    return _data[(_first + _count - 1) % _data.length];
+                }
+
                 // implementing save to be a forward range
                 @property Range save()
                 {
                     return this;
                 }
+
+                T opIndex(size_t n) 
+                { 
+                    return _data[(_first + n) % _data.length];
+                }
+
+                @property size_t length() pure
+                {
+                    return _count;
+                }
+
+                alias length opDollar;
             }
 
             private
@@ -122,8 +143,7 @@ nothrow:
     }
 }
 
-static assert (isInputRange!(Queue!int.Range));
-static assert (isForwardRange!(Queue!int.Range));
+static assert (isRandomAccessRange!(Queue!int.Range));
 
 unittest
 {
