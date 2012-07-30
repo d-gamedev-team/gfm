@@ -127,6 +127,7 @@ final class GLProgram
             {
                 // no such variable found, either it's really missing or the OpenGL driver discarded an unused uniform
                 // create a fake disabled GLUniform to allow the show to proceed
+                _gl._log.warnf("Faking uniform variable '%s'", name);
                 _activeUniforms[name] = new GLUniform(_gl, name);
                 return _activeUniforms[name];
             }
