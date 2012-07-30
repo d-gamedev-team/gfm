@@ -343,39 +343,24 @@ align(1) struct SmallMatrix(size_t R, size_t C, T)
             }
         }
 
-        // more operations for 4x4 matrices
-        static if (isSquare && _R == 4 && isFloatingPoint!T)
+        // rotations for 3x3 and 4x4 matrices
+        static if (isSquare && (_R == 3 || _R == 4) && isFloatingPoint!T)
         {
-            // rotations
-            SmallMatrix rotateX(T angle)
+            private SmallMatrix rotateAxis(size_t i, size_t j)(T angle)
             {
-                T cosa = cos(angle);
-                T sina = sin(angle);
-                return SmallMatrix(1,    0,     0, 0,
-                                   0, cosa, -sina, 0,
-                                   0, sina,  cosa, 0,
-                                   0,    0,     0, 1);
+                SmallMatrix res = IDENTITY;
+                const T cosa = cos(angle);
+                const T sina = sin(angle);
+                res.c[i][i] = cosa;
+                res.c[i][j] = -sina;
+                res.c[j][i] = sina;
+                res.c[j][j] = cosa;
+                return res;
             }
 
-            SmallMatrix rotateY(T angle)
-            {
-                T cosa = cos(angle);
-                T sina = sin(angle);
-                return SmallMatrix(cosa, 0, -sina, 0,
-                                   0,    1,     0, 0,
-                                   sina, 0,  cosa, 0,
-                                   0,    0,     0, 1);
-            }
-
-            SmallMatrix rotateZ(T angle)
-            {
-                T cosa = cos(angle);
-                T sina = sin(angle);
-                return SmallMatrix(cosa, -sina, 0, 0,
-                                   sina,  cosa, 0, 0,
-                                      0,     0, 1, 0,
-                                      0,     0, 0, 1);
-            }
+            public alias rotateAxis!(1, 2) rotateX;
+            public alias rotateAxis!(0, 2) rotateY;
+            public alias rotateAxis!(0, 1) rotateZ;
         }
     }
 
