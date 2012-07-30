@@ -161,9 +161,7 @@ align(1) struct SmallMatrix(size_t R, size_t C, T)
 
         // matrix * matrix
         auto opBinary(string op, U)(U x)
-            if (is(typeof(U._isSmallMatrix))
-                && (U._R == C)
-                && (op == "*"))
+            if (is(typeof(U._isSmallMatrix)) && (U._R == C) && (op == "*"))
         {
             SmallMatrix!(R, U._C, T) result = void;
 
