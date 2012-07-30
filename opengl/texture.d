@@ -260,7 +260,7 @@ final class GLTexture2DMultisample : GLTexture
             super(gl, GL_TEXTURE_2D_MULTISAMPLE);
         }
 
-        void setStorage(int level, int samples, GLint internalFormat, int width, int height, bool fixedsamplelocations)
+        void setImage(int level, int samples, GLint internalFormat, int width, int height, bool fixedsamplelocations)
         {
             glTexImage2DMultisample(_target, samples, internalFormat, width, height, fixedsamplelocations ? GL_TRUE : GL_FALSE);
             _gl.runtimeCheck();
@@ -277,7 +277,7 @@ final class GLTexture2DMultisampleArray : GLTexture
             super(gl, GL_TEXTURE_2D_MULTISAMPLE_ARRAY);
         }
 
-        void setStorage(int level, int samples, GLint internalFormat, int width, int height, int depth, bool fixedsamplelocations)
+        void setImage(int level, int samples, GLint internalFormat, int width, int height, int depth, bool fixedsamplelocations)
         {
             glTexImage3DMultisample(_target, samples, internalFormat, width, height, depth, fixedsamplelocations ? GL_TRUE : GL_FALSE);
             _gl.runtimeCheck();
