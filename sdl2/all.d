@@ -2,6 +2,8 @@ module gfm.sdl2.all;
 
 public
 {
+    import derelict.sdl2.sdl;
+    import derelict.sdl2.image;
     import gfm.sdl2.sdl;
     import gfm.sdl2.surface;
     import gfm.sdl2.displaymode;
