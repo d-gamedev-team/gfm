@@ -344,9 +344,10 @@ align(1) struct SmallMatrix(size_t R, size_t C, T)
         }
 
         // rotations for 3x3 and 4x4 matrices
+        // TODO glRotate equivalent
         static if (isSquare && (_R == 3 || _R == 4) && isFloatingPoint!T)
         {
-            private SmallMatrix rotateAxis(size_t i, size_t j)(T angle)
+            private static SmallMatrix rotateAxis(size_t i, size_t j)(T angle)
             {
                 SmallMatrix res = IDENTITY;
                 const T cosa = cos(angle);
@@ -359,8 +360,55 @@ align(1) struct SmallMatrix(size_t R, size_t C, T)
             }
 
             public alias rotateAxis!(1, 2) rotateX;
-            public alias rotateAxis!(0, 2) rotateY;
+            public alias rotateAxis!(2, 0) rotateY;
             public alias rotateAxis!(0, 1) rotateZ;
+        }
+
+        // 4x4 specific transformations for 3D usage
+        static if (isSquare && _R == 4 && isFloatingPoint!T)
+        {
+            // return orthographic projection
+            static SmallMatrix orthographic(T left, T right, T bottom, T top, T near, T far)
+            {
+                T dx = right - left,
+                  dy = top - bottom,
+                  dz = far - near;
+
+                T tx = -(right + left) / dx;
+                T ty = -(top + bottom) / dy;
+                T tz = -(far + near)   / dz;
+
+                return SmallMatrix(2 / dx,   0,      0,    tx,
+                                     0,    2 / dy,   0,    ty,
+                                     0,      0,    2 / dz, tz,
+                                     0,      0,      0,     1);
+            }
+
+            // perspective projection
+            static SmallMatrix perspective(T FOVInRadians, T aspect, T zNear, T zFar)
+            {
+                T f = 1 / tan(FOVInRadians / 2);
+                T d = 1 / (zNear - zFar);
+
+                return SmallMatrix(f / aspect, 0,                  0,                    0,
+                                            0, f,                  0,                    0,
+                                            0, 0, (zFar + zNear) * d, 2 * d * zFar * zNear,
+                                            0, 0,                 -1,                    0);
+            }
+
+            // See: http://msdn.microsoft.com/en-us/library/windows/desktop/bb205343(v=vs.85).aspx
+            // TODO: verify if it's the right one...
+            static SmallMatrix lookAt(SmallVector!(3u, T) eye, SmallVector!(3u, T) target, SmallVector!(3u, T) up)
+            {
+                SmallVector!(3u, T) Z = (eye - target).normalized();
+                SmallVector!(3u, T) X = cross(up, Z).normalized();
+                SmallVector!(3u, T) Y = cross(Z, X);
+
+                return SmallMatrix(    X.x,         Y.x,         Z.x,     0,
+                                       X.y,         Y.y,         Z.y,     0,
+                                       X.z,         Y.z,         Z.z,     0,
+                                   dot(X, eye), dot(Y, eye), dot(Z, eye), 1);
+            }
         }
     }
 
