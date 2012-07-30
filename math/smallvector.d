@@ -544,11 +544,11 @@ T dot(size_t N, T)(const SmallVector!(N, T) a, const SmallVector!(N, T) b) pure 
 }
 
 // 3D cross product
-T cross(T)(const SmallVector!(3, T) a, const SmallVector!(3, T) b) pure nothrow
+SmallVector!(3u, T) cross(T)(const SmallVector!(3u, T) a, const SmallVector!(3u, T) b) pure nothrow
 {
-    return SmallVector!(3, T)(a.y * b.z - b.z * a.y,
-                              a.z * b.x - b.x * a.z,
-                              a.x * b.y - b.y * a.x);
+    return SmallVector!(3u, T)(a.y * b.z - b.z * a.y,
+                               a.z * b.x - b.x * a.z,
+                               a.x * b.y - b.y * a.x);
 }
 
 unittest
