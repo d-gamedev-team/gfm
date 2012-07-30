@@ -7,7 +7,6 @@ import derelict.opengl3.gl3;
 
 import gfm.common.log;
 import gfm.opengl.opengl;
-import gfm.opengl.exception;
 
 
 final class GLShader

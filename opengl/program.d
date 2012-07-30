@@ -6,7 +6,7 @@ import derelict.opengl3.gl3;
 
 import gfm.common.log;
 import gfm.math.smallvector, gfm.math.smallmatrix;
-import gfm.opengl.opengl, gfm.opengl.exception, gfm.opengl.shader, gfm.opengl.uniform;
+import gfm.opengl.opengl, gfm.opengl.shader, gfm.opengl.uniform;
 
 final class GLProgram
 {

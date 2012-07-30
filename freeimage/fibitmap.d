@@ -2,7 +2,6 @@ module gfm.freeimage.fibitmap;
 
 import std.string;
 import derelict.freeimage.freeimage;
-import gfm.freeimage.exception;
 import gfm.freeimage.freeimage;
 
 final class FIBitmap

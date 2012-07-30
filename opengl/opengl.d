@@ -6,8 +6,18 @@ import std.array;
 import derelict.opengl3.gl3;
 import derelict.opengl3.gl;
 import gfm.common.log;
-import gfm.opengl.exception;
 import gfm.opengl.textureunit;
+
+class OpenGLException : Exception
+{
+    public
+    {
+        this(string msg)
+        {
+            super(msg);
+        }
+    }
+}
 
 // wrapper class to ensure library loading
 final class OpenGL

@@ -3,7 +3,6 @@ module gfm.sdl2.surface;
 import derelict.sdl2.sdl;
 
 import gfm.sdl2.sdl;
-import gfm.sdl2.exception;
 import gfm.math.smallvector;
 
 

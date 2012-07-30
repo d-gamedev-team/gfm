@@ -205,7 +205,6 @@
   </Folder>
   <Folder name="freeimage">
    <File path="freeimage\all.d" />
-   <File path="freeimage\exception.d" />
    <File path="freeimage\fibitmap.d" />
    <File path="freeimage\freeimage.d" />
   </Folder>
@@ -233,7 +232,6 @@
   <Folder name="opengl">
    <File path="opengl\all.d" />
    <File path="opengl\buffer.d" />
-   <File path="opengl\exception.d" />
    <File path="opengl\fbo.d" />
    <File path="opengl\matrixstack.d" />
    <File path="opengl\opengl.d" />
@@ -248,7 +246,6 @@
    <File path="sdl2\all.d" />
    <File path="sdl2\displaymode.d" />
    <File path="sdl2\eventqueue.d" />
-   <File path="sdl2\exception.d" />
    <File path="sdl2\framecounter.d" />
    <File path="sdl2\glcontext.d" />
    <File path="sdl2\keyboard.d" />

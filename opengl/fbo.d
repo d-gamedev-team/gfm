@@ -4,7 +4,7 @@ import std.string;
 
 import derelict.opengl3.gl3;
 import gfm.common.log;
-import gfm.opengl.opengl, gfm.opengl.exception;
+import gfm.opengl.opengl;
 import gfm.opengl.texture, gfm.opengl.renderbuffer;
 
 // OpenGL FrameBuffer Object wrapper

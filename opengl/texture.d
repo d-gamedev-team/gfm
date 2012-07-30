@@ -5,7 +5,7 @@ import std.string;
 import derelict.opengl3.gl3;
 
 import gfm.common.log;
-import gfm.opengl.opengl, gfm.opengl.exception, gfm.opengl.textureunit;
+import gfm.opengl.opengl, gfm.opengl.textureunit;
 
 // define one texture type for each sort of texture
 // TODO: - support partial updates

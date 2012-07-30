@@ -7,7 +7,7 @@ import derelict.opengl3.gl3;
 
 import gfm.common.log;
 import gfm.math.smallvector, gfm.math.smallmatrix;
-import gfm.opengl.opengl, gfm.opengl.exception;
+import gfm.opengl.opengl;
 
 static assert(is(GLint == int));
 static assert(is(GLuint == uint));

@@ -5,8 +5,17 @@ import std.string;
 import derelict.freeimage.freeimage;
 import derelict.util.exception;
 import gfm.common.log;
-import gfm.freeimage.exception;
 
+class FreeImageException : Exception
+{
+    public
+    {
+        this(string msg)
+        {
+            super(msg);
+        }
+    }
+}
 
 final class FreeImage
 {

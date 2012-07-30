@@ -6,7 +6,19 @@ import derelict.util.exception;
 
 import gfm.common.log;
 
-import gfm.sdl2.sdl, gfm.sdl2.exception, gfm.sdl2.surface;
+import gfm.sdl2.sdl, gfm.sdl2.surface;
+
+
+class SDL2ImageException : SDL2Exception
+{
+    public
+    {
+        this(string msg)
+        {
+            super(msg);
+        }
+    }
+}
 
 // Load images using SDL_image
 
@@ -83,7 +95,6 @@ final class SDLImage
         SDL2 _sdl2;
         bool _SDLImageInitialized;
 
-        // exception mechanism that shall be used by every module here
         void throwSDL2ImageException(string callThatFailed)
         {
             string message = format("%s failed: %s", callThatFailed, getErrorString());

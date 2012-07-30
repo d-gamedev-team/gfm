@@ -7,11 +7,21 @@ import derelict.sdl2.sdl;
 import derelict.sdl2.image;
 import derelict.util.exception;
 
-import gfm.sdl2.exception;
 import gfm.sdl2.displaymode;
 import gfm.sdl2.renderer;
 import gfm.common.log;
 import gfm.math.box;
+
+class SDL2Exception : Exception
+{
+    public
+    {
+        this(string msg)
+        {
+            super(msg);
+        }
+    }
+}
 
 final class SDL2
 {

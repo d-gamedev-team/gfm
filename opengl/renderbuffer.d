@@ -6,7 +6,7 @@ import derelict.opengl3.gl3;
 
 import gfm.common.log;
 import gfm.math.funcs;
-import gfm.opengl.opengl, gfm.opengl.exception;
+import gfm.opengl.opengl;
 
 final class GLRenderBuffer
 {

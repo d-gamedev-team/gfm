@@ -2,7 +2,6 @@ module gfm.sdl2.all;
 
 public
 {
-    import gfm.sdl2.exception;
     import gfm.sdl2.sdl;
     import gfm.sdl2.surface;
     import gfm.sdl2.displaymode;
