@@ -362,6 +362,34 @@ align(1) struct SmallMatrix(size_t R, size_t C, T)
             public alias rotateAxis!(1, 2) rotateX;
             public alias rotateAxis!(2, 0) rotateY;
             public alias rotateAxis!(0, 1) rotateZ;
+
+            // similar to the glRotate matrix, however the angle is expressed in radians
+            // Reference: http://www.cs.rutgers.edu/~decarlo/428/gl_man/rotate.html
+            static SmallMatrix rotate(T angle, SmallVector!(3u, T) axis)
+            {
+                SmallMatrix res = IDENTITY;
+                const T c = cos(angle);
+                const oneMinusC = 1 - c;
+                const T s = sin(angle);
+                axis = axis.normalized();
+                T x = axis.x, 
+                  y = axis.y,
+                  z = axis.z;
+                T xy = x * y,
+                  yz = y * z,
+                  xz = x * z;
+                
+                res.c[0][0] = x * x * oneMinusC + c;
+                res.c[0][1] = x * y * oneMinusC - z * s;
+                res.c[0][2] = x * z * oneMinusC + y * s;
+                res.c[1][0] = y * x * oneMinusC + z * s;
+                res.c[1][1] = y * y * oneMinusC + c;
+                res.c[1][2] = y * z * oneMinusC - x * s;
+                res.c[2][0] = z * x * oneMinusC - y * s;
+                res.c[2][1] = z * y * oneMinusC + x * s;
+                res.c[2][2] = z * z * oneMinusC + c;
+                return res;
+            }
         }
 
         // 4x4 specific transformations for 3D usage
