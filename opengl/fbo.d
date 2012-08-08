@@ -43,6 +43,7 @@ final class GLFBO
                     _target = GL_READ_FRAMEBUFFER;
             }
             _initialized = true;
+            _isBound = false;
         }
 
         ~this()
@@ -56,12 +57,12 @@ final class GLFBO
             {
                 // detach all
                 for(int i = 0; i < _colors.length; ++i)
-                    _colors[i].detach();
+                    _colors[i].close();
 
-                _depth.detach();
-                _stencil.detach();
+                _depth.close();
+                _stencil.close();
 
-                glDeleteFramebuffers(1, &_handle);                
+                glDeleteFramebuffers(1, &_handle);
                 _initialized = false;
             }
         }
@@ -69,11 +70,16 @@ final class GLFBO
         void use()
         {
             glBindFramebuffer(_target, _handle);
-            _gl.runtimeCheck();        
+            _gl.runtimeCheck();
+            _isBound = true;
+
+            for(int i = 0; i < _colors.length; ++i)
+                _colors[i].updateAttachment();
         }
 
         void unuse()
         {
+            _isBound = false;
             glBindFramebuffer(_target, 0);
             _gl.runtimeCheck();
         }
@@ -99,7 +105,7 @@ final class GLFBO
     {
         OpenGL _gl;
         GLuint  _handle;
-        bool _initialized;
+        bool _initialized, _isBound;
 
         // attachements
         GLFBOAttachment[] _colors;
@@ -110,7 +116,7 @@ final class GLFBO
 
         void checkStatus()
         {
-            GLenum status = glCheckFramebufferStatus(_target);            
+            GLenum status = glCheckFramebufferStatus(_target);
             switch(status)
             {
                 case GL_FRAMEBUFFER_COMPLETE:
@@ -150,82 +156,56 @@ class GLFBOAttachment
     {
         void attach(GLTexture1D tex, int level = 0)
         {
-            _texture = tex;
-            _level = level;
-            _call = Call.TEXTURE_1D;
-            actualAttach();
+            _newCall = Call(this, Call.Type.TEXTURE_1D, tex, null, level, 0);
+            updateAttachment();
         }
 
         void attach(GLTexture2D tex, int level = 0)
         {
-            _texture = tex;
-            _level = level;
-            _call = Call.TEXTURE_2D;
-            actualAttach();
+            _newCall = Call(this, Call.Type.TEXTURE_2D, tex, null, level, 0);
+            updateAttachment();
         }
 
         void attach(GLTexture3D tex, int layer, int level)
         {
-            _texture = tex;
-            _level = level;
-            _layer = layer;
-            _call = Call.TEXTURE_3D;
-            actualAttach();
+            _newCall = Call(this, Call.Type.TEXTURE_3D, tex, null, level, layer);            
+            updateAttachment();
         }
 
         void attach(GLTexture1DArray tex, int layer)
         {
-            _texture = tex;
-            _level = 0;
-            _layer = layer;
-            _call = Call.TEXTURE_3D;
-            actualAttach();
+            _newCall = Call(this, Call.Type.TEXTURE_3D, tex, null, 0, layer);
+            updateAttachment();
         }
 
         void attach(GLTexture2DArray tex, int layer)
         {
-            _texture = tex;
-            _level = 0;
-            _layer = layer;
-            _call = Call.TEXTURE_3D;
-            actualAttach();
+            _newCall = Call(this, Call.Type.TEXTURE_3D, tex, null, 0, layer);
+            updateAttachment();
         }
 
         void attach(GLTextureRectangle tex)
         {
-            _texture = tex;
-            _call = Call.TEXTURE_2D;
-            _level = 0;
-            actualAttach();
+            _newCall = Call(this, Call.Type.TEXTURE_2D, tex, null, 0, 0);
+            updateAttachment();
         }
 
         void attach(GLTexture2DMultisample tex)
         {
-            _texture = tex;
-            _level = 0;
-            _call = Call.TEXTURE_2D;
-            actualAttach();
+            _newCall = Call(this, Call.Type.TEXTURE_2D, tex, null, 0, 0);
+            updateAttachment();
         }
 
         void attach(GLTexture2DMultisampleArray tex, int layer)
         {
-            _texture = tex;
-            _level = 0;
-            _layer = layer;
-            _call = Call.TEXTURE_3D;
-            actualAttach();
+            _newCall = Call(this, Call.Type.TEXTURE_3D, tex, null, 0, layer);
+            updateAttachment();
         }
 
         void attach(GLRenderBuffer buffer)
         {
-            _renderbuffer = buffer;
-            _call = Call.RENDERBUFFER;
-            actualAttach();
-        }
-
-        bool isUsed()
-        {
-            return _call != 0;
+            _newCall = Call(this, Call.Type.RENDERBUFFER, null, buffer, 0, 0);
+            updateAttachment();
         }
     }
 
@@ -236,87 +216,120 @@ class GLFBOAttachment
             _fbo = fbo;
             _gl = fbo._gl;
             _attachment = attachment;
-            _call = Call.DISABLED;
+            _lastCall = _newCall = Call(this, Call.Type.DISABLED, null, null, 0, 0);
+        }
+
+        void close()
+        {
+            _lastCall.detach();
         }
 
         OpenGL _gl;
         GLFBO _fbo;
         GLenum _attachment;
+        Call _lastCall;
+        Call _newCall;
 
-        enum Call
+        void updateAttachment()
         {
-            DISABLED,
-            TEXTURE_1D,
-            TEXTURE_2D,
-            TEXTURE_3D,
-            RENDERBUFFER
-        }
-
-        Call _call;
-        GLTexture _texture;
-        GLRenderBuffer _renderbuffer;
-        GLint _level;
-        GLint _layer;
-
-        void actualAttach()
-        {
-            final switch(_call)
+            if (_newCall != _lastCall && _fbo._isBound)
             {
-                case Call.DISABLED:
-                    // do nothing
-                    break;
+                try
+                {
+                    // trying to detach existing attachment
+                    // would that help?
+                    _lastCall.detach();
+                }
+                catch(OpenGLException e)
+                {
+                    // ignoring errors here
+                }
 
-                case Call.TEXTURE_1D:
-                    glFramebufferTexture1D(_fbo._target, _attachment, _texture._target, _texture._handle, _level);
-                    _gl.runtimeCheck();
-                    break;
-
-                case Call.TEXTURE_2D: 
-                    glFramebufferTexture2D(_fbo._target, _attachment, _texture._target, _texture._handle, _level);
-                    _gl.runtimeCheck();
-                    break;
-
-                case Call.TEXTURE_3D: 
-                    glFramebufferTexture3D(_fbo._target, _attachment, _texture._target, _texture._handle, _level, _layer);
-                    _gl.runtimeCheck();
-                    break;
-
-                case Call.RENDERBUFFER: 
-                    glFramebufferRenderbuffer(_fbo._target, _attachment, GL_RENDERBUFFER, _renderbuffer._handle);
-                    _gl.runtimeCheck();
-                    break;
+                _newCall.attach();
+                _lastCall = _newCall;
             }
         }
 
-        void detach()
+        struct Call
         {
-            final switch(_call)
+            public
             {
-                case Call.DISABLED:
-                    // do nothing
-                    break;
+                enum Type
+                {
+                    DISABLED,
+                    TEXTURE_1D,
+                    TEXTURE_2D,
+                    TEXTURE_3D,
+                    RENDERBUFFER
+                }
 
-                case Call.TEXTURE_1D:
-                    glFramebufferTexture1D(_fbo._target, _attachment, 0, 0, _level);
-                    _gl.runtimeCheck();
-                    break;
+                GLFBOAttachment _outer;
+                Type _type;
+                GLTexture _texture;
+                GLRenderBuffer _renderbuffer;
+                GLint _level;
+                GLint _layer;
 
-                case Call.TEXTURE_2D: 
-                    glFramebufferTexture2D(_fbo._target, _attachment, 0, 0, _level);
-                    _gl.runtimeCheck();
-                    break;
+                void attach()
+                {
+                    final switch(_type)
+                    {
+                        case Type.DISABLED:
+                            // do nothing
+                            break;
 
-                case Call.TEXTURE_3D: 
-                    glFramebufferTexture3D(_fbo._target, _attachment, 0, 0, _level, _layer);
-                    _gl.runtimeCheck();
-                    break;
+                        case Type.TEXTURE_1D:
+                            glFramebufferTexture1D(_outer._fbo._target, _outer._attachment, _texture._target, _texture._handle, _level);
+                            _outer._gl.runtimeCheck();
+                            break;
 
-                case Call.RENDERBUFFER: 
-                    glFramebufferRenderbuffer(_fbo._target, _attachment, GL_RENDERBUFFER, 0);
-                    _gl.runtimeCheck();
-                    break;
+                        case Type.TEXTURE_2D: 
+                            glFramebufferTexture2D(_outer._fbo._target, _outer._attachment, _texture._target, _texture._handle, _level);
+                            _outer._gl.runtimeCheck();
+                            break;
+
+                        case Type.TEXTURE_3D: 
+                            glFramebufferTexture3D(_outer._fbo._target, _outer._attachment, _texture._target, _texture._handle, _level, _layer);
+                            _outer._gl.runtimeCheck();
+                            break;
+
+                        case Type.RENDERBUFFER: 
+                            glFramebufferRenderbuffer(_outer._fbo._target, _outer._attachment, GL_RENDERBUFFER, _renderbuffer._handle);
+                            _outer._gl.runtimeCheck();
+                            break;
+                    }
+                }
+
+                void detach()
+                {
+                    final switch(_type)
+                    {
+                        case Type.DISABLED:
+                            // do nothing
+                            break;
+
+                        case Type.TEXTURE_1D:
+                            glFramebufferTexture1D(_outer._fbo._target, _outer._attachment, 0, 0, _level);
+                            _outer._gl.runtimeCheck();
+                            break;
+
+                        case Type.TEXTURE_2D: 
+                            glFramebufferTexture2D(_outer._fbo._target, _outer._attachment, 0, 0, _level);
+                            _outer._gl.runtimeCheck();
+                            break;
+
+                        case Type.TEXTURE_3D: 
+                            glFramebufferTexture3D(_outer._fbo._target, _outer._attachment, 0, 0, _level, _layer);
+                            _outer._gl.runtimeCheck();
+                            break;
+
+                        case Type.RENDERBUFFER: 
+                            glFramebufferRenderbuffer(_outer._fbo._target, _outer._attachment, GL_RENDERBUFFER, 0);
+                            _outer._gl.runtimeCheck();
+                            break;
+                    }
+                }
             }
-            _call = Call.DISABLED;
         }
     }
 }
