@@ -109,21 +109,21 @@ nothrow:
         }
 
         // assign with a static array type
-        void opAssign(U)(U x) pure nothrow if ((isStaticArray!(U) && is(typeof(x[0]) : T) && (x.length == N)))
+        void opAssign(U)(U arr) pure nothrow if ((isStaticArray!(U) && is(typeof(arr[0]) : T) && (arr.length == N)))
         {
             for (size_t i = 0; i < N; ++i)
             {
-                v[i] = x[i];
+                v[i] = arr[i];
             }
         }
 
         // assign with a dynamic array (check size)
-        void opAssign(U)(U x) pure nothrow if (isDynamicArray!(U) && is(typeof(x[0]) : T))
+        void opAssign(U)(U arr) pure nothrow if (isDynamicArray!(U) && is(typeof(arr[0]) : T))
         {
-            assert(x.length == N);
+            assert(arr.length == N);
             for (size_t i = 0; i < N; ++i)
             {
-                v[i] = x[i];
+                v[i] = arr[i];
             }
         }
 

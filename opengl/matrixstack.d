@@ -81,17 +81,14 @@ final class MatrixStack(size_t R, T) if (R == 3 || R == 4)
             _invMatrices[_top] = _invMatrices[_top] * invM;
         }
 
-        static if (R >= 3)
+        void translate(SmallVector!(R-1, T) v)
         {
-            void translate(SmallVector!(R-1, T) v)
-            {
-                mult(matrix_t.makeTranslate(v), matrix_t.makeTranslate(-v));
-            }
+            mult(matrix_t.makeTranslate(v), matrix_t.makeTranslate(-v));
+        }
 
-            void scale(SmallVector!(R-1, T) v)
-            {
-                mult(matrix_t.makeScale(v), matrix_t.makeScale(1 / v));
-            }
+        void scale(SmallVector!(R-1, T) v)
+        {
+            mult(matrix_t.makeScale(v), matrix_t.makeScale(1 / v));
         }
     }
 
