@@ -186,7 +186,7 @@
  </Config>
  <Folder name="gfm">
   <Folder name="color">
-   <File path="colorspace.d" />
+   <File path="color\cie.d" />
   </Folder>
   <Folder name="common">
    <File path="common\alignedbuffer.d" />
