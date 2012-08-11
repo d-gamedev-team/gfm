@@ -47,7 +47,7 @@ final class FIBitmap
         {
             _lib = lib;
             _bitmap = FreeImage_ConvertFromRawBits(data, width, height, pitch, bpp,
-                                                   redMask, greenMask, blueMask);
+                                                   redMask, greenMask, blueMask, FALSE);
         }
 
         ~this()
