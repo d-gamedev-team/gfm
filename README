@@ -21,9 +21,6 @@ math/
 - a port of easing functions from Robert Penner (*)
 - misc math functions
 
-sdl/
-- SDL 1.2 wrapper based on Derelict2
-
 sdl2/
 - SDL 2.0 wrapper based on Derelict3
 
