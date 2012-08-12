@@ -99,15 +99,6 @@ align(1) struct SmallMatrix(size_t R, size_t C, T)
                 v[i] = x.v[i];
         }
 
-        // cast to other small matrices type (compatible size)
-        U opCast(U)() pure nothrow const if (is(typeof(U._isSmallVector)) && (U._R == _R) && (U._C == _C))
-        {
-            U res = void;
-            for (size_t i = 0; i < _N; ++i)
-                res.v[i] = cast(U._T)v[i];
-            return res;
-        }
-
         // assign with a static array of size R * C
         void opAssign(U)(U x) pure nothrow
             if ((isStaticArray!U)
@@ -184,12 +175,18 @@ align(1) struct SmallMatrix(size_t R, size_t C, T)
             return opOpAssign!op(conv);
         }
 
-        // casting to matrices of the same size
-        U opCast(U)() pure const if (is(typeof(U._isSmallMatrix)) && (U._R == _R) && (U._C == C))
+        // cast to other small matrices type
+        // if the size are different, the result matrix is truncated and/or filled with identity coefficients
+        U opCast(U)() pure nothrow const if (is(typeof(U._isSmallMatrix)) && (U._R == _R) && (U._C == _C))
         {
-            U res = void;
-            for (size_t i = 0; i < _N; ++i)
-                res.v[i] = cast(U._T)v[i];
+            U res = U.IDENTITY;
+            enum minR = R < U._R ? R : U._R;
+            enum minC = C < U._C ? C : U._C;
+            for (size_t i = 0; i < minR; ++i)
+                for (size_t j = 0; j < minC; ++j)
+                {
+                    res.c[i][j] = cast(U._T)(c[i][j]);
+                }
             return res;
         }
 
@@ -476,16 +473,15 @@ align(1) struct SmallMatrix(size_t R, size_t C, T)
 
     private
     {
-        static if (R == C)
+        // Note: the identity matrix, while only meaningful for square matrices, is also
+        //       defined for non-square ones.
+        static SmallMatrix makeIdentity() pure
         {
-            static SmallMatrix makeIdentity() pure
-            {
-                SmallMatrix res;
-                for (size_t i = 0; i < R; ++i)
-                    for (size_t j = 0; j < C; ++j)
-                        res.c[i][j] = (i == j) ? 1 : 0;
-                return res;
-            }
+            SmallMatrix res;
+            for (size_t i = 0; i < R; ++i)
+                for (size_t j = 0; j < C; ++j)
+                    res.c[i][j] = (i == j) ? 1 : 0;
+            return res;
         }
 
         static SmallMatrix makeConstant(U)(U x) pure
@@ -502,12 +498,12 @@ align(1) struct SmallMatrix(size_t R, size_t C, T)
     public
     {
         enum ZERO = makeConstant(0);
+        enum ONES = makeConstant(1);
         static if (R == C)
         {
             enum IDENTITY = makeIdentity();
         }
     }
-    
 }
 
 // GLSL is a big inspiration here
