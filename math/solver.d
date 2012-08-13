@@ -5,18 +5,22 @@ module gfm.math.solver;
 
 import std.traits;
 import std.math;
-//import std.algorithm;
 
 /**
  * Find the root of a linear polynomial a + b x = 0
  * Return number of roots.
   */
-size_t solveLinear(T)(T a, T b, out T root) pure nothrow //if (isFloatingPoint!T)
+size_t solveLinear(T)(T a, T b, out T root) pure nothrow if (isFloatingPoint!T)
 {
     if (b == 0)
+    {
         return 0;
-
-    root = -a / b;
+    }
+    else
+    {
+        root = -a / b;
+        return 1;
+    }
 }
 
 
@@ -24,11 +28,11 @@ size_t solveLinear(T)(T a, T b, out T root) pure nothrow //if (isFloatingPoint!T
  * Finds the root roots of a quadratic polynomial a + b x + c x^2 = 0
  * Returns number of roots. roots slice should have room for up to 2 roots.
  */
-size_t solveQuadratic(T)(T a, T b, T c, T[] roots) pure nothrow //if (isFloatingPoint!T)
+size_t solveQuadratic(T)(T a, T b, T c, T[] roots) pure nothrow
 {
-    assert(results.length >= 2);
+    assert(roots.length >= 2);
     if (c == 0)
-        return solveLinear(a, b, result[0]);
+        return solveLinear(a, b, roots[0]);
 
     T delta = b * b - 4 * a * c;
     if (delta < 0.0 )
@@ -37,8 +41,8 @@ size_t solveQuadratic(T)(T a, T b, T c, T[] roots) pure nothrow //if (isFloating
     delta = sqrt(delta);
     T oneOver2a = 0.5 / a;
 
-    roots[0] = oneOver2a * (-b - Delta);
-    roots[1] = oneOver2a * (-b + Delta);
+    roots[0] = oneOver2a * (-b - delta);
+    roots[1] = oneOver2a * (-b + delta);
     return 2;
 }
 
@@ -49,11 +53,11 @@ size_t solveQuadratic(T)(T a, T b, T c, T[] roots) pure nothrow //if (isFloating
  * (pretty much the same as http://mathworld.wolfram.com/CubicFormula.html)
  * Returns number of roots. roots slice should have room for up to 3 elements.
  */
-size_t solveCubic(T)(T a, T b, T c, T d, T[] roots) pure nothrow //if (isFloatingPoint!T)
+size_t solveCubic(T)(T a, T b, T c, T d, T[] roots) pure nothrow if (isFloatingPoint!T)
 {
-    assert(results.length >= 3);
+    assert(roots.length >= 3);
     if (d == 0)
-        return solveQuadratic(a, b, c, results);
+        return solveQuadratic(a, b, c, roots);
 
     // adjust coefficients
     T a1 = c / d,
@@ -64,22 +68,22 @@ size_t solveCubic(T)(T a, T b, T c, T d, T[] roots) pure nothrow //if (isFloatin
       R = (2 * a1 * a1 * a1 - 9 * a1 * a2 + 27 * a3) / 54;
 
     T Qcubed = Q * Q * Q;
-    T d = Qcubed - R * R;
+    T d2 = Qcubed - R * R;
     
-    if (d >= 0)
+    if (d2 >= 0)
     {   
         // 3 real roots
         if (Q < 0.0)
             return 0;
-        T P = R / Math.sqrt(Qcubed);
+        T P = R / sqrt(Qcubed);
 
         assert(P >= 0 && P <= 1);
         T theta = acos(P);
-        T sqrtQ = Math.sqrt(Q);
+        T sqrtQ = sqrt(Q);
 
         roots[0] = -2 * sqrtQ * cos(theta / 3) - a1 / 3;
-        roots[1] = -2 * sqrtQ * cos((theta + 2 * Math.PI) / 3) - a1 / 3;
-        roots[2] = -2 * sqrtQ * cos((theta + 4 * Math.PI) / 3) - a1 / 3;
+        roots[1] = -2 * sqrtQ * cos((theta + 2 * PI) / 3) - a1 / 3;
+        roots[2] = -2 * sqrtQ * cos((theta + 4 * PI) / 3) - a1 / 3;
         return 3;
     }
     else
@@ -99,7 +103,7 @@ size_t solveCubic(T)(T a, T b, T c, T d, T[] roots) pure nothrow //if (isFloatin
  * Code from http://mathworld.wolfram.com/QuarticEquation.html
  * Returns number of roots. roots slice should have room for up to 4 elements.
  */
-size_t solveQuartic(T)(T a, T b, T c, T d, T e, T[] roots) pure nothrow //if (isFloatingPoint!T)
+size_t solveQuartic(T)(T a, T b, T c, T d, T e, T[] roots) pure nothrow if (isFloatingPoint!T)
 {
     assert(results.length >= 4);
 
@@ -121,7 +125,9 @@ size_t solveQuartic(T)(T a, T b, T c, T d, T e, T[] roots) pure nothrow //if (is
     T[3] resolventCubicRoots;
     size_t numRoots = solveCubic(b0, b1, b2, 1, resolventCubicRoots[]);
     assert(numRoots == 3);
-    T y = max(resolventCubicRoots);
+    T y = resolventCubicRoots[0];
+    if (y < resolventCubicRoots[1]) y = resolventCubicRoots[1];
+    if (y < resolventCubicRoots[2]) y = resolventCubicRoots[2];
 
     // Compute R, D & E
     T R = 0.25f * a3 * a3 - a2 + y;
@@ -157,4 +163,25 @@ size_t solveQuartic(T)(T a, T b, T c, T d, T e, T[] roots) pure nothrow //if (is
     roots[2] = a3 - R + E;
     roots[1] = a3 - R - E;
     return 4;
+}
+
+unittest
+{
+    bool arrayContainsRoot(double[] arr, double root)
+    {
+        foreach(e; arr)
+            if (abs(e - root) < 1e-7)
+                return true;
+        return false;
+    }
+
+    // test quadratic
+    {
+        double[3] roots;
+        int numRoots = solveCubic!double(-2, -3 / 2.0, 3 / 4.0, 1 / 4.0, roots[]);
+        assert(numRoots == 3);
+        assert(arrayContainsRoot(roots[], -4));
+        assert(arrayContainsRoot(roots[], -1));
+        assert(arrayContainsRoot(roots[], 2));
+    }
 }
