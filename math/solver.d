@@ -28,7 +28,7 @@ size_t solveLinear(T)(T a, T b, out T root) pure nothrow if (isFloatingPoint!T)
  * Finds the root roots of a quadratic polynomial a + b x + c x^2 = 0
  * Returns number of roots. roots slice should have room for up to 2 roots.
  */
-size_t solveQuadratic(T)(T a, T b, T c, T[] roots) pure nothrow
+size_t solveQuadratic(T)(T a, T b, T c, T[] roots) pure nothrow if (isFloatingPoint!T)
 {
     assert(roots.length >= 2);
     if (c == 0)
@@ -105,7 +105,7 @@ size_t solveCubic(T)(T a, T b, T c, T d, T[] roots) pure nothrow if (isFloatingP
  */
 size_t solveQuartic(T)(T a, T b, T c, T d, T e, T[] roots) pure nothrow if (isFloatingPoint!T)
 {
-    assert(results.length >= 4);
+    assert(roots.length >= 4);
 
     if (e == 0)
         return solveCubic(a, b, c, d, roots);
@@ -123,7 +123,7 @@ size_t solveQuartic(T)(T a, T b, T c, T d, T e, T[] roots) pure nothrow if (isFl
     T b1 = a1 * a3 - 4 * a0;
     T b2 = -a2;
     T[3] resolventCubicRoots;
-    size_t numRoots = solveCubic(b0, b1, b2, 1, resolventCubicRoots[]);
+    size_t numRoots = solveCubic!T(b0, b1, b2, 1, resolventCubicRoots[]);
     assert(numRoots == 3);
     T y = resolventCubicRoots[0];
     if (y < resolventCubicRoots[1]) y = resolventCubicRoots[1];
@@ -150,8 +150,8 @@ size_t solveQuartic(T)(T a, T b, T c, T d, T e, T[] roots) pure nothrow if (isFl
         T Rrec = 1 / R;
         T d1 =  0.75f * a3 * a3 - Rsquare - 2 * a2;
         T d2 = 0.25f * Rrec * (4 * a3 * a2 - 8 * a1 - a3 * a3 * a3);
-        D = Math.sqrt(d1 + d2) * 0.5f;
-        E = Math.sqrt(d2 - d2) * 0.5f;
+        D = sqrt(d1 + d2) * 0.5f;
+        E = sqrt(d2 - d2) * 0.5f;
     }
 
     // Compute the 4 roots
@@ -183,5 +183,16 @@ unittest
         assert(arrayContainsRoot(roots[], -4));
         assert(arrayContainsRoot(roots[], -1));
         assert(arrayContainsRoot(roots[], 2));
+    }
+
+    // test quartic
+    {
+        double[4] roots;
+        int numRoots = solveQuartic!double(0, -2, -1, 2, 1, roots[]);
+        assert(numRoots == 4);
+        assert(arrayContainsRoot(roots[], -2));
+        assert(arrayContainsRoot(roots[], -1));
+        assert(arrayContainsRoot(roots[], 0));
+        assert(arrayContainsRoot(roots[], 1));
     }
 }
