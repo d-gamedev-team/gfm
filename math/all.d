@@ -13,4 +13,5 @@ public
     import gfm.math.shapes;
     import gfm.math.fixedpoint;
     import gfm.math.easing;
+    import gfm.math.solver;
 }

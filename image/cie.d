@@ -1,7 +1,8 @@
-module gfm.color.cie;
+module gfm.image.cie;
 
 import gfm.math.smallvector;
 
+// This module performs various color computation and conversions.
 // See: http://www.brucelindbloom.com
 
 

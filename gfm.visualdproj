@@ -185,9 +185,6 @@
   <filesToClean>*.obj;*.cmd;*.build;*.json;*.dep</filesToClean>
  </Config>
  <Folder name="gfm">
-  <Folder name="color">
-   <File path="color\cie.d" />
-  </Folder>
   <Folder name="common">
    <File path="common\alignedbuffer.d" />
    <File path="common\all.d" />
@@ -210,6 +207,7 @@
   </Folder>
   <Folder name="image">
    <File path="image\all.d" />
+   <File path="image\cie.d" />
    <File path="image\image.d" />
    <File path="image\plane.d" />
    <File path="image\yv12image.d" />
@@ -227,6 +225,7 @@
    <File path="math\smallmatrix.d" />
    <File path="math\smallvector.d" />
    <File path="math\softcent.d" />
+   <File path="math\solver.d" />
    <File path="math\statistics.d" />
   </Folder>
   <Folder name="opengl">

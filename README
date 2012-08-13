@@ -17,9 +17,14 @@ math/
 - basic fixed-point numbers
 - fractions
 - statistics
+- polynomial solvers up to quadratic
 - a port of SimpleRNG from John D. Cook (statistical distributions random generator) (*)
 - a port of easing functions from Robert Penner (*)
 - misc math functions
+
+image/
+- image abstraction
+- physical color computations
 
 sdl2/
 - SDL 2.0 wrapper based on Derelict3
