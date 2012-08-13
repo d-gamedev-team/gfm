@@ -24,6 +24,7 @@ final class MatrixStack(size_t R, T) if (R == 3 || R == 4)
             _matrices = cast(matrix_t*)data;
             _invMatrices = cast(matrix_t*)(data + memNeeded);
             _top = 0;
+            _depth = depth;
             loadIdentity();
         }
 
