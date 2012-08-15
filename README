@@ -14,6 +14,7 @@ math/
 - half-open intervals
 - quaternions
 - 128 bits integers (cent/ucent implentation), including division algorithm from Ian Kaplan (*)
+- half floats
 - basic fixed-point numbers
 - fractions
 - statistics
