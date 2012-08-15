@@ -39,7 +39,7 @@ import std.traits;
 
 private template makeEasing(string name, string easeInBody)
 {
-    string makeEasing = 
+    enum string makeEasing = 
           r"T easeIn" ~ name ~ r"(T)(T t) if isFloatingPoint!T
             {"
                 ~ easeInBody ~ r"
