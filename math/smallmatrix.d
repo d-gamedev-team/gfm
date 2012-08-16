@@ -52,7 +52,7 @@ align(1) struct SmallMatrix(size_t R, size_t C, T)
         // construct with columns
         static SmallMatrix fromColumns(column_t[] columns...) pure nothrow
         {
-            SmallMatrix res = void;
+            SmallMatrix res;
             for (size_t i = 0; i < R; ++i)
                 for (size_t j = 0; j < C; ++j)
                 {
@@ -61,9 +61,9 @@ align(1) struct SmallMatrix(size_t R, size_t C, T)
             return res;
         }
 
-        static SmallMatrix fromRows(row_t[] rows...) pure nothrow
+        static SmallMatrix fromRows(row_t[R] rows...) pure nothrow
         {
-            SmallMatrix res = void;
+            SmallMatrix res;
             res.rows[] = rows[];
             return res;
         }
@@ -139,7 +139,7 @@ align(1) struct SmallMatrix(size_t R, size_t C, T)
                 T sum = 0;
                 for (size_t j = 0; j < C; ++j)
                 {
-                    sum += c[i][j] * x[j];
+                    sum += c[i][j] * x.v[j];
                 }
                 res[i] = sum;
             }
