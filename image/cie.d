@@ -70,29 +70,29 @@ vec3f spectralToXYZColor(SpectralReflectance c, ReferenceWhite illuminant) pure 
 vec3f toLinearRGB(RGBSpace space)(vec3f compandedRGB)
 {
     alias compandedRGB c;
-    final switch (RGBSettings!space.companding)
+    final switch (getRGBSettings(space).companding)
     {
         case Companding.GAMMA:
         {
-            float gamma = RGBSettings!space.gamma;
+            float gamma = getRGBSettings(space).gamma;
             return c ^^ gamma;
         }
 
         case Companding.sRGB:
         {
-            static f(float x)
+            static s(float x)
             {
                 if (x <= 0.04045f)
                     return x / 12.92f;
                 else
                     return ((x + 0.055f) / 1.055f) ^^ 2.4f;
             }
-            return vec3f(f(c.x), f(c.y), f(c.z));
+            return vec3f(s(c.x), s(c.y), s(c.z));
         }
 
         case Companding.L_STAR:
         {
-            static f(float x)
+            static l(float x)
             {
                 const K = 903.3f;
                 if (x <= 0.08f)
@@ -100,47 +100,47 @@ vec3f toLinearRGB(RGBSpace space)(vec3f compandedRGB)
                 else
                     return ((x + 0.16f) / 1.16f) ^^ 3;
             }
-            return vec3f(f(c.x), f(c.y), f(c.z));
+            return vec3f(l(c.x), l(c.y), l(c.z));
         }
     }    
 }
 
 // convert from uncompanded RGB to companded RGB
 // input and output in [0..1]
-vec3f toCompandedRGB(RGBSpace space)(vec3f )
+vec3f toCompandedRGB(RGBSpace space)(vec3f compandedRGB)
 {
     alias compandedRGB c;
-    final switch (RGBSettings.companding)
+    final switch (getRGBSettings(space).companding)
     {
         case Companding.GAMMA:
         {
-            float invGamma = 1 / RGBSettings!space.gamma;
+            float invGamma = 1 / getRGBSettings(space).gamma;
             return c ^^ invGamma;
         }
 
         case Companding.sRGB:
         {
-            static f(float x)
+            static s(float x)
             {
                 if (x <= 0.0031308f)
                     return x * 12.92f;
                 else
                     return 1.055f * (x ^^ (1 / 2.4f)) - 0.055f;
             }
-            return vec3f(f(c.x), f(c.y), f(c.z));
+            return vec3f(s(c.x), s(c.y), s(c.z));
         }
 
         case Companding.L_STAR:
         {
-            static f(float x)
+            static l(float x)
             {
                 const K = 903.3f;
                 if (x <= 0.008856f)
-                    return x * K / 100.f;
+                    return x * K / 100.0f;
                 else
                     return 1.16f * (x ^^ (1 / 3.0f)) - 0.16f;
             }
-            return vec3f(f(c.x), f(c.y), f(c.z));
+            return vec3f(l(c.x), l(c.y), l(c.z));
         }
     }
 }
@@ -148,14 +148,16 @@ vec3f toCompandedRGB(RGBSpace space)(vec3f )
 // concert linear RGB to XYZ
 vec3f linearRGBToXYZ(RGBSpace space)(vec3f rgb)
 {
-    enum M = makeRGBToXYZMatrix();
+    // TODO: make M compile-time
+    auto M = getRGBSettings(space).makeRGBToXYZMatrix();
     return M * rgb;
 }
 
 // concert XYZ to linear RGB
 vec3f XYZToLinearRGB(RGBSpace space)(vec3f xyz)
 {
-    enum M = makeXYZToRGBMatrix();
+    // TODO: make M compile-time
+    auto M = getRGBSettings(space).makeXYZToRGBMatrix();
     return M * xyz;
 }
 
@@ -272,7 +274,7 @@ private
         assert(xyY.x >= 0 && xyY.x <= 1
                && xyY.y >= 0 && xyY.y <= 1
                && xyY.z >= 0 && xyY.z <= 1);
-        if (xyY == 0)
+        if (xyY.y == 0)
         {
             return vec3f(0.0f);
         }
@@ -314,102 +316,51 @@ private
             vec3f g = xyYToXYZColor(vec3f(xGreen, yGreen, 1.0f));
             vec3f b = xyYToXYZColor(vec3f(xBlue, yBlue, 1.0f));
 
-            auto P = mat3f.fromRows(r, g, b);
-            vec3f S = P.inverse() * refWhiteToXYZ(refWhite);
+            vec3f S = mat3f.fromRows(r, g, b).inverse() * refWhiteToXYZ(refWhite);
             return mat3f.fromRows(r * S, g * S, b * S);
         }
 
         // return the 3x3 matrix to go from a, XYZ space to an RGB space
         // the XYZ space must be parameterized with the RGB reference white
-        mat3f makeRGBToXYZMatrix() pure const nothrow
+        mat3f makeRGBToXYZMatrix() pure const nothrow 
         {
             return makeXYZToRGBMatrix().inverse();
         }
     }
 
     // gives characteristics of known RGB space
-    template RGBSettings(RGBSpace s)
+    RGBSpaceConf getRGBSettings(RGBSpace s)
     {
-        static if (s == sRGB)
+        final switch(s)
         {
-            enum r = RGBSpaceConf(Companding.sRGB, float.nan, ReferenceWhite.D65, 
-                                  0.6400f, 0.3300f, 0.212656f, 0.3000f, 0.6000f, 0.715158f, 0.1500f, 0.0600f, 0.072186f);
+            case RGBSpace.sRGB: return RGBSpaceConf(Companding.sRGB, float.nan, ReferenceWhite.D65, 0.6400f, 0.3300f, 0.212656f, 0.3000f, 0.6000f, 0.715158f, 0.1500f, 0.0600f, 0.072186f);
+            case RGBSpace.ADOBE_RGB: return RGBSpaceConf(Companding.GAMMA, 2.2f, ReferenceWhite.D65, 0.6400f, 0.3300f, 0.297361f, 0.2100f, 0.7100f, 0.627355f, 0.1500f, 0.0600f, 0.075285f);
+            case RGBSpace.APPLE_RGB: return RGBSpaceConf(Companding.GAMMA, 1.8f, ReferenceWhite.D65, 0.6250f, 0.3400f, 0.244634f, 0.2800f, 0.5950f, 0.672034f, 0.1550f, 0.0700f, 0.083332f);
+            case RGBSpace.BEST_RGB: return RGBSpaceConf(Companding.GAMMA, 2.2f, ReferenceWhite.D50, 0.7347f, 0.2653f, 0.228457f, 0.2150f, 0.7750f, 0.737352f, 0.1300f, 0.0350f, 0.034191f);
+            case RGBSpace.BETA_RGB: return RGBSpaceConf(Companding.GAMMA, 2.2f, ReferenceWhite.D50, 0.6888f, 0.3112f, 0.303273f, 0.1986f, 0.7551f, 0.663786f, 0.1265f, 0.0352f, 0.032941f);
+            case RGBSpace.BRUCE_RGB: return RGBSpaceConf(Companding.GAMMA, 2.2f, ReferenceWhite.D65, 0.6400f, 0.3300f, 0.240995f, 0.2800f, 0.6500f, 0.683554f, 0.1500f, 0.0600f, 0.075452f);
+            case RGBSpace.CIE_RGB: return RGBSpaceConf(Companding.GAMMA, 2.2f, ReferenceWhite.E, 0.7350f, 0.2650f, 0.176204f, 0.2740f, 0.7170f, 0.812985f, 0.1670f, 0.0090f, 0.010811f);
+            case RGBSpace.COLORMATCH_RGB: return RGBSpaceConf(Companding.GAMMA, 1.8f, ReferenceWhite.D50, 0.6300f, 0.3400f, 0.274884f, 0.2950f, 0.6050f, 0.658132f, 0.1500f, 0.0750f, 0.066985f);
+            case RGBSpace.DON_RGB_4: return RGBSpaceConf(Companding.GAMMA, 2.2f, ReferenceWhite.D50, 0.6960f, 0.3000f, 0.278350f, 0.2150f, 0.7650f, 0.687970f, 0.1300f, 0.0350f, 0.033680f);
+            case RGBSpace.ECI_RGB_V2: return RGBSpaceConf(Companding.L_STAR, float.nan, ReferenceWhite.D50, 0.6700f, 0.3300f, 0.320250f, 0.2100f, 0.7100f, 0.602071f, 0.1400f, 0.0800f, 0.077679f);
+            case RGBSpace.EKTA_SPACE_PS5: return RGBSpaceConf(Companding.GAMMA, 2.2f, ReferenceWhite.D50, 0.6950f, 0.3050f, 0.260629f, 0.2600f, 0.7000f, 0.734946f, 0.1100f, 0.0050f, 0.004425f);
+            case RGBSpace.NTSC_RGB: return RGBSpaceConf(Companding.GAMMA, 2.2f, ReferenceWhite.C, 0.6700f, 0.3300f, 0.298839f, 0.2100f, 0.7100f, 0.586811f, 0.1400f, 0.0800f, 0.114350f);
+            case RGBSpace.PAL_SECAM_RGB: return RGBSpaceConf(Companding.GAMMA, 2.2f, ReferenceWhite.D65, 0.6400f, 0.3300f, 0.222021f, 0.2900f, 0.6000f, 0.706645f, 0.1500f, 0.0600f, 0.071334f);
+            case RGBSpace.PROPHOTO_RGB: return RGBSpaceConf(Companding.GAMMA, 1.8f, ReferenceWhite.D50, 0.7347f, 0.2653f, 0.288040f, 0.1596f, 0.8404f, 0.711874f, 0.0366f, 0.0001f, 0.000086f);
+            case RGBSpace.SMPTE_C_RGB: return RGBSpaceConf(Companding.GAMMA, 2.2f, ReferenceWhite.D65, 0.6300f, 0.3400f, 0.212395f, 0.3100f, 0.5950f, 0.701049f, 0.1550f, 0.0700f, 0.086556f);
+            case RGBSpace.WIDE_GAMUT_RGB: return RGBSpaceConf(Companding.GAMMA, 2.2f, ReferenceWhite.D50, 0.7350f, 0.2650f, 0.258187f, 0.1150f, 0.8260f, 0.724938f, 0.1570f, 0.0180f, 0.016875f);
         }
-        else static if (s == ADOBE_RGB)
-        {
-            enum r = RGBSpaceConf(Companding.GAMMA, 2.2f, ReferenceWhite.D65, 
-                                  0.6400f, 0.3300f, 0.297361f, 0.2100f, 0.7100f, 0.627355f, 0.1500f, 0.0600f, 0.075285f);
-        }
-        else static if (s == APPLE_RGB)
-        {
-            enum r = RGBSpaceConf(Companding.GAMMA, 1.8f, ReferenceWhite.D65, 
-                                  0.6250f, 0.3400f, 0.244634f, 0.2800f, 0.5950f, 0.672034f, 0.1550f, 0.0700f, 0.083332f);
-        }
-        else static if (s == BEST_RGB)
-        {
-            enum r = RGBSpaceConf(Companding.GAMMA, 2.2f, ReferenceWhite.D50, 
-                                  0.7347f, 0.2653f, 0.228457f, 0.2150f, 0.7750f, 0.737352f, 0.1300f, 0.0350f, 0.034191f);
-        }
-        else static if (s == BETA_RGB)
-        {
-            enum r = RGBSpaceConf(Companding.GAMMA, 2.2f, ReferenceWhite.D50, 
-                                  0.6888f, 0.3112f, 0.303273f, 0.1986f, 0.7551f, 0.663786f, 0.1265f, 0.0352f, 0.032941f);
-        }
-        else static if (s == BRUCE_RGB)
-        {
-            enum r = RGBSpaceConf(Companding.GAMMA, 2.2f, ReferenceWhite.D65, 
-                                  0.6400f, 0.3300f, 0.240995f, 0.2800f, 0.6500f, 0.683554f, 0.1500f, 0.0600f, 0.075452f);
-        }
-        else static if (s == CIE_RGB)
-        {
-            enum r = RGBSpaceConf(Companding.GAMMA, 2.2f, ReferenceWhite.E, 
-                                  0.7350f, 0.2650f, 0.176204f, 0.2740f, 0.7170f, 0.812985f, 0.1670f, 0.0090f, 0.010811f);
-        }
-        static if (s == COLORMATCH_RGB)
-        {
-            enum r = RGBSpaceConf(Companding.GAMMA, 1.8f, ReferenceWhite.D50, 
-                                  0.6300f, 0.3400f, 0.274884f, 0.2950f, 0.6050f, 0.658132f, 0.1500f, 0.0750f, 0.066985f);
-        }
-        else static if (s == DON_RGB_4)
-        {
-            enum r = RGBSpaceConf(Companding.GAMMA, 2.2f, ReferenceWhite.D50, 
-                                  0.6960f, 0.3000f, 0.278350f, 0.2150f, 0.7650f, 0.687970f, 0.1300f, 0.0350f, 0.033680f);
-        }
-        else static if (s == ECI_RGB_V2)
-        {
-            enum r = RGBSpaceConf(Companding.L_STAR, float.nan, ReferenceWhite.D50, 
-                                  0.6700f, 0.3300f, 0.320250f, 0.2100f, 0.7100f, 0.602071f, 0.1400f, 0.0800f, 0.077679f);
-        }
-        else static if (s == EKTA_SPACE_PS5)
-        {
-            enum r = RGBSpaceConf(Companding.GAMMA, 2.2f, ReferenceWhite.D50, 
-                                  0.6950f, 0.3050f, 0.260629f, 0.2600f, 0.7000f, 0.734946f, 0.1100f, 0.0050f, 0.004425f);
-        }
-        else static if (s == NTSC_RGB)
-        {
-            enum r = RGBSpaceConf(Companding.GAMMA, 2.2f, ReferenceWhite.C, 
-                                  0.6700f, 0.3300f, 0.298839f, 0.2100f, 0.7100f, 0.586811f, 0.1400f, 0.0800f, 0.114350f);
-        }
-        else static if (s == PAL_SECAM_RGB)
-        {
-            enum r = RGBSpaceConf(Companding.GAMMA, 2.2f, ReferenceWhite.D65, 
-                                  0.6400f, 0.3300f, 0.222021f, 0.2900f, 0.6000f, 0.706645f, 0.1500f, 0.0600f, 0.071334f);
-        }
-        else static if (s == PROPHOTO_RGB)
-        {
-            enum r = RGBSpaceConf(Companding.GAMMA, 1.8f, ReferenceWhite.D50, 
-                                  0.7347f, 0.2653f, 0.288040f, 0.1596f, 0.8404f, 0.711874f, 0.0366f, 0.0001f, 0.000086f);
-        }
-        else static if (s == SMPTE_C_RGB)
-        {
-            enum r = RGBSpaceConf(Companding.GAMMA, 2.2f, ReferenceWhite.D65, 
-                                  0.6300f, 0.3400f, 0.212395f, 0.3100f, 0.5950f, 0.701049f, 0.1550f, 0.0700f, 0.086556f);
-        }
-        else static if (s == WIDE_GAMUT_RGB)
-        {
-            enum r = RGBSpaceConf(Companding.GAMMA, 2.2f, ReferenceWhite.D50, 
-                                  0.7350f, 0.2650f, 0.258187f, 0.1150f, 0.8260f, 0.724938f, 0.1570f, 0.0180f, 0.016875f);
-        }
-        enum RGBSettings = r;
     }
+}
+
+unittest
+{
+    vec3f white = vec3f(1.0f);
+    
+    vec3f XYZ = linearRGBToXYZ!(RGBSpace.sRGB)(toLinearRGB!(RGBSpace.sRGB)(white));
+    vec3f rgb = toCompandedRGB!(RGBSpace.sRGB)(XYZToLinearRGB!(RGBSpace.sRGB)(XYZ));
+
+    assert(white.distanceTo(rgb) < 1e-3f);
+
+
 }
