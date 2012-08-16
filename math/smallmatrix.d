@@ -12,10 +12,6 @@ import gfm.math.smallvector;
 // intended for 3D (mainly size 3x3 and 4x4)
 // IMPORTANT: matrices here are in ROW-MAJOR order
 // while OpenGL is column-major
-
-// TODO: - do we need constructor from columns ?
-//       - invert square matrices
-
 align(1) struct SmallMatrix(size_t R, size_t C, T)
 {
     public
@@ -54,7 +50,7 @@ align(1) struct SmallMatrix(size_t R, size_t C, T)
         }
 
         // construct with columns
-        static SmallMatrix fromColumns(column_t[] columns...)
+        static SmallMatrix fromColumns(column_t[] columns...) pure nothrow
         {
             SmallMatrix res = void;
             for (size_t i = 0; i < R; ++i)
@@ -65,7 +61,7 @@ align(1) struct SmallMatrix(size_t R, size_t C, T)
             return res;
         }
 
-        static SmallMatrix fromRows(row_t[] rows...)
+        static SmallMatrix fromRows(row_t[] rows...) pure nothrow
         {
             SmallMatrix res = void;
             res.rows[] = rows[];
@@ -190,7 +186,7 @@ align(1) struct SmallMatrix(size_t R, size_t C, T)
             return res;
         }
 
-        bool opEquals(U)(U other) pure const if (is(U : SmallMatrix))
+        bool opEquals(U)(U other) pure const nothrow if (is(U : SmallMatrix))
         {
             for (size_t i = 0; i < _N; ++i)
                 if (v[i] != other.v[i])
@@ -198,7 +194,7 @@ align(1) struct SmallMatrix(size_t R, size_t C, T)
             return true;
         }
 
-        bool opEquals(U)(U other) pure const
+        bool opEquals(U)(U other) pure const nothrow
             if ((isAssignable!U) && (!is(U: SmallMatrix)))
         {
             SmallMatrix conv = other;
@@ -206,7 +202,7 @@ align(1) struct SmallMatrix(size_t R, size_t C, T)
         }
 
         // +matrix, -matrix, ~matrix, !matrix
-        SmallMatrix opUnary(string op)() pure const if (op == "+" || op == "-" || op == "~" || op == "!")
+        SmallMatrix opUnary(string op)() pure const nothrow if (op == "+" || op == "-" || op == "~" || op == "!")
         {
             SmallMatrix res = void;
             for (size_t i = 0; i < N; ++i)
@@ -217,7 +213,7 @@ align(1) struct SmallMatrix(size_t R, size_t C, T)
         // matrix inversion, provided for 2x2, 3x3 and 4x4 floating point matrices
         static if (isSquare && isFloatingPoint!T && _R == 2)
         {
-            SmallMatrix inverse()
+            SmallMatrix inverse() pure const nothrow
             {
                 T invDet = 1 / (c[0][0] * c[1][1] - c[0][1] * c[1][0]);
                 return SmallMatrix( c[1][1] * invDet, -c[0][1] * invDet,
@@ -227,7 +223,7 @@ align(1) struct SmallMatrix(size_t R, size_t C, T)
 
         static if (isSquare && isFloatingPoint!T && _R == 3)
         {
-            SmallMatrix inverse()
+            SmallMatrix inverse() pure const nothrow
             {
                 T det = c[0][0] * (c[1][1] * c[2][2] - c[2][1] * c[1][2])
                       - c[0][1] * (c[1][0] * c[2][2] - c[1][2] * c[2][0])
@@ -250,7 +246,7 @@ align(1) struct SmallMatrix(size_t R, size_t C, T)
 
         static if (isSquare && isFloatingPoint!T && _R == 4)
         {
-            SmallMatrix inverse()
+            SmallMatrix inverse() pure const nothrow
             {
                 T det2_01_01 = c[0][0] * c[1][1] - c[0][1] * c[1][0];
                 T det2_01_02 = c[0][0] * c[1][2] - c[0][2] * c[1][0];
