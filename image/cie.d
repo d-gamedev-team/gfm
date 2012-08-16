@@ -5,7 +5,6 @@ import gfm.math.smallvector;
 // This module performs various color computation and conversions.
 // See: http://www.brucelindbloom.com
 
-
 // Standard illuminants (or reference whites) provide a basis for comparing colors recorded under different lighting.
 enum ReferenceWhite
 {
@@ -22,30 +21,36 @@ enum ReferenceWhite
     F11
 };
 
-// A spectrum color holds energy values from 360 to 780 nm, by 5 nm increments
-alias SmallVector!(95u, float) SpectralColor;
+// A spectral distribution is actual energy, from 360 to 780 nm, by 5 nm increments
+alias SmallVector!(95u, float) SpectralDistribution;
+
+// Holds reflectance values, can only be converted to a SpectralDistribution
+// when lit with a ReferenceWhite.
+// from 360 to 780 nm, by 5 nm increments
+// Reflectances are parameterized by a ReferenceWhite.
+alias SmallVector!(95u, float) SpectralReflectance;
 
 // Converts spectral color into a XYZ space (parameterized by an illuminant)
-vec3f spectralToXYZColor(SpectralColor c, ReferenceWhite illuminant) pure nothrow
+vec3f spectralToXYZColor(SpectralReflectance c, ReferenceWhite illuminant) pure nothrow
 {
-    SpectralColor c_lit = c * refWhiteToSpectralColor(illuminant);
+    SmallVector!(95u, float) c_lit = c * refWhiteToSpectralDistribution(illuminant);
     return vec3f(dot(CIE_OBS_X2, c_lit),
-                    dot(CIE_OBS_Y2, c_lit),
-                    dot(CIE_OBS_Z2, c_lit));
+                 dot(CIE_OBS_Y2, c_lit),
+                 dot(CIE_OBS_Z2, c_lit));
 }
 
-// Converts from such a XYZ space back to spectral colors
-SpectralColor XYZToSpectralColor(vec3f XYZ, ReferenceWhite illuminant) pure nothrow
+// Converts from such a XYZ space back to spectral reflectance
+// Both spaces parametereized by the same Illuminant.
+SpectralReflectance XYZToSpectralColor(vec3f XYZ) pure nothrow
 {
-    SpectralColor c_lit = CIE_OBS_X2 * XYZ.x + CIE_OBS_Y2 * XYZ.y + CIE_OBS_Z2 * XYZ.z;
-    return c_lit / illuminant;
+    return CIE_OBS_X2 * XYZ.x + CIE_OBS_Y2 * XYZ.y + CIE_OBS_Z2 * XYZ.z;
 }
 
 private
 {
     // defining spectrum table of CIE 1931 Standard Colorimetric Observer
     // aka 2° observer
-    enum SpectralColor CIE_OBS_X2 = SpectralColor
+    enum SpectralDistribution CIE_OBS_X2 = SpectralDistribution
     ([
         0.0001299f, 0.0002321f, 0.0004149f, 0.0007416f, 0.001368f,
         0.002236f, 0.004243f, 0.00765f, 0.01431f, 0.02319f,
@@ -68,7 +73,7 @@ private
         5.08587e-06f, 3.58165e-06f, 2.52253e-06f, 1.77651e-06f, 1.25114e-06f
     ]);
 
-    enum SpectralColor CIE_OBS_Y2 = SpectralColor
+    enum SpectralDistribution CIE_OBS_Y2 = SpectralDistribution
     ([
         0.000003917f, 0.000006965f, 0.00001239f, 0.00002202f, 0.000039f,
         0.000064f, 0.00012f, 0.000217f, 0.000396f, 0.00064f,
@@ -91,7 +96,7 @@ private
         1.8366e-06f, 1.2934e-06f, 9.1093e-07f, 6.4153e-07f, 4.5181e-07f
     ]);
 
-    enum SpectralColor CIE_OBS_Z2 = SpectralColor
+    enum SpectralDistribution CIE_OBS_Z2 = SpectralDistribution
     ([
         0.0006061f, 0.001086f, 0.001946f, 0.003486f, 0.006450001f,
         0.01054999f, 0.02005001f, 0.03621f, 0.06785001f, 0.1102f,
@@ -133,8 +138,10 @@ private
         }
     }
 
-    SpectralColor refWhiteToSpectralColor(ReferenceWhite illuminant) pure nothrow
+    SpectralDistribution refWhiteToSpectralDistribution(ReferenceWhite illuminant) pure nothrow
     {
+        // TODO: actual reference white distributions? especially for F*
+        // TODO: precalc
         vec3f XYZ = refWhiteToXYZ(illuminant);
         return CIE_OBS_X2 * XYZ.x + CIE_OBS_Y2 * XYZ.y + CIE_OBS_Z2 * XYZ.z;
     }
