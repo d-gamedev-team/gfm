@@ -1,9 +1,11 @@
 module gfm.image.cie;
 
 import gfm.math.smallvector;
+import gfm.math.smallmatrix;
 
 // This module performs various color computation and conversions.
 // See: http://www.brucelindbloom.com
+// TODO: tag XYZ values with a ReferenceWhite?
 
 // Standard illuminants (or reference whites) provide a basis for comparing colors recorded under different lighting.
 enum ReferenceWhite
@@ -21,6 +23,8 @@ enum ReferenceWhite
     F11
 }
 
+// define various RGB spaces, which all have a reference white, 
+// a power curve and primary xyY coordinates
 enum RGBSpace
 {
     sRGB,
@@ -58,6 +62,101 @@ vec3f spectralToXYZColor(SpectralReflectance c, ReferenceWhite illuminant) pure 
     return vec3f(dot(CIE_OBS_X2, c_lit),
                  dot(CIE_OBS_Y2, c_lit),
                  dot(CIE_OBS_Z2, c_lit));
+}
+
+
+// convert from companded RGB to uncompanded RGB
+// input and output in [0..1]
+vec3f toLinearRGB(RGBSpace space)(vec3f compandedRGB)
+{
+    alias compandedRGB c;
+    final switch (RGBSettings!space.companding)
+    {
+        case Companding.GAMMA:
+        {
+            float gamma = RGBSettings!space.gamma;
+            return c ^^ gamma;
+        }
+
+        case Companding.sRGB:
+        {
+            static f(float x)
+            {
+                if (x <= 0.04045f)
+                    return x / 12.92f;
+                else
+                    return ((x + 0.055f) / 1.055f) ^^ 2.4f;
+            }
+            return vec3f(f(c.x), f(c.y), f(c.z));
+        }
+
+        case Companding.L_STAR:
+        {
+            static f(float x)
+            {
+                const K = 903.3f;
+                if (x <= 0.08f)
+                    return (x * 100) / K;
+                else
+                    return ((x + 0.16f) / 1.16f) ^^ 3;
+            }
+            return vec3f(f(c.x), f(c.y), f(c.z));
+        }
+    }    
+}
+
+// convert from uncompanded RGB to companded RGB
+// input and output in [0..1]
+vec3f toCompandedRGB(RGBSpace space)(vec3f )
+{
+    alias compandedRGB c;
+    final switch (RGBSettings.companding)
+    {
+        case Companding.GAMMA:
+        {
+            float invGamma = 1 / RGBSettings!space.gamma;
+            return c ^^ invGamma;
+        }
+
+        case Companding.sRGB:
+        {
+            static f(float x)
+            {
+                if (x <= 0.0031308f)
+                    return x * 12.92f;
+                else
+                    return 1.055f * (x ^^ (1 / 2.4f)) - 0.055f;
+            }
+            return vec3f(f(c.x), f(c.y), f(c.z));
+        }
+
+        case Companding.L_STAR:
+        {
+            static f(float x)
+            {
+                const K = 903.3f;
+                if (x <= 0.008856f)
+                    return x * K / 100.f;
+                else
+                    return 1.16f * (x ^^ (1 / 3.0f)) - 0.16f;
+            }
+            return vec3f(f(c.x), f(c.y), f(c.z));
+        }
+    }
+}
+
+// concert linear RGB to XYZ
+vec3f linearRGBToXYZ(RGBSpace space)(vec3f rgb)
+{
+    enum M = makeRGBToXYZMatrix();
+    return M * rgb;
+}
+
+// concert XYZ to linear RGB
+vec3f XYZToLinearRGB(RGBSpace space)(vec3f xyz)
+{
+    enum M = makeXYZToRGBMatrix();
+    return M * xyz;
 }
 
 // Converts from such a XYZ space back to spectral reflectance
@@ -167,22 +266,8 @@ private
         return CIE_OBS_X2 * XYZ.x + CIE_OBS_Y2 * XYZ.y + CIE_OBS_Z2 * XYZ.z;
     }
 
-    // return a (x, y, Y) triplet from a (X, Y, Z) triplet
-    // TODO: bring ref white into account for black
-    vec3f XYZToxyYColor(vec3f XYZ)
-    {
-        assert(XYZ.x >= 0 && XYZ.x <= 1
-               && XYZ.y >= 0 && XYZ.y <= 1
-               && XYZ.z >= 0 && XYZ.z <= 1);
-        vec3f res = void;
-        res.x = XYZ.x / (XYZ.x + XYZ.y + XYZ.z);
-        res.y = XYZ.y / (XYZ.x + XYZ.y + XYZ.z);
-        res.z = XYZ.y;
-        return res;
-    }
-
     // return a (X, Y, Z) triplet from a (x, y, Y) triplet
-    vec3f xyYToXYZColor(vec3f xyY)
+    vec3f xyYToXYZColor(vec3f xyY) pure nothrow
     {
         assert(xyY.x >= 0 && xyY.x <= 1
                && xyY.y >= 0 && xyY.y <= 1
@@ -214,11 +299,32 @@ private
     struct RGBSpaceConf
     {
         Companding companding;
-        float gammaValue;
+        float gamma;
         ReferenceWhite refWhite;
         float xRed, yRed, YRed;
         float xGreen, yGreen, YGreen;
         float xBlue, yBlue, YBlue;
+
+        // return the 3x3 matrix to go from a RGB space to a XYZ space
+        // parameterized by the same reference white
+        mat3f makeXYZToRGBMatrix() pure const nothrow
+        {
+            // compute XYZ values of primaries
+            vec3f r = xyYToXYZColor(vec3f(xRed, yRed, 1.0f));
+            vec3f g = xyYToXYZColor(vec3f(xGreen, yGreen, 1.0f));
+            vec3f b = xyYToXYZColor(vec3f(xBlue, yBlue, 1.0f));
+
+            auto P = mat3f.fromRows(r, g, b);
+            vec3f S = P.inverse() * refWhiteToXYZ(refWhite);
+            return mat3f.fromRows(r * S, g * S, b * S);
+        }
+
+        // return the 3x3 matrix to go from a, XYZ space to an RGB space
+        // the XYZ space must be parameterized with the RGB reference white
+        mat3f makeRGBToXYZMatrix() pure const nothrow
+        {
+            return makeXYZToRGBMatrix().inverse();
+        }
     }
 
     // gives characteristics of known RGB space
