@@ -12,7 +12,7 @@ import gfm.math.vector;
 // intended for 3D (mainly size 3x3 and 4x4)
 // IMPORTANT: matrices here are in ROW-MAJOR order
 // while OpenGL is column-major
-align(1) struct Matrix(size_t R, size_t C, T)
+align(1) struct Matrix(T, size_t R, size_t C)
 {
     public
     {
@@ -150,7 +150,7 @@ align(1) struct Matrix(size_t R, size_t C, T)
         auto opBinary(string op, U)(U x)
             if (is(typeof(U._isMatrix)) && (U._R == C) && (op == "*"))
         {
-            Matrix!(R, U._C, T) result = void;
+            Matrix!(T, R, U._C) result = void;
 
             for (size_t i = 0; i < R; ++i)
             {
@@ -504,19 +504,19 @@ align(1) struct Matrix(size_t R, size_t C, T)
 
 // GLSL is a big inspiration here
 // we defines types with more or less the same names
-template mat2x2(T) { alias Matrix!(2u, 2u, T) mat2x2; }
-template mat3x3(T) { alias Matrix!(3u, 3u, T) mat3x3; }
-template mat4x4(T) { alias Matrix!(4u, 4u, T) mat4x4; }
+template mat2x2(T) { alias Matrix!(T, 2u, 2u) mat2x2; }
+template mat3x3(T) { alias Matrix!(T, 3u, 3u) mat3x3; }
+template mat4x4(T) { alias Matrix!(T, 4u, 4u) mat4x4; }
 
 // WARNING: in GLSL, first number is _columns_, second is rows
 // It is the opposite here: first number is rows, second is columns
 // With this convention mat2x3 * mat3x4 -> mat2x4.
-template mat2x3(T) { alias Matrix!(2u, 3u, T) mat2x3; }
-template mat2x4(T) { alias Matrix!(2u, 4u, T) mat2x4; }
-template mat3x2(T) { alias Matrix!(3u, 2u, T) mat3x2; }
-template mat3x4(T) { alias Matrix!(3u, 4u, T) mat3x4; }
-template mat4x2(T) { alias Matrix!(4u, 2u, T) mat4x2; }
-template mat4x3(T) { alias Matrix!(4u, 3u, T) mat4x3; }
+template mat2x3(T) { alias Matrix!(T, 2u, 3u) mat2x3; }
+template mat2x4(T) { alias Matrix!(T, 2u, 4u) mat2x4; }
+template mat3x2(T) { alias Matrix!(T, 3u, 2u) mat3x2; }
+template mat3x4(T) { alias Matrix!(T, 3u, 4u) mat3x4; }
+template mat4x2(T) { alias Matrix!(T, 4u, 2u) mat4x2; }
+template mat4x3(T) { alias Matrix!(T, 4u, 3u) mat4x3; }
 
 alias mat2x2 mat2;
 alias mat3x3 mat3;  // shorter names for most common matrices
