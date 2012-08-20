@@ -10,21 +10,21 @@ import gfm.math.vector;
 // - ray
 
 // 2 points
-struct Segment(size_t N, T)
+struct Segment(T, size_t N)
 {
     public nothrow
     {
-        alias Vector!(N, T) point_t;
+        alias Vector!(T, N) point_t;
         point_t a, b;
     }
 }
 
 // 3 points
-struct Triangle(size_t N, T)
+struct Triangle(T, size_t N)
 {
     public nothrow
     {
-        alias Vector!(N, T) point_t;
+        alias Vector!(T, N) point_t;
         point_t a, b, c;
 
         static if (N == 2u)
@@ -45,11 +45,11 @@ struct Triangle(size_t N, T)
 }
 
 // a point and a radius
-struct Sphere(size_t N, T)
+struct Sphere(T, size_t N)
 {
     public nothrow
     {
-        alias Vector!(N, T) point_t;
+        alias Vector!(T, N) point_t;
         point_t center;
         T radius;
 
@@ -99,12 +99,12 @@ struct Sphere(size_t N, T)
 }
 
 // Ray: describe ray origin + direction
-struct Ray(size_t N, T)
+struct Ray(T, size_t N)
 {
 nothrow:
     public
     {
-        alias Vector!(N, T) point_t;
+        alias Vector!(T, N) point_t;
         point_t orig;
         point_t dir;
 
@@ -140,22 +140,22 @@ nothrow:
 }
 
 
-alias Segment!(2, float) seg2f;
-alias Segment!(3, float) seg3f;
-alias Segment!(2, double) seg2d;
-alias Segment!(3, double) seg3d;
+alias Segment!(float, 2u) seg2f;
+alias Segment!(float, 3u) seg3f;
+alias Segment!(double, 2u) seg2d;
+alias Segment!(double, 3u) seg3d;
 
-alias Triangle!(2, float) triangle2f;
-alias Triangle!(3, float) triangle3f;
-alias Triangle!(2, double) triangle2d;
-alias Triangle!(3, double) triangle3d;
+alias Triangle!(float, 2u) triangle2f;
+alias Triangle!(float, 3u) triangle3f;
+alias Triangle!(double, 2u) triangle2d;
+alias Triangle!(double, 3u) triangle3d;
 
-alias Sphere!(2, float) sphere2f;
-alias Sphere!(3, float) sphere3f;
-alias Sphere!(2, double) sphere2d;
-alias Sphere!(3, double) sphere3d;
+alias Sphere!(float, 2u) sphere2f;
+alias Sphere!(float, 3u) sphere3f;
+alias Sphere!(double, 2u) sphere2d;
+alias Sphere!(double, 3u) sphere3d;
 
-alias Ray!(2, float) ray2f;
-alias Ray!(3, float) ray3f;
-alias Ray!(2, double) ray2d;
-alias Ray!(3, double) ray3d;
+alias Ray!(float, 2u) ray2f;
+alias Ray!(float, 3u) ray3f;
+alias Ray!(double, 2u) ray2d;
+alias Ray!(double, 3u) ray3d;

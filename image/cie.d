@@ -47,18 +47,18 @@ enum RGBSpace
 
 
 // A spectral distribution is actual energy, from 360 to 780 nm, by 5 nm increments
-alias Vector!(95u, float) SpectralDistribution;
+alias Vector!(float, 95u) SpectralDistribution;
 
 // Holds reflectance values, can only be converted to a SpectralDistribution
 // when lit with a ReferenceWhite.
 // from 360 to 780 nm, by 5 nm increments
 // Reflectances are parameterized by a ReferenceWhite.
-alias Vector!(95u, float) SpectralReflectance;
+alias Vector!(float, 95u) SpectralReflectance;
 
 // Converts spectral color into a XYZ space (parameterized by an illuminant)
 vec3f spectralToXYZColor(SpectralReflectance c, ReferenceWhite illuminant) pure nothrow
 {
-    Vector!(95u, float) c_lit = c * refWhiteToSpectralDistribution(illuminant);
+    Vector!(float, 95u) c_lit = c * refWhiteToSpectralDistribution(illuminant);
     return vec3f(dot(CIE_OBS_X2, c_lit),
                  dot(CIE_OBS_Y2, c_lit),
                  dot(CIE_OBS_Z2, c_lit));

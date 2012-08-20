@@ -13,7 +13,7 @@ align(1) struct Box(size_t N, T)
 
     public
     {
-        alias Vector!(N, T) bound_t;
+        alias Vector!(T, N) bound_t;
 
         bound_t a; // not enforced, the box can have negative volume
         bound_t b;

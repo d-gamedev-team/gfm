@@ -10,7 +10,7 @@ import std.math;
 //       - find a way to enable swizzling assignment
 // TBD:  - do we need support for slice assignment and opSliceOpAsssign? meh.
 
-align(1) struct Vector(size_t N, T)
+align(1) struct Vector(T, size_t N)
 {
 nothrow:
     public
@@ -47,7 +47,7 @@ nothrow:
                 z = z_;
             }
 
-            this(X : T, Y : T)(Vector!(2, X) xy_, Y z_) pure nothrow
+            this(X : T, Y : T)(Vector!(X, 2u) xy_, Y z_) pure nothrow
             {
                 x = xy_.x;
                 y = xy_.y;
@@ -64,7 +64,7 @@ nothrow:
                 w = w_;
             }
 
-            this(X : T, Y : T)(Vector!(2, X) xy_, Vector!(2, Y)zwy_) pure nothrow
+            this(X : T, Y : T)(Vector!(X, 2u) xy_, Vector!(Y, 2u)zwy_) pure nothrow
             {
                 x = xy_.x;
                 y = xy_.y;
@@ -72,7 +72,7 @@ nothrow:
                 w = zw_.y;
             }
 
-            this(X : T, Y : T, Z : T)(Vector!(2, X) xy_, Y z_, Z w_) pure nothrow
+            this(X : T, Y : T, Z : T)(Vector!(X, 2u) xy_, Y z_, Z w_) pure nothrow
             {
                 x = xy_.x;
                 y = xy_.y;
@@ -80,7 +80,7 @@ nothrow:
                 w = w_;
             }
 
-            this(X : T, Y : T)(Vector!(3, X) xyz_, Y w_) pure nothrow
+            this(X : T, Y : T)(Vector!(X, 3u) xyz_, Y w_) pure nothrow
             {
                 x = xyz_.x;
                 y = xyz_.y;
@@ -88,7 +88,7 @@ nothrow:
                 w = w_;
             }
 
-            this(X : T, Y : T)(X x_, Vector!(3, X) yzw_) pure nothrow
+            this(X : T, Y : T)(X x_, Vector!(X, 3u) yzw_) pure nothrow
             {
                 x = x_;
                 y = yzw_.x;
@@ -261,7 +261,7 @@ nothrow:
         @property auto opDispatch(string op, U = void)() pure const nothrow
             if (isValidSwizzle!(op))
         {
-            alias Vector!(op.length, T) returnType;
+            alias Vector!(T, op.length) returnType;
             returnType res = void;
             enum indexTuple = swizzleTuple!(op, op.length).result;
             foreach(i, index; indexTuple)
@@ -514,26 +514,33 @@ private string definePostfixAliases(string type)
          ~ "alias " ~ type ~ "!real "   ~ type ~ "L;\n";
 }
 
-template vec2(T) { alias Vector!(2u, T) vec2; }
-template vec3(T) { alias Vector!(3u, T) vec3; }
-template vec4(T) { alias Vector!(4u, T) vec4; }
+template vec2(T) { alias Vector!(T, 2u) vec2; }
+template vec3(T) { alias Vector!(T, 3u) vec3; }
+template vec4(T) { alias Vector!(T, 4u) vec4; }
 
 mixin(definePostfixAliases("vec2"));
 mixin(definePostfixAliases("vec3"));
 mixin(definePostfixAliases("vec4"));
 
 // min and max
-
-Vector!(N, T) min(size_t N, T)(const Vector!(N, T) a, const Vector!(N, T) b) pure nothrow
+Vector!(T, N) min(T, size_t N)(const Vector!(T, N) a, const Vector!(T, N) b) pure nothrow
 {
-    Vector!(N, T) res = void;
+    Vector!(T, N) res = void;
     for(size_t i = 0; i < N; ++i)
         res[i] = min(a[i], b[i]);
     return res;
 }
 
+Vector!(T, N) max(T, size_t N)(const Vector!(T, N) a, const Vector!(T, N) b) pure nothrow
+{
+    Vector!(T, N) res = void;
+    for(size_t i = 0; i < N; ++i)
+        res[i] = max(a[i], b[i]);
+    return res;
+}
+
 // dot product
-T dot(size_t N, T)(const Vector!(N, T) a, const Vector!(N, T) b) pure nothrow
+T dot(T, size_t N)(const Vector!(T, N) a, const Vector!(T, N) b) pure nothrow
 {
     T sum = 0;
     for(size_t i = 0; i < N; ++i)
@@ -544,11 +551,11 @@ T dot(size_t N, T)(const Vector!(N, T) a, const Vector!(N, T) b) pure nothrow
 }
 
 // 3D cross product
-Vector!(3u, T) cross(T)(const Vector!(3u, T) a, const Vector!(3u, T) b) pure nothrow
+Vector!(T, 3u) cross(T)(const Vector!(T, 3u) a, const Vector!(T, 3u) b) pure nothrow
 {
-    return Vector!(3u, T)(a.y * b.z - b.z * a.y,
-                               a.z * b.x - b.x * a.z,
-                               a.x * b.y - b.y * a.x);
+    return Vector!(T, 3u)(a.y * b.z - b.z * a.y,
+                          a.z * b.x - b.x * a.z,
+                          a.x * b.y - b.y * a.x);
 }
 
 unittest
@@ -617,8 +624,8 @@ unittest
     assert(h.zyx == [-2, 1, 0]);
 //    h.xy = vec2i(0, 1);
     assert(h.xy == [0, 1]);
-    //assert(h == [-2, 1, 0]);
-    //assert(!__traits(compiles, h.xx = h.yy));
+    assert(h == [-2, 1, 0]);
+    assert(!__traits(compiles, h.xx = h.yy));
     vec4ub j;
 }
 

@@ -18,8 +18,8 @@ align(1) struct Matrix(size_t R, size_t C, T)
     {
         static assert(R >= 1u && C >= 1u);
 
-        alias Vector!(C, T) row_t;
-        alias Vector!(R, T) column_t;
+        alias Vector!(T, C) row_t;
+        alias Vector!(T, R) column_t;
 
         enum bool isSquare = (R == C);
         enum numRows = R;
@@ -318,7 +318,7 @@ align(1) struct Matrix(size_t R, size_t C, T)
         static if (isSquare && _R > 1)
         {
             // translation matrix
-            static Matrix makeTranslate(Vector!(_R-1, T) v)
+            static Matrix makeTranslate(Vector!(T, _R-1) v)
             {
                 Matrix res = IDENTITY;
                 for (size_t i = 0; i + 1 < _R; ++i)
@@ -327,7 +327,7 @@ align(1) struct Matrix(size_t R, size_t C, T)
             }
 
             // scale matrix
-            static Matrix makeScale(Vector!(_R-1, T) v)
+            static Matrix makeScale(Vector!(T, _R-1) v)
             {
                 Matrix res = IDENTITY;
                 for (size_t i = 0; i + 1 < _R; ++i)
@@ -358,7 +358,7 @@ align(1) struct Matrix(size_t R, size_t C, T)
 
             // similar to the glRotate matrix, however the angle is expressed in radians
             // Reference: http://www.cs.rutgers.edu/~decarlo/428/gl_man/rotate.html
-            static Matrix rotate(T angle, Vector!(3u, T) axis)
+            static Matrix rotate(T angle, Vector!(T, 3u) axis)
             {
                 Matrix res = IDENTITY;
                 const T c = cos(angle);
@@ -419,16 +419,16 @@ align(1) struct Matrix(size_t R, size_t C, T)
 
             // See: http://msdn.microsoft.com/en-us/library/windows/desktop/bb205343(v=vs.85).aspx
             // TODO: verify if it's the right one...
-            static Matrix lookAt(Vector!(3u, T) eye, Vector!(3u, T) target, Vector!(3u, T) up)
+            static Matrix lookAt(Vector!(T, 3u) eye, Vector!(T, 3u) target, Vector!(T, 3u) up)
             {
-                Vector!(3u, T) Z = (eye - target).normalized();
-                Vector!(3u, T) X = cross(up, Z).normalized();
-                Vector!(3u, T) Y = cross(Z, X);
+                Vector!(T, 3u) Z = (eye - target).normalized();
+                Vector!(T, 3u) X = cross(up, Z).normalized();
+                Vector!(T, 3u) Y = cross(Z, X);
 
                 return Matrix(    X.x,         Y.x,         Z.x,     0,
-                                       X.y,         Y.y,         Z.y,     0,
-                                       X.z,         Y.z,         Z.z,     0,
-                                   dot(X, eye), dot(Y, eye), dot(Z, eye), 1);
+                                  X.y,         Y.y,         Z.y,     0,
+                                  X.z,         Y.z,         Z.z,     0,
+                              dot(X, eye), dot(Y, eye), dot(Z, eye), 1);
             }
         }
     }

@@ -10,10 +10,9 @@ struct Quaternion(T)
 nothrow:
     public
     {
-        alias Vector!(4u, T) vec_t;
         union
         {
-            vec_t v;
+            Vector!(T, 4u) v;
             struct
             {
                 T x, y, z, w;
@@ -27,7 +26,7 @@ nothrow:
         }
 
         // constructs from axis + angle
-        static Quaternion fromAxis(Vector!(3u, T) axis, T angle) pure
+        static Quaternion fromAxis(Vector!(T, 3u) axis, T angle) pure
         {
             Quaternion q = void;
             axis.normalize();
