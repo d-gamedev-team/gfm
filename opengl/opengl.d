@@ -217,27 +217,27 @@ final class OpenGL
             }
         }
 
-        int maxTextureUnits() const
+        int maxTextureUnits() pure const nothrow
         {
             return _maxTextureUnits;
         }
 
-        int maxTextureImageUnits() const
+        int maxTextureImageUnits() pure const nothrow
         {
             return _maxTextureImageUnits;
         }
 
-        int maxColorAttachments() const
+        int maxColorAttachments() pure const nothrow
         {
             return _maxColorAttachments;
         }
 
-        TextureUnits textureUnits()
+        TextureUnits textureUnits() pure nothrow
         {
             return textureUnits();
         }
 
-        float maxTextureMaxAnisotropy() const
+        float maxTextureMaxAnisotropy() pure const nothrow
         {
             return _maxTextureMaxAnisotropy;
         }
