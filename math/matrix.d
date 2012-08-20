@@ -1,4 +1,4 @@
-module gfm.math.smallmatrix;
+module gfm.math.matrix;
 
 import std.math;
 import std.typetuple;
@@ -12,7 +12,7 @@ import gfm.math.vector;
 // intended for 3D (mainly size 3x3 and 4x4)
 // IMPORTANT: matrices here are in ROW-MAJOR order
 // while OpenGL is column-major
-align(1) struct SmallMatrix(size_t R, size_t C, T)
+align(1) struct Matrix(size_t R, size_t C, T)
 {
     public
     {
@@ -41,7 +41,7 @@ align(1) struct SmallMatrix(size_t R, size_t C, T)
                 foreach(int i, x; values)
                     v[i] = x;
             }
-            else static if ((U.length == 1) && (isAssignable!(U[0])) && (!is(U[0] : SmallMatrix)))
+            else static if ((U.length == 1) && (isAssignable!(U[0])) && (!is(U[0] : Matrix)))
             {
                 // construct with assignment
                 opAssign!(U[0])(values[0]);
@@ -50,9 +50,9 @@ align(1) struct SmallMatrix(size_t R, size_t C, T)
         }
 
         // construct with columns
-        static SmallMatrix fromColumns(column_t[] columns...) pure nothrow
+        static Matrix fromColumns(column_t[] columns...) pure nothrow
         {
-            SmallMatrix res;
+            Matrix res;
             for (size_t i = 0; i < R; ++i)
                 for (size_t j = 0; j < C; ++j)
                 {
@@ -61,9 +61,9 @@ align(1) struct SmallMatrix(size_t R, size_t C, T)
             return res;
         }
 
-        static SmallMatrix fromRows(row_t[R] rows...) pure nothrow
+        static Matrix fromRows(row_t[R] rows...) pure nothrow
         {
-            SmallMatrix res;
+            Matrix res;
             res.rows[] = rows[];
             return res;
         }
@@ -76,7 +76,7 @@ align(1) struct SmallMatrix(size_t R, size_t C, T)
         }
 
         // assign with same type
-        void opAssign(U : SmallMatrix)(U x) pure
+        void opAssign(U : Matrix)(U x) pure
         {
             for (size_t i = 0; i < _N; ++i)
             {
@@ -88,7 +88,7 @@ align(1) struct SmallMatrix(size_t R, size_t C, T)
         void opAssign(U)(U x) pure nothrow
             if (is(typeof(U._isSmallMatrix))
                 && is(U._T : _T)
-                && (!is(U: SmallMatrix))
+                && (!is(U: Matrix))
                 && (U._R == _R) && (U._C == _C))
         {
             for (size_t i = 0; i < _N; ++i)
@@ -150,7 +150,7 @@ align(1) struct SmallMatrix(size_t R, size_t C, T)
         auto opBinary(string op, U)(U x)
             if (is(typeof(U._isSmallMatrix)) && (U._R == C) && (op == "*"))
         {
-            SmallMatrix!(R, U._C, T) result = void;
+            Matrix!(R, U._C, T) result = void;
 
             for (size_t i = 0; i < R; ++i)
             {
@@ -186,7 +186,7 @@ align(1) struct SmallMatrix(size_t R, size_t C, T)
             return res;
         }
 
-        bool opEquals(U)(U other) pure const nothrow if (is(U : SmallMatrix))
+        bool opEquals(U)(U other) pure const nothrow if (is(U : Matrix))
         {
             for (size_t i = 0; i < _N; ++i)
                 if (v[i] != other.v[i])
@@ -195,16 +195,16 @@ align(1) struct SmallMatrix(size_t R, size_t C, T)
         }
 
         bool opEquals(U)(U other) pure const nothrow
-            if ((isAssignable!U) && (!is(U: SmallMatrix)))
+            if ((isAssignable!U) && (!is(U: Matrix)))
         {
-            SmallMatrix conv = other;
+            Matrix conv = other;
             return opEquals(conv);
         }
 
         // +matrix, -matrix, ~matrix, !matrix
-        SmallMatrix opUnary(string op)() pure const nothrow if (op == "+" || op == "-" || op == "~" || op == "!")
+        Matrix opUnary(string op)() pure const nothrow if (op == "+" || op == "-" || op == "~" || op == "!")
         {
-            SmallMatrix res = void;
+            Matrix res = void;
             for (size_t i = 0; i < N; ++i)
                 mixin("res.v[i] = " ~ op ~ "v[i];");
             return res;
@@ -213,24 +213,24 @@ align(1) struct SmallMatrix(size_t R, size_t C, T)
         // matrix inversion, provided for 2x2, 3x3 and 4x4 floating point matrices
         static if (isSquare && isFloatingPoint!T && _R == 2)
         {
-            SmallMatrix inverse() pure const nothrow
+            Matrix inverse() pure const nothrow
             {
                 T invDet = 1 / (c[0][0] * c[1][1] - c[0][1] * c[1][0]);
-                return SmallMatrix( c[1][1] * invDet, -c[0][1] * invDet,
+                return Matrix( c[1][1] * invDet, -c[0][1] * invDet,
                                    -c[1][0] * invDet,  c[0][0] * invDet);
             }
         }
 
         static if (isSquare && isFloatingPoint!T && _R == 3)
         {
-            SmallMatrix inverse() pure const nothrow
+            Matrix inverse() pure const nothrow
             {
                 T det = c[0][0] * (c[1][1] * c[2][2] - c[2][1] * c[1][2])
                       - c[0][1] * (c[1][0] * c[2][2] - c[1][2] * c[2][0])
                       + c[0][2] * (c[1][0] * c[2][1] - c[1][1] * c[2][0]);
                 T invDet = 1 / det;
 
-                SmallMatrix res = void;
+                Matrix res = void;
                 res.c[0][0] =  (c[1][1] * c[2][2] - c[2][1] * c[1][2]) * invDet;
                 res.c[0][1] = -(c[0][1] * c[2][2] - c[0][2] * c[2][1]) * invDet;
                 res.c[0][2] =  (c[0][1] * c[1][2] - c[0][2] * c[1][1]) * invDet;
@@ -246,7 +246,7 @@ align(1) struct SmallMatrix(size_t R, size_t C, T)
 
         static if (isSquare && isFloatingPoint!T && _R == 4)
         {
-            SmallMatrix inverse() pure const nothrow
+            Matrix inverse() pure const nothrow
             {
                 T det2_01_01 = c[0][0] * c[1][1] - c[0][1] * c[1][0];
                 T det2_01_02 = c[0][0] * c[1][2] - c[0][2] * c[1][0];
@@ -291,7 +291,7 @@ align(1) struct SmallMatrix(size_t R, size_t C, T)
                 T det3_301_023 = c[3][0] * det2_01_23 - c[3][2] * det2_01_03 + c[3][3] * det2_01_02;
                 T det3_301_123 = c[3][1] * det2_01_23 - c[3][2] * det2_01_13 + c[3][3] * det2_01_12;
 
-                SmallMatrix res = void;
+                Matrix res = void;
                 res.c[0][0] = - det3_213_123 * invDet;
                 res.c[1][0] = + det3_213_023 * invDet;
                 res.c[2][0] = - det3_213_013 * invDet;
@@ -318,18 +318,18 @@ align(1) struct SmallMatrix(size_t R, size_t C, T)
         static if (isSquare && _R > 1)
         {
             // translation matrix
-            static SmallMatrix makeTranslate(Vector!(_R-1, T) v)
+            static Matrix makeTranslate(Vector!(_R-1, T) v)
             {
-                SmallMatrix res = IDENTITY;
+                Matrix res = IDENTITY;
                 for (size_t i = 0; i + 1 < _R; ++i)
                     res.c[i][_C-1] += v[i];
                 return res;
             }
 
             // scale matrix
-            static SmallMatrix makeScale(Vector!(_R-1, T) v)
+            static Matrix makeScale(Vector!(_R-1, T) v)
             {
-                SmallMatrix res = IDENTITY;
+                Matrix res = IDENTITY;
                 for (size_t i = 0; i + 1 < _R; ++i)
                     res.c[i][_C-1] = v[i];
                 return res;
@@ -340,9 +340,9 @@ align(1) struct SmallMatrix(size_t R, size_t C, T)
         // TODO glRotate equivalent
         static if (isSquare && (_R == 3 || _R == 4) && isFloatingPoint!T)
         {
-            private static SmallMatrix rotateAxis(size_t i, size_t j)(T angle)
+            private static Matrix rotateAxis(size_t i, size_t j)(T angle)
             {
-                SmallMatrix res = IDENTITY;
+                Matrix res = IDENTITY;
                 const T cosa = cos(angle);
                 const T sina = sin(angle);
                 res.c[i][i] = cosa;
@@ -358,9 +358,9 @@ align(1) struct SmallMatrix(size_t R, size_t C, T)
 
             // similar to the glRotate matrix, however the angle is expressed in radians
             // Reference: http://www.cs.rutgers.edu/~decarlo/428/gl_man/rotate.html
-            static SmallMatrix rotate(T angle, Vector!(3u, T) axis)
+            static Matrix rotate(T angle, Vector!(3u, T) axis)
             {
-                SmallMatrix res = IDENTITY;
+                Matrix res = IDENTITY;
                 const T c = cos(angle);
                 const oneMinusC = 1 - c;
                 const T s = sin(angle);
@@ -389,7 +389,7 @@ align(1) struct SmallMatrix(size_t R, size_t C, T)
         static if (isSquare && _R == 4 && isFloatingPoint!T)
         {
             // return orthographic projection
-            static SmallMatrix orthographic(T left, T right, T bottom, T top, T near, T far)
+            static Matrix orthographic(T left, T right, T bottom, T top, T near, T far)
             {
                 T dx = right - left,
                   dy = top - bottom,
@@ -399,19 +399,19 @@ align(1) struct SmallMatrix(size_t R, size_t C, T)
                 T ty = -(top + bottom) / dy;
                 T tz = -(far + near)   / dz;
 
-                return SmallMatrix(2 / dx,   0,      0,    tx,
+                return Matrix(2 / dx,   0,      0,    tx,
                                      0,    2 / dy,   0,    ty,
                                      0,      0,    2 / dz, tz,
                                      0,      0,      0,     1);
             }
 
             // perspective projection
-            static SmallMatrix perspective(T FOVInRadians, T aspect, T zNear, T zFar)
+            static Matrix perspective(T FOVInRadians, T aspect, T zNear, T zFar)
             {
                 T f = 1 / tan(FOVInRadians / 2);
                 T d = 1 / (zNear - zFar);
 
-                return SmallMatrix(f / aspect, 0,                  0,                    0,
+                return Matrix(f / aspect, 0,                  0,                    0,
                                             0, f,                  0,                    0,
                                             0, 0, (zFar + zNear) * d, 2 * d * zFar * zNear,
                                             0, 0,                 -1,                    0);
@@ -419,13 +419,13 @@ align(1) struct SmallMatrix(size_t R, size_t C, T)
 
             // See: http://msdn.microsoft.com/en-us/library/windows/desktop/bb205343(v=vs.85).aspx
             // TODO: verify if it's the right one...
-            static SmallMatrix lookAt(Vector!(3u, T) eye, Vector!(3u, T) target, Vector!(3u, T) up)
+            static Matrix lookAt(Vector!(3u, T) eye, Vector!(3u, T) target, Vector!(3u, T) up)
             {
                 Vector!(3u, T) Z = (eye - target).normalized();
                 Vector!(3u, T) X = cross(up, Z).normalized();
                 Vector!(3u, T) Y = cross(Z, X);
 
-                return SmallMatrix(    X.x,         Y.x,         Z.x,     0,
+                return Matrix(    X.x,         Y.x,         Z.x,     0,
                                        X.y,         Y.y,         Z.y,     0,
                                        X.z,         Y.z,         Z.z,     0,
                                    dot(X, eye), dot(Y, eye), dot(Z, eye), 1);
@@ -447,7 +447,7 @@ align(1) struct SmallMatrix(size_t R, size_t C, T)
                 is(typeof(
                 {
                     T x;
-                    SmallMatrix m = x;
+                    Matrix m = x;
                 }()));
         }
 
@@ -471,18 +471,18 @@ align(1) struct SmallMatrix(size_t R, size_t C, T)
     {
         // Note: the identity matrix, while only meaningful for square matrices, is also
         //       defined for non-square ones.
-        static SmallMatrix makeIdentity() pure
+        static Matrix makeIdentity() pure
         {
-            SmallMatrix res;
+            Matrix res;
             for (size_t i = 0; i < R; ++i)
                 for (size_t j = 0; j < C; ++j)
                     res.c[i][j] = (i == j) ? 1 : 0;
             return res;
         }
 
-        static SmallMatrix makeConstant(U)(U x) pure
+        static Matrix makeConstant(U)(U x) pure
         {
-            SmallMatrix res;
+            Matrix res;
             for (size_t i = 0; i < _N; ++i)
                 res.v[i] = cast(T)x;
             return res;
@@ -504,19 +504,19 @@ align(1) struct SmallMatrix(size_t R, size_t C, T)
 
 // GLSL is a big inspiration here
 // we defines types with more or less the same names
-template mat2x2(T) { alias SmallMatrix!(2u, 2u, T) mat2x2; }
-template mat3x3(T) { alias SmallMatrix!(3u, 3u, T) mat3x3; }
-template mat4x4(T) { alias SmallMatrix!(4u, 4u, T) mat4x4; }
+template mat2x2(T) { alias Matrix!(2u, 2u, T) mat2x2; }
+template mat3x3(T) { alias Matrix!(3u, 3u, T) mat3x3; }
+template mat4x4(T) { alias Matrix!(4u, 4u, T) mat4x4; }
 
 // WARNING: in GLSL, first number is _columns_, second is rows
 // It is the opposite here: first number is rows, second is columns
 // With this convention mat2x3 * mat3x4 -> mat2x4.
-template mat2x3(T) { alias SmallMatrix!(2u, 3u, T) mat2x3; }
-template mat2x4(T) { alias SmallMatrix!(2u, 4u, T) mat2x4; }
-template mat3x2(T) { alias SmallMatrix!(3u, 2u, T) mat3x2; }
-template mat3x4(T) { alias SmallMatrix!(3u, 4u, T) mat3x4; }
-template mat4x2(T) { alias SmallMatrix!(4u, 2u, T) mat4x2; }
-template mat4x3(T) { alias SmallMatrix!(4u, 3u, T) mat4x3; }
+template mat2x3(T) { alias Matrix!(2u, 3u, T) mat2x3; }
+template mat2x4(T) { alias Matrix!(2u, 4u, T) mat2x4; }
+template mat3x2(T) { alias Matrix!(3u, 2u, T) mat3x2; }
+template mat3x4(T) { alias Matrix!(3u, 4u, T) mat3x4; }
+template mat4x2(T) { alias Matrix!(4u, 2u, T) mat4x2; }
+template mat4x3(T) { alias Matrix!(4u, 3u, T) mat4x3; }
 
 alias mat2x2 mat2;
 alias mat3x3 mat3;  // shorter names for most common matrices

@@ -6,7 +6,7 @@ import core.stdc.string;
 import derelict.opengl3.gl3;
 
 import gfm.common.log;
-import gfm.math.vector, gfm.math.smallmatrix;
+import gfm.math.vector, gfm.math.matrix;
 import gfm.opengl.opengl;
 
 static assert(is(GLint == int));

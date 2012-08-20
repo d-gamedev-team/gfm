@@ -1,7 +1,7 @@
 module gfm.opengl.matrixstack;
 
 import gfm.math.vector;
-import gfm.math.smallmatrix;
+import gfm.math.matrix;
 import gfm.common.memory;
 
 
@@ -14,7 +14,7 @@ final class MatrixStack(size_t R, T) if (R == 3 || R == 4)
 {
     public
     {
-        alias SmallMatrix!(R, R, T) matrix_t;
+        alias Matrix!(R, R, T) matrix_t;
 
         this(size_t depth = 32)
         {

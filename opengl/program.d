@@ -5,7 +5,7 @@ import std.conv, std.string;
 import derelict.opengl3.gl3;
 
 import gfm.common.log;
-import gfm.math.vector, gfm.math.smallmatrix;
+import gfm.math.vector, gfm.math.matrix;
 import gfm.opengl.opengl, gfm.opengl.shader, gfm.opengl.uniform;
 
 final class GLProgram

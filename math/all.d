@@ -5,7 +5,7 @@ public
     import gfm.math.funcs;
     import gfm.math.vector;
     import gfm.math.box;
-    import gfm.math.smallmatrix;
+    import gfm.math.matrix;
     import gfm.math.softcent;
     import gfm.math.fraction;
     import gfm.math.statistics;
