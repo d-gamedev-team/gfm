@@ -1,6 +1,6 @@
 module gfm.image.cie;
 
-import gfm.math.smallvector;
+import gfm.math.vector;
 import gfm.math.smallmatrix;
 
 // This module performs various color computation and conversions.
@@ -47,18 +47,18 @@ enum RGBSpace
 
 
 // A spectral distribution is actual energy, from 360 to 780 nm, by 5 nm increments
-alias SmallVector!(95u, float) SpectralDistribution;
+alias Vector!(95u, float) SpectralDistribution;
 
 // Holds reflectance values, can only be converted to a SpectralDistribution
 // when lit with a ReferenceWhite.
 // from 360 to 780 nm, by 5 nm increments
 // Reflectances are parameterized by a ReferenceWhite.
-alias SmallVector!(95u, float) SpectralReflectance;
+alias Vector!(95u, float) SpectralReflectance;
 
 // Converts spectral color into a XYZ space (parameterized by an illuminant)
 vec3f spectralToXYZColor(SpectralReflectance c, ReferenceWhite illuminant) pure nothrow
 {
-    SmallVector!(95u, float) c_lit = c * refWhiteToSpectralDistribution(illuminant);
+    Vector!(95u, float) c_lit = c * refWhiteToSpectralDistribution(illuminant);
     return vec3f(dot(CIE_OBS_X2, c_lit),
                  dot(CIE_OBS_Y2, c_lit),
                  dot(CIE_OBS_Z2, c_lit));

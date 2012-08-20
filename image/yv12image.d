@@ -4,7 +4,7 @@ module gfm.image.yv12image;
 
 import std.stdio;
 
-import gfm.math.smallvector;
+import gfm.math.vector;
 import gfm.common.alignedbuffer;
 import gfm.image.plane;
 

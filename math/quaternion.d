@@ -1,7 +1,7 @@
 module gfm.math.quaternion;
 
 import std.math;
-import gfm.math.smallvector;
+import gfm.math.vector;
 import gfm.math.smallmatrix;
 
 // hold a rotation + angle in a proper but wild space
@@ -10,7 +10,7 @@ struct Quaternion(T)
 nothrow:
     public
     {
-        alias SmallVector!(4u, T) vec_t;
+        alias Vector!(4u, T) vec_t;
         union
         {
             vec_t v;
@@ -27,7 +27,7 @@ nothrow:
         }
 
         // constructs from axis + angle
-        static Quaternion fromAxis(SmallVector!(3u, T) axis, T angle) pure
+        static Quaternion fromAxis(Vector!(3u, T) axis, T angle) pure
         {
             Quaternion q = void;
             axis.normalize();
@@ -43,7 +43,7 @@ nothrow:
         // compatible Quaternions
         void opAssign(U)(U u) pure if (is(typeof(U._isQuaternion)) && is(U._T : T))
         {
-            v = u.v; // this assignment should exist and be valid in SmallVector
+            v = u.v; // this assignment should exist and be valid in Vector
         }
 
         // normalize quaternion

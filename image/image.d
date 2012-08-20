@@ -1,6 +1,6 @@
 module gfm.image.image;
 
-import gfm.math.smallvector;
+import gfm.math.vector;
 
 // An image is a concept
 

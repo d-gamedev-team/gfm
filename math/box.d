@@ -3,7 +3,7 @@ module gfm.math.box;
 import std.math;
 import std.traits;
 
-import gfm.math.smallvector, gfm.math.funcs;
+import gfm.math.vector, gfm.math.funcs;
 
 // N dimensional half-open interval [a, b[
 
@@ -13,7 +13,7 @@ align(1) struct Box(size_t N, T)
 
     public
     {
-        alias SmallVector!(N, T) bound_t;
+        alias Vector!(N, T) bound_t;
 
         bound_t a; // not enforced, the box can have negative volume
         bound_t b;

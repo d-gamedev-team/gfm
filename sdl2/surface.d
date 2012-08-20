@@ -3,7 +3,7 @@ module gfm.sdl2.surface;
 import derelict.sdl2.sdl;
 
 import gfm.sdl2.sdl;
-import gfm.math.smallvector;
+import gfm.math.vector;
 
 
 final class SDL2Surface

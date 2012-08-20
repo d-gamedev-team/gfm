@@ -3,7 +3,7 @@ module gfm.math.simplerng;
 import std.math;
 import std.random : unpredictableSeed;
 
-import gfm.math.smallvector;
+import gfm.math.vector;
 
 // Translation of SimpleRNG the work of John D. Cook
 // http://www.johndcook.com/cpp_random_number_generation.html

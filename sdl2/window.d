@@ -6,7 +6,7 @@ import derelict.sdl2.sdl;
 
 import gfm.sdl2.sdl;
 import gfm.sdl2.surface;
-import gfm.math.smallvector;
+import gfm.math.vector;
 import gfm.math.box;
 import gfm.common.log;
 import gfm.sdl2.eventqueue;

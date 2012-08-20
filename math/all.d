@@ -3,7 +3,7 @@ module gfm.math.all;
 public 
 {
     import gfm.math.funcs;
-    import gfm.math.smallvector;
+    import gfm.math.vector;
     import gfm.math.box;
     import gfm.math.smallmatrix;
     import gfm.math.softcent;

@@ -1,7 +1,7 @@
 module gfm.math.shapes;
 
 import std.math, std.traits;
-import gfm.math.smallvector;
+import gfm.math.vector;
 
 // Implement abstract shapes in any number of dimensions like
 // - line segment
@@ -14,7 +14,7 @@ struct Segment(size_t N, T)
 {
     public nothrow
     {
-        alias SmallVector!(N, T) point_t;
+        alias Vector!(N, T) point_t;
         point_t a, b;
     }
 }
@@ -24,7 +24,7 @@ struct Triangle(size_t N, T)
 {
     public nothrow
     {
-        alias SmallVector!(N, T) point_t;
+        alias Vector!(N, T) point_t;
         point_t a, b, c;
 
         static if (N == 2u)
@@ -49,7 +49,7 @@ struct Sphere(size_t N, T)
 {
     public nothrow
     {
-        alias SmallVector!(N, T) point_t;
+        alias Vector!(N, T) point_t;
         point_t center;
         T radius;
 
@@ -104,7 +104,7 @@ struct Ray(size_t N, T)
 nothrow:
     public
     {
-        alias SmallVector!(N, T) point_t;
+        alias Vector!(N, T) point_t;
         point_t orig;
         point_t dir;
 

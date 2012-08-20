@@ -1,4 +1,4 @@
-module gfm.math.smallvector;
+module gfm.math.vector;
 
 import std.traits;
 import std.math;
@@ -6,11 +6,11 @@ import std.math;
 // generic 1D small vector
 // N is the element count, T the contained type
 // intended for 3D
-// TODO: - generic way to build a SmallVector from a variadic constructor of scalars, tuples, arrays and smaller vectors
+// TODO: - generic way to build a Vector from a variadic constructor of scalars, tuples, arrays and smaller vectors
 //       - find a way to enable swizzling assignment
 // TBD:  - do we need support for slice assignment and opSliceOpAsssign? meh.
 
-align(1) struct SmallVector(size_t N, T)
+align(1) struct Vector(size_t N, T)
 {
 nothrow:
     public
@@ -47,7 +47,7 @@ nothrow:
                 z = z_;
             }
 
-            this(X : T, Y : T)(SmallVector!(2, X) xy_, Y z_) pure nothrow
+            this(X : T, Y : T)(Vector!(2, X) xy_, Y z_) pure nothrow
             {
                 x = xy_.x;
                 y = xy_.y;
@@ -64,7 +64,7 @@ nothrow:
                 w = w_;
             }
 
-            this(X : T, Y : T)(SmallVector!(2, X) xy_, SmallVector!(2, Y)zwy_) pure nothrow
+            this(X : T, Y : T)(Vector!(2, X) xy_, Vector!(2, Y)zwy_) pure nothrow
             {
                 x = xy_.x;
                 y = xy_.y;
@@ -72,7 +72,7 @@ nothrow:
                 w = zw_.y;
             }
 
-            this(X : T, Y : T, Z : T)(SmallVector!(2, X) xy_, Y z_, Z w_) pure nothrow
+            this(X : T, Y : T, Z : T)(Vector!(2, X) xy_, Y z_, Z w_) pure nothrow
             {
                 x = xy_.x;
                 y = xy_.y;
@@ -80,7 +80,7 @@ nothrow:
                 w = w_;
             }
 
-            this(X : T, Y : T)(SmallVector!(3, X) xyz_, Y w_) pure nothrow
+            this(X : T, Y : T)(Vector!(3, X) xyz_, Y w_) pure nothrow
             {
                 x = xyz_.x;
                 y = xyz_.y;
@@ -88,7 +88,7 @@ nothrow:
                 w = w_;
             }
 
-            this(X : T, Y : T)(X x_, SmallVector!(3, X) yzw_) pure nothrow
+            this(X : T, Y : T)(X x_, Vector!(3, X) yzw_) pure nothrow
             {
                 x = x_;
                 y = yzw_.x;
@@ -128,7 +128,7 @@ nothrow:
         }
 
         // same small vectors
-        void opAssign(U)(U u) pure nothrow if (is(U : SmallVector))
+        void opAssign(U)(U u) pure nothrow if (is(U : Vector))
         {
             static if (N <= 4u)
             {
@@ -149,7 +149,7 @@ nothrow:
         // other small vectors (same size, compatible type)
         void opAssign(U)(U x) pure nothrow if (is(typeof(U._isSmallVector))
                                             && is(U._T : T)
-                                             && (!is(U: SmallVector))
+                                             && (!is(U: Vector))
                                              && (U._N == _N))
         {
             for (size_t i = 0; i < N; ++i)
@@ -159,7 +159,7 @@ nothrow:
         }
 
         bool opEquals(U)(U other) pure const nothrow
-            if (is(U : SmallVector))
+            if (is(U : Vector))
         {
             for (size_t i = 0; i < N; ++i)
             {
@@ -174,14 +174,14 @@ nothrow:
         bool opEquals(U)(U other) pure const nothrow
             if (isConvertible!U)
         {
-            SmallVector conv = other;
+            Vector conv = other;
             return opEquals(conv);
         }
 
-        SmallVector opUnary(string op)() pure const nothrow
+        Vector opUnary(string op)() pure const nothrow
             if (op == "+" || op == "-" || op == "~" || op == "!")
         {
-            SmallVector res = void;
+            Vector res = void;
             for (size_t i = 0; i < N; ++i)
             {
                 mixin("res.v[i] = " ~ op ~ "v[i];");
@@ -189,8 +189,8 @@ nothrow:
             return res;
         }
 
-        ref SmallVector opOpAssign(string op, U)(U operand) pure nothrow
-            if (is(U : SmallVector))
+        ref Vector opOpAssign(string op, U)(U operand) pure nothrow
+            if (is(U : Vector))
         {
             for (size_t i = 0; i < N; ++i)
             {
@@ -199,22 +199,22 @@ nothrow:
             return this;
         }
 
-        ref SmallVector opOpAssign(string op, U)(U operand) pure nothrow if (isConvertible!U)
+        ref Vector opOpAssign(string op, U)(U operand) pure nothrow if (isConvertible!U)
         {
-            SmallVector conv = operand;
+            Vector conv = operand;
             return opOpAssign!op(conv);
         }
 
-        SmallVector opBinary(string op, U)(U operand) pure const nothrow
-            if (is(U: SmallVector) || (isConvertible!U))
+        Vector opBinary(string op, U)(U operand) pure const nothrow
+            if (is(U: Vector) || (isConvertible!U))
         {
-            SmallVector temp = this;
+            Vector temp = this;
             return temp.opOpAssign!op(operand);
         }
 
-        SmallVector opBinaryRight(string op, U)(U operand) pure const nothrow if (isConvertible!U)
+        Vector opBinaryRight(string op, U)(U operand) pure const nothrow if (isConvertible!U)
         {
-            SmallVector temp = operand;
+            Vector temp = operand;
             return temp.opOpAssign!op(this);
         }
 
@@ -261,7 +261,7 @@ nothrow:
         @property auto opDispatch(string op, U = void)() pure const nothrow
             if (isValidSwizzle!(op))
         {
-            alias SmallVector!(op.length, T) returnType;
+            alias Vector!(op.length, T) returnType;
             returnType res = void;
             enum indexTuple = swizzleTuple!(op, op.length).result;
             foreach(i, index; indexTuple)
@@ -277,9 +277,9 @@ nothrow:
         void opDispatch(string op, U)(U x) pure
             if ((op.length >= 2)
                 && (isValidSwizzleUnique!op)                  // v.xyy will be rejected
-                && is(typeof(SmallVector!(op.length, T)(x)))) // can be converted to a small vector of the right size
+                && is(typeof(Vector!(op.length, T)(x)))) // can be converted to a small vector of the right size
         {
-            SmallVector!(op.length, T) conv = x;
+            Vector!(op.length, T) conv = x;
             enum indexTuple = swizzleTuple!(op, op.length).result;
             foreach(i, index; indexTuple)
             {
@@ -331,7 +331,7 @@ nothrow:
         }
 
         // Euclidean distance
-        T squaredDistanceTo(SmallVector v) pure const nothrow
+        T squaredDistanceTo(Vector v) pure const nothrow
         {
             return (v - this).squaredLength();
         }
@@ -345,7 +345,7 @@ nothrow:
             }
 
             // Euclidean distance
-            T distanceTo(SmallVector v) pure const nothrow
+            T distanceTo(Vector v) pure const nothrow
             {
                 return (v - this).length();
             }
@@ -360,9 +360,9 @@ nothrow:
                 }
             }
 
-            SmallVector normalized() pure const nothrow
+            Vector normalized() pure const nothrow
             {
-                SmallVector res = this;
+                Vector res = this;
                 res.normalize();
                 return res;
             }
@@ -380,18 +380,18 @@ nothrow:
         // TODO: don't use assignment...
         template isConvertible(T)
         {
-            enum bool isConvertible = (!is(T : SmallVector))
+            enum bool isConvertible = (!is(T : Vector))
             && is(typeof(
                 {
                     T x;
-                    SmallVector v = x;
+                    Vector v = x;
                 }()));
         }
 
         // define types that can't be converted to this
         template isForeign(T)
         {
-            enum bool isForeign = (!isConvertible!T) && (!is(T: SmallVector));
+            enum bool isForeign = (!isConvertible!T) && (!is(T: Vector));
         }
 
         template isValidSwizzle(string op)
@@ -514,9 +514,9 @@ private string definePostfixAliases(string type)
          ~ "alias " ~ type ~ "!real "   ~ type ~ "L;\n";
 }
 
-template vec2(T) { alias SmallVector!(2u, T) vec2; }
-template vec3(T) { alias SmallVector!(3u, T) vec3; }
-template vec4(T) { alias SmallVector!(4u, T) vec4; }
+template vec2(T) { alias Vector!(2u, T) vec2; }
+template vec3(T) { alias Vector!(3u, T) vec3; }
+template vec4(T) { alias Vector!(4u, T) vec4; }
 
 mixin(definePostfixAliases("vec2"));
 mixin(definePostfixAliases("vec3"));
@@ -524,16 +524,16 @@ mixin(definePostfixAliases("vec4"));
 
 // min and max
 
-SmallVector!(N, T) min(size_t N, T)(const SmallVector!(N, T) a, const SmallVector!(N, T) b) pure nothrow
+Vector!(N, T) min(size_t N, T)(const Vector!(N, T) a, const Vector!(N, T) b) pure nothrow
 {
-    SmallVector!(N, T) res = void;
+    Vector!(N, T) res = void;
     for(size_t i = 0; i < N; ++i)
         res[i] = min(a[i], b[i]);
     return res;
 }
 
 // dot product
-T dot(size_t N, T)(const SmallVector!(N, T) a, const SmallVector!(N, T) b) pure nothrow
+T dot(size_t N, T)(const Vector!(N, T) a, const Vector!(N, T) b) pure nothrow
 {
     T sum = 0;
     for(size_t i = 0; i < N; ++i)
@@ -544,9 +544,9 @@ T dot(size_t N, T)(const SmallVector!(N, T) a, const SmallVector!(N, T) b) pure 
 }
 
 // 3D cross product
-SmallVector!(3u, T) cross(T)(const SmallVector!(3u, T) a, const SmallVector!(3u, T) b) pure nothrow
+Vector!(3u, T) cross(T)(const Vector!(3u, T) a, const Vector!(3u, T) b) pure nothrow
 {
-    return SmallVector!(3u, T)(a.y * b.z - b.z * a.y,
+    return Vector!(3u, T)(a.y * b.z - b.z * a.y,
                                a.z * b.x - b.x * a.z,
                                a.x * b.y - b.y * a.x);
 }

@@ -5,7 +5,7 @@ import std.typetuple;
 import std.traits;
 import std.typecons;
 import std.conv;
-import gfm.math.smallvector;
+import gfm.math.vector;
 
 // generic small non-resizeable matrix with R rows and C columns
 // N is the element count, T the contained type
@@ -18,8 +18,8 @@ align(1) struct SmallMatrix(size_t R, size_t C, T)
     {
         static assert(R >= 1u && C >= 1u);
 
-        alias SmallVector!(C, T) row_t;
-        alias SmallVector!(R, T) column_t;
+        alias Vector!(C, T) row_t;
+        alias Vector!(R, T) column_t;
 
         enum bool isSquare = (R == C);
         enum numRows = R;
@@ -165,9 +165,9 @@ align(1) struct SmallMatrix(size_t R, size_t C, T)
             return result;
         }
 
-        ref SmallVector opOpAssign(string op, U)(U operand) pure if (isConvertible!U)
+        ref Vector opOpAssign(string op, U)(U operand) pure if (isConvertible!U)
         {
-            SmallVector conv = operand;
+            Vector conv = operand;
             return opOpAssign!op(conv);
         }
 
@@ -318,7 +318,7 @@ align(1) struct SmallMatrix(size_t R, size_t C, T)
         static if (isSquare && _R > 1)
         {
             // translation matrix
-            static SmallMatrix makeTranslate(SmallVector!(_R-1, T) v)
+            static SmallMatrix makeTranslate(Vector!(_R-1, T) v)
             {
                 SmallMatrix res = IDENTITY;
                 for (size_t i = 0; i + 1 < _R; ++i)
@@ -327,7 +327,7 @@ align(1) struct SmallMatrix(size_t R, size_t C, T)
             }
 
             // scale matrix
-            static SmallMatrix makeScale(SmallVector!(_R-1, T) v)
+            static SmallMatrix makeScale(Vector!(_R-1, T) v)
             {
                 SmallMatrix res = IDENTITY;
                 for (size_t i = 0; i + 1 < _R; ++i)
@@ -358,7 +358,7 @@ align(1) struct SmallMatrix(size_t R, size_t C, T)
 
             // similar to the glRotate matrix, however the angle is expressed in radians
             // Reference: http://www.cs.rutgers.edu/~decarlo/428/gl_man/rotate.html
-            static SmallMatrix rotate(T angle, SmallVector!(3u, T) axis)
+            static SmallMatrix rotate(T angle, Vector!(3u, T) axis)
             {
                 SmallMatrix res = IDENTITY;
                 const T c = cos(angle);
@@ -419,11 +419,11 @@ align(1) struct SmallMatrix(size_t R, size_t C, T)
 
             // See: http://msdn.microsoft.com/en-us/library/windows/desktop/bb205343(v=vs.85).aspx
             // TODO: verify if it's the right one...
-            static SmallMatrix lookAt(SmallVector!(3u, T) eye, SmallVector!(3u, T) target, SmallVector!(3u, T) up)
+            static SmallMatrix lookAt(Vector!(3u, T) eye, Vector!(3u, T) target, Vector!(3u, T) up)
             {
-                SmallVector!(3u, T) Z = (eye - target).normalized();
-                SmallVector!(3u, T) X = cross(up, Z).normalized();
-                SmallVector!(3u, T) Y = cross(Z, X);
+                Vector!(3u, T) Z = (eye - target).normalized();
+                Vector!(3u, T) X = cross(up, Z).normalized();
+                Vector!(3u, T) Y = cross(Z, X);
 
                 return SmallMatrix(    X.x,         Y.x,         Z.x,     0,
                                        X.y,         Y.y,         Z.y,     0,

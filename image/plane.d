@@ -5,7 +5,7 @@ module gfm.image.plane;
 
 import std.c.string, std.math;
 
-import gfm.math.smallvector;
+import gfm.math.vector;
 import gfm.image.image;
 import gfm.common.alignedbuffer;
 
