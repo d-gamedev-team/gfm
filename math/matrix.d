@@ -86,7 +86,7 @@ align(1) struct Matrix(size_t R, size_t C, T)
 
         // other small matrices (same size, compatible type)
         void opAssign(U)(U x) pure nothrow
-            if (is(typeof(U._isSmallMatrix))
+            if (is(typeof(U._isMatrix))
                 && is(U._T : _T)
                 && (!is(U: Matrix))
                 && (U._R == _R) && (U._C == _C))
@@ -148,7 +148,7 @@ align(1) struct Matrix(size_t R, size_t C, T)
 
         // matrix * matrix
         auto opBinary(string op, U)(U x)
-            if (is(typeof(U._isSmallMatrix)) && (U._R == C) && (op == "*"))
+            if (is(typeof(U._isMatrix)) && (U._R == C) && (op == "*"))
         {
             Matrix!(R, U._C, T) result = void;
 
@@ -173,7 +173,7 @@ align(1) struct Matrix(size_t R, size_t C, T)
 
         // cast to other small matrices type
         // if the size are different, the result matrix is truncated and/or filled with identity coefficients
-        U opCast(U)() pure nothrow const if (is(typeof(U._isSmallMatrix)) && (U._R == _R) && (U._C == _C))
+        U opCast(U)() pure nothrow const if (is(typeof(U._isMatrix)) && (U._R == _R) && (U._C == _C))
         {
             U res = U.IDENTITY;
             enum minR = R < U._R ? R : U._R;
@@ -439,7 +439,7 @@ align(1) struct Matrix(size_t R, size_t C, T)
         enum _N = R * C;
         enum _R = R;
         enum _C = C;
-        enum bool _isSmallMatrix = true;
+        enum bool _isMatrix = true;
 
         template isAssignable(T)
         {

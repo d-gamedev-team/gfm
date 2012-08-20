@@ -147,7 +147,7 @@ nothrow:
         }
 
         // other small vectors (same size, compatible type)
-        void opAssign(U)(U x) pure nothrow if (is(typeof(U._isSmallVector))
+        void opAssign(U)(U x) pure nothrow if (is(typeof(U._isVector))
                                             && is(U._T : T)
                                              && (!is(U: Vector))
                                              && (U._N == _N))
@@ -290,7 +290,7 @@ nothrow:
         +/
 
         // casting to small vectors of the same size
-        U opCast(U)() pure const nothrow if (is(typeof(U._isSmallVector)) && (U._N == _N))
+        U opCast(U)() pure const nothrow if (is(typeof(U._isVector)) && (U._N == _N))
         {
             U res = void;
             for (size_t i = 0; i < N; ++i)
@@ -371,7 +371,7 @@ nothrow:
 
     private
     {
-        enum _isSmallVector = true; // do we really need this? I don't know.
+        enum _isVector = true; // do we really need this? I don't know.
 
         enum _N = N;
         alias T _T;
