@@ -1,7 +1,7 @@
 module gfm.math.box;
 
+import std.math;
 import std.traits;
-import std.metastrings;
 
 import gfm.math.smallvector, gfm.math.funcs;
 
@@ -118,6 +118,28 @@ align(1) struct Box(size_t N, T)
                 if (o.a[i] >= b[i] || o.b[i] < a[i])
                     return false;
             return true;
+        }
+
+        // Euclidean squared distance from a point
+        // source: Numerical Recipes Third Edition (2007)
+        double squaredDistance(bound_t point)
+        {
+            double distanceSquared = 0;
+            for (size_t i = 0; i < N; ++i)
+            {
+                if (point[i] < a[i])
+                    distanceSquared += sqr(point[i] - a[i]);
+
+                if (point[i] > b[i])
+                    distanceSquared += sqr(point[i] - b[i]);
+            }
+            return distanceSquared;
+        }
+
+        // Euclidean distance from a point
+        double distance(bound_t point)
+        {
+            return sqrt(squaredDistance(point));
         }
 
         static if (N == 2u)
