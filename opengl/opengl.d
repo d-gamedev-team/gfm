@@ -56,6 +56,8 @@ final class OpenGL
 
             _log.infof("    Extensions: %s found", _extensions.length);
             getLimits(true);
+            _log.infof("    - EXT_texture_filter_anisotropic is%s supported", EXT_texture_filter_anisotropic() ? "": " not");
+            _log.infof("    - EXT_framebuffer_object is%s supported", EXT_framebuffer_object() ? "": " not");
             _textureUnits = new TextureUnits(this);
         }
 
