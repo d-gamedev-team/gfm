@@ -125,6 +125,21 @@ class GLTexture
         {
             glTexParameteri(_target, GL_TEXTURE_MAG_FILTER, magFilter);
         }
+
+        // anisotropy level
+        final void setMaxAnisotropy(float f)
+        {
+            assert(f >= 1.0f);
+            if (!EXT_texture_filter_anisotropic())
+                return;
+
+            auto maxAniso = _gl.maxTextureMaxAnisotropy();
+
+            if (f >= maxAniso)
+                f = maxAniso;
+
+            glTexParameterf(_target, GL_TEXTURE_MAX_ANISOTROPY_EXT, f);
+        }
     }
 
     package
