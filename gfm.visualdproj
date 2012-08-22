@@ -241,6 +241,7 @@
    <File path="opengl\texture.d" />
    <File path="opengl\textureunit.d" />
    <File path="opengl\uniform.d" />
+   <File path="opengl\vbo.d" />
   </Folder>
   <Folder name="sdl2">
    <File path="sdl2\all.d" />

@@ -12,4 +12,5 @@ public
     import gfm.opengl.texture;
     import gfm.opengl.textureunit;
     import gfm.opengl.fbo;
+    import gfm.opengl.vbo;
 }
