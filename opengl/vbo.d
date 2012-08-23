@@ -28,20 +28,25 @@ class VertexSpecification
             _state = State.UNUSED;
         }
 
+        ~this()
+        {
+            assert(_state == State.UNUSED);
+        }
+
         // using older pointer functions can be more portable
         void use(bool useOlderAttribFunctions = false)
         {
             assert(_state == State.UNUSED);
-            foreach (ref e; _elements)
-                e.use(_gl, useOlderAttribFunctions, _currentOffset);
+            for (uint i = 0; i < _elements.length; ++i)
+                _elements[i].use(_gl, i, useOlderAttribFunctions, _currentOffset);
             _state = useOlderAttribFunctions ? State.USED_OLDER_FUNCTIONS : State.USED_NEWER_FUNCTION;
         }
 
         void unuse()
         {
             assert(_state == State.USED_OLDER_FUNCTIONS || _state == State.USED_NEWER_FUNCTION);
-            foreach (ref e; _elements)
-                e.unuse(_gl, _state == State.USED_OLDER_FUNCTIONS);
+            for (uint i = 0; i < _elements.length; ++i)
+                _elements[i].unuse(_gl, i, _state == State.USED_OLDER_FUNCTIONS);
             _state = State.UNUSED;
         }
 
@@ -90,7 +95,7 @@ struct VertexElement
 
     package
     {
-        void use(OpenGL gl, bool useOlderAttribFunctions, size_t sizeOfVertex)
+        void use(OpenGL gl, GLuint index, bool useOlderAttribFunctions, size_t sizeOfVertex)
         {
             if (useOlderAttribFunctions)
             {
@@ -120,32 +125,38 @@ struct VertexElement
             }
             else
             {
-                assert(false); // TODO
+                glEnableVertexAttribArray(index);
+                glVertexAttribPointer(index, n, glType, GL_FALSE, sizeOfVertex, cast(GLvoid *) offset);
             }
-            gl.runtimeCheck();            
+            gl.runtimeCheck();
         }
 
-        void unuse(OpenGL gl, bool useOlderAttribFunctions)
+        void unuse(OpenGL gl, GLuint index, bool useOlderAttribFunctions)
         {
-            assert(useOlderAttribFunctions); // TODO
-
-            final switch (role)
+            if(useOlderAttribFunctions)
             {
-                case Role.POSITION:
-                    glDisableClientState(GL_VERTEX_ARRAY);
-                    break;
+                final switch (role)
+                {
+                    case Role.POSITION:
+                        glDisableClientState(GL_VERTEX_ARRAY);
+                        break;
 
-                case Role.COLOR:
-                    glDisableClientState(GL_COLOR_ARRAY);
-                    break;
+                    case Role.COLOR:
+                        glDisableClientState(GL_COLOR_ARRAY);
+                        break;
 
-                case Role.TEX_COORD:
-                    glDisableClientState(GL_TEXTURE_COORD_ARRAY);
-                    break;
+                    case Role.TEX_COORD:
+                        glDisableClientState(GL_TEXTURE_COORD_ARRAY);
+                        break;
 
-                case Role.NORMAL:
-                    glDisableClientState(GL_NORMAL_ARRAY);
-                    break;
+                    case Role.NORMAL:
+                        glDisableClientState(GL_NORMAL_ARRAY);
+                        break;
+                }
+            }
+            else
+            {
+                glDisableVertexAttribArray(index);
             }
             gl.runtimeCheck();
         }
