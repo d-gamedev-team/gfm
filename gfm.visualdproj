@@ -195,11 +195,6 @@
    <File path="common\structpool.d" />
    <File path="common\text.d" />
   </Folder>
-  <Folder name="fann">
-   <File path="fann\all.d" />
-   <File path="fann\fann.d" />
-   <File path="fann\lib.d" />
-  </Folder>
   <Folder name="freeimage">
    <File path="freeimage\all.d" />
    <File path="freeimage\fibitmap.d" />
