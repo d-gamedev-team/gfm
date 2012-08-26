@@ -331,7 +331,7 @@ align(1) struct Matrix(T, size_t R, size_t C)
             {
                 Matrix res = IDENTITY;
                 for (size_t i = 0; i + 1 < _R; ++i)
-                    res.c[i][_C-1] = v[i];
+                    res.c[i][i] = v[i];
                 return res;
             }
         }
