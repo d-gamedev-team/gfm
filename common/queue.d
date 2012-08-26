@@ -2,7 +2,6 @@ module gfm.common.queue;
 
 import std.range;
 
-
 // can grow
 template Queue(T) 
 { 
@@ -12,13 +11,13 @@ template Queue(T)
 // cannot grow
 template FixedSizeQueue(T) 
 { 
-    alias QueueImpl!(T, OverflowPolicy.ASSERT) Queue;
+    alias QueueImpl!(T, OverflowPolicy.ASSERT) FixedSizeQueue;
 }
 
 // cannot grow, drop excess elements in case of overflow
 template RingBuffer(T) 
 { 
-    alias QueueImpl!(T, OverflowPolicy.DROP) Queue;
+    alias QueueImpl!(T, OverflowPolicy.DROP) RingBuffer;
 }
 
 // what to do when capacity is exceeded?
@@ -37,7 +36,10 @@ final class QueueImpl(T, OverflowPolicy overflowPolicy)
     {
         this(size_t initialCapacity) nothrow
         {
-            _data.length = capacity;
+            static if (overflowPolicy != OverflowPolicy.GROW)
+                assert(initialCapacity > 0); // size is 0, probably a problem
+            
+            _data.length = initialCapacity;
             clear();
         }
 

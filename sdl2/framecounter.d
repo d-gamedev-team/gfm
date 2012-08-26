@@ -5,6 +5,7 @@ import std.string;
 import derelict.sdl2.sdl;
 import gfm.sdl2.sdl;
 import gfm.math.statistics;
+import gfm.common.queue;
 
 // gets intra-frame delta time
 final class FrameCounter
@@ -16,7 +17,7 @@ final class FrameCounter
             _sdl = sdl;
             _firstFrame = true;
             _elapsedTime = 0;
-            _stats = new Statistics!ulong(10, 1);
+            _stats = new RingBuffer!ulong(10);
         }
 
         /**
@@ -29,7 +30,7 @@ final class FrameCounter
             {
                 _lastTime = getCurrentTime();
                 _firstFrame = false;
-                _stats.eat(0);
+                _stats.pushBack(0);
                 return 0; // no advance for first frame
             }
             else
@@ -38,7 +39,7 @@ final class FrameCounter
                 uint delta = now - _lastTime;
                 _elapsedTime += delta;
                 _lastTime = now;
-                _stats.eat(delta);
+                _stats.pushBack(delta);
                 return delta;
             }
         }
@@ -69,16 +70,16 @@ final class FrameCounter
 
         string getFPSString()
         {
-            double avg = _stats.computeAverage();
+            double avg = average(_stats.range());
             int avgFPS = cast(int)(0.5 + ( avg != 0 ? 1000 / avg : 0 ) );
             int avgdt = cast(int)(0.5 + avg);
 
             return format("FPS: %s dt: avg %sms min %sms max %sms stddev %s",
                           avgFPS,
                           avgdt,
-                          _stats.computeMinimum(),
-                          _stats.computeMaximum(),
-                          _stats.computeStdDeviation());
+                          minimum(_stats.range()),
+                          maximum(_stats.range()),
+                          standardDeviation(_stats.range()));
 
         }
     }
@@ -86,7 +87,7 @@ final class FrameCounter
     private
     {
         SDL2 _sdl;
-        Statistics!ulong _stats;
+        RingBuffer!ulong _stats;
         bool _firstFrame;
         uint _lastTime;
         ulong _elapsedTime;
