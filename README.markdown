@@ -53,7 +53,7 @@ See UNLICENSE for more details.
 
 * image/
   * generic image and plane abstraction
-  * physical color computations (why not ?
+  * physical color computations
 
 
 * sdl2/
