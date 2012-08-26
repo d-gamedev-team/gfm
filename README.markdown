@@ -1,11 +1,11 @@
-gfm
-===
+# gfm
+
 
 gfm is a collection of useful classes for multimedia programming with the D language.
 
 
-Why?
-====
+## Why?
+
 
 While building multiples applications with the D programming language, I've come to several conclusions:
   * without a sane common ground, maintenance of multiples such programs is painful
@@ -19,56 +19,57 @@ gfm is:
   * wrappers that are leaky abstractions but try not to restrict you
   * stuff you will be glad to have when you need to
 
+## Contents
 
-Contents
-========
 
 Everything in this repositery is "public domain", except for parts marked with a star (*).
 See UNLICENSE for more details.
 
 
-* common/
-  * HTML logging object
-  * range-based queue/fifo/stack/ring-buffer and locked queue
-  * aligned malloc/free/realloc and buffer
-  * struct pool
+### common/
+  * **log.d** HTML logging object
+  * **queue.d** queue/fifo/stack/ring-buffer, with range interface
+  * **lockedqueue.d** synchronized queue for thread communication
+  * **memory.d** aligned malloc/free/realloc
+  * **alignedbuffer.d** aligned array-like container
+  * **structpool.d** small object area
 
 
-* math/
-  * vectors
-  * matrices
-  * quaternions
-  * half floats
-  * 128 bits integers (cent/ucent implentation), including division algorithm from Ian Kaplan (*)
-  * boxes: half-open intervals
-  * fixed-point numbers
-  * fractions
-  * statistical functions
-  * polynomial solvers up to quadratic
-  * random distributions: a port of SimpleRNG from John D. Cook (*)
-  * a port of easing functions from Robert Penner (*)
-  * shapes
-  * other useful math functions
+### math/
+  * **vector.d** small vectors for 2D and 3D
+  * **matrix.d** small matrices for 2D and 3D
+  * **quaternion.d** quaternions
+  * **half.d** half floats
+  * **softcent.d:** 128 bits integers (cent/ucent implentation), including division algorithm from Ian Kaplan\*
+  * **box.d** half-open intervals (for eg. AABB)
+  * **fixedpoint.d** fixed-point numbers
+  * **fraction.d** rational numbers
+  * **statistics.d** statistical functions
+  * **solver.d** polynomial solvers up to quadratic
+  * **simplerng.d** random distributions: a port of SimpleRNG from John D. Cook\*
+  * **easing.d** a port of easing functions from Robert Penner\*
+  * **shapes.d** segment, triangle, sphere, ray...
+  * **funcs.d** useful math functions
 
 
-* image/
+### image/
   * generic image and plane abstraction
-  * physical color computations
+  * physical color computations (why not ?
 
 
-* sdl2/
+### sdl2/
   * SDL 2.0 wrapper based on Derelict3
   * framerate statistics
 
 
-* freeimage/
+### freeimage/
   * freeimage wrapper based on Derelict3
   * FIBITMAP wrapper
 
 
-* opengl/
+### opengl/
   * OpenGL wrapper based on Derelict3
   * makes easier to use the OpenGL API correctly
   * including a matrix stack to replace fixed pipeline
   
-more to come
+*More to come*
