@@ -23,14 +23,16 @@ gfm is:
 Contents
 ========
 
-Unless parts that are marked with a star (*), everything in this repositery is "public domain".
+Everything in this repositery is "public domain", except for parts marked with a star (*).
 See UNLICENSE for more details.
+
 
 * common/
   * HTML logging object
   * range-based queue/fifo/stack/ring-buffer and locked queue
   * aligned malloc/free/realloc and buffer
   * struct pool
+
 
 * math/
   * vectors
@@ -48,17 +50,21 @@ See UNLICENSE for more details.
   * shapes
   * other useful math functions
 
+
 * image/
   * generic image and plane abstraction
   * physical color computations (why not ?
+
 
 * sdl2/
   * SDL 2.0 wrapper based on Derelict3
   * framerate statistics
 
+
 * freeimage/
   * freeimage wrapper based on Derelict3
   * FIBITMAP wrapper
+
 
 * opengl/
   * OpenGL wrapper based on Derelict3
