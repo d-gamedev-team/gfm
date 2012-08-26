@@ -2,39 +2,71 @@ module gfm.common.queue;
 
 import std.range;
 
-// doubly-indexed queue, canbe used as a FIFO or stack
-final class Queue(T)
+
+// can grow
+template Queue(T) 
+{ 
+    alias QueueImpl!(T, OverflowPolicy.GROW) Queue;
+}
+
+// cannot grow
+template FixedSizeQueue(T) 
+{ 
+    alias QueueImpl!(T, OverflowPolicy.ASSERT) Queue;
+}
+
+// cannot grow, drop excess elements in case of overflow
+template RingBuffer(T) 
+{ 
+    alias QueueImpl!(T, OverflowPolicy.DROP) Queue;
+}
+
+// what to do when capacity is exceeded?
+private enum OverflowPolicy
 {
-nothrow:
+    GROW,
+    ASSERT,
+    DROP
+}
+
+// doubly-indexed queue, can be used as a FIFO or stack
+// grow-only
+final class QueueImpl(T, OverflowPolicy overflowPolicy)
+{
     public
     {
-        this(size_t capacity)
+        this(size_t initialCapacity) nothrow
         {
             _data.length = capacity;
             clear();
         }
 
-        @property size_t capacity() const
+        @property bool isFull() pure const nothrow
+        {
+            return _count == capacity;
+        }
+
+        @property size_t capacity() pure const nothrow
         {
             return _data.length;
         }
 
-        void pushBack(T x)
+        void pushBack(T x) nothrow
         {
-            assert(_count < capacity);
-            _data[(_first + _count) % _data.length] = x;
+            checkOverflow!popFront();
+           _data[(_first + _count) % _data.length] = x;
             ++_count;
         }
 
-        void pushFront(T x)
+        void pushFront(T x) nothrow
         {
-            assert(_count < capacity);
+            checkOverflow!popBack();
             ++_count;
             _first = (_first - 1 + _data.length) % _data.length;
             _data[_first] = x;
         }
 
-        T popFront()
+        T popFront() nothrow
         {
             assert(_count > 0);
             T res = _data[_first];
@@ -43,20 +75,20 @@ nothrow:
             return res;
         }
 
-        T popBack()
+        T popBack() nothrow
         {
             assert(_count > 0);
             --_count;
             return _data[(_first + _count) % _data.length];
         }
 
-        void clear()
+        void clear() nothrow
         {
             _first = 0;
             _count = 0;
         }
 
-        size_t length()
+        size_t length() pure const nothrow
         {
             return _count;
         }
@@ -67,7 +99,7 @@ nothrow:
         nothrow:
             public
             {
-                this(Queue queue) pure
+                this(QueueImpl queue) pure
                 {
                     _index = 0;
                     _data = queue._data;
@@ -129,7 +161,7 @@ nothrow:
         }
 
         // get forward range
-        Range range()
+        Range range() nothrow
         {
             return Range(this);
         }
@@ -140,6 +172,43 @@ nothrow:
         T[] _data;
         size_t _first;
         size_t _count; // number of elem in FIFO
+
+        void checkOverflow(alias popMethod)() nothrow
+        {
+            if (isFull())
+            {
+                static if (overflowPolicy == OverflowPolicy.GROW)
+                    extend();
+
+                static if (overflowPolicy == OverflowPolicy.ASSERT)
+                    assert(false);
+
+                static if (overflowPolicy == OverflowPolicy.DROP)
+                    popMethod();
+            }
+        }
+      
+        void extend() nothrow
+        {
+            size_t newCapacity = capacity * 2;
+            if (newCapacity < 8)
+                newCapacity = 8;
+
+            assert(newCapacity >= _count + 1);
+
+            T[] newData = new T[newCapacity];
+
+            auto r = range();
+            size_t i = 0;
+            while (!r.empty())
+            {
+                newData[i] = r.front();
+                r.popFront();
+                ++i;
+            }
+            _data = newData;
+            _first = 0;
+        }
     }
 }
 
@@ -171,3 +240,4 @@ unittest
             assert(fifo.popBack() == N - 1 - n);
     }
 }
+
