@@ -17,6 +17,20 @@ template isImage(I)
     }()));
 }
 
+/// Return true if an image contains the given point.
+bool contains(I)(I img, int x, int y) if (isImage!I)
+{
+    return cast(uint)x < img.dimension.x && cast(uint)x < img.dimension.y;
+}
+
+/// Draw a single pixel
+void drawPixel(I, P)(I img, int x, int y, P p) if (isImage!I && is(P : I.element_t))
+{
+    if (!img.contains(x, y))
+        return;
+    img.set(x, y, p);
+}
+
 enum EdgeMode
 {
     BLACK,
@@ -25,19 +39,7 @@ enum EdgeMode
     ASSERT
 }
 
-void contains(I)(I img, int x, int y) if (isImage!I)
-{
-    return cast(uint)x < img.dimension.x && cast(uint)x < img.dimension.y;
-}
-
-void drawPixel(I, P)(I img, int x, int y, P p) if (isImage!I && is(P : I.element_t))
-{
-    if (!img.contains(x, y))
-        return;
-    img.set(x, y, p);
-}
-
-
+/// Return pixel with given behaviour at boundaries
 I.element_t getPixel(I)(I img, int x, int y, EdgeMode em)
 {
     if (!img.contains(x, y))
@@ -53,6 +55,7 @@ I.element_t getPixel(I)(I img, int x, int y, EdgeMode em)
                 if (y < 0) y = 0;
                 if (x >= img.dimension.x) x = img.dimension.x - 1;
                 if (y >= img.dimension.y) y = img.dimension.y - 1;
+                break;
             }
 
             case EdgeMode.REPEAT:
