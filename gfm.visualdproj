@@ -205,7 +205,6 @@
    <File path="image\cie.d" />
    <File path="image\image.d" />
    <File path="image\plane.d" />
-   <File path="image\yv12image.d" />
   </Folder>
   <Folder name="math">
    <File path="math\all.d" />
