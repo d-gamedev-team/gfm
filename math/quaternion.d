@@ -107,14 +107,18 @@ struct Quaternion(T)
         // convert to 3x3 rotation matrix
         U opCast(U)() pure const nothrow if (is(Unqual!U == mat3!T))
         {
-            T xx = x * x, xy = x * y, xz = x * z, xw = x * w,
-                          yy = y * y, yz = y * z, yw = y * w,
-                                      zz = z * z, zw = z * w;
+            // do not assume that quaternion is normalized
+            T norm = x*x + y*y + z*z + w*w;
+            T s = (norm > 0) ? 2 / norm : 0;
+
+            T xx = x * x * s, xy = x * y * s, xz = x * z * s, xw = x * w * s,
+                              yy = y * y * s, yz = y * z * s, yw = y * w * s,
+                                              zz = z * z * s, zw = z * w * s;
             return mat3!(T)
             (
-                1 - 2 * (yy + zz)    , 2 * (xy - zw)        , 2 * (xz + yw)    ,
-                2 * (xy + zw)        , 1 - 2 * (xx + zz)    , 2 * (yz - xw)    ,
-                2 * (xz - yw)        , 2 * (yz + xw)        , 1 - 2 * (xx + yy)
+                1 - (yy + zz)   ,   (xy - zw)    ,   (xz + yw)    ,
+                  (xy + zw)     , 1 - (xx + zz)  ,   (yz - xw)    ,
+                  (xz - yw)     ,   (yz + xw)    , 1 - (xx + yy)
             );
         }
 
