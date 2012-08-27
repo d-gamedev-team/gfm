@@ -250,10 +250,6 @@
    <File path="sdl2\surface.d" />
    <File path="sdl2\window.d" />
   </Folder>
-  <Folder name="system">
-   <File path="system\mutex.d" />
-   <File path="system\semaphore.d" />
-  </Folder>
   <File path="README.markdown" />
  </Folder>
 </DProject>
