@@ -7,7 +7,6 @@ import gfm.math.matrix;
 // hold a rotation + angle in a proper but wild space
 struct Quaternion(T)
 {
-nothrow:
     public
     {
         union
@@ -26,7 +25,7 @@ nothrow:
         }
 
         // constructs from axis + angle
-        static Quaternion fromAxis(Vector!(T, 3u) axis, T angle) pure
+        static Quaternion fromAxis(Vector!(T, 3u) axis, T angle) pure nothrow
         {
             Quaternion q = void;
             axis.normalize();
@@ -40,26 +39,32 @@ nothrow:
         }
 
         // compatible Quaternions
-        void opAssign(U)(U u) pure if (is(typeof(U._isQuaternion)) && is(U._T : T))
+        void opAssign(U)(U u) pure nothrow if (is(typeof(U._isQuaternion)) && is(U._T : T))
         {
-            v = u.v; // this assignment should exist and be valid in Vector
+            v = u.v;
+        }
+
+        // from a vector containing components
+        void opAssign(U)(U u) pure nothrow if (is(U : Vector!(T, 4u)))
+        {
+            v = u;
         }
 
         // normalize quaternion
-        void normalize() pure
+        void normalize() pure nothrow
         {
             v.normalize();
         }
 
         // return result of normalization
-        Quaternion normalized() pure const
+        Quaternion normalized() pure const nothrow
         {
             Quaternion res = void;
             res.v = v.normalized();
             return res;
         }
 
-        Quaternion opOpAssign(string op, U)(U q) pure
+        Quaternion opOpAssign(string op, U)(U q) pure nothrow
             if (is(U : Quaternion) && (op == "*"))
         {
             T nx = w * q.x + x * q.w + y * q.z - z * q.y,
@@ -73,13 +78,14 @@ nothrow:
             return this;
         }
 
-        Quaternion opOpAssign(string op, U)(U operand) pure if (isConvertible!U)
+        Quaternion opOpAssign(string op, U)(U operand) pure nothrow if (isConvertible!U)
         {
             Quaternion conv = operand;
             return opOpAssign!op(conv);
         }
 
-        Quaternion opBinary(string op, U)(U operand) pure const if (is(U: Quaternion) || (isConvertible!U))
+        Quaternion opBinary(string op, U)(U operand) pure const nothrow 
+            if (is(U: Quaternion) || (isConvertible!U))
         {
             Quaternion temp = this;
             return temp.opOpAssign!op(operand);
@@ -92,14 +98,14 @@ nothrow:
         }
 
         // compare Quaternion and other types
-        bool opEquals(U)(U other) pure const if (isConvertible!U)
+        bool opEquals(U)(U other) pure const nothrow if (isConvertible!U)
         {
             Quaternion conv = other;
             return opEquals(conv);
         }
 
         // convert to 3x3 rotation matrix
-        U opCast(U)() pure nothrow const if (is(Unqual!U == mat3!T))
+        U opCast(U)() pure const nothrow if (is(Unqual!U == mat3!T))
         {
             T xx = x * x, xy = x * y, xz = x * z, xw = x * w,
                           yy = y * y, yz = y * z, yw = y * w,
@@ -113,9 +119,18 @@ nothrow:
         }
 
         // convert to 4x4 rotation matrix
-        U opCast(U)() pure nothrow const if (is(Unqual!U == mat4!T))
+        U opCast(U)() pure const nothrow if (is(Unqual!U == mat4!T))
         {
             return cast(mat4!T)(cast(mat3!T)(this));
+        }
+
+        // Workaround Vector not being constructable through CTFE
+        static Quaternion IDENTITY() pure nothrow @property
+        {
+            Quaternion q;
+            q.x = q.y = q.z = 0;
+            q.w = 1;
+            return q;
         }
     }
 
@@ -123,17 +138,6 @@ nothrow:
     {
         alias T _T;
         enum _isQuaternion = true;
-
-
-      /*
-        // construct with components
-        this(T x_, T y_, T z_, T w_) pure nothrow
-        {
-            x = x_;
-            y = y_;
-            z = z_;
-            w = w_;
-        }*/
 
         template isAssignable(T)
         {
