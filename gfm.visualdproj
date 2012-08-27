@@ -254,6 +254,6 @@
    <File path="system\mutex.d" />
    <File path="system\semaphore.d" />
   </Folder>
-  <File path="README" />
+  <File path="README.markdown" />
  </Folder>
 </DProject>
