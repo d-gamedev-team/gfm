@@ -165,6 +165,16 @@ int nextPowerOf2(int i) nothrow
     return v;
 }
 
+// Computes sin(x)/x accurately 
+// see http://www.plunk.org/~hatch/rightway.php
+T sinOverX(T)(T x)
+{
+    if (1 + x * x == 1)
+        return 1;
+    else
+        return sin(x) / x; 
+}
+
 unittest
 {
     assert(nextPowerOf2(13) == 16);
