@@ -17,6 +17,59 @@ template isImage(I)
     }()));
 }
 
+enum EdgeMode
+{
+    BLACK,
+    CLAMP,
+    REPEAT,
+    ASSERT
+}
+
+void contains(I)(I img, int x, int y) if (isImage!I)
+{
+    return cast(uint)x < img.dimension.x && cast(uint)x < img.dimension.y;
+}
+
+void drawPixel(I, P)(I img, int x, int y, P p) if (isImage!I && is(P : I.element_t))
+{
+    if (!img.contains(x, y))
+        return;
+    img.set(x, y, p);
+}
+
+
+I.element_t getPixel(I)(I img, int x, int y, EdgeMode em)
+{
+    if (!img.contains(x, y))
+    {
+        final switch(em)
+        {
+            case EdgeMode.BLACK:
+                return I.element_t.init;
+
+            case EdgeMode.CLAMP:
+            {
+                if (x < 0) x = 0;
+                if (y < 0) y = 0;
+                if (x >= img.dimension.x) x = img.dimension.x - 1;
+                if (y >= img.dimension.y) y = img.dimension.y - 1;
+            }
+
+            case EdgeMode.REPEAT:
+            {
+                x = moduloWrap!int(x, img.dimension.x);
+                y = moduloWrap!int(y, img.dimension.y);
+                break;
+            }
+
+            case EdgeMode.ASSERT: 
+                assert(false);
+        }
+    }
+    
+    return img.get(x, y);
+}
+
 void fillRect(I, P)(I img, int x, int y, int width, int height, P e) if (isImage!I && is(P : I.element_t))
 {
     for (int j = 0; j < height; ++j)
@@ -25,7 +78,7 @@ void fillRect(I, P)(I img, int x, int y, int width, int height, P e) if (isImage
 }
 
 
-void fillRect(I, P)(I img, P e) if (isImage!I && is(P : I.element_t))
+void fillImage(I, P)(I img, P e) if (isImage!I && is(P : I.element_t))
 {
     immutable int width = img.dimension.x;
     immutable int height = img.dimension.y;
@@ -47,4 +100,16 @@ void copyRect(I)(I dest, I src) if (isImage!I)
             auto p = src.get(i, j);
             dest.set(i, j, p);
         }
+}
+
+void drawHorizontalLine(I, P)(I img, int x1, int x2, int y, P p) if (isImage!I && is(P : I.element_t))
+{
+    for (int x = x1; x < x2; ++x)
+        img.drawPixel(x, y, p);
+}
+
+void drawVerticalLine(I, P)(I img, int x, int y1, int y2, P p) if (isImage!I && is(P : I.element_t))
+{
+    for (int y = y1; y < y2; ++y)
+        img.drawPixel(x, y, p);
 }

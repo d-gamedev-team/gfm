@@ -175,6 +175,30 @@ T sinOverX(T)(T x)
         return sin(x) / x; 
 }
 
+
+/**
+ * Signed integer modulo a/b where the remainder is guaranteed to be in [0..b[,
+ * even if a is negative. Only support positive dividers.
+ */
+T moduloWrap(T)(T a, T b) pure nothrow if (isSigned!T) 
+in
+{
+    assert(b > 0);
+}
+body
+{
+    if (a >= 0)
+        a = a % b;
+    else
+    {
+        auto rem = a % b;
+        x = (rem == 0) ? 0 : (-rem + b);
+    }
+
+    assert(x >= 0 && x < b);
+    return x;
+}
+
 unittest
 {
     assert(nextPowerOf2(13) == 16);

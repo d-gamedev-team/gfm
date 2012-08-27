@@ -157,7 +157,7 @@ unittest
         b[] = 0;
         auto plane = Plane!int(b.ptr, vec2i(10, 5), 20 * int.sizeof);
 
-        fillRect(plane, 1);
+        fillImage(plane, 1);
         assert(plane.dimension.x == 10);
         assert(plane.dimension.y == 5);
 
