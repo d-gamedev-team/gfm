@@ -522,7 +522,8 @@ mixin(definePostfixAliases("vec2"));
 mixin(definePostfixAliases("vec3"));
 mixin(definePostfixAliases("vec4"));
 
-// min and max
+
+/// element-wise minimum
 Vector!(T, N) min(T, size_t N)(const Vector!(T, N) a, const Vector!(T, N) b) pure nothrow
 {
     Vector!(T, N) res = void;
@@ -531,6 +532,8 @@ Vector!(T, N) min(T, size_t N)(const Vector!(T, N) a, const Vector!(T, N) b) pur
     return res;
 }
 
+
+/// element-wise maximum
 Vector!(T, N) max(T, size_t N)(const Vector!(T, N) a, const Vector!(T, N) b) pure nothrow
 {
     Vector!(T, N) res = void;
@@ -539,7 +542,8 @@ Vector!(T, N) max(T, size_t N)(const Vector!(T, N) a, const Vector!(T, N) b) pur
     return res;
 }
 
-// dot product
+
+/// dot product
 T dot(T, size_t N)(const Vector!(T, N) a, const Vector!(T, N) b) pure nothrow
 {
     T sum = 0;
@@ -550,13 +554,32 @@ T dot(T, size_t N)(const Vector!(T, N) a, const Vector!(T, N) b) pure nothrow
     return sum;
 }
 
-// 3D cross product
+
+/// 3D cross product
 Vector!(T, 3u) cross(T)(const Vector!(T, 3u) a, const Vector!(T, 3u) b) pure nothrow
 {
     return Vector!(T, 3u)(a.y * b.z - b.z * a.y,
                           a.z * b.x - b.x * a.z,
                           a.x * b.y - b.y * a.x);
 }
+
+
+/**
+ * Return angle between vectors
+ * see "The Right Way to Calculate Stuff" at http://www.plunk.org/~hatch/rightway.php 
+ */
+T angleBetween(T, size_t N)(const Vector!(T, N) a, const Vector!(T, N) b) pure nothrow
+{
+    auto aN = a.normalized();
+    auto bN = b.normalized();
+    auto dp = dot(aN, bN);
+    
+    if (dp < 0)
+        return PI - 2 * asin((-bN-aN).length / 2);
+    else
+        return 2 * asin((bN-aN).length / 2);
+}
+
 
 unittest
 {
