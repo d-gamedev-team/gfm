@@ -10,7 +10,9 @@ import derelict.util.exception;
 import gfm.sdl2.displaymode;
 import gfm.sdl2.renderer;
 import gfm.common.log;
+import gfm.common.text;
 import gfm.math.box;
+
 
 class SDL2Exception : Exception
 {
@@ -73,7 +75,7 @@ final class SDL2
                     throwSDL2Exception("SDL_VideoInit");
             }
 
-            _log.infof("Running using video driver: %s", to!string(SDL_GetCurrentVideoDriver()));
+            _log.infof("Running using video driver: %s", sanitizeUTF8(SDL_GetCurrentVideoDriver()));
 
             int numDisplays = SDL_GetNumVideoDisplays();
             
@@ -111,13 +113,13 @@ final class SDL2
             string[] res;
             res.length = numDrivers;
             for(int i = 0; i < numDrivers; ++i)
-                res[i] = to!string(SDL_GetVideoDriver(i));
+                res[i] = sanitizeUTF8(SDL_GetVideoDriver(i));
             return res;
         }
 
         string getPlatform()
         {
-            return to!string(SDL_GetPlatform());
+            return sanitizeUTF8(SDL_GetPlatform());
         }
 
         int getL1LineSize()
@@ -226,8 +228,7 @@ final class SDL2
             if (s is null)
                 throwSDL2Exception("SDL_GetClipboardText");
 
-            // is clipboard texte utf-8? Assuming yes.
-            return to!string(s);
+            return sanitizeUTF8(s);
         }
     }
 
@@ -244,7 +245,7 @@ final class SDL2
         {
             const(char)* message = SDL_GetError();
             SDL_ClearError(); // clear error
-            return to!string(message);
+            return sanitizeUTF8(message);
         } 
     }
 
@@ -312,7 +313,7 @@ final class SDL2
             string formattedMessage = format("SDL (category %s, priority %s): %s", 
                                              readableCategory(category), 
                                              readablePriority(priority), 
-                                             to!string(message));
+                                             sanitizeUTF8(message));
 
             if (priority == SDL_LOG_PRIORITY_WARN)
                 _log.warn(formattedMessage);

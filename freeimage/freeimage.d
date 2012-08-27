@@ -5,6 +5,7 @@ import std.string;
 import derelict.freeimage.freeimage;
 import derelict.util.exception;
 import gfm.common.log;
+import gfm.common.text;
 
 class FreeImageException : Exception
 {
@@ -59,13 +60,13 @@ final class FreeImage
         string getVersion()
         {
             const(char)* versionZ = FreeImage_GetVersion();
-            return to!string(versionZ);
+            return sanitizeUTF8(versionZ);
         }
 
         string getCopyrightMessage()
         {
             const(char)* copyrightZ = FreeImage_GetCopyrightMessage();
-            return to!string(copyrightZ);
+            return sanitizeUTF8(copyrightZ);
         }
     }
 

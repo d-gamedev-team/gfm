@@ -4,6 +4,7 @@ import std.string;
 
 import derelict.sdl2.sdl;
 import gfm.common.log;
+import gfm.common.text;
 import gfm.math.vector;
 import gfm.math.box;
 
@@ -31,7 +32,7 @@ final class SDL2RendererInfo
 
         string name()
         {
-            return to!string(_info.name);
+            return sanitizeUTF8(_info.name);
         }
 
         bool isSoftware()

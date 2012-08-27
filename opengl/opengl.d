@@ -6,6 +6,7 @@ import std.array;
 import derelict.opengl3.gl3;
 import derelict.opengl3.gl;
 import gfm.common.log;
+import gfm.common.text;
 import gfm.opengl.textureunit;
 
 class OpenGLException : Exception
@@ -111,7 +112,7 @@ final class OpenGL
             if (sZ is null)
                 return "(unknown)";
             else
-                return to!string(sZ);
+                return sanitizeUTF8(sZ);
         }
 
         string getVersionString()

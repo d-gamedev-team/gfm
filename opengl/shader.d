@@ -6,6 +6,7 @@ import std.conv;
 import derelict.opengl3.gl3;
 
 import gfm.common.log;
+import gfm.common.text;
 import gfm.opengl.opengl;
 
 
@@ -94,7 +95,7 @@ final class GLShader
             GLint dummy;
             glGetShaderInfoLog(_shader, logLength, &dummy, log.ptr);
             _gl.runtimeCheck();
-            return to!string(log.ptr);
+            return sanitizeUTF8(log.ptr);
         }
     }
 

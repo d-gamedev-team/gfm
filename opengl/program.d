@@ -5,6 +5,7 @@ import std.conv, std.string;
 import derelict.opengl3.gl3;
 
 import gfm.common.log;
+import gfm.common.text;
 import gfm.math.vector, gfm.math.matrix;
 import gfm.opengl.opengl, gfm.opengl.shader, gfm.opengl.uniform;
 
@@ -84,7 +85,7 @@ final class GLProgram
                                        &type,
                                        buffer.ptr);
                     _gl.runtimeCheck();
-                    string name = to!string(buffer.ptr);
+                    string name = sanitizeUTF8(buffer.ptr);
                    _activeUniforms[name] = new GLUniform(_gl, _program, type, name, size);
                 }
             }
@@ -116,7 +117,7 @@ final class GLProgram
             GLint dummy;
             glGetProgramInfoLog(_program, logLength, &dummy, log.ptr);
             _gl.runtimeCheck();
-            return to!string(log.ptr);
+            return sanitizeUTF8(log.ptr);
         }
 
         GLUniform uniform(string name)

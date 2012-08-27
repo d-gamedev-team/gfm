@@ -5,6 +5,7 @@ import derelict.sdl2.image;
 import derelict.util.exception;
 
 import gfm.common.log;
+import gfm.common.text;
 
 import gfm.sdl2.sdl, gfm.sdl2.surface;
 
@@ -103,7 +104,7 @@ final class SDLImage
 
         string getErrorString()
         {
-            return to!string(IMG_GetError());
+            return sanitizeUTF8(IMG_GetError());
         }
     }
 }
