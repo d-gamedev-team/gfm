@@ -75,7 +75,7 @@ struct SimpleRng
             return -mean*log(getUniform());
         }
 
-	    // Gamma random sample
+	// Gamma random sample
         double getGamma(double shape, double scale) nothrow
         {
             // Implementation based on "A Simple Method for Generating Gamma Variables"
@@ -112,7 +112,7 @@ struct SimpleRng
             }
         }
 
-	    // Chi-square sample
+	// Chi-square sample
         double getChiSquare(double degreesOfFreedom) nothrow
         {
             // A chi squared distribution with n degrees of freedom
@@ -120,7 +120,7 @@ struct SimpleRng
             return getGamma(0.5 * degreesOfFreedom, 2.0);
         }
 
-	    // Inverse-gamma sample
+	// Inverse-gamma sample
         double getInverseGamma(double shape, double scale) nothrow
         {
             // If X is gamma(shape, scale) then
@@ -128,14 +128,14 @@ struct SimpleRng
             return 1.0 / getGamma(shape, 1.0 / scale);
         }
 
-	    // Weibull sample
+        // Weibull sample
         double getWeibull(double shape, double scale) nothrow
         {
             assert(shape > 0 && scale > 0);            
             return scale * pow(-log(getUniform()), 1.0 / shape);
         }
 
-	    // Cauchy sample
+        // Cauchy sample
         double getCauchy(double median, double scale) nothrow
         {
             assert(scale > 0);
@@ -145,7 +145,7 @@ struct SimpleRng
             return median + scale*tan(PI*(p - 0.5));
         }
 
-	    // Student-t sample
+        // Student-t sample
         double getStudentT(double degreesOfFreedom) nothrow
         {
             assert(degreesOfFreedom > 0);
@@ -165,13 +165,13 @@ struct SimpleRng
                              : (mean - scale*log(2*(1-u)));
         }
 
-	    // Log-normal sample
+        // Log-normal sample
         double getLogNormal(double mu, double sigma) nothrow
         {
             return exp(getNormal(mu, sigma));
         }
 
-	    // Beta sample
+        // Beta sample
         double getBeta(double a, double b) nothrow
         {
             assert(a > 0 && b > 0);
@@ -186,8 +186,8 @@ struct SimpleRng
             return u / (u + v);
         }
 
-	    // Poisson sample
-	    int getPoisson(double lambda) nothrow
+        // Poisson sample
+        int getPoisson(double lambda) nothrow
         {
             return (lambda < 30.0) ? poissonSmall(lambda) : poissonLarge(lambda);
         }
@@ -197,7 +197,7 @@ struct SimpleRng
     {
         uint _u, _v;
 
-	    int poissonSmall(double lambda) nothrow
+        int poissonSmall(double lambda) nothrow
         {
             // Algorithm due to Donald Knuth, 1969.
             double p = 1.0, L = exp(-lambda);
@@ -239,7 +239,7 @@ struct SimpleRng
             }
         }
 
-	    double logFactorial(int n) nothrow
+        double logFactorial(int n) nothrow
         {
             assert(n >= 0);
             if (n > 254)
