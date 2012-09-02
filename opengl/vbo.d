@@ -38,7 +38,7 @@ class VertexSpecification
         {
             assert(_state == State.UNUSED);
             for (uint i = 0; i < _elements.length; ++i)
-                _elements[i].use(_gl, i, useOlderAttribFunctions, _currentOffset);
+                _elements[i].use(_gl, i, useOlderAttribFunctions, cast(GLsizei) _currentOffset);
             _state = useOlderAttribFunctions ? State.USED_OLDER_FUNCTIONS : State.USED_NEWER_FUNCTION;
         }
 
@@ -95,7 +95,7 @@ struct VertexElement
 
     package
     {
-        void use(OpenGL gl, GLuint index, bool useOlderAttribFunctions, size_t sizeOfVertex)
+        void use(OpenGL gl, GLuint index, bool useOlderAttribFunctions, GLsizei sizeOfVertex)
         {
             if (useOlderAttribFunctions)
             {

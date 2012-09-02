@@ -85,7 +85,7 @@ final class TextureUnit
 
         void bind(GLenum target, GLuint texture)
         {
-            int index = targetToIndex(cast(Target)target);
+            size_t index = targetToIndex(cast(Target)target);
             if(_currentBinding[index] != texture)
             {
                 glBindTexture(target, texture);

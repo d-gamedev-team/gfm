@@ -59,7 +59,7 @@ final class GLShader
                 if (localLines[i] is null)
                     localLines[i] = "";
 
-                lengths[i] = localLines[i].length;
+                lengths[i] = cast(GLint)(localLines[i].length);
                 addresses[i] = localLines[i].ptr;
             }
 

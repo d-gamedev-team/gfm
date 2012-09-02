@@ -150,7 +150,7 @@ final class SDL2Renderer
 
         void drawLines(vec2i[] points)
         {
-            SDL_RenderDrawLines(_renderer, cast(SDL_Point*)(points.ptr), points.length);
+            SDL_RenderDrawLines(_renderer, cast(SDL_Point*)(points.ptr), cast(int)(points.length));
         }
 
         void drawPoint(vec2i point)
@@ -160,7 +160,7 @@ final class SDL2Renderer
 
         void drawPoints(vec2i[] points)
         {
-            SDL_RenderDrawPoints(_renderer, cast(SDL_Point*)(points.ptr), points.length);
+            SDL_RenderDrawPoints(_renderer, cast(SDL_Point*)(points.ptr), cast(int)(points.length));
         }
     }
 

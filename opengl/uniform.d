@@ -103,7 +103,7 @@ final class GLUniform
         OpenGL _gl;
         GLint _location;
         GLenum _type;
-        size_t _size;
+        GLsizei _size;
         ubyte[] _value;
         bool _valueChanged;
         bool _firstSet; // force update to ensure we do not relie on the driver initializing uniform to zero
