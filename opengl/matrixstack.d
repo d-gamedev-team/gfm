@@ -14,7 +14,7 @@ final class MatrixStack(size_t R, T) if (R == 3 || R == 4)
 {
     public
     {
-        alias Matrix!(R, R, T) matrix_t;
+        alias Matrix!(T, R, R) matrix_t;
 
         this(size_t depth = 32)
         {
@@ -82,12 +82,12 @@ final class MatrixStack(size_t R, T) if (R == 3 || R == 4)
             _invMatrices[_top] = _invMatrices[_top] * invM;
         }
 
-        void translate(Vector!(R-1, T) v)
+        void translate(Vector!(T, R-1) v)
         {
             mult(matrix_t.makeTranslate(v), matrix_t.makeTranslate(-v));
         }
 
-        void scale(Vector!(R-1, T) v)
+        void scale(Vector!(T, R-1) v)
         {
             mult(matrix_t.makeScale(v), matrix_t.makeScale(1 / v));
         }

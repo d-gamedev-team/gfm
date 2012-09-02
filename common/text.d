@@ -33,5 +33,5 @@ string sanitizeUTF8(const(char*) inputZ)
     size_t len = strlen(inputZ);
     immutable(ubyte)[] input = (cast(immutable(ubyte*))inputZ)[0..len];
     const(ubyte)[] res = (new EncodingSchemeUtf8).sanitize(input);
-    return to!string(res);
+    return to!string(cast(const(char)*)res);
 }
