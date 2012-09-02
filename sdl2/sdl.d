@@ -36,12 +36,8 @@ final class SDL2
             _SDL2LoggingRedirected = false;
             try
             {
-                // in debug builds, use a debug version of SDL2
-                debug
-                    DerelictSDL2.load("SDL2d.dll");
-                else
-                    DerelictSDL2.load();
-           }
+                DerelictSDL2.load();
+            }
             catch(DerelictException e)
             {
                 throw new SDL2Exception(e.msg);
