@@ -120,7 +120,7 @@ align(1) struct Matrix(T, size_t R, size_t C)
             column_t res = void;
             for (size_t i = 0; i < R; ++i)
             {
-                res[i] = c[i][j];
+                res.v[i] = c[i][j];
             }
             return res;
         }
@@ -141,7 +141,7 @@ align(1) struct Matrix(T, size_t R, size_t C)
                 {
                     sum += c[i][j] * x.v[j];
                 }
-                res[i] = sum;
+                res.v[i] = sum;
             }
             return res;
         }
@@ -334,7 +334,7 @@ align(1) struct Matrix(T, size_t R, size_t C)
                 {
                     T dot = 0;
                     for (size_t j = 0; j + 1 < C; ++j)
-                        dot += v[j] * c[i][j];
+                        dot += v.v[j] * c[i][j];
 
                     c[i][_C-1] += dot;
                 }
@@ -345,7 +345,7 @@ align(1) struct Matrix(T, size_t R, size_t C)
             {
                 Matrix res = IDENTITY;
                 for (size_t i = 0; i + 1 < _R; ++i)
-                    res.c[i][_C-1] += v[i];
+                    res.c[i][_C-1] += v.v[i];
                 return res;
             }
 
@@ -354,7 +354,7 @@ align(1) struct Matrix(T, size_t R, size_t C)
             {
                 for (size_t i = 0; i < _R; ++i)
                     for (size_t j = 0; j + 1 < _C; ++j)
-                        c[i][j] *= v[j];
+                        c[i][j] *= v.v[j];
             }
 
             /// make scaling matrix
@@ -362,7 +362,7 @@ align(1) struct Matrix(T, size_t R, size_t C)
             {
                 Matrix res = IDENTITY;
                 for (size_t i = 0; i + 1 < _R; ++i)
-                    res.c[i][i] = v[i];
+                    res.c[i][i] = v.v[i];
                 return res;
             }
         }
