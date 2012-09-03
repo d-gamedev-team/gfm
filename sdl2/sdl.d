@@ -64,13 +64,6 @@ final class SDL2
             subSystemInit(SDL_INIT_HAPTIC);
 
             _log.infof("Available drivers: %s", join(getVideoDrivers(), ", "));
-
-            {
-                int res = SDL_VideoInit(null);
-                if (res != 0)
-                    throwSDL2Exception("SDL_VideoInit");
-            }
-
             _log.infof("Running using video driver: %s", sanitizeUTF8(SDL_GetCurrentVideoDriver()));
 
             int numDisplays = SDL_GetNumVideoDisplays();
