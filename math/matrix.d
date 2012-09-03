@@ -423,9 +423,9 @@ align(1) struct Matrix(T, size_t R, size_t C)
                 T tz = -(far + near)   / dz;
 
                 return Matrix(2 / dx,   0,      0,    tx,
-                                     0,    2 / dy,   0,    ty,
-                                     0,      0,    2 / dz, tz,
-                                     0,      0,      0,     1);
+                                0,    2 / dy,   0,    ty,
+                                0,      0,    2 / dz, tz,
+                                0,      0,      0,     1);
             }
 
             // perspective projection
@@ -435,9 +435,9 @@ align(1) struct Matrix(T, size_t R, size_t C)
                 T d = 1 / (zNear - zFar);
 
                 return Matrix(f / aspect, 0,                  0,                    0,
-                                            0, f,                  0,                    0,
-                                            0, 0, (zFar + zNear) * d, 2 * d * zFar * zNear,
-                                            0, 0,                 -1,                    0);
+                                       0, f,                  0,                    0,
+                                       0, 0, (zFar + zNear) * d, 2 * d * zFar * zNear,
+                                       0, 0,                 -1,                    0);
             }
 
             // See: http://msdn.microsoft.com/en-us/library/windows/desktop/bb205343(v=vs.85).aspx
