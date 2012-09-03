@@ -2,6 +2,7 @@ module gfm.sdl2.sdl;
 
 import std.conv: to;
 import std.string: format, toStringz;
+import std.array: join;
 
 import derelict.sdl2.sdl;
 import derelict.sdl2.image;
@@ -62,8 +63,7 @@ final class SDL2
             subSystemInit(SDL_INIT_AUDIO);
             subSystemInit(SDL_INIT_HAPTIC);
 
-            foreach(driver;getVideoDrivers())
-                _log.infof("Available driver: %s", driver);
+            _log.infof("Available drivers: %s", join(getVideoDrivers(), ", "));
 
             {
                 int res = SDL_VideoInit(null);
