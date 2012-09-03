@@ -248,6 +248,7 @@
    <File path="sdl2\renderer.d" />
    <File path="sdl2\sdl.d" />
    <File path="sdl2\sdlimage.d" />
+   <File path="sdl2\sdlttf.d" />
    <File path="sdl2\surface.d" />
    <File path="sdl2\window.d" />
   </Folder>
