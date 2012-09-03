@@ -327,7 +327,7 @@ align(1) struct Matrix(T, size_t R, size_t C)
 
         static if (isSquare && _R > 1)
         {
-            // in-place translate by (v, 1) 
+            /// in-place translate by (v, 1) 
             void translate(Vector!(T, _R-1) v)
             {
                 for (size_t i = 0; i < _R; ++i)
@@ -340,8 +340,8 @@ align(1) struct Matrix(T, size_t R, size_t C)
                 }
             }
 
-            // translation matrix
-            static Matrix makeTranslate(Vector!(T, _R-1) v)
+            /// make translation matrix
+            static Matrix translation(Vector!(T, _R-1) v)
             {
                 Matrix res = IDENTITY;
                 for (size_t i = 0; i + 1 < _R; ++i)
@@ -349,8 +349,16 @@ align(1) struct Matrix(T, size_t R, size_t C)
                 return res;
             }
 
-            // scale matrix
-            static Matrix makeScale(Vector!(T, _R-1) v)
+            /// in-place scaling matrix
+            void scale(Vector!(T, _R-1) v)
+            {
+                for (size_t i = 0; i < _R; ++i)
+                    for (size_t j = 0; j + 1 < _C; ++j)
+                        c[i][j] *= v[j];
+            }
+
+            /// make scaling matrix
+            static Matrix scaling(Vector!(T, _R-1) v)
             {
                 Matrix res = IDENTITY;
                 for (size_t i = 0; i + 1 < _R; ++i)
@@ -381,7 +389,7 @@ align(1) struct Matrix(T, size_t R, size_t C)
 
             // similar to the glRotate matrix, however the angle is expressed in radians
             // Reference: http://www.cs.rutgers.edu/~decarlo/428/gl_man/rotate.html
-            static Matrix rotate(T angle, Vector!(T, 3u) axis)
+            static Matrix rotation(T angle, Vector!(T, 3u) axis)
             {
                 Matrix res = IDENTITY;
                 const T c = cos(angle);

@@ -68,28 +68,45 @@ final class MatrixStack(size_t R, T) if (R == 3 || R == 4)
             return _invMatrices[_top];
         }
 
-        // replacement for glMultMatrix
+        /// replacement for glMultMatrix
         void mult(matrix_t m)
         {
             _matrices[_top] = _matrices[_top] * m;
             _invMatrices[_top] = _invMatrices[_top] * m.inverse();
         }
 
-        // same as mult() but with provided inverse
+        /// same as mult() above, but with provided inverse
         void mult(matrix_t m, matrix_t invM)
         {
             _matrices[_top] = _matrices[_top] * m;
             _invMatrices[_top] = _invMatrices[_top] * invM;
         }
 
+        /// Replacement for glTranslate
         void translate(Vector!(T, R-1) v)
         {
-            mult(matrix_t.makeTranslate(v), matrix_t.makeTranslate(-v));
+            _matrices[_top].translate(v);
+            _invMatrices[_top].translate(-v);
         }
 
+        /// Replacement for glScale
         void scale(Vector!(T, R-1) v)
         {
-            mult(matrix_t.makeScale(v), matrix_t.makeScale(1 / v));
+            _matrices[_top].scale(v);
+            _invMatrices[_top].scale(1 / v);
+        }
+
+        static if (R == 4)
+        {
+            /**
+             * Replacement for glRotate
+             * angle is given in radians
+             */ 
+            void rotate(T angle, Vector!(T, 3u) axis)
+            {
+                matrix_t rot = matrix_t.rotation(angle, axis);
+                mult(rot, rot.transposed()); // inversing a rotation matrix is tranposing
+            }
         }
     }
 
