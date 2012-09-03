@@ -59,6 +59,7 @@ See UNLICENSE for more details.
 
 ### sdl2/
   * SDL 2.0 wrapper based on Derelict3
+  * including SDL_image and SDL_ttf wrappers
   * framerate statistics
 
 
