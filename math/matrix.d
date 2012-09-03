@@ -33,7 +33,7 @@ align(1) struct Matrix(T, size_t R, size_t C)
             T[C][R] c;       // components
         }
 
-        this(U...)(U values) pure
+        this(U...)(U values) pure nothrow
         {
             static if ((U.length == C*R) && allSatisfy!(isTConvertible, U))
             {
@@ -76,7 +76,7 @@ align(1) struct Matrix(T, size_t R, size_t C)
         }
 
         // assign with same type
-        void opAssign(U : Matrix)(U x) pure
+        void opAssign(U : Matrix)(U x) pure nothrow
         {
             for (size_t i = 0; i < _N; ++i)
             {
@@ -115,7 +115,7 @@ align(1) struct Matrix(T, size_t R, size_t C)
                 v[i] = x[i];
         }
 
-        column_t column(size_t j) pure const
+        column_t column(size_t j) pure const nothrow
         {
             column_t res = void;
             for (size_t i = 0; i < R; ++i)
@@ -125,13 +125,13 @@ align(1) struct Matrix(T, size_t R, size_t C)
             return res;
         }
 
-        row_t row(size_t i) pure const
+        row_t row(size_t i) pure const nothrow
         {
             return rows[i];
         }
 
         // matrix * vector
-        column_t opBinary(string op)(row_t x) if (op == "*")
+        column_t opBinary(string op)(row_t x) pure const nothrow if (op == "*")
         {
             column_t res = void;
             for (size_t i = 0; i < R; ++i)
@@ -147,7 +147,7 @@ align(1) struct Matrix(T, size_t R, size_t C)
         }
 
         // matrix * matrix
-        auto opBinary(string op, U)(U x)
+        auto opBinary(string op, U)(U x) pure const nothrow 
             if (is(typeof(U._isMatrix)) && (U._R == C) && (op == "*"))
         {
             Matrix!(T, R, U._C) result = void;
@@ -165,7 +165,7 @@ align(1) struct Matrix(T, size_t R, size_t C)
             return result;
         }
 
-        ref Vector opOpAssign(string op, U)(U operand) pure if (isConvertible!U)
+        ref Vector opOpAssign(string op, U)(U operand) pure nothrow if (isConvertible!U)
         {
             Vector conv = operand;
             return opOpAssign!op(conv);
@@ -316,7 +316,7 @@ align(1) struct Matrix(T, size_t R, size_t C)
         }
 
         /// matrix transposition
-        Matrix!(T, C, R) transposed()
+        Matrix!(T, C, R) transposed() pure const nothrow 
         {
             Matrix!(T, C, R) res;
             for (size_t i = 0; i < C; ++i)
@@ -328,7 +328,7 @@ align(1) struct Matrix(T, size_t R, size_t C)
         static if (isSquare && _R > 1)
         {
             /// in-place translate by (v, 1) 
-            void translate(Vector!(T, _R-1) v)
+            void translate(Vector!(T, _R-1) v) pure nothrow
             {
                 for (size_t i = 0; i < _R; ++i)
                 {
@@ -341,7 +341,7 @@ align(1) struct Matrix(T, size_t R, size_t C)
             }
 
             /// make translation matrix
-            static Matrix translation(Vector!(T, _R-1) v)
+            static Matrix translation(Vector!(T, _R-1) v) pure nothrow
             {
                 Matrix res = IDENTITY;
                 for (size_t i = 0; i + 1 < _R; ++i)
@@ -350,7 +350,7 @@ align(1) struct Matrix(T, size_t R, size_t C)
             }
 
             /// in-place scaling matrix
-            void scale(Vector!(T, _R-1) v)
+            void scale(Vector!(T, _R-1) v) pure nothrow
             {
                 for (size_t i = 0; i < _R; ++i)
                     for (size_t j = 0; j + 1 < _C; ++j)
@@ -358,7 +358,7 @@ align(1) struct Matrix(T, size_t R, size_t C)
             }
 
             /// make scaling matrix
-            static Matrix scaling(Vector!(T, _R-1) v)
+            static Matrix scaling(Vector!(T, _R-1) v) pure nothrow
             {
                 Matrix res = IDENTITY;
                 for (size_t i = 0; i + 1 < _R; ++i)
@@ -371,7 +371,7 @@ align(1) struct Matrix(T, size_t R, size_t C)
         // TODO glRotate equivalent
         static if (isSquare && (_R == 3 || _R == 4) && isFloatingPoint!T)
         {
-            private static Matrix rotateAxis(size_t i, size_t j)(T angle)
+            private static Matrix rotateAxis(size_t i, size_t j)(T angle) pure nothrow
             {
                 Matrix res = IDENTITY;
                 const T cosa = cos(angle);
@@ -389,7 +389,7 @@ align(1) struct Matrix(T, size_t R, size_t C)
 
             // similar to the glRotate matrix, however the angle is expressed in radians
             // Reference: http://www.cs.rutgers.edu/~decarlo/428/gl_man/rotate.html
-            static Matrix rotation(T angle, Vector!(T, 3u) axis)
+            static Matrix rotation(T angle, Vector!(T, 3u) axis) pure nothrow
             {
                 Matrix res = IDENTITY;
                 const T c = cos(angle);
@@ -420,7 +420,7 @@ align(1) struct Matrix(T, size_t R, size_t C)
         static if (isSquare && _R == 4 && isFloatingPoint!T)
         {
             // return orthographic projection
-            static Matrix orthographic(T left, T right, T bottom, T top, T near, T far)
+            static Matrix orthographic(T left, T right, T bottom, T top, T near, T far) pure nothrow
             {
                 T dx = right - left,
                   dy = top - bottom,
@@ -437,7 +437,7 @@ align(1) struct Matrix(T, size_t R, size_t C)
             }
 
             // perspective projection
-            static Matrix perspective(T FOVInRadians, T aspect, T zNear, T zFar)
+            static Matrix perspective(T FOVInRadians, T aspect, T zNear, T zFar) pure nothrow
             {
                 T f = 1 / tan(FOVInRadians / 2);
                 T d = 1 / (zNear - zFar);
@@ -450,7 +450,7 @@ align(1) struct Matrix(T, size_t R, size_t C)
 
             // See: http://msdn.microsoft.com/en-us/library/windows/desktop/bb205343(v=vs.85).aspx
             // TODO: verify if it's the right one...
-            static Matrix lookAt(Vector!(T, 3u) eye, Vector!(T, 3u) target, Vector!(T, 3u) up)
+            static Matrix lookAt(Vector!(T, 3u) eye, Vector!(T, 3u) target, Vector!(T, 3u) up) pure nothrow
             {
                 Vector!(T, 3u) Z = (eye - target).normalized();
                 Vector!(T, 3u) X = cross(up, Z).normalized();
@@ -502,7 +502,7 @@ align(1) struct Matrix(T, size_t R, size_t C)
     {
         // Note: the identity matrix, while only meaningful for square matrices, is also
         //       defined for non-square ones.
-        static Matrix makeIdentity() pure
+        static Matrix makeIdentity() pure nothrow
         {
             Matrix res;
             for (size_t i = 0; i < R; ++i)
@@ -511,7 +511,7 @@ align(1) struct Matrix(T, size_t R, size_t C)
             return res;
         }
 
-        static Matrix makeConstant(U)(U x) pure
+        static Matrix makeConstant(U)(U x) pure nothrow
         {
             Matrix res;
             for (size_t i = 0; i < _N; ++i)
