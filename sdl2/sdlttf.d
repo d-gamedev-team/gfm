@@ -9,17 +9,6 @@ import gfm.common.text;
 
 import gfm.sdl2.sdl;
 
-class SDL2TTFException : SDL2Exception
-{
-    public
-    {
-        this(string msg)
-        {
-            super(msg);
-        }
-    }
-}
-
 final class SDLTTF
 {
     public
@@ -36,7 +25,7 @@ final class SDLTTF
             }
             catch(DerelictException e)
             {
-                throw new SDL2TTFException(e.msg);
+                throw new SDL2Exception(e.msg);
             }
 
             int res = TTF_Init();
@@ -73,7 +62,7 @@ final class SDLTTF
         void throwSDL2TTFException(string callThatFailed)
         {
             string message = format("%s failed: %s", callThatFailed, getErrorString());
-            throw new SDL2TTFException(message);
+            throw new SDL2Exception(message);
         }
 
         string getErrorString()

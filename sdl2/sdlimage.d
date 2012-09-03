@@ -9,18 +9,6 @@ import gfm.common.text;
 
 import gfm.sdl2.sdl, gfm.sdl2.surface;
 
-
-class SDL2ImageException : SDL2Exception
-{
-    public
-    {
-        this(string msg)
-        {
-            super(msg);
-        }
-    }
-}
-
 // Load images using SDL_image
 
 final class SDLImage
@@ -39,7 +27,7 @@ final class SDLImage
             }
             catch(DerelictException e)
             {
-                throw new SDL2ImageException(e.msg);
+                throw new SDL2Exception(e.msg);
             }
 
             int flags = IMG_INIT_JPG | IMG_INIT_PNG | IMG_INIT_TIF | IMG_INIT_WEBP;
@@ -99,7 +87,7 @@ final class SDLImage
         void throwSDL2ImageException(string callThatFailed)
         {
             string message = format("%s failed: %s", callThatFailed, getErrorString());
-            throw new SDL2ImageException(message);
+            throw new SDL2Exception(message);
         }
 
         string getErrorString()
