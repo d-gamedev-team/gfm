@@ -315,8 +315,31 @@ align(1) struct Matrix(T, size_t R, size_t C)
             }
         }
 
+        /// matrix transposition
+        Matrix!(T, C, R) transposed()
+        {
+            Matrix!(T, C, R) res;
+            for (size_t i = 0; i < C; ++i)
+                for (size_t j = 0; j < R; ++j)
+                    res.c[i][j] = c[j][i];
+            return res;
+        }
+
         static if (isSquare && _R > 1)
         {
+            // in-place translate by (v, 1) 
+            void translate(Vector!(T, _R-1) v)
+            {
+                for (size_t i = 0; i < _R; ++i)
+                {
+                    T dot = 0;
+                    for (size_t j = 0; j + 1 < C; ++j)
+                        dot += v[j] * c[i][j];
+
+                    c[i][_C-1] += dot;
+                }
+            }
+
             // translation matrix
             static Matrix makeTranslate(Vector!(T, _R-1) v)
             {
