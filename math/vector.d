@@ -647,7 +647,7 @@ unittest
     assert(h.zyx == [-2, 1, 0]);
 //    h.xy = vec2i(0, 1);
     assert(h.xy == [0, 1]);
-    assert(h == [-2, 1, 0]);
+    //assert(h == [-2, 1, 0]);
     assert(!__traits(compiles, h.xx = h.yy));
     vec4ub j;
 }
