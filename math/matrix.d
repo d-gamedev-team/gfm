@@ -49,7 +49,7 @@ align(1) struct Matrix(T, size_t R, size_t C)
             else static assert(false, "cannot create a matrix from given arguments");
         }
 
-        // construct with columns
+        // construct from columns
         static Matrix fromColumns(column_t[] columns...) pure nothrow
         {
             Matrix res;
@@ -61,7 +61,8 @@ align(1) struct Matrix(T, size_t R, size_t C)
             return res;
         }
 
-        static Matrix fromRows(row_t[R] rows...) pure nothrow
+        // construct from rows
+        static Matrix fromRows(row_t[] rows...) pure nothrow
         {
             Matrix res;
             res.rows[] = rows[];
