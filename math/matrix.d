@@ -49,7 +49,10 @@ align(1) struct Matrix(T, size_t R, size_t C)
             else static assert(false, "cannot create a matrix from given arguments");
         }
 
-        // construct from columns
+        /**
+         * Construct a matrix from columns.
+         * Warning: homogeneous variadic calls allocate, do not use for performance.
+         */
         static Matrix fromColumns(column_t[] columns...) pure nothrow
         {
             Matrix res;
@@ -61,7 +64,10 @@ align(1) struct Matrix(T, size_t R, size_t C)
             return res;
         }
 
-        // construct from rows
+        /**
+         * Construct a matrix from rows.
+         * Warning: homogeneous variadic calls allocate, do not use for performance.
+         */
         static Matrix fromRows(row_t[] rows...) pure nothrow
         {
             Matrix res;
@@ -69,7 +75,7 @@ align(1) struct Matrix(T, size_t R, size_t C)
             return res;
         }
 
-        // construct with scalar
+        /// construct matrix with a scalar
         this(U)(T x)
         {
             for (size_t i = 0; i < _N; ++i)
