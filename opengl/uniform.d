@@ -61,22 +61,36 @@ final class GLUniform
         }
 
 
-        // T should be the exact type needed, checked at runtime
-        void set(T)(T[] newValue...)
+        /// set one uniform variable
+        /// T should be the exact type needed, checked at runtime
+        void set(T)(T newValue)
+        {
+            set!T(&newValue, 1u);
+        }
+
+        /// set multiple uniform variables
+        void set(T)(T[] newValues)
+        {
+            set!T(newValues.ptr, newValues.length);
+        }
+
+        void set(T)(T* newValues, size_t count)
         {
             if (_disabled)
                 return;
 
             if (!typeIsCompliant!T(_type))
-                throw new OpenGLException(format("using type %s for setting uniform '%s' which has GLSL type '%s'", T.stringof, _name, GLSLTypeNameArray(_type, _size)));
+                throw new OpenGLException(format("using type %s for setting uniform '%s' which has GLSL type '%s'", 
+                                                 T.stringof, _name, GLSLTypeNameArray(_type, _size)));
 
-            if (newValue.length != _size)
-                throw new OpenGLException(format("cannot set uniform '%s' of size %s with a value of size %s", _name, _size, newValue.length));
+            if (count != _size)
+                throw new OpenGLException(format("cannot set uniform '%s' of size %s with a value of size %s", 
+                                                 _name, _size, count));
 
             // if first time or different value incoming
-            if (_firstSet || (0 != memcmp(newValue.ptr, _value.ptr, _value.length)))
+            if (_firstSet || (0 != memcmp(newValues, _value.ptr, _value.length)))
             {
-                memcpy(_value.ptr, newValue.ptr, _value.length);
+                memcpy(_value.ptr, newValues, _value.length);
                 _valueChanged = true;
 
                 if (_shouldUpdateImmediately)
