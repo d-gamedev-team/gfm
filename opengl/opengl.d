@@ -183,19 +183,6 @@ final class OpenGL
                 return defaultValue;
             }
         }
-
-        // allow to use lots of glEnable/glDisable in one call
-        void enable(GLenum[] caps...)
-        {
-            foreach(cap; caps)
-                glEnable(cap);
-        }
-
-        void disable(GLenum[] caps...)
-        {
-            foreach(cap; caps)
-                glDisable(cap);
-        }
     }
 
     package
