@@ -51,10 +51,10 @@ align(1) struct Matrix(T, size_t R, size_t C)
 
         /**
          * Construct a matrix from columns.
-         * Warning: homogeneous variadic calls allocate, do not use for performance.
          */
-        static Matrix fromColumns(column_t[] columns...) pure nothrow
+        static Matrix fromColumns(column_t[] columns) pure nothrow
         {
+            assert(columns.length == C);
             Matrix res;
             for (size_t i = 0; i < R; ++i)
                 for (size_t j = 0; j < C; ++j)
@@ -66,10 +66,10 @@ align(1) struct Matrix(T, size_t R, size_t C)
 
         /**
          * Construct a matrix from rows.
-         * Warning: homogeneous variadic calls allocate, do not use for performance.
          */
-        static Matrix fromRows(row_t[] rows...) pure nothrow
+        static Matrix fromRows(row_t[] rows) pure nothrow
         {
+            assert(rows.length == R);
             Matrix res;
             res.rows[] = rows[];
             return res;
@@ -595,8 +595,11 @@ unittest
                     2, 3);
     assert(x.c[0][0] == 0 && x.c[0][1] == 1 && x.c[1][0] == 2 && x.c[1][1] == 3);
 
-    mat2i y = mat2i.fromColumns(vec2i(0, 2), vec2i(1, 3));
+    vec2i[2] cols = [vec2i(0, 2), vec2i(1, 3)];
+    mat2i y = mat2i.fromColumns(cols[]);
     assert(y.c[0][0] == 0 && y.c[0][1] == 1 && y.c[1][0] == 2 && y.c[1][1] == 3);
+    y = mat2i.fromRows(cols[]);
+    assert(y.c[0][0] == 0 && y.c[1][0] == 1 && y.c[0][1] == 2 && y.c[1][1] == 3);
 
     assert(x == y);
     x = [0, 1, 2, 3];

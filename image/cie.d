@@ -312,12 +312,16 @@ private
         mat3f makeXYZToRGBMatrix() pure const nothrow
         {
             // compute XYZ values of primaries
-            vec3f r = xyYToXYZColor(vec3f(xRed, yRed, 1.0f));
-            vec3f g = xyYToXYZColor(vec3f(xGreen, yGreen, 1.0f));
-            vec3f b = xyYToXYZColor(vec3f(xBlue, yBlue, 1.0f));
+            vec3f[3] rgb = void;
+            rgb[0] = xyYToXYZColor(vec3f(xRed, yRed, 1.0f));
+            rgb[1] = xyYToXYZColor(vec3f(xGreen, yGreen, 1.0f));
+            rgb[2] = xyYToXYZColor(vec3f(xBlue, yBlue, 1.0f));
 
-            vec3f S = mat3f.fromRows(r, g, b).inverse() * refWhiteToXYZ(refWhite);
-            return mat3f.fromRows(r * S, g * S, b * S);
+            vec3f S = mat3f.fromRows(rgb[]).inverse() * refWhiteToXYZ(refWhite);
+            rgb[0] *= S;
+            rgb[1] *= S;
+            rgb[2] *= S;
+            return mat3f.fromRows(rgb[]);
         }
 
         // return the 3x3 matrix to go from a, XYZ space to an RGB space
