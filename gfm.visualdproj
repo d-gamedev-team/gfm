@@ -196,6 +196,10 @@
    <File path="common\structpool.d" />
    <File path="common\text.d" />
   </Folder>
+  <Folder name="assimp">
+   <File path="assimp\all.d" />
+   <File path="assimp\assimp.d" />
+  </Folder>
   <Folder name="freeimage">
    <File path="freeimage\all.d" />
    <File path="freeimage\fibitmap.d" />

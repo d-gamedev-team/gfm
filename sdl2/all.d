@@ -1,5 +1,7 @@
 module gfm.sdl2.all;
 
+// SDL2 wrapper
+
 public
 {
     import derelict.sdl2.sdl;

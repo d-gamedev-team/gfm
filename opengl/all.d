@@ -1,5 +1,7 @@
 module gfm.opengl.all;
 
+// OpenGL OO wrapper
+
 public
 {
     import derelict.opengl3.gl3;

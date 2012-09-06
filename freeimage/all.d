@@ -1,6 +1,6 @@
 module gfm.freeimage.all;
 
-// OO wrapper to FreeImage
+// FreeImage OO wrapper
 
 public
 {
