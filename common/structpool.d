@@ -80,13 +80,14 @@ class StructPool(T)
                 Slot* _nextFree;
             }
         }
-        static assert(Slot.sizeof == T.sizeof);
+        enum cellSize = T.sizeof > size_t.sizeof ? T.sizeof : size_t.sizeof;
+        static assert(Slot.sizeof == cellSize);
 
         Slot[] _slots; // data.length is capacity
 
         size_t _count;
 
-            // return struct storage
+        // return struct storage
         Slot* allocSlot()
         {
             assert(!full(), "StructPool is full"); // TODO: implement growable
@@ -98,11 +99,6 @@ class StructPool(T)
             Slot* res = _firstFree;
             _firstFree = _firstFree._nextFree;
 
-            debug(2) if (_firstFree != null)
-            {
-                assert(isFree(_firstFree));
-            }
-
             ++_count;
             return res;
         }
@@ -111,15 +107,9 @@ class StructPool(T)
         void releaseSlot(Slot* t)
         {
             assert(isSlot(t));
-            debug(2) assert(isAllocated(t));
             --_count;
             t._nextFree = _firstFree;
             _firstFree = t;
-
-            if (_firstFree != null)
-            {
-                debug(2) assert(isFree(_firstFree));
-            }
         }
 
         // return true if t points to a valid slot
@@ -164,27 +154,32 @@ class StructPool(T)
 
 unittest
 {
-    immutable N = 100;
-    auto pool = new StructPool!int(N);
-    assert(pool.count == 0);
-    assert(pool.capacity == N);
-
-    int*[N] p;
-
-    for (size_t k = 0; k < 10; k++)
+    void test(T)()
     {
-        for(size_t i = 0; i < N; ++i)
-        {
-            assert(pool.count == i);
-            p[i] = pool.alloc();
-        }
-        assert(pool.full);
+        immutable N = 100;
+        auto pool = new StructPool!int(N);
+        assert(pool.count == 0);
+        assert(pool.capacity == N);
 
-        for(size_t i = 0; i < N; ++i)
+        int*[N] p;
+
+        for (size_t k = 0; k < 10; k++)
         {
-            pool.release(p[i]);
+            for(size_t i = 0; i < N; ++i)
+            {
+                assert(pool.count == i);
+                p[i] = pool.alloc();
+            }
+            assert(pool.full);
+
+            for(size_t i = 0; i < N; ++i)
+            {
+                pool.release(p[i]);
+            }
+            assert(pool.empty);
         }
-        assert(pool.empty);
     }
+    test!int();
+    test!ubyte();
 }
 
