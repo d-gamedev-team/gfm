@@ -9,6 +9,7 @@ import gfm.common.text;
 import gfm.math.vector;
 
 import gfm.sdl2.sdl;
+import gfm.sdl2.surface;
 
 /// SDL_ttf library resource
 final class SDLTTF
@@ -187,11 +188,39 @@ final class SDLFont
             TTF_SizeUTF8(_font, toStringz(text), &w, &h);
             return vec2i(w, h);
         }
+
+        /// Create a 32-bit ARGB surface and render the given text at high quality, 
+        /// using alpha blending to dither the font with the given color.
+        SDL2Surface renderTextBlended(string text, SDL_Color color)
+        {
+            return checkedSurface(TTF_RenderUTF8_Blended(_font, toStringz(text), color));
+        }
+
+        /// Create an 8-bit palettized surface and render the given text at fast 
+        /// quality with the given font and color
+        SDL2Surface renderTextSolid(string text, SDL_Color color)
+        {
+            return checkedSurface(TTF_RenderUTF8_Solid(_font, toStringz(text), color));
+        }
+
+        /// Create an 8-bit palettized surface and render the given text at high 
+        /// quality with the given font and colors.
+        SDL2Surface renderTextShaded(string text, SDL_Color fg, SDL_Color bg)
+        {
+            return checkedSurface(TTF_RenderUTF8_Shaded(_font, toStringz(text), fg, bg));
+        }
     }
 
     private
     {
         SDLTTF _sdlttf;
         TTF_Font *_font;
+
+        SDL2Surface checkedSurface(SDL_Surface* s)
+        {
+            if (s is null)
+                _sdlttf.throwSDL2TTFException("TTF_Render");
+            return new SDL2Surface(_sdlttf._sdl2, s, SDL2Surface.Owned.YES);
+        }
     }
 }
