@@ -48,7 +48,7 @@ final class SDL2
             {
                 SDL_LogGetOutputFunction(_previousLogCallback, &_previousLogUserdata);
                 SDL_LogSetAllPriority(SDL_LOG_PRIORITY_VERBOSE);
-                SDL_LogSetOutputFunction(&loggingCallback, cast(void*)this);
+                SDL_LogSetOutputFunction(&loggingCallbackSDL, cast(void*)this);
                 _SDL2LoggingRedirected = true;
             }
 
@@ -314,9 +314,9 @@ final class SDL2
     }
 }
 
-extern(C)
+extern(C) private
 {
-    void loggingCallback(void* userData, int category, SDL_LogPriority priority, const(char)* message)
+    void loggingCallbackSDL(void* userData, int category, SDL_LogPriority priority, const(char)* message)
     {
         SDL2 sdl2 = cast(SDL2)userData;
         sdl2.onLogMessage(category, priority, message);
