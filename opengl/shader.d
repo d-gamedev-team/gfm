@@ -24,7 +24,7 @@ final class GLShader
         }
 
         // one step load/compile
-        this(OpenGL gl, GLenum shaderType, string[] lines...)
+        this(OpenGL gl, GLenum shaderType, string[] lines)
         {
             this(gl, shaderType);
             load(lines);
@@ -45,7 +45,7 @@ final class GLShader
             }
         }
 
-        void load(string[] lines...)
+        void load(string[] lines)
         {
             size_t lineCount = lines.length;
 

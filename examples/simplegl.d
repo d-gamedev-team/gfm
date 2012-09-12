@@ -41,13 +41,14 @@ void main()
     gl.reload();
 
     auto shader = new GLShader(gl, GL_FRAGMENT_SHADER, 
+    [
     r"uniform vec4 col;
 
       void main()
       {
           gl_FragColor = col;
       }
-     ");
+     "]);
 
     auto program = new GLProgram(gl, shader);
    
