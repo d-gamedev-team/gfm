@@ -32,7 +32,7 @@ struct SimpleRng
         {
             return vec2ui(_u, _v);
         }
-        
+
         @property vec2ui seed(vec2ui s) nothrow
         {
             _u = s.x;
@@ -40,7 +40,7 @@ struct SimpleRng
             return s;
         }
 
-        // A uniform random sample from the set of unsigned integers 
+        // A uniform random sample from the set of unsigned integers
         uint getUint() nothrow
         {
             _v = 36969 * (_v & 65535) + (_v >> 16);
@@ -55,7 +55,7 @@ struct SimpleRng
             return getUint() * 2.328306435996595e-10;
         }
 
-        // Normal (Gaussian) random sample 
+        // Normal (Gaussian) random sample
         double getNormal(double mean = 0.0, double standardDeviation = 1.0) nothrow
         {
             assert(standardDeviation > 0);
@@ -75,7 +75,7 @@ struct SimpleRng
             return -mean*log(getUniform());
         }
 
-	// Gamma random sample
+    // Gamma random sample
         double getGamma(double shape, double scale) nothrow
         {
             // Implementation based on "A Simple Method for Generating Gamma Variables"
@@ -112,7 +112,7 @@ struct SimpleRng
             }
         }
 
-	// Chi-square sample
+    // Chi-square sample
         double getChiSquare(double degreesOfFreedom) nothrow
         {
             // A chi squared distribution with n degrees of freedom
@@ -120,7 +120,7 @@ struct SimpleRng
             return getGamma(0.5 * degreesOfFreedom, 2.0);
         }
 
-	// Inverse-gamma sample
+    // Inverse-gamma sample
         double getInverseGamma(double shape, double scale) nothrow
         {
             // If X is gamma(shape, scale) then
@@ -131,7 +131,7 @@ struct SimpleRng
         // Weibull sample
         double getWeibull(double shape, double scale) nothrow
         {
-            assert(shape > 0 && scale > 0);            
+            assert(shape > 0 && scale > 0);
             return scale * pow(-log(getUniform()), 1.0 / shape);
         }
 
@@ -248,7 +248,7 @@ struct SimpleRng
                 return (x - 0.5)*log(x) - x + 0.5*log(2*PI) + 1.0/(12.0*x);
             }
             else
-            {               
+            {
                 return LOG_FACTORIAL[n];
             }
         }
@@ -271,7 +271,7 @@ unittest
 }
 
 
-private static const double[255] LOG_FACTORIAL = 
+private static const double[255] LOG_FACTORIAL =
 [
     0.000000000000000,
     0.000000000000000,

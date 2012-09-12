@@ -154,7 +154,7 @@ align(1) struct Matrix(T, size_t R, size_t C)
         }
 
         // matrix * matrix
-        auto opBinary(string op, U)(U x) pure const nothrow 
+        auto opBinary(string op, U)(U x) pure const nothrow
             if (is(typeof(U._isMatrix)) && (U._R == C) && (op == "*"))
         {
             Matrix!(T, R, U._C) result = void;
@@ -323,7 +323,7 @@ align(1) struct Matrix(T, size_t R, size_t C)
         }
 
         /// matrix transposition
-        Matrix!(T, C, R) transposed() pure const nothrow 
+        Matrix!(T, C, R) transposed() pure const nothrow
         {
             Matrix!(T, C, R) res;
             for (size_t i = 0; i < C; ++i)
@@ -334,7 +334,7 @@ align(1) struct Matrix(T, size_t R, size_t C)
 
         static if (isSquare && _R > 1)
         {
-            /// in-place translate by (v, 1) 
+            /// in-place translate by (v, 1)
             void translate(Vector!(T, _R-1) v) pure nothrow
             {
                 for (size_t i = 0; i < _R; ++i)
@@ -403,13 +403,13 @@ align(1) struct Matrix(T, size_t R, size_t C)
                 const oneMinusC = 1 - c;
                 const T s = sin(angle);
                 axis = axis.normalized();
-                T x = axis.x, 
+                T x = axis.x,
                   y = axis.y,
                   z = axis.z;
                 T xy = x * y,
                   yz = y * z,
                   xz = x * z;
-                
+
                 res.c[0][0] = x * x * oneMinusC + c;
                 res.c[0][1] = x * y * oneMinusC - z * s;
                 res.c[0][2] = x * z * oneMinusC + y * s;

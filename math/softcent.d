@@ -11,7 +11,7 @@ import std.ascii : hexDigits;
 
 @safe struct softcentImpl(bool signed)
 {
-    private 
+    private
     {
         alias softcentImpl self;
 
@@ -25,7 +25,7 @@ import std.ascii : hexDigits;
         else
             alias ulong hi_t;
     }
- 
+
     this(T)(T x) pure nothrow
     {
         opAssign!T(x);
@@ -44,7 +44,7 @@ import std.ascii : hexDigits;
         hi = (n < 0) ? cast(hi_t)(-1) : 0;
 
         // will also sign extend as well if needed
-        lo = cast(long)n; 
+        lo = cast(long)n;
     }
 
     void opAssign(T)(T n) pure nothrow if (is(Unqual!T == softcentImpl!(!signed))) // signed <=> unsigned
@@ -75,7 +75,7 @@ import std.ascii : hexDigits;
         for (size_t i = 0; i < 16; ++i)
             outbuff ~= hexDigits[15 & (hi >> ((15 - i) * 4))];
         for (size_t i = 0; i < 16; ++i)
-            outbuff ~= hexDigits[15 & (lo >> ((15 - i) * 4))];        
+            outbuff ~= hexDigits[15 & (lo >> ((15 - i) * 4))];
         return outbuff;
     }
 
@@ -103,7 +103,7 @@ import std.ascii : hexDigits;
     {
         static if (op == "+")
         {
-            hi += y.hi;            
+            hi += y.hi;
             if (lo + y.lo < lo) // deal with overflow
                 ++hi;
             lo += y.lo;
@@ -222,9 +222,9 @@ import std.ascii : hexDigits;
     // non-const unary operations
     self opUnary(string op)() pure nothrow if (op=="++" || op=="--")
     {
-        static if (op=="++") 
+        static if (op=="++")
             increment();
-        else static if (op=="--") 
+        else static if (op=="--")
             decrement();
         return this;
     }

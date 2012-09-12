@@ -1,6 +1,6 @@
 module gfm.math.all;
 
-public 
+public
 {
     import gfm.math.funcs;
     import gfm.math.vector;

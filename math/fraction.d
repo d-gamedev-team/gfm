@@ -10,7 +10,7 @@ import std.string;
 struct Fraction
 {
     public
-    {      
+    {
         long num;
         long denom;
 
@@ -31,7 +31,7 @@ struct Fraction
             num = numerator;
             denom = denominator;
             reduce();
-        }       
+        }
 
         string toString() const
         {
@@ -56,7 +56,7 @@ struct Fraction
             Fraction y = o;
             return r.opOpAssign!(op)(y);
         }
-        
+
         Fraction opOpAssign(string op, T)(T o) pure nothrow if (!is(Unqual!T == Fraction))
         {
             const(self) o = y;
@@ -80,11 +80,11 @@ struct Fraction
                 denom = denom * o.denom;
                 num = num * o.num;
                 reduce();
-            }            
+            }
             else static if (op == "/")
             {
                 opOpAssign!"*"(o.inverse());
-            } 
+            }
             else
             {
                 static assert(false, "unsupported operation '" ~ op ~ "'");
@@ -98,7 +98,7 @@ struct Fraction
             static if (op == "-")
             {
                 Fraction f = this;
-                f.num = -f.num;                
+                f.num = -f.num;
                 return f;
             }
             else static if (op == "+")
@@ -108,7 +108,7 @@ struct Fraction
         // non-const unary operations
         Fraction opUnary(string op)() pure nothrow if (op=="++" || op=="--")
         {
-            static if (op=="++") 
+            static if (op=="++")
             {
                 num += denom;
                 debug checkInvariant(); // should still be reduced
@@ -146,7 +146,7 @@ struct Fraction
                 return 1;
             else if (det < 0)
                 return -1;
-            else 
+            else
                 return 0;
         }
 
@@ -163,35 +163,35 @@ struct Fraction
         {
             if (b == 0)
                 return a;
-            else 
+            else
                 return GCD(b, a % b);
         }
 
         void reduce() pure nothrow
         {
-            const(long) gcd = GCD(num, denom);              
+            const(long) gcd = GCD(num, denom);
             num /= gcd;
             denom /= gcd;
             if (denom < 0)
             {
                 num = -num;
-                denom = -denom;                
+                denom = -denom;
             }
-            debug checkInvariant();            
+            debug checkInvariant();
         }
 
         void checkInvariant() pure nothrow // can't do this in invariant() because of opAssign
         {
             assert(denom > 0);
             auto gcd = GCD(num, denom);
-            assert(gcd == 1 || gcd == -1);            
+            assert(gcd == 1 || gcd == -1);
         }
     }
 }
 
 unittest
 {
-    Fraction x = Fraction(9, 3);    
+    Fraction x = Fraction(9, 3);
     assert(x.num == 3);
     assert(x.denom == 1);
 

@@ -47,9 +47,9 @@ size_t solveQuadratic(T)(T a, T b, T c, T[] roots) pure nothrow if (isFloatingPo
 }
 
 
-/** 
+/**
  * Finds the roots of a cubic polynomial  a + b x + c x^2 + d x^3 = 0
- * Code from http://www.codeguru.com/forum/archive/index.php/t-265551.html 
+ * Code from http://www.codeguru.com/forum/archive/index.php/t-265551.html
  * (pretty much the same as http://mathworld.wolfram.com/CubicFormula.html)
  * Returns number of roots. roots slice should have room for up to 3 elements.
  */
@@ -69,9 +69,9 @@ size_t solveCubic(T)(T a, T b, T c, T d, T[] roots) pure nothrow if (isFloatingP
 
     T Qcubed = Q * Q * Q;
     T d2 = Qcubed - R * R;
-    
+
     if (d2 >= 0)
-    {   
+    {
         // 3 real roots
         if (Q < 0.0)
             return 0;
@@ -87,7 +87,7 @@ size_t solveCubic(T)(T a, T b, T c, T d, T[] roots) pure nothrow if (isFloatingP
         return 3;
     }
     else
-    {   
+    {
         // 1 real root
         T e = (sqrt(-d) + abs(R)) ^^ cast(T)(1.0 / 3.0);
         if (R > 0)
@@ -98,7 +98,7 @@ size_t solveCubic(T)(T a, T b, T c, T d, T[] roots) pure nothrow if (isFloatingP
 }
 
 
-/** 
+/**
  * Returns the roots of a quartic polynomial  a + b x + c x^2 + d x^3 + e x^4 = 0
  * Code from http://mathworld.wolfram.com/QuarticEquation.html
  * Returns number of roots. roots slice should have room for up to 4 elements.
@@ -116,7 +116,7 @@ size_t solveQuartic(T)(T a, T b, T c, T d, T e, T[] roots) pure nothrow if (isFl
       a2 = c / e,
       a3 = d / e;
 
-    // Find a root for the following cubic equation: 
+    // Find a root for the following cubic equation:
     //     y^3 - a2 y^2 + (a1 a3 - 4 a0) y + (4 a2 a0 - a1 ^2 - a3^2 a0) = 0
     // aka Resolvent cubic
     T b0 = 4 * a2 * a0 - a1 * a1 - a3 * a3 * a0;
@@ -135,7 +135,7 @@ size_t solveQuartic(T)(T a, T b, T c, T d, T e, T[] roots) pure nothrow if (isFl
         return 0;
     R = sqrt(R);
 
-    T D = void, 
+    T D = void,
       E = void;
     if (R == 0)
     {

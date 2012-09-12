@@ -156,7 +156,7 @@ align(1) struct Box(size_t N, T)
             }
         }
 
-        
+
         // extends the bounds of this Box
         Box grow(bound_t space) pure const nothrow
         {
@@ -183,7 +183,7 @@ align(1) struct Box(size_t N, T)
         {
             return shrink(bound_t(space));
         }
-        
+
 
         bool isSorted() pure const nothrow
         {

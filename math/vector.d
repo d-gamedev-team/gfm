@@ -566,14 +566,14 @@ Vector!(T, 3u) cross(T)(const Vector!(T, 3u) a, const Vector!(T, 3u) b) pure not
 
 /**
  * Return angle between vectors
- * see "The Right Way to Calculate Stuff" at http://www.plunk.org/~hatch/rightway.php 
+ * see "The Right Way to Calculate Stuff" at http://www.plunk.org/~hatch/rightway.php
  */
 T angleBetween(T, size_t N)(const Vector!(T, N) a, const Vector!(T, N) b) pure nothrow
 {
     auto aN = a.normalized();
     auto bN = b.normalized();
     auto dp = dot(aN, bN);
-    
+
     if (dp < 0)
         return PI - 2 * asin((-bN-aN).length / 2);
     else

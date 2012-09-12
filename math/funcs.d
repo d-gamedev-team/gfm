@@ -165,14 +165,14 @@ int nextPowerOf2(int i) nothrow
     return v;
 }
 
-// Computes sin(x)/x accurately 
+// Computes sin(x)/x accurately
 // see http://www.plunk.org/~hatch/rightway.php
 T sinOverX(T)(T x)
 {
     if (1 + x * x == 1)
         return 1;
     else
-        return sin(x) / x; 
+        return sin(x) / x;
 }
 
 
@@ -180,7 +180,7 @@ T sinOverX(T)(T x)
  * Signed integer modulo a/b where the remainder is guaranteed to be in [0..b[,
  * even if a is negative. Only support positive dividers.
  */
-T moduloWrap(T)(T a, T b) pure nothrow if (isSigned!T) 
+T moduloWrap(T)(T a, T b) pure nothrow if (isSigned!T)
 in
 {
     assert(b > 0);

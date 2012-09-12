@@ -84,7 +84,7 @@ struct Quaternion(T)
             return opOpAssign!op(conv);
         }
 
-        Quaternion opBinary(string op, U)(U operand) pure const nothrow 
+        Quaternion opBinary(string op, U)(U operand) pure const nothrow
             if (is(U: Quaternion) || (isConvertible!U))
         {
             Quaternion temp = this;
