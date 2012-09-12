@@ -111,12 +111,12 @@ struct Fraction
             static if (op=="++") 
             {
                 num += denom;
-                checkInvariant(); // should still be reduced
+                debug checkInvariant(); // should still be reduced
             }
             else static if (op=="--")
             {
                 num -= denom;
-                checkInvariant(); // should still be reduced
+                debug checkInvariant(); // should still be reduced
             }
             return this;
         }
@@ -177,7 +177,7 @@ struct Fraction
                 num = -num;
                 denom = -denom;                
             }
-            checkInvariant();            
+            debug checkInvariant();            
         }
 
         void checkInvariant() pure nothrow // can't do this in invariant() because of opAssign
