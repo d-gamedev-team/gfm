@@ -185,6 +185,11 @@
   <filesToClean>*.obj;*.cmd;*.build;*.json;*.dep</filesToClean>
  </Config>
  <Folder name="gfm">
+  <Folder name="assimp">
+   <File path="assimp\all.d" />
+   <File path="assimp\assimp.d" />
+   <File path="assimp\scene.d" />
+  </Folder>
   <Folder name="common">
    <File path="common\alignedbuffer.d" />
    <File path="common\all.d" />
@@ -195,10 +200,6 @@
    <File path="common\queue.d" />
    <File path="common\structpool.d" />
    <File path="common\text.d" />
-  </Folder>
-  <Folder name="assimp">
-   <File path="assimp\all.d" />
-   <File path="assimp\assimp.d" />
   </Folder>
   <Folder name="freeimage">
    <File path="freeimage\all.d" />

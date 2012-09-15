@@ -101,18 +101,24 @@ final class Assimp
             const(char)* legalZ = aiGetLegalString();
             return sanitizeUTF8(legalZ);
         }
+    }
+
+    package
+    {
+        Log _log;
+
+        // exception mechanism that shall be used by every module here
+        void throwAssimpException(string callThatFailed)
+        {
+            string message = format("%s failed: %s", callThatFailed, getErrorString());
+            throw new AssimpException(message);
+        }
 
         string getErrorString()
         {
             const(char)* errorZ = aiGetErrorString();
             return sanitizeUTF8(errorZ);
         }
-
-    }
-
-    package
-    {
-        Log _log;
     }
 
     private

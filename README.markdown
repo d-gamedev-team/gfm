@@ -64,7 +64,7 @@ See UNLICENSE for more details.
 
 
 ### freeimage/
-  * freeimage wrapper based on Derelict3
+  * FreeImage wrapper based on Derelict3
   * FIBITMAP wrapper
 
 
@@ -73,5 +73,9 @@ See UNLICENSE for more details.
   * makes easier to use the OpenGL API correctly
   * including a matrix stack to replace fixed pipeline
   * including compilation of a single source for multiple shaders
-  
+
+### assimp/
+  * Assimp wrapper based on Derelict3
+  * scene wrapper
+
 *More to come*
