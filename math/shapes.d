@@ -1,6 +1,8 @@
 module gfm.math.shapes;
 
-import std.math, std.traits;
+import std.math, 
+       std.traits;
+
 import gfm.math.vector;
 
 // Implement abstract shapes in any number of dimensions like

@@ -1,10 +1,8 @@
 module gfm.common.log;
 
-import std.stream;
-import std.stdio : writefln;
-import std.string;
-
-
+import std.stream,
+       std.stdio,
+       std.string;
 
 version(Windows)
 {

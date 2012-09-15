@@ -4,13 +4,13 @@ import std.string;
 
 import derelict.sdl2.sdl;
 
-import gfm.sdl2.sdl;
-import gfm.sdl2.surface;
-import gfm.math.vector;
-import gfm.math.box;
-import gfm.common.log;
-import gfm.sdl2.eventqueue;
-import gfm.sdl2.glcontext;
+import gfm.common.log,
+       gfm.math.vector,
+       gfm.math.box,
+       gfm.sdl2.sdl,
+       gfm.sdl2.surface,
+       gfm.sdl2.eventqueue,
+       gfm.sdl2.glcontext;
 
 class SDL2Window
 {

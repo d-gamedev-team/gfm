@@ -1,18 +1,15 @@
 module gfm.opengl.uniform;
 
-import std.conv, std.string;
-import core.stdc.string;
+import std.conv, 
+       std.string,
+       core.stdc.string;
 
 import derelict.opengl3.gl3;
 
-import gfm.common.log;
-import gfm.math.vector, gfm.math.matrix;
-import gfm.opengl.opengl;
-
-static assert(is(GLint == int));
-static assert(is(GLuint == uint));
-static assert(is(GLfloat == float));
-static assert(is(GLdouble == double));
+import gfm.common.log,
+       gfm.math.vector, 
+       gfm.math.matrix,
+       gfm.opengl.opengl;
 
 
 // Represent an OpenGL program uniform. Owned by a GLProgram.
@@ -570,3 +567,8 @@ final class GLUniform
         }
     }
 }
+
+static assert(is(GLint == int));
+static assert(is(GLuint == uint));
+static assert(is(GLfloat == float));
+static assert(is(GLdouble == double));

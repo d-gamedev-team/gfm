@@ -3,9 +3,11 @@ module gfm.opengl.fbo;
 import std.string;
 
 import derelict.opengl3.gl3;
-import gfm.common.log;
-import gfm.opengl.opengl;
-import gfm.opengl.texture, gfm.opengl.renderbuffer;
+
+import gfm.common.log,
+       gfm.opengl.opengl,
+       gfm.opengl.texture, 
+       gfm.opengl.renderbuffer;
 
 // OpenGL FrameBuffer Object wrapper
 // TODO: GL_EXT_framebuffer_object fallback

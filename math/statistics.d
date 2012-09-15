@@ -1,7 +1,8 @@
 module gfm.math.statistics;
 
-import std.range;
-import std.math;
+import std.range,
+       std.math;
+
 import gfm.common.queue;
 
 /**

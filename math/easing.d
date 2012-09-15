@@ -34,8 +34,8 @@ THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 */
 
-import std.math;
-import std.traits;
+import std.math,
+       std.traits;
 
 private template makeEasing(string name, string easeInBody)
 {

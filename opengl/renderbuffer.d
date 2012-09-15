@@ -4,9 +4,9 @@ import std.string;
 
 import derelict.opengl3.gl3;
 
-import gfm.common.log;
-import gfm.math.funcs;
-import gfm.opengl.opengl;
+import gfm.common.log,
+       gfm.math.funcs,
+       gfm.opengl.opengl;
 
 final class GLRenderBuffer
 {

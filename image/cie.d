@@ -1,7 +1,7 @@
 module gfm.image.cie;
 
-import gfm.math.vector;
-import gfm.math.matrix;
+import gfm.math.vector,
+       gfm.math.matrix;
 
 // This module performs various color computation and conversions.
 // See: http://www.brucelindbloom.com

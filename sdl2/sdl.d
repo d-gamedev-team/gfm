@@ -1,18 +1,18 @@
 module gfm.sdl2.sdl;
 
-import std.conv: to;
-import std.string: format, toStringz;
-import std.array: join;
+import std.conv,
+       std.string,
+       std.array;
 
-import derelict.sdl2.sdl;
-import derelict.sdl2.image;
-import derelict.util.exception;
+import derelict.sdl2.sdl,
+       derelict.sdl2.image,
+       derelict.util.exception;
 
-import gfm.sdl2.displaymode;
-import gfm.sdl2.renderer;
-import gfm.common.log;
-import gfm.common.text;
-import gfm.math.box;
+import gfm.sdl2.displaymode,
+       gfm.sdl2.renderer,
+       gfm.common.log,
+       gfm.common.text,
+       gfm.math.box;
 
 
 class SDL2Exception : Exception

@@ -1,8 +1,9 @@
 module gfm.math.quaternion;
 
 import std.math;
-import gfm.math.vector;
-import gfm.math.matrix;
+
+import gfm.math.vector,
+       gfm.math.matrix;
 
 // hold a rotation + angle in a proper but wild space
 struct Quaternion(T)

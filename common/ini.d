@@ -1,8 +1,9 @@
 module gfm.common.ini;
 
-import std.stdio;
-import std.string;
-import std.algorithm;
+import std.stdio,
+       std.string,
+       std.algorithm;
+
 import gfm.common.text;
 
 /// A dumb and permissive INI parser, AST and writer

@@ -5,5 +5,6 @@ module gfm.assimp.all;
 public
 {
     import derelict.assimp.assimp;
+
     import gfm.assimp.assimp;
 }

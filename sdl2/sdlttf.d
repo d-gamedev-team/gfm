@@ -1,15 +1,14 @@
 module gfm.sdl2.sdlttf;
 
-import derelict.sdl2.sdl;
-import derelict.sdl2.ttf;
-import derelict.util.exception;
+import derelict.sdl2.sdl,
+       derelict.sdl2.ttf,
+       derelict.util.exception;
 
-import gfm.common.log;
-import gfm.common.text;
-import gfm.math.vector;
-
-import gfm.sdl2.sdl;
-import gfm.sdl2.surface;
+import gfm.common.log,
+       gfm.common.text,
+       gfm.math.vector,
+       gfm.sdl2.sdl,
+       gfm.sdl2.surface;
 
 /// SDL_ttf library resource
 final class SDLTTF

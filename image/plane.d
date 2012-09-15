@@ -3,11 +3,12 @@ module gfm.image.plane;
 // A Plane is a triplet of (base address + dimension + stride)
 // Simplest image
 
-import std.c.string, std.math;
+import std.c.string, 
+       std.math;
 
-import gfm.math.vector;
-import gfm.image.image;
-import gfm.common.alignedbuffer;
+import gfm.math.vector,
+       gfm.image.image,
+       gfm.common.alignedbuffer;
 
 struct Plane(T)
 {

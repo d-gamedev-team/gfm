@@ -4,8 +4,8 @@ module gfm.math.fraction;
 * Fractions, always in reduced form.
 */
 
-import std.traits;
-import std.string;
+import std.traits,
+       std.string;
 
 struct Fraction
 {

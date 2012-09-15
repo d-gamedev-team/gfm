@@ -4,8 +4,8 @@ module gfm.math.half;
 // Implements conversion from ftp://www.fox-toolkit.org/pub/fasthalffloatconversion.pdf
 // by Jeroen van der Zijp
 
-import std.traits;
-import std.string;
+import std.traits,
+       std.string;
 
 
 struct half

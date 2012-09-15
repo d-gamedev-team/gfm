@@ -1,7 +1,9 @@
 module gfm.sdl2.displaymode;
 
 import std.string;
+
 import derelict.sdl2.sdl;
+
 import gfm.math.box;
 
 final class SDL2DisplayMode

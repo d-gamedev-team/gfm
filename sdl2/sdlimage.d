@@ -1,13 +1,13 @@
 module gfm.sdl2.sdlimage;
 
-import derelict.sdl2.sdl;
-import derelict.sdl2.image;
-import derelict.util.exception;
+import derelict.util.exception,
+       derelict.sdl2.sdl,
+       derelict.sdl2.image;
 
-import gfm.common.log;
-import gfm.common.text;
-
-import gfm.sdl2.sdl, gfm.sdl2.surface;
+import gfm.common.log,
+       gfm.common.text,
+       gfm.sdl2.sdl, 
+       gfm.sdl2.surface;
 
 // Load images using SDL_image
 

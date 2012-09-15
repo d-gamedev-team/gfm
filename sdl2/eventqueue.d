@@ -3,10 +3,11 @@ module gfm.sdl2.eventqueue;
 import std.string;
 
 import derelict.sdl2.sdl;
-import gfm.common.log;
-import gfm.sdl2.sdl;
-import gfm.sdl2.window; 
-import gfm.sdl2.keyboard;
+
+import gfm.common.log,
+       gfm.sdl2.sdl,
+       gfm.sdl2.window,
+       gfm.sdl2.keyboard;
 
 // dispatch events to listeners
 // hold state for mouse, keyboard and joysticks

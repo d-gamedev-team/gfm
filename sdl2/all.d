@@ -4,18 +4,20 @@ module gfm.sdl2.all;
 
 public
 {
-    import derelict.sdl2.sdl;
-    import derelict.sdl2.image;
-    import gfm.sdl2.sdl;
-    import gfm.sdl2.surface;
-    import gfm.sdl2.displaymode;
-    import gfm.sdl2.window;
-    import gfm.sdl2.eventqueue;
-    import gfm.sdl2.keyboard;
-    import gfm.sdl2.renderer;
-    import gfm.sdl2.framecounter;
-    import gfm.sdl2.sdlimage;
-    import gfm.math.vector;
-    import gfm.math.box;
-    import gfm.sdl2.glcontext;
+    import derelict.sdl2.sdl,
+           derelict.sdl2.image;
+
+    import gfm.math.vector,
+           gfm.math.box;
+
+    import gfm.sdl2.sdl,
+           gfm.sdl2.surface,
+           gfm.sdl2.displaymode,
+           gfm.sdl2.window,
+           gfm.sdl2.eventqueue,
+           gfm.sdl2.keyboard,
+           gfm.sdl2.renderer,
+           gfm.sdl2.framecounter,
+           gfm.sdl2.sdlimage,
+           gfm.sdl2.glcontext;
 }

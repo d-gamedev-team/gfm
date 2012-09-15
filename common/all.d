@@ -1,12 +1,9 @@
 module gfm.common.all;
 
-public
-{
-    import gfm.common.log;
-    import gfm.common.memory;
-    import gfm.common.alignedbuffer;
-    import gfm.common.queue;
-    import gfm.common.lockedqueue;
-    import gfm.common.structpool;
-    import gfm.common.text;
-}
+public import gfm.common.log,
+              gfm.common.memory,
+              gfm.common.alignedbuffer,
+              gfm.common.queue,
+              gfm.common.lockedqueue,
+              gfm.common.structpool,
+              gfm.common.text;

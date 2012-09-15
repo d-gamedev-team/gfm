@@ -1,12 +1,14 @@
 module gfm.assimp.assimp;
 
-import std.conv;
-import std.string;
-import std.array : join;
-import derelict.assimp.assimp;
-import derelict.util.exception;
-import gfm.common.log;
-import gfm.common.text;
+import std.conv,
+       std.string,
+       std.array : join;
+
+import derelict.assimp.assimp,
+       derelict.util.exception;
+
+import gfm.common.log,
+       gfm.common.text;
 
 class AssimpException : Exception
 {

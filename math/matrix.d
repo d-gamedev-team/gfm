@@ -1,10 +1,11 @@
 module gfm.math.matrix;
 
-import std.math;
-import std.typetuple;
-import std.traits;
-import std.typecons;
-import std.conv;
+import std.math,
+       std.typetuple,
+       std.traits,
+       std.typecons,
+       std.conv;
+
 import gfm.math.vector;
 
 // generic small non-resizeable matrix with R rows and C columns

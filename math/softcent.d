@@ -6,8 +6,8 @@
  */
 module gfm.math.softcent;
 
-import std.traits : Unqual, isIntegral, isSigned, isUnsigned;
-import std.ascii : hexDigits;
+import std.traits,
+       std.ascii;
 
 @safe struct softcentImpl(bool signed)
 {

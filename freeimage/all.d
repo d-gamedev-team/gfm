@@ -5,6 +5,7 @@ module gfm.freeimage.all;
 public
 {
     import derelict.freeimage.freeimage;
-    import gfm.freeimage.freeimage;
-    import gfm.freeimage.fibitmap;
+
+    import gfm.freeimage.freeimage,
+           gfm.freeimage.fibitmap;
 }

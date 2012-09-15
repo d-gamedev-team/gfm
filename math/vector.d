@@ -1,7 +1,7 @@
 module gfm.math.vector;
 
-import std.traits;
-import std.math;
+import std.traits,
+       std.math;
 
 // generic 1D small vector
 // N is the element count, T the contained type

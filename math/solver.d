@@ -3,8 +3,8 @@ module gfm.math.solver;
 // Polynomials solver, courtesy of Patapom
 // http://patapom.com
 
-import std.traits;
-import std.math;
+import std.traits,
+       std.math;
 
 /**
  * Find the root of a linear polynomial a + b x = 0

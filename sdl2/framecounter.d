@@ -3,9 +3,11 @@ module gfm.sdl2.framecounter;
 import std.string;
 
 import derelict.sdl2.sdl;
-import gfm.sdl2.sdl;
-import gfm.math.statistics;
-import gfm.common.queue;
+
+import gfm.common.queue,
+       gfm.math.statistics,
+       gfm.sdl2.sdl;
+
 
 // gets intra-frame delta time
 final class FrameCounter

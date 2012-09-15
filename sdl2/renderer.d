@@ -3,14 +3,14 @@ module gfm.sdl2.renderer;
 import std.string;
 
 import derelict.sdl2.sdl;
-import gfm.common.log;
-import gfm.common.text;
-import gfm.math.vector;
-import gfm.math.box;
 
-import gfm.sdl2.sdl;
-import gfm.sdl2.window; 
-import gfm.sdl2.surface;
+import gfm.common.log,
+       gfm.common.text,
+       gfm.math.vector,
+       gfm.math.box,
+       gfm.sdl2.sdl,
+       gfm.sdl2.window;,
+       gfm.sdl2.surface;
 
 enum Blend
 {

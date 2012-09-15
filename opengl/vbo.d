@@ -5,11 +5,13 @@ module gfm.opengl.vbo;
 // Implement so called Vertex Arrays and VBO (which are Vertex Arrays + OpenGL buffers)
 
 import std.string;
-import derelict.opengl3.gl3;
-import derelict.opengl3.deprecatedFunctions;
-import derelict.opengl3.deprecatedConstants;
+
+import derelict.opengl3.gl3,
+       derelict.opengl3.deprecatedFunctions,
+       derelict.opengl3.deprecatedConstants;
+
 import gfm.common.log;
-import gfm.opengl.opengl;
+       gfm.opengl.opengl;
 
 /** 
  * A vertex element describe exactly the format of a vertex.

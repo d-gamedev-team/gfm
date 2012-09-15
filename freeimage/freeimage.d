@@ -1,11 +1,13 @@
 module gfm.freeimage.freeimage;
 
-import std.conv;
-import std.string;
-import derelict.freeimage.freeimage;
-import derelict.util.exception;
-import gfm.common.log;
-import gfm.common.text;
+import std.conv,
+       std.string;
+
+import derelict.freeimage.freeimage,
+       derelict.util.exception;
+
+import gfm.common.log,
+       gfm.common.text;
 
 class FreeImageException : Exception
 {

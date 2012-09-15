@@ -1,7 +1,7 @@
 module gfm.math.simplerng;
 
-import std.math;
-import std.random : unpredictableSeed;
+import std.math,
+       std.random : unpredictableSeed;
 
 import gfm.math.vector;
 

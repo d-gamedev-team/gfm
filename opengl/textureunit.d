@@ -2,8 +2,8 @@ module gfm.opengl.textureunit;
 
 import derelict.opengl3.gl3;
 
-import gfm.common.log;
-import gfm.opengl.opengl;
+import gfm.common.log,  
+       gfm.opengl.opengl;
 
 // Cache state of OpenGL texture units
 // Use deprecated image units!

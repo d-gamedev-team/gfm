@@ -1,10 +1,10 @@
 module gfm.common.text;
 
-import std.file;
-import std.utf;
-import std.conv;
-import std.encoding;
-import std.c.string;
+import std.file,
+       std.utf,
+       std.conv,
+       std.encoding,
+       std.c.string;
 
 string[] readTextFile(string filename)
 {

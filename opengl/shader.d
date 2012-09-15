@@ -1,13 +1,13 @@
 module gfm.opengl.shader;
 
-import std.string;
-import std.conv;
+import std.string,
+       std.conv;
 
 import derelict.opengl3.gl3;
 
-import gfm.common.log;
-import gfm.common.text;
-import gfm.opengl.opengl;
+import gfm.common.log,
+       gfm.common.text,
+       gfm.opengl.opengl;
 
 
 final class GLShader

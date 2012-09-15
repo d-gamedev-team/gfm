@@ -1,8 +1,9 @@
 module gfm.sdl2.glcontext;
 
 import derelict.sdl2.sdl;
-import gfm.sdl2.sdl;
-import gfm.sdl2.window;
+
+import gfm.sdl2.sdl,
+       gfm.sdl2.window;
 
 
 final class SDL2GLContext

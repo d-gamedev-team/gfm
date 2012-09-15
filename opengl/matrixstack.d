@@ -1,9 +1,8 @@
 module gfm.opengl.matrixstack;
 
-import gfm.math.vector;
-import gfm.math.matrix;
-import gfm.common.memory;
-
+import gfm.common.memory,
+       gfm.math.vector,
+       gfm.math.matrix;
 
 // A matrix stack designed to replace fixed-pipeline own matrix stacks.
 // Create one for GL_PROJECTION and one for GL_MODELVIEW, and there you go.

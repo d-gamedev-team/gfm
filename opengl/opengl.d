@@ -1,13 +1,15 @@
 module gfm.opengl.opengl;
 
-import std.string;
-import std.conv;
-import std.array;
-import derelict.opengl3.gl3;
-import derelict.opengl3.gl;
-import gfm.common.log;
-import gfm.common.text;
-import gfm.opengl.textureunit;
+import std.string,
+       std.conv,
+       std.array;
+
+import derelict.opengl3.gl3,
+       derelict.opengl3.gl;
+
+import gfm.common.log,
+       gfm.common.text,
+       gfm.opengl.textureunit;
 
 class OpenGLException : Exception
 {

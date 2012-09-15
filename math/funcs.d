@@ -1,7 +1,7 @@
 module gfm.math.funcs;
 
-import std.math;
-import std.traits;
+import std.math,
+       std.traits;
 
 
 T min(T)(T a, T b) pure nothrow
