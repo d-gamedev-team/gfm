@@ -1,5 +1,7 @@
 module gfm.sdl2.sdlttf;
 
+import std.string;
+
 import derelict.sdl2.sdl,
        derelict.sdl2.ttf,
        derelict.util.exception;

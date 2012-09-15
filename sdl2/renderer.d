@@ -9,7 +9,7 @@ import gfm.common.log,
        gfm.math.vector,
        gfm.math.box,
        gfm.sdl2.sdl,
-       gfm.sdl2.window;,
+       gfm.sdl2.window,
        gfm.sdl2.surface;
 
 enum Blend

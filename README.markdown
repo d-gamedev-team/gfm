@@ -72,5 +72,6 @@ See UNLICENSE for more details.
   * OpenGL wrapper based on Derelict3
   * makes easier to use the OpenGL API correctly
   * including a matrix stack to replace fixed pipeline
+  * including compilation of a single source for multiple shaders
   
 *More to come*

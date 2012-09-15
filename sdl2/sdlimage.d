@@ -1,5 +1,7 @@
 module gfm.sdl2.sdlimage;
 
+import std.string;
+
 import derelict.util.exception,
        derelict.sdl2.sdl,
        derelict.sdl2.image;
