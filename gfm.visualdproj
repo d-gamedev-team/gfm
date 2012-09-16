@@ -221,6 +221,7 @@
    <File path="math\funcs.d" />
    <File path="math\half.d" />
    <File path="math\matrix.d" />
+   <File path="math\plane.d" />
    <File path="math\quaternion.d" />
    <File path="math\shapes.d" />
    <File path="math\simplerng.d" />
