@@ -6,7 +6,9 @@ import std.math,
        std.typecons,
        std.conv;
 
-import gfm.math.vector;
+import gfm.math.vector,
+       gfm.math.plane,
+       gfm.math.frustum;
 
 // generic small non-resizeable matrix with R rows and C columns
 // N is the element count, T the contained type
@@ -127,9 +129,7 @@ align(1) struct Matrix(T, size_t R, size_t C)
         {
             column_t res = void;
             for (size_t i = 0; i < R; ++i)
-            {
                 res.v[i] = c[i][j];
-            }
             return res;
         }
 
@@ -397,7 +397,7 @@ align(1) struct Matrix(T, size_t R, size_t C)
 
             // similar to the glRotate matrix, however the angle is expressed in radians
             // Reference: http://www.cs.rutgers.edu/~decarlo/428/gl_man/rotate.html
-            static Matrix rotation(T angle, Vector!(T, 3u) axis) pure nothrow
+            static Matrix rotation(T angle, vec3!T axis) pure nothrow
             {
                 Matrix res = IDENTITY;
                 const T c = cos(angle);
@@ -458,17 +458,30 @@ align(1) struct Matrix(T, size_t R, size_t C)
 
             // See: http://msdn.microsoft.com/en-us/library/windows/desktop/bb205343(v=vs.85).aspx
             // TODO: verify if it's the right one...
-            static Matrix lookAt(Vector!(T, 3u) eye, Vector!(T, 3u) target, Vector!(T, 3u) up) pure nothrow
+            static Matrix lookAt(vec3!T eye, vec3!T target, vec3!T up) pure nothrow
             {
-                Vector!(T, 3u) Z = (eye - target).normalized();
-                Vector!(T, 3u) X = cross(up, Z).normalized();
-                Vector!(T, 3u) Y = cross(Z, X);
+                vec3!T Z = (eye - target).normalized();
+                vec3!T X = cross(up, Z).normalized();
+                vec3!T Y = cross(Z, X);
 
                 return Matrix(    X.x,         Y.x,         Z.x,     0,
                                   X.y,         Y.y,         Z.y,     0,
                                   X.z,         Y.z,         Z.z,     0,
                               dot(X, eye), dot(Y, eye), dot(Z, eye), 1);
             }
+
+            /// extract frustum
+            Frustum!T frustum() pure const nothrow
+            {
+                auto left   = Plane!T(row(3) + row(0));
+                auto right  = Plane!T(row(3) - row(0));
+                auto top    = Plane!T(row(3) - row(1));
+                auto bottom = Plane!T(row(3) + row(1));
+                auto near   = Plane!T(row(3) + row(2));
+                auto far    = Plane!T(row(3) - row(2));
+                return Frustum!T(left, right, top, bottom, near, far);
+            }
+
         }
     }
 
