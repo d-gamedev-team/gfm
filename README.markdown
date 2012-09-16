@@ -49,6 +49,7 @@ See UNLICENSE for more details.
   * **simplerng.d** random distributions: a port of SimpleRNG from John D. Cook\*
   * **easing.d** a port of easing functions from Robert Penner\*
   * **shapes.d** segment, triangle, sphere, ray...
+  * **plane.d** 3D plane
   * **funcs.d** useful math functions
 
 
