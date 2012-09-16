@@ -14,7 +14,7 @@ import gfm.math.vector;
 // 2 points
 struct Segment(T, size_t N)
 {
-    public nothrow
+    public
     {
         alias Vector!(T, N) point_t;
         point_t a, b;
@@ -24,19 +24,19 @@ struct Segment(T, size_t N)
 // 3 points
 struct Triangle(T, size_t N)
 {
-    public nothrow
+    public
     {
         alias Vector!(T, N) point_t;
         point_t a, b, c;
 
         static if (N == 2u)
         {
-            T area() pure const
+            T area() pure const nothrow
             {
                 return abs(signedArea());
             }
 
-            T signedArea() pure const
+            T signedArea() pure const nothrow
             {
                 return ((b.x * a.y - a.x * b.y)
                       + (c.x * b.y - b.x * c.y)
@@ -61,7 +61,7 @@ struct Sphere(T, size_t N)
             radius = radius_;
         }
 
-        bool contains(in Sphere s) const pure nothrow
+        bool contains(in Sphere s) pure const nothrow
         {
             if (s.radius > radius)
                 return false;
@@ -75,7 +75,7 @@ struct Sphere(T, size_t N)
             return center.squaredDistanceTo(p);
         }
 
-        bool touch(Sphere s) pure const nothrow
+        bool intersects(Sphere s) pure const nothrow
         {
             T outerRadius = radius + s.radius;
             return squaredDistanceTo(s.center) < outerRadius * outerRadius;
@@ -116,31 +116,6 @@ nothrow:
         }
     }
 }
-
-// Axis-aligned 2D ellipsis.
-
-struct AAEllipse2(T)
-{
-nothrow:
-    public
-    {
-        T a;
-        T b;
-
-        this(T a_, T b_)
-        {
-            assert(a >= b);
-            a = a_;
-            b = b_;
-        }
-
-        T area() pure const
-        {
-            return PI * a * b;
-        }
-    }
-}
-
 
 alias Segment!(float, 2u) seg2f;
 alias Segment!(float, 3u) seg3f;
