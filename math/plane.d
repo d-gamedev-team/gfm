@@ -34,7 +34,7 @@ align(1) struct Plane(T) if (isFloatingPoint!T)
         /// create from 3 non-aligned points
         this(vec3!T A, vec3!T B, vec3!T C) pure nothrow
         {
-            this(cross(B - A, C - A), C);
+            this(C, cross(B - A, C - A));
         }
 
         /// signed distance
@@ -64,7 +64,7 @@ align(1) struct Plane(T) if (isFloatingPoint!T)
         bool isOn(vec3!T point, T epsilon) pure const nothrow
         {
             T sd = signedDistanceTo(point);
-            return (-epsilon < d && d < epsilon);
+            return (-epsilon < sd) && (sd < epsilon);
         }
     }
 }
