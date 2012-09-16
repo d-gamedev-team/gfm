@@ -6,7 +6,7 @@ import gfm.math.vector,
        gfm.math.matrix;
 
 // hold a rotation + angle in a proper but wild space
-struct Quaternion(T)
+align(1) struct Quaternion(T)
 {
     public
     {

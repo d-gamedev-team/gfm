@@ -7,7 +7,7 @@ module gfm.math.fraction;
 import std.traits,
        std.string;
 
-struct Fraction
+align(1) struct Fraction
 {
     public
     {
