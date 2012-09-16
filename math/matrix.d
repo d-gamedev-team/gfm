@@ -125,6 +125,11 @@ align(1) struct Matrix(T, size_t R, size_t C)
                 v[i] = x[i];
         }
 
+        T* ptr() pure nothrow @property
+        {
+            return v.ptr;
+        }
+
         column_t column(size_t j) pure const nothrow
         {
             column_t res = void;
@@ -457,17 +462,17 @@ align(1) struct Matrix(T, size_t R, size_t C)
             }
 
             // See: http://msdn.microsoft.com/en-us/library/windows/desktop/bb205343(v=vs.85).aspx
-            // TODO: verify if it's the right one...
+            // Thanks to vuaru for corrections.
             static Matrix lookAt(vec3!T eye, vec3!T target, vec3!T up) pure nothrow
             {
                 vec3!T Z = (eye - target).normalized();
                 vec3!T X = cross(up, Z).normalized();
                 vec3!T Y = cross(Z, X);
 
-                return Matrix(    X.x,         Y.x,         Z.x,     0,
-                                  X.y,         Y.y,         Z.y,     0,
-                                  X.z,         Y.z,         Z.z,     0,
-                              dot(X, eye), dot(Y, eye), dot(Z, eye), 1);
+                return Matrix(X.x,         X.y,         X.z,     -dot(X, eye),
+                              Y.x,         Y.y,         Y.z,     -dot(Y, eye),
+                              Z.x,         Z.y,         Z.z,     -dot(Z, eye),
+                              0,           0,           0,        1);
             }
 
             /// extract frustum
