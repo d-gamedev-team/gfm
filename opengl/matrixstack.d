@@ -70,29 +70,26 @@ final class MatrixStack(size_t R, T) if (R == 3 || R == 4)
         /// replacement for glMultMatrix
         void mult(matrix_t m)
         {
-            _matrices[_top] = _matrices[_top] * m;
-            _invMatrices[_top] = _invMatrices[_top] * m.inverse();
+            mult(m, m.inverse());
         }
 
         /// same as mult() above, but with provided inverse
         void mult(matrix_t m, matrix_t invM)
         {
             _matrices[_top] = _matrices[_top] * m;
-            _invMatrices[_top] = _invMatrices[_top] * invM;
+            _invMatrices[_top] = invM *_invMatrices[_top];
         }
 
         /// Replacement for glTranslate
         void translate(Vector!(T, R-1) v)
         {
-            _matrices[_top].translate(v);
-            _invMatrices[_top].translate(-v);
+            mult(matrix_t.translation(v), matrix_t.translation(-v));
         }
 
         /// Replacement for glScale
         void scale(Vector!(T, R-1) v)
         {
-            _matrices[_top].scale(v);
-            _invMatrices[_top].scale(1 / v);
+            mult(matrix_t.scaling(v), matrix_t.scaling(1 / v));
         }
 
         static if (R == 4)
