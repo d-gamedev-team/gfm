@@ -25,8 +25,6 @@ align(1) struct Matrix(T, size_t R, size_t C)
         alias Vector!(T, R) column_t;
 
         enum bool isSquare = (R == C);
-        enum numRows = R;
-        enum numColumns = C;
 
         // fields definition
         union
