@@ -8,7 +8,7 @@ import gfm.math.vector,
 
 // N dimensional half-open interval [a, b[
 
-align(1) struct Box(size_t N, T)
+align(1) struct Box(T, size_t N)
 {
     static assert(N > 0);
 
@@ -232,12 +232,12 @@ align(1) struct Box(size_t N, T)
 
 template box2(T)
 {
-    alias Box!(2u, T) box2;
+    alias Box!(T, 2u) box2;
 }
 
 template box3(T)
 {
-    alias Box!(3u, T) box3;
+    alias Box!(T, 3u) box3;
 }
 
 alias box2!int box2i;
