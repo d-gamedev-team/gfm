@@ -50,6 +50,7 @@ See UNLICENSE for more details.
   * **easing.d** a port of easing functions from Robert Penner\*
   * **shapes.d** segment, triangle, sphere, ray...
   * **plane.d** 3D plane
+  * **frustum.d** 3D frustum
   * **funcs.d** useful math functions
 
 
