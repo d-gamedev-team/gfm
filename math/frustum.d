@@ -18,12 +18,12 @@ align(1) struct Frustum(T) if (isFloatingPoint!T)
 {
     public
     {
-        enum size_t LEFT = 0, 
-                    RIGHT = 1,
-                    TOP = 2,
+        enum size_t LEFT   = 0, 
+                    RIGHT  = 1,
+                    TOP    = 2,
                     BOTTOM = 3,
-                    NEAR = 4,
-                    FAR = 5;
+                    NEAR   = 4,
+                    FAR    = 5;
 
         Plane!T[6] planes;
 
@@ -58,6 +58,7 @@ align(1) struct Frustum(T) if (isFloatingPoint!T)
             return true;
         }
 
+        /// sphere-frustum intersection
         int contains(Sphere!(T, 3u) sphere) pure const nothrow
         {
             // calculate our distances to each of the planes
@@ -76,5 +77,56 @@ align(1) struct Frustum(T) if (isFloatingPoint!T)
             // otherwise we are fully in view
             return INSIDE;
         }
+
+        /// AABB-frustum intersection
+        int contains(box3!T box) pure const nothrow
+        {
+            vec3!T corners[8];
+            size_t totalIn = 0;
+
+            for (size_t i = 0; i < 2; ++i)
+                for (size_t j = 0; j < 2; ++j)
+                    for (size_t k = 0; k < 2; ++j)
+                    {
+                        auto x = i == 0 ? box.a.x : box.b.x;
+                        auto y = i == 0 ? box.a.y : box.b.y;
+                        auto z = i == 0 ? box.a.z : box.b.z;
+                        corners[i*4 + j*2 + k] = vec3!T(x, y, z);
+                    }
+
+            // test all 8 corners against the 6 sides
+            // if all points are behind 1 specific plane, we are out
+            // if we are in with all points, then we are fully in
+            for(size_t p = 0; p < 6; ++p)
+            {
+                size_t inCount = 8;
+                size_t ptIn = 1;
+
+                for(size_t i = 0; i < 8; ++i)
+                {
+                    // test this point against the planes
+                    if (planes[p].isBack(corners[i]))
+                    {
+                        ptIn = 0;
+                        --inCount;
+                    }
+                }
+
+                // were all the points outside of plane p?
+                if (inCount == 0)
+                    return OUTSIDE;
+
+                // check if they were all on the right side of the plane
+                totalIn += ptIn;
+            }
+
+            // so if totalIn is 6, then all are inside the view
+            if(totalIn == 6)
+                return INSIDE;
+
+            // we must be partly in then otherwise
+            return INTERSECT;
+        }
+
     }
 }
