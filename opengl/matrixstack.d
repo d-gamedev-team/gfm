@@ -35,8 +35,8 @@ final class MatrixStack(size_t R, T) if (R == 3 || R == 4)
         // replacement for glLoadIdentity
         void loadIdentity()
         {
-            _matrices[0] = mat4d.IDENTITY;
-            _invMatrices[0] = mat4d.IDENTITY;
+            _matrices[_top] = mat4d.IDENTITY;
+            _invMatrices[_top] = mat4d.IDENTITY;
         }
 
         // replacement for glPushMatrix
