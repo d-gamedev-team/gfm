@@ -158,6 +158,11 @@ nothrow:
             }
         }
 
+        T* ptr() pure nothrow @property
+        {
+            return v.ptr;
+        }
+
         bool opEquals(U)(U other) pure const nothrow
             if (is(U : Vector))
         {
@@ -556,11 +561,12 @@ T dot(T, size_t N)(const Vector!(T, N) a, const Vector!(T, N) b) pure nothrow
 
 
 /// 3D cross product
+/// Thanks to vuaru for corrections.
 Vector!(T, 3u) cross(T)(const Vector!(T, 3u) a, const Vector!(T, 3u) b) pure nothrow
 {
-    return Vector!(T, 3u)(a.y * b.z - b.z * a.y,
-                          a.z * b.x - b.x * a.z,
-                          a.x * b.y - b.y * a.x);
+    return Vector!(T, 3u)(a.y * b.z - a.z * b.y,
+                          a.z * b.x - a.x * b.z,
+                          a.x * b.y - a.y * b.x);
 }
 
 
