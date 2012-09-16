@@ -617,6 +617,7 @@ unittest
     assert(y.c[0][0] == 0 && y.c[0][1] == 1 && y.c[1][0] == 2 && y.c[1][1] == 3);
     y = mat2i.fromRows(cols[]);
     assert(y.c[0][0] == 0 && y.c[1][0] == 1 && y.c[0][1] == 2 && y.c[1][1] == 3);
+    y = y.transposed();
 
     assert(x == y);
     x = [0, 1, 2, 3];
