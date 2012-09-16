@@ -45,16 +45,26 @@ align(1) struct Frustum(T) if (isFloatingPoint!T)
             INSIDE     /// object is inside the frustum
         }
 
-        /// sphere-frustum intersection
+        /// point-frustum intersection
+        bool contains(vec3!T point) pure const nothrow
+        {
+            for(size_t i = 0; i < 6; ++i) 
+            {
+                T distance = planes[i].signedDistanceTo(point);
+
+                if(distance < 0)
+                    return false;
+            }
+            return true;
+        }
+
         int contains(Sphere!(T, 3u) sphere) pure const nothrow
         {
-            float fDistance;
-
             // calculate our distances to each of the planes
             for(size_t i = 0; i < 6; ++i) 
             {
                 // find the distance to this plane
-                float distance = planes[i].signedDistanceTo(sphere.center);
+                T distance = planes[i].signedDistanceTo(sphere.center);
 
                 if(distance < -sphere.radius)
                     return OUTSIDE;
