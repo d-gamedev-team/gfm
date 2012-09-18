@@ -55,8 +55,9 @@ See UNLICENSE for more details.
 
 
 ### image/
-  * generic image and plane abstraction
-  * physical color computations
+  * **image.d** generic abstract image and software rendering routines
+  * **bitmap.d** planar concrete image
+  * **cie.d** physical color computations
 
 
 ### sdl2/
