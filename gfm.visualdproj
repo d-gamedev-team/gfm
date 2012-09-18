@@ -208,9 +208,9 @@
   </Folder>
   <Folder name="image">
    <File path="image\all.d" />
+   <File path="image\bitmap.d" />
    <File path="image\cie.d" />
    <File path="image\image.d" />
-   <File path="image\plane.d" />
   </Folder>
   <Folder name="math">
    <File path="math\all.d" />

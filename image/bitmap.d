@@ -1,7 +1,4 @@
-module gfm.image.plane;
-
-// A Plane is a triplet of (base address + dimension + stride)
-// Simplest image
+module gfm.image.bitmap;
 
 import std.c.string, 
        std.math;
@@ -10,7 +7,12 @@ import gfm.math.vector,
        gfm.image.image,
        gfm.common.alignedbuffer;
 
-struct Plane(T)
+/**
+    A Bitmap is a triplet of (base address + dimension + stride).
+    Simplest possible image.
+    Nothing to do with the .bmp format.
+ */
+struct Bitmap(T)
 {
 nothrow:
     public
@@ -40,13 +42,13 @@ nothrow:
             this(cast(T*)(buffer.ptr), dimension);
         }
 
-        // return a sub-plane
-        Plane subPlane(vec2i position, vec2i dimension)
+        // return a sub-bitmap
+        Bitmap subImage(vec2i position, vec2i dimension)
         {
             assert(contains(position));
             assert(contains(position + dimension - 1));
 
-            return Plane(address(position.x, position.y), dimension, _stride);
+            return Bitmap(address(position.x, position.y), dimension, _stride);
         }
 
         @property
@@ -99,8 +101,8 @@ nothrow:
                 && (cast(uint)(point.y) < cast(uint)(_dimension.y));
         }
 
-        // copy another plane of same type and dimension
-        void copy(Plane source)
+        /// copy another Bitmap of same type and dimension
+        void copy(Bitmap source)
         {
             assert(dimension == source.dimension);
             if (isDense() && source.isDense())
@@ -147,8 +149,8 @@ nothrow:
     }
 }
 
-static assert(isImage!(Plane!int));
-static assert(isImage!(Plane!vec4ub));
+static assert(isImage!(Bitmap!int));
+static assert(isImage!(Bitmap!vec4ub));
 
 unittest
 {
@@ -156,15 +158,15 @@ unittest
         int[] b;
         b.length = 10 * 10;
         b[] = 0;
-        auto plane = Plane!int(b.ptr, vec2i(10, 5), 20 * int.sizeof);
+        auto bitmap = Bitmap!int(b.ptr, vec2i(10, 5), 20 * int.sizeof);
 
-        fillImage(plane, 1);
-        assert(plane.dimension.x == 10);
-        assert(plane.dimension.y == 5);
+        fillImage(bitmap, 1);
+        assert(bitmap.dimension.x == 10);
+        assert(bitmap.dimension.y == 5);
 
         for (int j = 0; j < 5; ++j)
             for (int i = 0; i < 10; ++i)
-                assert(plane.get(i, j) == 1);
+                assert(bitmap.get(i, j) == 1);
 
         for (int j = 0; j < 5; ++j)
             for (int i = 0; i < 10; ++i)
