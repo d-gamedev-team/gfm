@@ -29,7 +29,21 @@ class AssimpScene
                                             null);
             if (_scene is null)
                 assimp.throwAssimpException("aiImportFileFromMemory");
-        } 
+        }
+
+        ~this()
+        {
+            close();
+        }
+
+        void close()
+        {
+            if (_scene !is null)
+            {
+                aiReleaseImport(_scene);
+                _scene = null;
+            }
+        }
 
         /// To separate loading from post-processing
         void applyPostProcessing(uint postProcessFlags)
