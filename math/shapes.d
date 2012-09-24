@@ -114,6 +114,40 @@ nothrow:
         {
             return orig + dir * t;
         }
+
+        static if (N == 3u)
+        {
+            bool intersect(Triangle!(T, 3u) triangle, out T t, out T u, out T v)
+            {
+                point_t edge1 = triangle.b - triangle.a;
+                point_t edge2 = triangle.c - triangle.a;
+                point_t pvec = cross(dir, edge2);
+                T det = dot(edge1, pvec);
+                if (abs(det) < T.epsilon)
+                    return false; // no intersection
+                T invDet = 1 / det;
+
+                // calculate distance from triangle.a to ray origin
+                point_t tvec = orig - triangle.a;
+
+                // calculate U parameter and test bounds 
+                u = dot(tvec, pvec) * invDet;
+                if (u < 0 || u > 1)
+                    return false;
+
+                // prepare to test V parameter
+                point_t qvec = cross(tvec, edge1);
+
+                // calculate V parameter and test bounds
+                v = dot(dir, qvec) * invDet;
+                if (v < 0.0 || u + v > 1.0)
+                    return false;
+
+                // calculate t, ray intersects triangle
+                t = dot(edge2, qvec) * invDet;
+                return true;
+            }
+        }
     }
 }
 
