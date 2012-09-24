@@ -15,7 +15,7 @@ final class MatrixStack(size_t R, T) if (R == 3 || R == 4)
     {
         alias Matrix!(T, R, R) matrix_t;
 
-        this(size_t depth = 32)
+        this(size_t depth = 32) pure nothrow
         {
             assert(depth > 0);
             size_t memNeeded = matrix_t.sizeof * depth * 2;
@@ -32,14 +32,14 @@ final class MatrixStack(size_t R, T) if (R == 3 || R == 4)
             alignedFree(_matrices);
         }
 
-        // replacement for glLoadIdentity
-        void loadIdentity()
+        /// replacement for glLoadIdentity
+        void loadIdentity() pure nothrow
         {
             _matrices[_top] = mat4d.IDENTITY;
             _invMatrices[_top] = mat4d.IDENTITY;
         }
 
-        // replacement for glPushMatrix
+        /// replacement for glPushMatrix
         void push() pure nothrow
         {
             assert(_top + 1 < _depth);
@@ -48,46 +48,46 @@ final class MatrixStack(size_t R, T) if (R == 3 || R == 4)
             ++_top;
         }
 
-        // replacement for glPopMatrix
+        /// replacement for glPopMatrix
         void pop() pure nothrow
         {
             assert(_top > 0);
             --_top;
         }
 
-        // return top matrix
+        /// return top matrix
         matrix_t top() pure const nothrow
         {
             return _matrices[_top];
         }
 
-        // return top matrix inverted
+        /// return top matrix inverted
         matrix_t invTop() pure const nothrow
         {
             return _invMatrices[_top];
         }
 
         /// replacement for glMultMatrix
-        void mult(matrix_t m)
+        void mult(matrix_t m) pure nothrow
         {
             mult(m, m.inverse());
         }
 
         /// same as mult() above, but with provided inverse
-        void mult(matrix_t m, matrix_t invM)
+        void mult(matrix_t m, matrix_t invM) pure nothrow
         {
             _matrices[_top] = _matrices[_top] * m;
             _invMatrices[_top] = invM *_invMatrices[_top];
         }
 
         /// Replacement for glTranslate
-        void translate(Vector!(T, R-1) v)
+        void translate(Vector!(T, R-1) v) pure nothrow
         {
             mult(matrix_t.translation(v), matrix_t.translation(-v));
         }
 
         /// Replacement for glScale
-        void scale(Vector!(T, R-1) v)
+        void scale(Vector!(T, R-1) v) pure nothrow
         {
             mult(matrix_t.scaling(v), matrix_t.scaling(1 / v));
         }
@@ -98,10 +98,31 @@ final class MatrixStack(size_t R, T) if (R == 3 || R == 4)
              * Replacement for glRotate
              * angle is given in radians
              */ 
-            void rotate(T angle, Vector!(T, 3u) axis)
+            void rotate(T angle, Vector!(T, 3u) axis) pure nothrow
             {
                 matrix_t rot = matrix_t.rotation(angle, axis);
                 mult(rot, rot.transposed()); // inversing a rotation matrix is tranposing
+            }
+
+            /**
+             * Replacement for gluPerspective
+             * FOV given in radians
+             */
+            void perspective(T FOVInRadians, T aspect, T zNear, T zFar) pure nothrow
+            {
+                mult(matrix_t.perspective(FOVInRadians, aspect, zNear, zFar));
+            }
+
+            /// Replacement for glOrtho
+            void ortho(T left, T right, T bottom, T top, T near, T far) pure nothrow
+            {
+                mult(matrix_t.orthographics(left, right, bottom, top, near, far));
+            }
+
+            /// Replacement for gluLookAt
+            void lookAt(vec3!T eye, vec3!T target, vec3!T up) pure nothrow
+            {
+                mult(matrix_t.lookAt(eye, target, up));
             }
         }
     }
