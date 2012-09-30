@@ -1,6 +1,7 @@
 module gfm.math.all;
 
 public import gfm.math.funcs,
+              gfm.math.half,
               gfm.math.vector,
               gfm.math.box,
               gfm.math.plane,
@@ -13,4 +14,5 @@ public import gfm.math.funcs,
               gfm.math.shapes,
               gfm.math.fixedpoint,
               gfm.math.easing,
-              gfm.math.solver;
+              gfm.math.solver,
+              gfm.math.simplerng;
