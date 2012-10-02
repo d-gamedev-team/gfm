@@ -568,6 +568,13 @@ Vector!(T, 3u) cross(T)(const Vector!(T, 3u) a, const Vector!(T, 3u) b) pure not
 }
 
 
+/// 3D reflect, like the GLSL function
+Vector!(T, 3u) reflect(T)(const Vector!(T, 3u) a, const Vector!(T, 3u) b) pure nothrow
+{
+    return a - (2 * dot(b, a)) * b;
+}
+
+
 /**
  * Return angle between vectors
  * see "The Right Way to Calculate Stuff" at http://www.plunk.org/~hatch/rightway.php
