@@ -8,7 +8,6 @@ import gfm.common.memory,
 // Create one for GL_PROJECTION and one for GL_MODELVIEW, and there you go.
 // For performance reason, no runtime check for emptyness/fullness, only asserts
 // M should be a matrix type
-// TODO: rotations
 final class MatrixStack(size_t R, T) if (R == 3 || R == 4)
 {
     public

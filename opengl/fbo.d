@@ -10,7 +10,6 @@ import gfm.common.log,
        gfm.opengl.renderbuffer;
 
 // OpenGL FrameBuffer Object wrapper
-// TODO: GL_EXT_framebuffer_object fallback
 final class GLFBO
 {
     public
