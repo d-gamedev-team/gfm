@@ -25,7 +25,6 @@ double average(R)(R r) if (isInputRange!R)
 
 /**
  * Minimum of a range.
- * TODO: remove, dupe
  */
 double minimum(R)(R r) if (isInputRange!R)
 {
@@ -34,11 +33,13 @@ double minimum(R)(R r) if (isInputRange!R)
         return double.infinity;
 
     return minmax!("<", R)(r);
+
+    // To be activated with DMD 2.061+
+    // return minCount(r)[0];
 }
 
 /**
  * Maximum of a range.
- * TODO: remove, dupe
  */
 double maximum(R)(R r) if (isInputRange!R)
 {
@@ -47,6 +48,9 @@ double maximum(R)(R r) if (isInputRange!R)
         return -double.infinity;
 
     return minmax!(">", R)(r);
+
+    // To be activated with DMD 2.061+
+    // return maxCount(r)[0];
 }
 
 /**
