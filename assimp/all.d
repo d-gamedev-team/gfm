@@ -6,5 +6,6 @@ public
 {
     import derelict.assimp.assimp;
 
-    import gfm.assimp.assimp;
+    import gfm.assimp.assimp,
+           gfm.assimp.scene;
 }

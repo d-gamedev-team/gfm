@@ -9,7 +9,9 @@ public
 
     import gfm.opengl.opengl,
            gfm.opengl.buffer,
+           gfm.opengl.renderbuffer,
            gfm.opengl.shader,
+           gfm.opengl.uniform,
            gfm.opengl.program,
            gfm.opengl.matrixstack,
            gfm.opengl.texture,
