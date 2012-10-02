@@ -6,8 +6,7 @@ import std.traits,
 // generic 1D small vector
 // N is the element count, T the contained type
 // intended for 3D
-// TODO: - generic way to build a Vector from a variadic constructor of scalars, tuples, arrays and smaller vectors
-//       - find a way to enable swizzling assignment
+// TODO: - find a way to enable swizzling assignment
 // TBD:  - do we need support for slice assignment and opSliceOpAsssign? meh.
 
 align(1) struct Vector(T, size_t N)
@@ -382,7 +381,6 @@ nothrow:
         alias T _T;
 
         // define types that can be converted to this, but are not the same type
-        // TODO: don't use assignment...
         template isConvertible(T)
         {
             enum bool isConvertible = (!is(T : Vector))

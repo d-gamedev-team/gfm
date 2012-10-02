@@ -379,7 +379,6 @@ align(1) struct Matrix(T, size_t R, size_t C)
         }
 
         // rotations for 3x3 and 4x4 matrices
-        // TODO glRotate equivalent
         static if (isSquare && (_R == 3 || _R == 4) && isFloatingPoint!T)
         {
             private static Matrix rotateAxis(size_t i, size_t j)(T angle) pure nothrow
@@ -545,7 +544,6 @@ align(1) struct Matrix(T, size_t R, size_t C)
     }
 
     // put here because of order of declaration
-    // TODO: is this normal?
     public
     {
         enum ZERO = makeConstant(0);
