@@ -3,24 +3,25 @@ module gfm.math.fixedpoint;
 /**
  * Fixed point integers.
  *
- *
  * Status:
- * Very early.
- *
+ *   Use at your own risk.
  */
 
 import std.traits;
 
-// M.N fixed point integer
-// Designed for fast execution instead of proper rounding
-// Does not manage overflow
-// TODO: - support 32.32 and larger
+import gfm.math.softcent;
 
+/**
+ * M.N fixed point integer
+ * Designed for fast execution instead of proper rounding
+ * Does not manage overflow
+ * If M + N > 32, then softcent is used and this will likely be slow.
+ */
 struct FixedPoint(int M, int N)
 {
     static assert(M > 0);       // unsupported
     static assert(N > 0);
-    static assert(M + N <= 32); // TODO: support more
+    static assert(M + N <= 64);
 
     public
     {
@@ -121,7 +122,12 @@ struct FixedPoint(int M, int N)
 
         int opCmp(in FixedPoint other) pure const nothrow
         {
-            return value - other.value;
+            if (value > other.value)
+                return 1;
+            else if (value < other.value)
+                return -1;
+            else
+                return 0;
         }
 
         FixedPoint opUnary(string op)() pure const nothrow if (op == "+")
@@ -141,7 +147,7 @@ struct FixedPoint(int M, int N)
 
     private
     {
-        enum value_t ONE = (1 << N);
+        enum value_t ONE = cast(value_t)1 << N;
         enum value_t HALF = ONE >>> 1;
         enum value_t LOW_MASK = ONE - 1;
         enum value_t HIGH_MASK = ~LOW_MASK;
@@ -164,6 +170,7 @@ alias FixedPoint!(4,4) fix4;
 alias FixedPoint!(8,8) fix8;
 alias FixedPoint!(16,16) fix16;
 alias FixedPoint!(24,8) fix24_8;
+alias FixedPoint!(32,32) fix32_32;
 
 // select an integer type suitable to hold bits
 private template TypeNeeded(int bits)
@@ -184,10 +191,13 @@ private template TypeNeeded(int bits)
     {
         alias long TypeNeeded;
     }
+    else static if (bits <= 128)
+    {
+        alias softcent TypeNeeded;
+    }
     else
     {
-        // TODO: use what?
-        // not sure about using BigInt
+        // bigger fixed-point integers are not supported
         static assert(false);
     }
 }
