@@ -1,8 +1,8 @@
 module gfm.common.uri;
 
 import std.range,
-       std.array,
-       std.string;
+       std.string,
+       std.ascii;
 
 /**
  * Here is an attempt at implementing RFC 3986.
@@ -57,68 +57,95 @@ class URI
             }
         }
 
-        // normalized URI components
-        pure const nothrow
+        // getters for normalized URI components
+
+        /// return scheme, guaranteed not null
+        string scheme() pure const nothrow
         {
-            /// return scheme, guaranteed not null
-            string scheme()
-            {
-                return _scheme;
-            }
+            return _scheme;
+        }
 
-            /// return hostName, or null if not available
-            string hostName()
-            {
-                return _hostName;
-            }
+        /// return hostName, or null if not available
+        string hostName() pure const nothrow
+        {
+            return _hostName;
+        }
 
-            /// return port number, or -1 if not available
-            int port()
-            {
-                return _port;
-            }
+        /// return port number, or -1 if not available
+        int port() pure const nothrow
+        {
+            return _port;
+        }
 
-            /// return the user-info part of the URI, or null if not available
-            string userInfo()
-            {
-                return _userInfo;
-            }
+        /// return the user-info part of the URI, or null if not available
+        string userInfo() pure const nothrow
+        {
+            return _userInfo;
+        }
 
-            /// return the path part of the URI, never null, can be the empty string
-            string path()
-            {
-                return _path;
-            }
+        /// return the path part of the URI, never null, can be the empty string
+        string path() pure const nothrow
+        {
+            return _path;
+        }
 
-            /// return the query part of the URI, or null if not available
-            string query()
-            {
-                return _query;
-            }
+        /// return the query part of the URI, or null if not available
+        string query() pure const nothrow
+        {
+            return _query;
+        }
 
-            /// return the fragment part of the URI, or null if not available
-            string fragment()
-            {
-                return _fragment;
-            }
+        /// return the fragment part of the URI, or null if not available
+        string fragment() pure const nothrow
+        {
+            return _fragment;
+        }
+
+        /// get authority part of the URI
+        string authority() pure const nothrow
+        {
+            if (_hostName is null)
+                return null;
+
+            string res = "";
+            if (_userInfo !is null)
+                res = res ~ _userInfo ~ "@"; 
+            res ~= _hostName;
+            if (_port != -1)
+                res ~= itos(_port);
+            return res;
+        }
+
+        override string toString() const
+        {
+            string res = _scheme ~ ":";
+
+            if (_hostName is null)            
+                res = res ~ "//" ~ authority();
+            res ~= _path;
+            if (_query !is null)
+                res = res ~ "?" ~ _query;
+            if (_fragment !is null)
+                res = res ~ "#" ~ _fragment;
+            return res;
         }
     }
 
     private
     {
         // normalized URI components
-        string _scheme;
-        string _userInfo;
-        string _hostName;
-        int _port;
-        string _path;
-        string _query;
-        string _fragment;
+        string _scheme;   // never null, never empty
+        string _userInfo; // can be null
+        string _hostName; // null if no authority in URI
+        int _port;        // -1 if no port in URI
+        string _path;     // never null, bu could be empty
+        string _query;    // can be null
+        string _fragment; // can be null
 
         // URI         = scheme ":" hier-part [ "?" query ] [ "#" fragment ]
         void parseURI(T)(ref T input)
         {
-            _scheme = parseScheme(input);
+            _scheme = toLowerString(parseScheme(input));
 
             if (popChar(input) != ':')
                 throw new URIException("expected colon character in URL");
@@ -547,36 +574,63 @@ private pure
         if (c != expected)
             throw new URIException("expected '" ~ c ~ "' character");
     }
+
+    string itos(int i) pure nothrow
+    {
+        string res = "";
+        while (true)
+        {
+            res ~= ('0' + (i % 10));
+            if (i == 0)
+                break;
+            i = i / 10;
+        }
+        return res;
+    }
+
+    string toLowerString(string s)
+    {
+        string result;
+        foreach (dchar c; s)
+            result ~= toLower(c);
+        return result;        
+    }
 }
 
-unittest
+void testURI()
 {
-    struct Test
+    
     {
-        string uri;
-        string scheme;
+        string s = "HTTP://machin@fr.wikipedia.org:80/wiki/Uniform_Resource_Locator?Query%20Part=4#fragment%20part";
+        assert(URI.isValid(s));
+        auto uri = new URI(s);
+        assert(uri.scheme() == "http");
+        assert(uri.userInfo() == "machin");
+        assert(uri.hostName() == "fr.wikipedia.org");
+        assert(uri.port() == 80);
+        assert(uri.authority() == "machin@fr.wikipedia.org:80");
+        assert(uri.path() == "/wiki/Uniform_Resource_Locator");
+        assert(uri.query() == "Query Part=4");
+        assert(uri.fragment() == "fragment part");
     }
 
     auto wellFormedURIs =
     [
-        Test("HTTP://fr.wikipedia.org/wiki/Uniform_Resource_Locator", "http"),
-        Test("ftp://ftp.rfc-editor.org/in-notes/rfc2396.txt", "ftp"),
-        Test("mailto:Quidam.no-spam@example.com", "mailto"),
-        Test("news:fr.comp.infosystemes.www.auteurs", "news"),
-        Test("gopher://gopher.quux.org/", "gopher"),
-        Test("http://Jojo:lApIn@www.example.com:8888/chemin/d/acc%C3%A8s.php?q=req&q2=req2#signet", "http"),
-        Test("ldap://[2001:db8::7]/c=GB?objectClass?one", "ldap"),
-        Test("mailto:John.Doe@example.com", "mailto"),
-        Test("tel:+1-816-555-1212", "tel"),
-        Test("telnet://192.0.2.16:80/", "telnet"),
-        Test("urn:oasis:names:specification:docbook:dtd:xml:4.1.2", "urn"),
+        "ftp://ftp.rfc-editor.org/in-notes/rfc2396.txt",
+        "mailto:Quidam.no-spam@example.com",
+        "news:fr.comp.infosystemes.www.auteurs",
+        "gopher://gopher.quux.org/",
+        "http://Jojo:lApIn@www.example.com:8888/chemin/d/acc%C3%A8s.php?q=req&q2=req2#signet",
+        "ldap://[2001:db8::7]/c=GB?objectClass?one",
+        "mailto:John.Doe@example.com",
+        "tel:+1-816-555-1212",
+        "telnet://192.0.2.16:80/",
+        "urn:oasis:names:specification:docbook:dtd:xml:4.1.2",
     ];
 
-    foreach (test; wellFormedURIs)
+    foreach (uri; wellFormedURIs)
     {
-        bool valid = URI.isValid(test.uri);
+        bool valid = URI.isValid(uri);
         assert(valid);
-        auto uri = new URI(test.uri);
-        assert(uri.scheme() == test.scheme);
     }
 }
