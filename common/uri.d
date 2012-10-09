@@ -209,9 +209,10 @@ class URI
             if (input.empty())
                 return; // path-empty
 
-            char c = popChar(input);
+            char c = peekChar(input);
             if (c == '/')
             {
+                input.popFront();
                 T sinput = input.save;
                 if (!input.empty() && peekChar(input) == '/')
                 {
@@ -227,16 +228,7 @@ class URI
             }
             else
             {
-                T sinput = input.save;
-                try
-                {
-                    _path = parsePathNoScheme(input);
-                }
-                catch(URIException e)
-                {
-                    input = sinput.save;
-                    _path = parsePathNoScheme(input);
-                }
+                _path = parsePathRootless(input);
             }
         }
 
@@ -623,11 +615,12 @@ unittest
         "tel:+1-816-555-1212",
         "telnet://192.0.2.16:80/",
         "urn:oasis:names:specification:docbook:dtd:xml:4.1.2",
+        "about:",
     ];
 
     foreach (wuri; wellFormedURIs)
     {
         bool valid = URI.isValid(wuri);
-     //   assert(valid);
+        assert(valid);
     }
 }
