@@ -251,7 +251,7 @@ class URI
 
             _hostName = parseHost(input);
 
-            if (peekChar(input) == ':')
+            if (!empty(input) && peekChar(input) == ':')
             {
                 consume(input, ':');
                 _port = parsePort(input);
