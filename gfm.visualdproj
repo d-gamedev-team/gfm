@@ -200,6 +200,7 @@
    <File path="common\queue.d" />
    <File path="common\structpool.d" />
    <File path="common\text.d" />
+   <File path="common\uri.d" />
   </Folder>
   <Folder name="freeimage">
    <File path="freeimage\all.d" />
