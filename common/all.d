@@ -8,4 +8,5 @@ public import gfm.common.log,
               gfm.common.structpool,
               gfm.common.text,
               gfm.common.ini,
-              gfm.common.uri;
+              gfm.common.uri,
+              gfm.common.httpclient;

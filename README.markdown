@@ -33,6 +33,9 @@ See UNLICENSE for more details.
   * **memory.d** aligned malloc/free/realloc
   * **alignedbuffer.d** aligned array-like container
   * **structpool.d** small object area
+  * **text.d** string utilities
+  * **uri.d** URI parsing (RFC 3986)
+  * **httpclient.d** HTTP client (RFC 2616)
 
 
 ### math/

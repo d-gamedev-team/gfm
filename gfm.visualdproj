@@ -193,6 +193,7 @@
   <Folder name="common">
    <File path="common\alignedbuffer.d" />
    <File path="common\all.d" />
+   <File path="common\httpclient.d" />
    <File path="common\ini.d" />
    <File path="common\lockedqueue.d" />
    <File path="common\log.d" />
