@@ -86,7 +86,7 @@ align(1) struct Matrix(T, size_t R, size_t C)
         // assign with same type
         void opAssign(U : Matrix)(U x) pure nothrow
         {
-            for (size_t i = 0; i < _N; ++i)
+            for (size_t i = 0; i < R * C; ++i)
             {
                 v[i] = x.v[i];
             }
@@ -97,9 +97,9 @@ align(1) struct Matrix(T, size_t R, size_t C)
             if (is(typeof(U._isMatrix))
                 && is(U._T : _T)
                 && (!is(U: Matrix))
-                && (U._R == _R) && (U._C == _C))
+                && (U._R == R) && (U._C == C))
         {
-            for (size_t i = 0; i < _N; ++i)
+            for (size_t i = 0; i < R * C; ++i)
                 v[i] = x.v[i];
         }
 
@@ -107,9 +107,9 @@ align(1) struct Matrix(T, size_t R, size_t C)
         void opAssign(U)(U x) pure nothrow
             if ((isStaticArray!U)
                 && is(typeof(x[0]) : T)
-                && (U.length == _N))
+                && (U.length == R * C))
         {
-            for (size_t i = 0; i < _N; ++i)
+            for (size_t i = 0; i < R * C; ++i)
                 v[i] = x[i];
         }
 
@@ -118,8 +118,8 @@ align(1) struct Matrix(T, size_t R, size_t C)
             if ((isDynamicArray!U)
                 && is(typeof(x[0]) : T))
         {
-            assert(x.length == _N);
-            for (size_t i = 0; i < _N; ++i)
+            assert(x.length == R * C);
+            for (size_t i = 0; i < R * C; ++i)
                 v[i] = x[i];
         }
 
@@ -184,7 +184,7 @@ align(1) struct Matrix(T, size_t R, size_t C)
 
         // cast to other small matrices type
         // if the size are different, the result matrix is truncated and/or filled with identity coefficients
-        U opCast(U)() pure nothrow const if (is(typeof(U._isMatrix)) && (U._R == _R) && (U._C == _C))
+        U opCast(U)() pure nothrow const if (is(typeof(U._isMatrix)) && (U._R == R) && (U._C == C))
         {
             U res = U.IDENTITY;
             enum minR = R < U._R ? R : U._R;
@@ -199,7 +199,7 @@ align(1) struct Matrix(T, size_t R, size_t C)
 
         bool opEquals(U)(U other) pure const nothrow if (is(U : Matrix))
         {
-            for (size_t i = 0; i < _N; ++i)
+            for (size_t i = 0; i < R * C; ++i)
                 if (v[i] != other.v[i])
                     return false;
             return true;
@@ -222,7 +222,7 @@ align(1) struct Matrix(T, size_t R, size_t C)
         }
 
         // matrix inversion, provided for 2x2, 3x3 and 4x4 floating point matrices
-        static if (isSquare && isFloatingPoint!T && _R == 2)
+        static if (isSquare && isFloatingPoint!T && R == 2)
         {
             Matrix inverse() pure const nothrow
             {
@@ -232,7 +232,7 @@ align(1) struct Matrix(T, size_t R, size_t C)
             }
         }
 
-        static if (isSquare && isFloatingPoint!T && _R == 3)
+        static if (isSquare && isFloatingPoint!T && R == 3)
         {
             Matrix inverse() pure const nothrow
             {
@@ -255,7 +255,7 @@ align(1) struct Matrix(T, size_t R, size_t C)
             }
         }
 
-        static if (isSquare && isFloatingPoint!T && _R == 4)
+        static if (isSquare && isFloatingPoint!T && R == 4)
         {
             Matrix inverse() pure const nothrow
             {
@@ -336,50 +336,50 @@ align(1) struct Matrix(T, size_t R, size_t C)
             return res;
         }
 
-        static if (isSquare && _R > 1)
+        static if (isSquare && R > 1)
         {
             /// in-place translate by (v, 1)
-            void translate(Vector!(T, _R-1) v) pure nothrow
+            void translate(Vector!(T, R-1) v) pure nothrow
             {
-                for (size_t i = 0; i < _R; ++i)
+                for (size_t i = 0; i < R; ++i)
                 {
                     T dot = 0;
                     for (size_t j = 0; j + 1 < C; ++j)
                         dot += v.v[j] * c[i][j];
 
-                    c[i][_C-1] += dot;
+                    c[i][C-1] += dot;
                 }
             }
 
             /// make translation matrix
-            static Matrix translation(Vector!(T, _R-1) v) pure nothrow
+            static Matrix translation(Vector!(T, R-1) v) pure nothrow
             {
                 Matrix res = IDENTITY;
-                for (size_t i = 0; i + 1 < _R; ++i)
-                    res.c[i][_C-1] += v.v[i];
+                for (size_t i = 0; i + 1 < R; ++i)
+                    res.c[i][C-1] += v.v[i];
                 return res;
             }
 
             /// in-place scaling matrix
-            void scale(Vector!(T, _R-1) v) pure nothrow
+            void scale(Vector!(T, R-1) v) pure nothrow
             {
-                for (size_t i = 0; i < _R; ++i)
-                    for (size_t j = 0; j + 1 < _C; ++j)
+                for (size_t i = 0; i < R; ++i)
+                    for (size_t j = 0; j + 1 < C; ++j)
                         c[i][j] *= v.v[j];
             }
 
             /// make scaling matrix
-            static Matrix scaling(Vector!(T, _R-1) v) pure nothrow
+            static Matrix scaling(Vector!(T, R-1) v) pure nothrow
             {
                 Matrix res = IDENTITY;
-                for (size_t i = 0; i + 1 < _R; ++i)
+                for (size_t i = 0; i + 1 < R; ++i)
                     res.c[i][i] = v.v[i];
                 return res;
             }
         }
 
         // rotations for 3x3 and 4x4 matrices
-        static if (isSquare && (_R == 3 || _R == 4) && isFloatingPoint!T)
+        static if (isSquare && (R == 3 || R == 4) && isFloatingPoint!T)
         {
             private static Matrix rotateAxis(size_t i, size_t j)(T angle) pure nothrow
             {
@@ -427,7 +427,7 @@ align(1) struct Matrix(T, size_t R, size_t C)
         }
 
         // 4x4 specific transformations for 3D usage
-        static if (isSquare && _R == 4 && isFloatingPoint!T)
+        static if (isSquare && R == 4 && isFloatingPoint!T)
         {
             // return orthographic projection
             static Matrix orthographic(T left, T right, T bottom, T top, T near, T far) pure nothrow
@@ -490,7 +490,6 @@ align(1) struct Matrix(T, size_t R, size_t C)
     private
     {
         alias T _T;
-        enum _N = R * C;
         enum _R = R;
         enum _C = C;
         enum bool _isMatrix = true;
@@ -537,7 +536,7 @@ align(1) struct Matrix(T, size_t R, size_t C)
         static Matrix makeConstant(U)(U x) pure nothrow
         {
             Matrix res;
-            for (size_t i = 0; i < _N; ++i)
+            for (size_t i = 0; i < R * C; ++i)
                 res.v[i] = cast(T)x;
             return res;
         }
