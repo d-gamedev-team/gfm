@@ -2,6 +2,8 @@ module gfm.common.httpclient;
 
 /// Couldn't resist the urge to write a HTTP client
 
+// TODO: pool TCP connections
+
 import std.socketstream,
        std.stream,
        std.socket,
@@ -60,14 +62,15 @@ class HTTPClient
         /// From an absolute HTTP url, return content.
         ubyte[] GET(URI uri)
         {
-            if (uri.scheme() != "http")
-                throw new HTTPException(format("'%' is not an HTTP absolute url", uri.toString()));
+            checkURI(uri);
+            return request(HTTPMethod.GET, uri.hostName(), uri.port(), uri.toString());
+        }
 
-
-            int port = uri.port() == -1 ? 80 : uri.port();
-            string hostName = uri.hostName();
-
-            return request(HTTPMethod.GET, hostName, port, uri.toString());
+        /// same as GET but without content
+        void HEAD(URI uri)
+        {
+            checkURI(uri);
+            return request(HTTPMethod.HEAD, uri.hostName(), uri.port(), uri.toString());
         }
 
         /**
@@ -130,6 +133,12 @@ class HTTPClient
             }
             ushort uport = cast(ushort) port;
             _socket = new TcpSocket(new InternetAddress(host, uport));
+        }
+
+        static checkURI(URI uri)
+        {
+            if (uri.scheme() != "http")
+                throw new HTTPException(format("'%' is not an HTTP absolute url", uri.toString()));
         }
     }
 }
