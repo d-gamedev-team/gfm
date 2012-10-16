@@ -70,7 +70,7 @@ class HTTPClient
         void HEAD(URI uri)
         {
             checkURI(uri);
-            return request(HTTPMethod.HEAD, uri.hostName(), uri.port(), uri.toString());
+            request(HTTPMethod.HEAD, uri.hostName(), uri.port(), uri.toString());
         }
 
         /**
