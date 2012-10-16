@@ -10,6 +10,7 @@ import std.range,
  * All constructed URI are valid and normalized.
  *
  * TODO: parse IPvFuture
+ *       separate segments in parsed form -> relative URL combining
  */
 
 // throw when an URI doesn't parse
@@ -71,10 +72,21 @@ class URI
             return _hostName;
         }
 
-        /// return port number, or -1 if not available
+        /** 
+         * Return port number. 
+         * If none is provided by the URI, return the default port for this scheme.
+         * if the scheme isn't recognized, return -1.
+         */
         int port() pure const nothrow
         {
-            return _port;
+            if (_port != -1)
+                return _port;
+
+            foreach (ref e; knownSchemes)
+                if (e.scheme == _scheme)
+                    return e.defaultPort;
+
+            return -1;
         }
 
         /// return the user-info part of the URI, or null if not available
@@ -584,6 +596,25 @@ private pure
             result ~= toLower(c);
         return result;
     }
+
+    struct KnownScheme
+    {
+        string scheme;
+        int defaultPort;
+    }
+
+    enum knownSchemes =
+    [
+        KnownScheme("ftp", 21),
+        KnownScheme("sftp", 22),
+        KnownScheme("telnet", 23),
+        KnownScheme("smtp", 25),
+        KnownScheme("gopher", 70),
+        KnownScheme("http", 80),
+        KnownScheme("nntp", 119),
+        KnownScheme("https", 443)
+    ];
+
 }
 
 unittest
