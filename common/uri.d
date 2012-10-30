@@ -261,7 +261,8 @@ class URI
                 input = uinput.save;
             }
 
-            _hostName = parseHost(input);
+            // host name should be case insensitive
+            _hostName = toLowerString(parseHost(input));
 
             if (!empty(input) && peekChar(input) == ':')
             {
