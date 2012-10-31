@@ -36,6 +36,13 @@ enum HTTPMethod
     CONNECT
 }
 
+class HTTPResponse
+{
+    int statusCode;
+    string[string] headers;
+    ubyte[] content;
+}
+
 class HTTPClient
 {
     public
@@ -60,17 +67,17 @@ class HTTPClient
         }
 
         /// From an absolute HTTP url, return content.
-        ubyte[] GET(URI uri)
+        HTTPResponse GET(URI uri)
         {
             checkURI(uri);
             return request(HTTPMethod.GET, uri.hostName(), uri.port(), uri.toString());
         }
 
         /// same as GET but without content
-        void HEAD(URI uri)
+        HTTPResponse HEAD(URI uri)
         {
             checkURI(uri);
-            request(HTTPMethod.HEAD, uri.hostName(), uri.port(), uri.toString());
+            return request(HTTPMethod.HEAD, uri.hostName(), uri.port(), uri.toString());
         }
 
         /**
@@ -78,9 +85,9 @@ class HTTPClient
          * requestURI can be "*", an absolute URI, an absolute path, or an authority
          * depending on the method.
          */
-        ubyte[] request(HTTPMethod method, string host, int port, string requestURI)
+        HTTPResponse request(HTTPMethod method, string host, int port, string requestURI)
         {
-            ubyte[] res;
+            auto res = new HTTPResponse();
 
             try
             {
@@ -89,26 +96,70 @@ class HTTPClient
 
                 string request = format("%s %s HTTP/1.0\r\n"
                                         "Host: %s\r\n"
-                                        "\r\n", GetHTTPMethodString(method), requestURI, host);
+                                        "\r\n", to!string(method), requestURI, host);
                 auto scope ss = new SocketStream(_socket);
                 ss.writeString(request);
 
-                // skip headers
+                // parse status line
+                auto line = ss.readLine();
+                if (line.length < 12 || line[0..5] != "HTTP/" || line[6] != '.')
+                    throw new HTTPException("Cannot parse HTTP status line");
+
+                if (line[5] != '1' || (line[7] != '0' && line[7] != '1'))
+                    throw new HTTPException("Unsupported HTTP version");
+
+                // parse error code
+                res.statusCode = 0;
+                for (int i = 0; i < 3; ++i)
+                {
+                    char c = line[9 + i];
+                    if (c >= '0' && c <= '9')
+                        res.statusCode = res.statusCode * 10 + (c - '0');
+                    else
+                        throw new HTTPException("Expected digit in HTTP status code");
+                }
+
+                // parse headers
                 while(true)
                 {
-                    auto line = ss.readLine();
-                    writeln(line);
-                    if (line.length == 0)
+                    auto headerLine = ss.readLine();
+
+                    if (headerLine.length == 0)
                         break;
+
+                    sizediff_t colonIdx = indexOf(headerLine, ':');
+                    if (colonIdx == -1)
+                        throw new HTTPException("Cannot parse HTTP header: missing colon");
+
+                    string key = headerLine[0..colonIdx].idup;
+
+                    // trim leading spaces and tabs
+                    sizediff_t valueStart = colonIdx + 1;
+                    for ( ; valueStart <= headerLine.length; ++valueStart)
+                    {
+                        char c = headerLine[valueStart];
+                        if (c != ' ' && c != '\t')
+                            break;
+                    }
+
+                    // trim trailing spaces and tabs
+                    sizediff_t valueEnd = headerLine.length;
+                    for ( ; valueEnd > valueStart; --valueEnd)
+                    {
+                        char c = headerLine[valueEnd - 1];
+                        if (c != ' ' && c != '\t')
+                            break;
+                    }
+
+                    string value = headerLine[valueStart..valueEnd].idup;
+                    res.headers[key] = value;
                 }
 
                 while (!ss.eof())
                 {
                     int read = ss.readBlock(buffer.ptr, buffer.length);
-                    writefln("read %s bytes", read);
-                    res ~= buffer[0..read];
+                    res.content ~= buffer[0..read];
                 }
-                writefln("%s", to!string(res));
 
                 return res;
             }
@@ -143,20 +194,3 @@ class HTTPClient
     }
 }
 
-private
-{
-    string GetHTTPMethodString(HTTPMethod m)
-    {
-        final switch(m)
-        {
-            case HTTPMethod.OPTIONS: return "OPTIONS";
-            case HTTPMethod.GET:     return "GET";
-            case HTTPMethod.HEAD:    return "HEAD";
-            case HTTPMethod.POST:    return "POST";
-            case HTTPMethod.PUT:     return "PUT";
-            case HTTPMethod.DELETE:  return "DELETE";
-            case HTTPMethod.TRACE:   return "TRACE";
-            case HTTPMethod.CONNECT: return "CONNECT";
-        }
-    }
-}
