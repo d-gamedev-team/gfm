@@ -15,10 +15,9 @@ final class SDL2EventQueue
 {
     public
     {        
-        this(SDL2 sdl2, Log log)
+        this(SDL2 sdl2)
         {
             _sdl2 = sdl2;
-            _log = log;
             _quitWasRequested = false;
             _keyboard = new SDL2Keyboard(sdl2);
         }
@@ -56,7 +55,6 @@ final class SDL2EventQueue
     private
     {
         SDL2 _sdl2;
-        Log _log;
         SDL2Keyboard _keyboard;
         SDL2Window[uint] _knownWindows;
         bool _quitWasRequested = false;

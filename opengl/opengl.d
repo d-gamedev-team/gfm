@@ -29,7 +29,7 @@ final class OpenGL
     {
         this(Log log)
         {
-            _log = log;
+            _log = log is null ? new NullLog() : log;
             DerelictGL3.load(); // load latest available version
 
             DerelictGL.load(); // load deprecated functions too

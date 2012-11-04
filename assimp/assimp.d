@@ -27,7 +27,7 @@ final class Assimp
     {
         this(Log log)
         {
-            _log = log;
+            _log = log is null ? new NullLog() : log;
 
             try
             {

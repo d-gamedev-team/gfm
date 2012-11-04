@@ -26,7 +26,7 @@ final class FreeImage
     {
         this(Log log, bool useExternalPlugins = false)
         {
-            _log = log;
+            _log = log is null ? new NullLog() : log;
 
             try
             {

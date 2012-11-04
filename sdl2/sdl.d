@@ -32,7 +32,7 @@ final class SDL2
     {
         this(Log log)
         {
-            _log = log;
+            _log = log is null ? new NullLog() : log;
             _SDLInitialized = false;
             _SDL2LoggingRedirected = false;
             try
