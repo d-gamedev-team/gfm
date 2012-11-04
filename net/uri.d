@@ -1,16 +1,16 @@
-module gfm.common.uri;
+module gfm.net.uri;
 
 import std.range,
        std.string,
-       std.ascii;
+       std.ascii,
+       std.socket;
 
 /**
  * Here is an attempt at implementing RFC 3986.
  *
  * All constructed URI are valid and normalized.
  *
- * TODO: parse IPvFuture
- *       separate segments in parsed form -> relative URL combining
+ * TODO: separate segments in parsed form -> relative URL combining
  */
 
 // throw when an URI doesn't parse
@@ -30,12 +30,22 @@ class URI
 {
     public
     {
+        enum HostType
+        {
+            NONE,
+            REG_NAME, // registered name to be used with DNS
+            IPV4,
+            IPV6,
+            IPVFUTURE
+        }
+
         // construct an URI from an input range, throw if invalid
         // input should be an ENCODED url range
         this(T)(T input) if (isForwardRange!T)
         {
             _scheme = null;
-            _hostName = null;
+            _hostType = HostType.NONE;
+            _hostName = null;            
             _port = -1;
             _userInfo = null;
             _path = null;
@@ -70,6 +80,12 @@ class URI
         string hostName() pure const nothrow
         {
             return _hostName;
+        }
+
+        /// return host type (HostType.NONE if not available)
+        HostType hostType() pure const nothrow
+        {
+            return _hostType;
         }
 
         /** 
@@ -146,13 +162,14 @@ class URI
     private
     {
         // normalized URI components
-        string _scheme;   // never null, never empty
-        string _userInfo; // can be null
-        string _hostName; // null if no authority in URI
-        int _port;        // -1 if no port in URI
-        string _path;     // never null, bu could be empty
-        string _query;    // can be null
-        string _fragment; // can be null
+        string _scheme;     // never null, never empty
+        string _userInfo;   // can be null
+        HostType _hostType; // what the hostname string is (NONE if no host in URI)
+        string _hostName;   // null if no authority in URI
+        int _port;          // -1 if no port in URI
+        string _path;       // never null, bu could be empty
+        string _query;      // can be null
+        string _fragment;   // can be null
 
         // URI         = scheme ":" hier-part [ "?" query ] [ "#" fragment ]
         void parseURI(T)(ref T input)
@@ -262,7 +279,8 @@ class URI
             }
 
             // host name should be case insensitive
-            _hostName = toLowerString(parseHost(input));
+            parseHost(input, _hostName, _hostType);
+            _hostName = toLowerString(_hostName);
 
             if (!empty(input) && peekChar(input) == ':')
             {
@@ -295,39 +313,48 @@ class URI
             return res;
         }
 
-        string parseHost(T)(ref T input)
+        
+        void parseHost(T)(ref T input, out string res, out HostType hostType)
         {
             char c = peekChar(input);
             if (c == '[')
-                return parseIPLiteral(input);
+            {
+                parseIPLiteral(input, res, hostType);
+            }
             else
             {
                 T iinput = input.save;
                 try
                 {
-                    return parseIPv4Address(input);
+                    hostType = HostType.IPV4;
+                    res = parseIPv4Address(input);
                 }
                 catch (URIException e)
                 {
                     input = iinput.save;
-                    return parseRegName(input);
+                    hostType = HostType.REG_NAME;
+                    res = parseRegName(input);                    
                 }
             }
         }
 
-        string parseIPLiteral(T)(ref T input)
+        void parseIPLiteral(T)(ref T input, out string res, out HostType hostType)
         {
-            string res;
             consume(input, '[');
             if (peekChar(input) == 'v')
-                throw new URIException("unsupported future IP addresses in URI parsing");
+            {
+                hostType = HostType.IPVFUTURE;
+                res = parseIPv6OrFutureAddress(input);
+            }
             else
-                res = parseIPv6Address(input);
+            {
+                hostType = HostType.IPV6;
+                res = parseIPv6OrFutureAddress(input);
+            }
             consume(input, ']');
-            return res;
         }
 
-        string parseIPv6Address(T)(ref T input)
+        string parseIPv6OrFutureAddress(T)(ref T input)
         {
             string res = "";
             while (peekChar(input) != ']')
@@ -345,7 +372,7 @@ class URI
             consume(input, '.');
             int d = parseDecOctet(input);
             return format("%s.%s.%s.%s", a, b, c, d);
-        }
+        }        
 
         // dec-octet     = DIGIT                 ; 0-9
         //               / %x31-39 DIGIT         ; 10-99

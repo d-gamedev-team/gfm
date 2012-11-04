@@ -79,7 +79,7 @@
   <cv2pdbPre2043>0</cv2pdbPre2043>
   <cv2pdbNoDemangle>0</cv2pdbNoDemangle>
   <cv2pdbEnumType>0</cv2pdbEnumType>
-  <cv2pdbOptions />
+  <cv2pdbOptions>-unittest</cv2pdbOptions>
   <objfiles />
   <linkswitches />
   <libfiles />
@@ -193,7 +193,6 @@
   <Folder name="common">
    <File path="common\alignedbuffer.d" />
    <File path="common\all.d" />
-   <File path="common\httpclient.d" />
    <File path="common\ini.d" />
    <File path="common\lockedqueue.d" />
    <File path="common\log.d" />
@@ -201,7 +200,11 @@
    <File path="common\queue.d" />
    <File path="common\structpool.d" />
    <File path="common\text.d" />
-   <File path="common\uri.d" />
+  </Folder>
+  <Folder name="net">
+   <File path="net\all.d" />
+   <File path="net\httpclient.d" />
+   <File path="net\uri.d" />
   </Folder>
   <Folder name="freeimage">
    <File path="freeimage\all.d" />

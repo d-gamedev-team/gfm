@@ -1,4 +1,4 @@
-module gfm.common.httpclient;
+module gfm.net.httpclient;
 
 /// Couldn't resist the urge to write a HTTP client
 
@@ -11,7 +11,7 @@ import std.socketstream,
        std.conv,
        std.stdio;
 
-import gfm.common.uri;
+import gfm.net.uri;
 
 class HTTPException : Exception
 {
