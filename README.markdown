@@ -10,6 +10,7 @@ gfm is a collection of useful classes for multimedia programming with the D lang
 gfm is:
   * a common ground to write multimedia D applications, that I would consider sane.
   * boilerplate code you will probably need to write anyway for eg. a game.
+  * decoupled. Pick only the part you need!
 
 
 
