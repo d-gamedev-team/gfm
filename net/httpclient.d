@@ -47,9 +47,10 @@ class HTTPClient
 {
     public
     {
-        this()
+        this(string userAgent = "gfm-http-client")
         {
             buffer.length = 4096;
+            _userAgent = userAgent;
         }
 
         ~this()
@@ -69,13 +70,17 @@ class HTTPClient
         /// From an absolute HTTP url, return content.
         HTTPResponse GET(URI uri)
         {
-            return request(HTTPMethod.GET, uri);
+            string hostName = uri.hostName();
+            auto headers = ["Host": hostName];
+            return request(HTTPMethod.GET, uri, headers);
         }
 
         /// same as GET but without content
         HTTPResponse HEAD(URI uri)
         {
-            return request(HTTPMethod.HEAD, uri);
+            string hostName = uri.hostName();
+            auto headers = ["Host": hostName];
+            return request(HTTPMethod.HEAD, uri, headers);
         }
 
         /**
@@ -83,21 +88,24 @@ class HTTPClient
          * requestURI can be "*", an absolute URI, an absolute path, or an authority
          * depending on the method.
          */
-        HTTPResponse request(HTTPMethod method, URI uri)
+        HTTPResponse request(HTTPMethod method, URI uri, string[string] headers)
         {
             checkURI(uri);
             auto res = new HTTPResponse();
 
-            string hostName = uri.hostName();
 
             try
             {
                 connectTo(uri);
                 assert(_socket !is null);
 
-                string request = format("%s %s HTTP/1.0\r\n"
-                                        "Host: %s\r\n"
-                                        "\r\n", to!string(method), uri.toString(), hostName);
+                string request = format("%s %s HTTP/1.0\r\n", to!string(method), uri.toString());
+
+                foreach (header; headers.byKey())
+                {
+                    request ~= format("%s: %s\r\n", header, headers[header]);
+                }
+                 request ~= "\r\n";
 
                 auto scope ss = new SocketStream(_socket);
                 ss.writeString(request);
@@ -176,6 +184,7 @@ class HTTPClient
     {
         TcpSocket _socket;
         ubyte[] buffer;
+        string _userAgent;
 
         void connectTo(URI uri)
         {
