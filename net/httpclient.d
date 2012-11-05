@@ -70,17 +70,14 @@ class HTTPClient
         /// From an absolute HTTP url, return content.
         HTTPResponse GET(URI uri)
         {
-            string hostName = uri.hostName();
-            auto headers = ["Host": hostName];
-            return request(HTTPMethod.GET, uri, headers);
+
+            return request(HTTPMethod.GET, uri, defaultHeaders(uri));
         }
 
         /// same as GET but without content
         HTTPResponse HEAD(URI uri)
         {
-            string hostName = uri.hostName();
-            auto headers = ["Host": hostName];
-            return request(HTTPMethod.HEAD, uri, headers);
+            return request(HTTPMethod.HEAD, uri, defaultHeaders(uri));
         }
 
         /**
@@ -200,6 +197,14 @@ class HTTPClient
         {
             if (uri.scheme() != "http")
                 throw new HTTPException(format("'%' is not an HTTP absolute url", uri.toString()));
+        }
+
+        string[string] defaultHeaders(URI uri)
+        {
+            string hostName = uri.hostName();
+            auto headers = ["Host": hostName, 
+                            "User-Agent": _userAgent];
+            return headers;
         }
     }
 }
