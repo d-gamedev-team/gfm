@@ -11,6 +11,7 @@ import std.range,
  * All constructed URI are valid and normalized.
  *
  * TODO: separate segments in parsed form -> relative URL combining
+ *       . and .. normalization
  */
 
 // throw when an URI doesn't parse
@@ -144,6 +145,24 @@ class URI
             return res;
         }
 
+        /// getting a std.socket.Address from the URI
+        Address address()
+        {
+            final switch(_hostType)
+            {
+                case HostType.REG_NAME:
+                case HostType.IPV4:
+                    return new InternetAddress(_hostName, cast(ushort)port());
+
+                case HostType.IPV6:
+                    return new Internet6Address(_hostName, cast(ushort)port());
+
+                case HostType.IPVFUTURE:
+                case HostType.NONE:
+                    throw new URIException("Cannot resolve such host");
+            }
+        }
+
         override string toString() const
         {
             string res = _scheme ~ ":";
@@ -156,6 +175,12 @@ class URI
             if (_fragment !is null)
                 res = res ~ "#" ~ _fragment;
             return res;
+        }
+
+        // Two URIs are equals if they have the same normalized string representation
+        bool opEquals(U)(U other) pure const nothrow if (is(U : FixedPoint))
+        {
+            return value == other.value;
         }
     }
 
@@ -175,10 +200,7 @@ class URI
         void parseURI(T)(ref T input)
         {
             _scheme = toLowerString(parseScheme(input));
-
-            if (popChar(input) != ':')
-                throw new URIException("expected colon character in URL");
-
+            consume(input, ':');
             parseHierPart(input);
 
             if (input.empty)
@@ -278,9 +300,7 @@ class URI
                 input = uinput.save;
             }
 
-            // host name should be case insensitive
             parseHost(input, _hostName, _hostType);
-            _hostName = toLowerString(_hostName);
 
             if (!empty(input) && peekChar(input) == ':')
             {
@@ -318,9 +338,7 @@ class URI
         {
             char c = peekChar(input);
             if (c == '[')
-            {
                 parseIPLiteral(input, res, hostType);
-            }
             else
             {
                 T iinput = input.save;
@@ -333,7 +351,7 @@ class URI
                 {
                     input = iinput.save;
                     hostType = HostType.REG_NAME;
-                    res = parseRegName(input);                    
+                    res = toLowerString(parseRegName(input));
                 }
             }
         }
@@ -349,7 +367,25 @@ class URI
             else
             {
                 hostType = HostType.IPV6;
-                res = parseIPv6OrFutureAddress(input);
+                string ipv6 = parseIPv6OrFutureAddress(input);
+
+                // validate and expand IPv6 (for normalizaton to be effective for comparisons)
+                try
+                {
+                    ubyte[16] bytes = Internet6Address.parse(ipv6);
+                    res = "";
+                    foreach (i ; 0..16)
+                    {
+                        if ((i & 1) == 0 && i != 0) 
+                            res ~= ":";
+                        res ~= format("%02x", bytes[i]);
+                    }
+                }
+                catch(SocketException e)
+                {
+                    // IPv6 address did not parse
+                    throw new URIException(e.msg);
+                }
             }
             consume(input, ']');
         }
@@ -412,8 +448,7 @@ class URI
         // pct-encoded   = "%" HEXDIG HEXDIG
         char parsePercentEncodedChar(T)(ref T input)
         {
-            if (popChar(input) != '%')
-                throw new URIException("expected character %");
+            consume(input, '%');
 
             int char1Val = hexValue(popChar(input));
             int char2Val = hexValue(popChar(input));
@@ -660,6 +695,14 @@ unittest
         assert(uri.path() == "/wiki/Uniform_Resource_Locator");
         assert(uri.query() == "Query Part=4");
         assert(uri.fragment() == "fragment part");
+    }
+
+    // host tests
+    {
+        assert((new URI("http://truc.org")).hostType() == URI.HostType.REG_NAME);
+        assert((new URI("http://127.0.0.1")).hostType() == URI.HostType.IPV4);
+        assert((new URI("http://[2001:db8::7]")).hostType() == URI.HostType.IPV6);
+        assert((new URI("http://[v9CrazySchemeFromOver9000year]")).hostType() == URI.HostType.IPVFUTURE);
     }
 
     auto wellFormedURIs =
