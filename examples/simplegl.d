@@ -33,7 +33,7 @@ void main()
     auto window = new MyWindow(sdl2, bounds, false);
     scope(exit) window.close();
 
-    auto eventQueue = new SDL2EventQueue(sdl2, log);
+    auto eventQueue = new SDL2EventQueue(sdl2);
     eventQueue.registerWindow(window);
 
     FrameCounter fc = new FrameCounter(sdl2);
