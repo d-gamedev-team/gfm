@@ -69,15 +69,13 @@ class HTTPClient
         /// From an absolute HTTP url, return content.
         HTTPResponse GET(URI uri)
         {
-            checkURI(uri);
-            return request(HTTPMethod.GET, uri.hostName(), uri.port(), uri.toString());
+            return request(HTTPMethod.GET, uri);
         }
 
         /// same as GET but without content
         HTTPResponse HEAD(URI uri)
         {
-            checkURI(uri);
-            return request(HTTPMethod.HEAD, uri.hostName(), uri.port(), uri.toString());
+            return request(HTTPMethod.HEAD, uri);
         }
 
         /**
@@ -85,18 +83,22 @@ class HTTPClient
          * requestURI can be "*", an absolute URI, an absolute path, or an authority
          * depending on the method.
          */
-        HTTPResponse request(HTTPMethod method, string host, int port, string requestURI)
+        HTTPResponse request(HTTPMethod method, URI uri)
         {
+            checkURI(uri);
             auto res = new HTTPResponse();
+
+            string hostName = uri.hostName();
 
             try
             {
-                connectTo(host, port);
+                connectTo(uri);
                 assert(_socket !is null);
 
                 string request = format("%s %s HTTP/1.0\r\n"
                                         "Host: %s\r\n"
-                                        "\r\n", to!string(method), requestURI, host);
+                                        "\r\n", to!string(method), uri.toString(), hostName);
+
                 auto scope ss = new SocketStream(_socket);
                 ss.writeString(request);
 
@@ -175,15 +177,14 @@ class HTTPClient
         TcpSocket _socket;
         ubyte[] buffer;
 
-        void connectTo(string host, int port)
+        void connectTo(URI uri)
         {
             if (_socket !is null)
             {
                 _socket.close();
                 _socket = null;
             }
-            ushort uport = cast(ushort) port;
-            _socket = new TcpSocket(new InternetAddress(host, uport));
+            _socket = new TcpSocket(uri.address());
         }
 
         static checkURI(URI uri)
