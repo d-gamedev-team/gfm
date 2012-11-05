@@ -29,6 +29,9 @@ See UNLICENSE for more details.
   * **alignedbuffer.d** aligned array-like container
   * **structpool.d** small object area
   * **text.d** string utilities
+
+
+### net/
   * **uri.d** URI parsing (RFC 3986)
   * **httpclient.d** HTTP client (RFC 2616)
 
