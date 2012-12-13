@@ -56,7 +56,7 @@ void* alignedRealloc(void* aligned, size_t size, size_t alignment) nothrow
 
     // if newRaw is raw, nothing to do
     if (raw is newRaw)
-        return raw;
+        return aligned;
 
     // else write raw at the new location
     return storeRawPointerAndReturnAligned(newRaw, alignment);
