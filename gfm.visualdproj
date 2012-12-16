@@ -201,11 +201,6 @@
    <File path="common\structpool.d" />
    <File path="common\text.d" />
   </Folder>
-  <Folder name="net">
-   <File path="net\all.d" />
-   <File path="net\httpclient.d" />
-   <File path="net\uri.d" />
-  </Folder>
   <Folder name="freeimage">
    <File path="freeimage\all.d" />
    <File path="freeimage\fibitmap.d" />
@@ -235,6 +230,11 @@
    <File path="math\solver.d" />
    <File path="math\statistics.d" />
    <File path="math\vector.d" />
+  </Folder>
+  <Folder name="net">
+   <File path="net\all.d" />
+   <File path="net\httpclient.d" />
+   <File path="net\uri.d" />
   </Folder>
   <Folder name="opengl">
    <File path="opengl\all.d" />

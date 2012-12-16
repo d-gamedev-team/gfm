@@ -3,9 +3,11 @@ module gfm.image.bitmap;
 import std.c.string, 
        std.math;
 
-import gfm.math.vector,
-       gfm.image.image,
-       gfm.common.alignedbuffer;
+import gfm.common.alignedbuffer,
+       gfm.common.memory,
+       gfm.math.vector;
+
+import gfm.image.image;
 
 /**
     A Bitmap is a triplet of (base address + dimension + stride).
@@ -19,27 +21,42 @@ nothrow:
     {
         alias T element_t;
 
+        // create with owned memory
+        this(vec2i dimension)
+        {
+            _data = alignedMalloc(dimension.x * dimension.y * T.sizeof, 16);
+            _dimension = dimension;
+            _stride = dimension.x * T.sizeof;
+            _owned = true;
+        }
+
+        // create with existing data whose lifetime memory should exceed this
         this(T* data, vec2i dimension, ptrdiff_t stride)
         {
             _data = data;
             _dimension = dimension;
             _stride = stride;
+            _owned = false;
         }
 
         this(T* data, vec2i dimension)
         {
-            _data = data;
-            _dimension = dimension;
-            _stride = dimension.x * T.sizeof;
+            this(data, dimension, dimension.x * T.sizeof);
         }
 
-        // create on a provided buffer whose lifetime should be
+        // create on a resused buffer whose lifetime should be greater than this
         this(AlignedBuffer!ubyte buffer, vec2i dimension)
         {
             size_t bytesNeeded = dimension.x * dimension.y * T.sizeof;
             buffer.resize(bytesNeeded);
 
             this(cast(T*)(buffer.ptr), dimension);
+        }
+
+        ~this()
+        {
+            if (_owned)
+                alignedFree(_data);
         }
 
         // return a sub-bitmap
@@ -136,6 +153,7 @@ nothrow:
         vec2i _dimension;
         void* _data;
         ptrdiff_t _stride;       // in bytes
+        bool _owned;
 
         T* address(int i, int j) pure
         {
