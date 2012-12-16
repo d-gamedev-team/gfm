@@ -24,7 +24,7 @@ nothrow:
         // create with owned memory
         this(vec2i dimension)
         {
-            _data = alignedMalloc(dimension.x * dimension.y * T.sizeof, 16);
+            _data = alignedMalloc(dimension.x * dimension.y * T.sizeof, 64);
             _dimension = dimension;
             _stride = dimension.x * T.sizeof;
             _owned = true;
@@ -57,6 +57,26 @@ nothrow:
         {
             if (_owned)
                 alignedFree(_data);
+        }
+
+        // postblit needed to duplicate owned data
+        this(this)
+        {
+            if (_owned)
+            {
+                size_t sizeInBytes = _dimension.x * _dimension.y * T.sizeof;
+                void* oldData = _data;
+                _data = alignedMalloc(sizeInBytes, 64);
+                memcpy(_data, oldData, sizeInBytes);
+            }
+        }
+
+        void opAssign(ref Bitmap other) pure nothrow
+        {
+            _data = other._data;
+            _dimension = other._dimension;
+            _stride = other._stride;
+            _owned = other._owned;
         }
 
         // return a sub-bitmap
