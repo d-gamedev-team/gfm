@@ -14,7 +14,7 @@ final class MatrixStack(size_t R, T) if (R == 3 || R == 4)
     {
         alias Matrix!(T, R, R) matrix_t;
 
-        this(size_t depth = 32) pure nothrow
+        this(size_t depth = 32) nothrow
         {
             assert(depth > 0);
             size_t memNeeded = matrix_t.sizeof * depth * 2;
@@ -115,7 +115,7 @@ final class MatrixStack(size_t R, T) if (R == 3 || R == 4)
             /// Replacement for glOrtho
             void ortho(T left, T right, T bottom, T top, T near, T far) pure nothrow
             {
-                mult(matrix_t.orthographics(left, right, bottom, top, near, far));
+                mult(matrix_t.orthographic(left, right, bottom, top, near, far));
             }
 
             /// Replacement for gluLookAt
@@ -138,9 +138,9 @@ final class MatrixStack(size_t R, T) if (R == 3 || R == 4)
 unittest
 {
     // this line makes compilation fail, for some obscure reason
-    // auto s = new MatrixStack!(4u, double)();
+    auto s = new MatrixStack!(4u, double)();
     
-    // s.loadIdentity();
-    // s.push();
-    // s.pop();
+    s.loadIdentity();
+    s.push();
+    s.pop();
 }
