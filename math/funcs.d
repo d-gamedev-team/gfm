@@ -152,6 +152,20 @@ bool isPowerOf2(T)(T i) nothrow if (isIntegral!T)
     return (i != 0) && ((i & (i - 1)) == 0);
 }
 
+/// Integer log2
+int ilog2(T)(T i) nothrow if (isIntegral!T)
+{
+    assert(i > 0);
+    assert(isPowerOf2(i));
+    int result = 0;
+    while (i > 1)
+    {
+        i = i / 2;
+        result = result + 1;
+    }
+    return result;
+}
+
 int nextPowerOf2(int i) nothrow
 {
     int v = i - 1;
