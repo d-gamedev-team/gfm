@@ -10,9 +10,9 @@ import gfm.common.alignedbuffer,
 import gfm.image.image;
 
 /**
-    A Bitmap is a triplet of (base address + dimension + stride).
-    Simplest possible image.
-    Nothing to do with the .bmp format.
+    Simple planar image which has nothing to do with the .bmp format.
+    A Bitmap is mostly a triplet of (base address + dimension + stride).
+    Data can be owned or not.
  */
 struct Bitmap(T)
 {
@@ -21,7 +21,7 @@ nothrow:
     {
         alias T element_t;
 
-        // create with owned memory
+        /// Create with owned memory
         this(vec2i dimension)
         {
             _data = alignedMalloc(dimension.x * dimension.y * T.sizeof, 64);
@@ -30,7 +30,7 @@ nothrow:
             _owned = true;
         }
 
-        // create with existing data whose lifetime memory should exceed this
+        /// Create with existing data whose lifetime memory should exceed this
         this(T* data, vec2i dimension, ptrdiff_t stride)
         {
             _data = data;
@@ -44,7 +44,7 @@ nothrow:
             this(data, dimension, dimension.x * T.sizeof);
         }
 
-        // create on a resused buffer whose lifetime should be greater than this
+        /// Create on a reused buffer whose lifetime should be greater than this
         this(AlignedBuffer!ubyte buffer, vec2i dimension)
         {
             size_t bytesNeeded = dimension.x * dimension.y * T.sizeof;
@@ -212,5 +212,91 @@ unittest
                 assert(b[i + (2 * j) * 10] == 1);
                 assert(b[i + (2 * j + 1) * 10] == 0);
             }
+    }
+}
+
+
+/**
+  A TiledBitmap is like a Bitmap but pixels are organized in tiles.
+ */
+struct TiledBitmap(T, size_t tileWidth, size_t tileHeight)
+{    
+    static assert(tileWidth >= 1 && isPowerOf2(tileWidth));
+    static assert(tileHeight >= 1 && isPowerOf2(tileHeight));
+
+nothrow:
+    public
+    {
+        enum tileSize = tileWidth * tileHeight;
+        alias T element_t;
+        alias T[tileSize] tile_t;
+
+        Bitmap!tile_t tiles; // a Bitmap of tiles
+
+        /// Create with owned memory, dimension is given in tiles
+        this(vec2i dimension)
+        {
+            tiles = Bitmap!tile_t(dimension);
+        }
+
+        T get(int i, int j) const pure
+        {
+            return *(address(i, j));
+        }
+
+        void set(int i, int j, T e)
+        {
+            *(address(i, j)) = e;
+        }
+
+        @property
+        {
+            T* ptr()
+            {
+                return tiles.ptr;
+            }
+
+            const(T)* ptr() const
+            {
+                return tiles.ptr;
+            }
+
+            vec2i dimension() const pure
+            {
+                return tiles.dimension * vec2i(tileWidth, tileHeight);
+            }
+
+            int width() const pure
+            {
+                return tiles.width * tileWidth;
+            }
+
+            int height() const pure
+            {
+                return tiles.height * tileHeight;
+            }
+        }
+    }
+
+    private
+    {
+        enum X_MASK = tileWidth - 1,
+             Y_MASK = tileHeight - 1,
+             X_SHIFT = ilog2(tileWidth),
+             Y_SHIFT = ilog2(tileHeight);
+        
+        T* address(int i, int j) pure
+        {
+            tile_t* tile = tiles.address(i >> X_SHIFT, j >> Y_SHIFT);
+            size_t tileIndex = tileWeight * (i & X_MASK) + (j & Y_MASK);
+            return tile.ptr + tileIndex;
+        }
+
+        const(T)* address(int i, int j) const pure
+        {
+            tile_t* tile = tiles.address(i >> X_SHIFT, j >> Y_SHIFT);
+            size_t tileIndex = tileWeight * (i & X_MASK) + (j & Y_MASK);
+            return tile.ptr + tileIndex;
+        }
     }
 }
