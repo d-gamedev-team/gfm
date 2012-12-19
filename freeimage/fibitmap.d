@@ -144,7 +144,6 @@ final class FIBitmap
         }
 
         // tone-mapping
-
         FIBitmap convertTo4Bits()
         {
             return new FIBitmap(_lib, FreeImage_ConvertTo4Bits(_bitmap));
@@ -215,21 +214,18 @@ final class FIBitmap
         }
 
         // color quantization
-
         FIBitmap colorQuantize(FREE_IMAGE_QUANTIZE quantize)
         {
             return new FIBitmap(_lib, FreeImage_ColorQuantize(_bitmap, quantize));
         }
 
         // tone-mapping
-
         FIBitmap toneMapDrago03(double gamma = 2.2, double exposure = 0.0)
         {
             return new FIBitmap(_lib, FreeImage_TmoDrago03(_bitmap, gamma, exposure));
         }
 
         // transformation
-
         FIBitmap rescale(int dstWidth, int dstHeight, FREE_IMAGE_FILTER filter)
         {
             return new FIBitmap(_lib, FreeImage_Rescale(_bitmap, dstWidth, dstHeight, filter));
