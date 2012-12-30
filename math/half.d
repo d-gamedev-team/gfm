@@ -36,14 +36,16 @@ struct half
             return halfToFloat(value);
         }
 
-        void opAssign(T)(T other) pure nothrow if (is(T: float))
+        ref half opAssign(T)(T other) pure nothrow if (is(T: float))
         {
             value = floatToHalf(other);
+            return this;
         }
 
-        void opAssign(T)(T other) pure nothrow if (is(Unqual!T == half))
+        ref half opAssign(T)(T other) pure nothrow if (is(Unqual!T == half))
         {
             value = other.value;
+            return this;
         }
 
         half opBinary(string op, T)(T o) pure const nothrow if (is(Unqual!T == half))
@@ -58,11 +60,11 @@ struct half
             return res;
         }
 
-        half opOpAssign(string op, T)(T o) pure nothrow
+        ref half opOpAssign(string op, T)(T o) pure nothrow
         {
             half res = opBinary!(op, T)(o);
             this = res;
-            return res;
+            return this;
         }
 
         half opUnary(string op)() pure const nothrow if (op == "+" || op == "-")

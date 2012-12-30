@@ -71,12 +71,13 @@ nothrow:
             }
         }
 
-        void opAssign(ref Bitmap other) pure nothrow
+        ref Bitmap opAssign(ref Bitmap other) pure nothrow
         {
             _data = other._data;
             _dimension = other._dimension;
             _stride = other._stride;
             _owned = other._owned;
+            return this;
         }
 
         // return a sub-bitmap

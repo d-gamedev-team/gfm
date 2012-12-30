@@ -31,13 +31,14 @@ import std.traits,
         opAssign!T(x);
     }
 
-    void opAssign(T)(T n) pure nothrow if (isIntegral!T && isUnsigned!T) // conversion from smaller unsigned types
+    ref self opAssign(T)(T n) pure nothrow if (isIntegral!T && isUnsigned!T) // conversion from smaller unsigned types
     {
         hi = 0;
         lo = n;
+        return this;
     }
 
-    void opAssign(T)(T n) pure nothrow if (isIntegral!T && isSigned!T) // conversion from smaller signed types
+    ref self opAssign(T)(T n) pure nothrow if (isIntegral!T && isSigned!T) // conversion from smaller signed types
     {
         // shorter int always gets sign-extended,
         // regardless of the larger int being signed or not
@@ -45,18 +46,21 @@ import std.traits,
 
         // will also sign extend as well if needed
         lo = cast(long)n;
+        return this;
     }
 
-    void opAssign(T)(T n) pure nothrow if (is(Unqual!T == softcentImpl!(!signed))) // signed <=> unsigned
+    ref self opAssign(T)(T n) pure nothrow if (is(Unqual!T == softcentImpl!(!signed))) // signed <=> unsigned
     {
         hi = n.hi;
         lo = n.lo;
+        return this;
     }
 
-    void opAssign(T)(T n) pure nothrow if (isSelf!T)
+    ref self opAssign(T)(T n) pure nothrow if (isSelf!T)
     {
         hi = n.hi;
         lo = n.lo;
+        return this;
     }
 
     T opCast(T)() pure const nothrow if (isIntegral!T)
@@ -93,13 +97,13 @@ import std.traits,
         return r.opOpAssign!(op)(o);
     }
 
-    self opOpAssign(string op, T)(T y) pure nothrow if (!isSelf!T)
+    ref self opOpAssign(string op, T)(T y) pure nothrow if (!isSelf!T)
     {
         const(self) o = y;
         return opOpAssign!(op)(o);
     }
 
-    self opOpAssign(string op, T)(T y) pure nothrow if (isSelf!T)
+    ref self opOpAssign(string op, T)(T y) pure nothrow if (isSelf!T)
     {
         static if (op == "+")
         {

@@ -40,15 +40,17 @@ align(1) struct Quaternion(T)
         }
 
         // compatible Quaternions
-        void opAssign(U)(U u) pure nothrow if (is(typeof(U._isQuaternion)) && is(U._T : T))
+        ref Quaternion opAssign(U)(U u) pure nothrow if (is(typeof(U._isQuaternion)) && is(U._T : T))
         {
             v = u.v;
+            return this;
         }
 
         // from a vector containing components
-        void opAssign(U)(U u) pure nothrow if (is(U : Vector!(T, 4u)))
+        ref Quaternion opAssign(U)(U u) pure nothrow if (is(U : Vector!(T, 4u)))
         {
             v = u;
+            return this;
         }
 
         // normalize quaternion
@@ -65,7 +67,7 @@ align(1) struct Quaternion(T)
             return res;
         }
 
-        Quaternion opOpAssign(string op, U)(U q) pure nothrow
+        ref Quaternion opOpAssign(string op, U)(U q) pure nothrow
             if (is(U : Quaternion) && (op == "*"))
         {
             T nx = w * q.x + x * q.w + y * q.z - z * q.y,
@@ -79,7 +81,7 @@ align(1) struct Quaternion(T)
             return this;
         }
 
-        Quaternion opOpAssign(string op, U)(U operand) pure nothrow if (isConvertible!U)
+        ref Quaternion opOpAssign(string op, U)(U operand) pure nothrow if (isConvertible!U)
         {
             Quaternion conv = operand;
             return opOpAssign!op(conv);

@@ -196,7 +196,7 @@ align(1) struct Box(T, size_t N)
             return true;
         }
 
-        void opAssign(U)(U x) nothrow if (is(typeof(x.isBox)))
+        ref Box opAssign(U)(U x) nothrow if (is(typeof(x.isBox)))
         {
             static if(is(U.element_t : T))
             {
@@ -214,6 +214,7 @@ align(1) struct Box(T, size_t N)
             {
                 static assert(false, Format!("no conversion from %s to %s", U.element_t.stringof, element_t.stringof));
             }
+            return this;
         }
 
         bool opEquals(U)(U other) pure const nothrow if (is(U : Box))

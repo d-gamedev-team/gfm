@@ -33,19 +33,22 @@ struct FixedPoint(int M, int N)
             opAssign!U(x);
         }
 
-        void opAssign(U)(U x) pure nothrow if (is(U: FixedPoint))
+        ref FixedPoint opAssign(U)(U x) pure nothrow if (is(U: FixedPoint))
         {
             value = x.value;
+            return this;
         }
 
-        void opAssign(U)(U x) pure nothrow if (isIntegral!U)
+        ref FixedPoint opAssign(U)(U x) pure nothrow if (isIntegral!U)
         {
             value = x * ONE;                // exact
+            return this;
         }
 
-        void opAssign(U)(U x) pure nothrow if (isFloatingPoint!U)
+        ref FixedPoint opAssign(U)(U x) pure nothrow if (isFloatingPoint!U)
         {
             value = cast(value_t)(x * ONE); // truncation
+            return this;
         }
 
         // casting to float

@@ -102,32 +102,31 @@ nothrow:
         }
 
         // assign with compatible type
-        void opAssign(U)(U x) pure nothrow if (is(U: T))
+        ref Vector opAssign(U)(U x) pure nothrow if (is(U: T))
         {
             v[] = x; // copy to each component
+            return this;
         }
 
         // assign with a static array type
-        void opAssign(U)(U arr) pure nothrow if ((isStaticArray!(U) && is(typeof(arr[0]) : T) && (arr.length == N)))
+        ref Vector opAssign(U)(U arr) pure nothrow if ((isStaticArray!(U) && is(typeof(arr[0]) : T) && (arr.length == N)))
         {
             for (size_t i = 0; i < N; ++i)
-            {
                 v[i] = arr[i];
-            }
+            return this;
         }
 
         // assign with a dynamic array (check size)
-        void opAssign(U)(U arr) pure nothrow if (isDynamicArray!(U) && is(typeof(arr[0]) : T))
+        ref Vector opAssign(U)(U arr) pure nothrow if (isDynamicArray!(U) && is(typeof(arr[0]) : T))
         {
             assert(arr.length == N);
             for (size_t i = 0; i < N; ++i)
-            {
                 v[i] = arr[i];
-            }
+            return this;
         }
 
         // same small vectors
-        void opAssign(U)(U u) pure nothrow if (is(U : Vector))
+        ref Vector opAssign(U)(U u) pure nothrow if (is(U : Vector))
         {
             static if (N <= 4u)
             {
@@ -143,18 +142,18 @@ nothrow:
                     v[i] = x.v[i];
                 }
             }
+            return this;
         }
 
         // other small vectors (same size, compatible type)
-        void opAssign(U)(U x) pure nothrow if (is(typeof(U._isVector))
-                                            && is(U._T : T)
-                                             && (!is(U: Vector))
-                                             && (U._N == _N))
+        ref Vector opAssign(U)(U x) pure nothrow if (is(typeof(U._isVector))
+                                                 && is(U._T : T)
+                                                 && (!is(U: Vector))
+                                                 && (U._N == _N))
         {
             for (size_t i = 0; i < N; ++i)
-            {
                 v[i] = x.v[i];
-            }
+            return this;
         }
 
         T* ptr() pure nothrow @property

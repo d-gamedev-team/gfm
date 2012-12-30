@@ -84,16 +84,17 @@ align(1) struct Matrix(T, size_t R, size_t C)
         }
 
         // assign with same type
-        void opAssign(U : Matrix)(U x) pure nothrow
+        ref Matrix opAssign(U : Matrix)(U x) pure nothrow
         {
             for (size_t i = 0; i < R * C; ++i)
             {
                 v[i] = x.v[i];
             }
+            return this;
         }
 
         // other small matrices (same size, compatible type)
-        void opAssign(U)(U x) pure nothrow
+        ref Matrix opAssign(U)(U x) pure nothrow
             if (is(typeof(U._isMatrix))
                 && is(U._T : _T)
                 && (!is(U: Matrix))
@@ -101,26 +102,29 @@ align(1) struct Matrix(T, size_t R, size_t C)
         {
             for (size_t i = 0; i < R * C; ++i)
                 v[i] = x.v[i];
+            return this;
         }
 
         // assign with a static array of size R * C
-        void opAssign(U)(U x) pure nothrow
+        ref Matrix opAssign(U)(U x) pure nothrow
             if ((isStaticArray!U)
                 && is(typeof(x[0]) : T)
                 && (U.length == R * C))
         {
             for (size_t i = 0; i < R * C; ++i)
                 v[i] = x[i];
+            return this;
         }
 
         // assign with a dynamic array of size R * C
-        void opAssign(U)(U x) pure nothrow
+        ref Matrix opAssign(U)(U x) pure nothrow
             if ((isDynamicArray!U)
                 && is(typeof(x[0]) : T))
         {
             assert(x.length == R * C);
             for (size_t i = 0; i < R * C; ++i)
                 v[i] = x[i];
+            return this;
         }
 
         T* ptr() pure nothrow @property
@@ -176,9 +180,9 @@ align(1) struct Matrix(T, size_t R, size_t C)
             return result;
         }
 
-        ref Vector opOpAssign(string op, U)(U operand) pure nothrow if (isConvertible!U)
+        ref Matrix opOpAssign(string op, U)(U operand) pure nothrow if (isConvertible!U)
         {
-            Vector conv = operand;
+            Matrix conv = operand;
             return opOpAssign!op(conv);
         }
 

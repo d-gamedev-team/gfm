@@ -38,16 +38,18 @@ align(1) struct Fraction
             return format("%s/%s", num, denom);
         }
 
-        void opAssign(T)(T other) pure nothrow if (is(Unqual!T == Fraction))
+        ref Fraction opAssign(T)(T other) pure nothrow if (is(Unqual!T == Fraction))
         {
             num = other.num;
             denom = other.denom;
+            return this;
         }
 
-        void opAssign(T)(T n) pure nothrow if (isIntegral!T)
+        ref Fraction opAssign(T)(T n) pure nothrow if (isIntegral!T)
         {
             num = n;
             denom = 1;
+            return this;
         }
 
         Fraction opBinary(string op, T)(T o) pure const nothrow
@@ -57,13 +59,13 @@ align(1) struct Fraction
             return r.opOpAssign!(op)(y);
         }
 
-        Fraction opOpAssign(string op, T)(T o) pure nothrow if (!is(Unqual!T == Fraction))
+        ref Fraction opOpAssign(string op, T)(T o) pure nothrow if (!is(Unqual!T == Fraction))
         {
             const(self) o = y;
             return opOpAssign!(op)(o);
         }
 
-        Fraction opOpAssign(string op, T)(T o) pure nothrow if (is(Unqual!T == Fraction))
+        ref Fraction opOpAssign(string op, T)(T o) pure nothrow if (is(Unqual!T == Fraction))
         {
             static if (op == "+")
             {
