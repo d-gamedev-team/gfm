@@ -22,7 +22,7 @@ nothrow:
         alias T element_t;
 
         /// Create with owned memory
-        this(vec2i dimension)
+        this(vec2i dimension) nothrow
         {
             _data = alignedMalloc(dimension.x * dimension.y * T.sizeof, 64);
             _dimension = dimension;
@@ -31,7 +31,7 @@ nothrow:
         }
 
         /// Create with existing data whose lifetime memory should exceed this
-        this(T* data, vec2i dimension, ptrdiff_t stride)
+        this(T* data, vec2i dimension, ptrdiff_t stride) nothrow
         {
             _data = data;
             _dimension = dimension;
@@ -39,13 +39,13 @@ nothrow:
             _owned = false;
         }
 
-        this(T* data, vec2i dimension)
+        this(T* data, vec2i dimension) nothrow
         {
             this(data, dimension, dimension.x * T.sizeof);
         }
 
         /// Create on a reused buffer whose lifetime should be greater than this
-        this(AlignedBuffer!ubyte buffer, vec2i dimension)
+        this(AlignedBuffer!ubyte buffer, vec2i dimension) nothrow
         {
             size_t bytesNeeded = dimension.x * dimension.y * T.sizeof;
             buffer.resize(bytesNeeded);
@@ -60,7 +60,7 @@ nothrow:
         }
 
         // postblit needed to duplicate owned data
-        this(this)
+        this(this) nothrow
         {
             if (_owned)
             {
@@ -71,7 +71,7 @@ nothrow:
             }
         }
 
-        ref Bitmap opAssign(ref Bitmap other) pure nothrow
+        auto opAssign(Bitmap other) nothrow
         {
             _data = other._data;
             _dimension = other._dimension;
