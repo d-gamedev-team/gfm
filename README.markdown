@@ -57,7 +57,7 @@ See UNLICENSE for more details.
 
 ### image/
   * **image.d** generic abstract image and software rendering routines
-  * **bitmap.d** planar concrete image
+  * **bitmap.d** planar and tile-based concrete images
   * **cie.d** physical color computations
 
 
