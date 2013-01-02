@@ -18,7 +18,7 @@ struct SimpleRng
     {
         this() @disable;
 
-        static SimpleRng opCall()
+        static SimpleRng make()
         {
             return SimpleRng(randomSeed());
         }
@@ -267,7 +267,7 @@ vec2ui randomSeed()
 
 unittest
 {
-    auto rng = SimpleRng();
+    auto rng = SimpleRng.make();
 }
 
 
