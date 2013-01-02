@@ -139,7 +139,7 @@ nothrow:
             {
                 for (size_t i = 0; i < N; ++i)
                 {
-                    v[i] = x.v[i];
+                    v[i] = u.v[i];
                 }
             }
             return this;
