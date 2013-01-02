@@ -37,6 +37,13 @@ align(1) struct Plane(T) if (isFloatingPoint!T)
             this(C, cross(B - A, C - A));
         }
 
+        ref Plane opAssign(Plane other) pure nothrow
+        {
+            n = other.n;
+            d = other.d;
+            return this;
+        }
+
         /// signed distance
         T signedDistanceTo(vec3!T point) pure const nothrow
         {
