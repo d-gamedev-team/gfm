@@ -36,9 +36,6 @@ final class QueueImpl(T, OverflowPolicy overflowPolicy)
     {
         this(size_t initialCapacity) nothrow
         {
-            static if (overflowPolicy != OverflowPolicy.GROW)
-                assert(initialCapacity > 0); // size is 0, probably a problem
-            
             _data.length = initialCapacity;
             clear();
         }
@@ -134,7 +131,6 @@ final class QueueImpl(T, OverflowPolicy overflowPolicy)
                     return _data[(_first + _count - 1) % _data.length];
                 }
 
-                // implementing save to be a forward range
                 @property Range save()
                 {
                     return this;
@@ -162,7 +158,7 @@ final class QueueImpl(T, OverflowPolicy overflowPolicy)
             }
         }
 
-        // get forward range
+        // get random-access range
         Range range() nothrow
         {
             return Range(this);
@@ -171,9 +167,10 @@ final class QueueImpl(T, OverflowPolicy overflowPolicy)
 
     private
     {
+        // element lie from _first to _first + _count - 1 index, modulo the allocated size
         T[] _data;
         size_t _first;
-        size_t _count; // number of elem in FIFO
+        size_t _count; 
 
         void checkOverflow(alias popMethod)() nothrow
         {
