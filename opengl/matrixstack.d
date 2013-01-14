@@ -7,7 +7,6 @@ import gfm.common.memory,
 // A matrix stack designed to replace fixed-pipeline own matrix stacks.
 // Create one for GL_PROJECTION and one for GL_MODELVIEW, and there you go.
 // For performance reason, no runtime check for emptyness/fullness, only asserts
-// M should be a matrix type
 final class MatrixStack(size_t R, T) if (R == 3 || R == 4)
 {
     public
