@@ -137,7 +137,6 @@ final class MatrixStack(size_t R, T) if (R == 3 || R == 4)
 
 unittest
 {
-    // this line makes compilation fail, for some obscure reason
     auto s = new MatrixStack!(4u, double)();
     
     s.loadIdentity();
