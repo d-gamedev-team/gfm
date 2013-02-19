@@ -1,7 +1,6 @@
 module gfm.math.all;
 
 public import gfm.math.funcs,
-              gfm.math.half,
               gfm.math.vector,
               gfm.math.box,
               gfm.math.plane,

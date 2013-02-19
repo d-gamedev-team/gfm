@@ -40,7 +40,6 @@ See UNLICENSE for more details.
   * **vector.d** small vectors for 2D and 3D
   * **matrix.d** small matrices for 2D and 3D
   * **quaternion.d** quaternions
-  * **half.d** half floats
   * **softcent.d:** 128 bits integers (cent/ucent implentation), including division algorithm from Ian Kaplan\*
   * **box.d** half-open intervals (for eg. AABB)
   * **fixedpoint.d** fixed-point numbers

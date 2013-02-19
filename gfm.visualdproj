@@ -222,7 +222,6 @@
    <File path="math\fraction.d" />
    <File path="math\frustum.d" />
    <File path="math\funcs.d" />
-   <File path="math\half.d" />
    <File path="math\matrix.d" />
    <File path="math\plane.d" />
    <File path="math\quaternion.d" />
