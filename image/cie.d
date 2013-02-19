@@ -1,11 +1,13 @@
 module gfm.image.cie;
 
-import gfm.math.vector,
+import gfm.math.funcs,
+       gfm.math.vector,
        gfm.math.matrix;
 
 // This module performs various color computation and conversions.
 // See: http://www.brucelindbloom.com
 // TODO: tag XYZ values with a ReferenceWhite?
+// WARNING: this is very beta
 
 // Standard illuminants (or reference whites) provide a basis for comparing colors recorded under different lighting.
 enum ReferenceWhite
@@ -23,7 +25,7 @@ enum ReferenceWhite
     F11
 }
 
-// define various RGB spaces, which all have a reference white, 
+// define various RGB spaces, which all have a reference white,
 // a power curve and primary xyY coordinates
 enum RGBSpace
 {
@@ -47,18 +49,18 @@ enum RGBSpace
 
 
 // A spectral distribution is actual energy, from 360 to 780 nm, by 5 nm increments
-alias Vector!(float, 95u) SpectralDistribution;
+alias Vector!(float, 107u) SpectralDistribution;
 
 // Holds reflectance values, can only be converted to a SpectralDistribution
 // when lit with a ReferenceWhite.
-// from 360 to 780 nm, by 5 nm increments
+// from 300 to 780 nm, by 5 nm increments
 // Reflectances are parameterized by a ReferenceWhite.
-alias Vector!(float, 95u) SpectralReflectance;
+alias Vector!(float, 107u) SpectralReflectance;
 
 // Converts spectral color into a XYZ space (parameterized by an illuminant)
 vec3f spectralToXYZColor(SpectralReflectance c, ReferenceWhite illuminant) pure nothrow
 {
-    Vector!(float, 95u) c_lit = c * refWhiteToSpectralDistribution(illuminant);
+    Vector!(float, 107u) c_lit = c * refWhiteToSpectralDistribution(illuminant);
     return vec3f(dot(CIE_OBS_X2, c_lit),
                  dot(CIE_OBS_Y2, c_lit),
                  dot(CIE_OBS_Z2, c_lit));
@@ -102,7 +104,7 @@ vec3f toLinearRGB(RGBSpace space)(vec3f compandedRGB)
             }
             return vec3f(l(c.x), l(c.y), l(c.z));
         }
-    }    
+    }
 }
 
 // convert from uncompanded RGB to companded RGB
@@ -174,7 +176,8 @@ private
     // aka 2° observer
     enum SpectralDistribution CIE_OBS_X2 = SpectralDistribution
     ([
-        0.0001299f, 0.0002321f, 0.0004149f, 0.0007416f, 0.001368f,
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        0.0001299f, 0.0002321f, 0.0004149f, 0.0007416f, 0.001368f, // 360 nm
         0.002236f, 0.004243f, 0.00765f, 0.01431f, 0.02319f,
         0.04351f, 0.07763f, 0.13438f, 0.21477f, 0.2839f,
         0.3285f, 0.34828f, 0.34806f, 0.3362f, 0.3187f,
@@ -197,7 +200,8 @@ private
 
     enum SpectralDistribution CIE_OBS_Y2 = SpectralDistribution
     ([
-        0.000003917f, 0.000006965f, 0.00001239f, 0.00002202f, 0.000039f,
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        0.000003917f, 0.000006965f, 0.00001239f, 0.00002202f, 0.000039f, // 360 nm
         0.000064f, 0.00012f, 0.000217f, 0.000396f, 0.00064f,
         0.00121f, 0.00218f, 0.004f, 0.0073f, 0.0116f,
         0.01684f, 0.023f, 0.0298f, 0.038f, 0.048f,
@@ -220,7 +224,8 @@ private
 
     enum SpectralDistribution CIE_OBS_Z2 = SpectralDistribution
     ([
-        0.0006061f, 0.001086f, 0.001946f, 0.003486f, 0.006450001f,
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        0.0006061f, 0.001086f, 0.001946f, 0.003486f, 0.006450001f, // 360 nm
         0.01054999f, 0.02005001f, 0.03621f, 0.06785001f, 0.1102f,
         0.2074f, 0.3713f, 0.6456f, 1.0390501f, 1.3856f,
         1.62296f, 1.74706f, 1.7826f, 1.77211f, 1.7441f,
@@ -241,6 +246,10 @@ private
         0.0f, 0.0f, 0.0f, 0.0f, 0.0f
     ]);
 
+    enum SpectralDistribution CIE_D50 = makeDDistribution(5004);
+    enum SpectralDistribution CIE_D55 = makeDDistribution(5504);
+    enum SpectralDistribution CIE_D65 = makeDDistribution(6504);
+    enum SpectralDistribution CIE_D75 = makeDDistribution(7504);
 
     vec3f refWhiteToXYZ(ReferenceWhite white) pure nothrow
     {
@@ -262,10 +271,28 @@ private
 
     SpectralDistribution refWhiteToSpectralDistribution(ReferenceWhite illuminant) pure nothrow
     {
-        // TODO: actual reference white distributions? especially for F*
-        // TODO: precalc
-        vec3f XYZ = refWhiteToXYZ(illuminant);
-        return CIE_OBS_X2 * XYZ.x + CIE_OBS_Y2 * XYZ.y + CIE_OBS_Z2 * XYZ.z;
+        final switch(illuminant)
+        {
+            // TODO: think about normalization and what it means
+            case ReferenceWhite.D50: return CIE_D50;
+            case ReferenceWhite.D55: return CIE_D55;
+            case ReferenceWhite.D65: return CIE_D65;
+            case ReferenceWhite.D75: return CIE_D75;
+
+            // TODO: actual reference white for C, E, F*?
+            case ReferenceWhite.A:
+            case ReferenceWhite.B:
+            case ReferenceWhite.C:
+            case ReferenceWhite.E:
+            case ReferenceWhite.F2:
+            case ReferenceWhite.F7:
+            case ReferenceWhite.F11:
+            {
+                // TODO: precalc
+                vec3f XYZ = refWhiteToXYZ(illuminant);
+                return CIE_OBS_X2 * XYZ.x + CIE_OBS_Y2 * XYZ.y + CIE_OBS_Z2 * XYZ.z;
+            }
+        }
     }
 
     // return a (X, Y, Z) triplet from a (x, y, Y) triplet
@@ -326,7 +353,7 @@ private
 
         // return the 3x3 matrix to go from a, XYZ space to an RGB space
         // the XYZ space must be parameterized with the RGB reference white
-        mat3f makeRGBToXYZMatrix() pure const nothrow 
+        mat3f makeRGBToXYZMatrix() pure const nothrow
         {
             return makeXYZToRGBMatrix().inverse();
         }
@@ -355,12 +382,98 @@ private
             case RGBSpace.WIDE_GAMUT_RGB: return RGBSpaceConf(Companding.GAMMA, 2.2f, ReferenceWhite.D50, 0.7350f, 0.2650f, 0.258187f, 0.1150f, 0.8260f, 0.724938f, 0.1570f, 0.0180f, 0.016875f);
         }
     }
+
+    enum double[6] M1Data = [ -1.039, -0.785, -0.535, -0.295, -0.068, 0.145 ];
+    enum double[6] M2Data = [ 0.363, -0.198, -0.521, -0.689, -0.757, -0.760 ];
+
+
+    // S0, S1 and S2 to compute D illuminants spectral distribution
+    // (300 to 830 nm by 10 nm increments, normalized to 100 for 560 nm)
+    enum double[54] S0 =
+    [
+        0.04f, 6.0f, 29.60f, 55.30f, 57.30f, 61.80f, 61.5, 68.8, 63.4, 65.8,
+        94.8, 104.8, 105.90, 96.50, 113.90, 125.60, 125.50, 121.30, 121.30, 113.50,
+        113.10, 110.80, 106.50, 108.80, 105.3, 104.4, 100.0, 96.0, 95.10, 89.10,
+        90.50, 90.30, 88.4, 84.0, 85.1, 81.9, 82.6, 84.9, 81.3, 71.9,
+        74.3, 76.4, 63.30, 71.70, 77.0, 65.20, 47.70, 68.60, 65.0, 66.0,
+        61.0, 53.30, 58.9, 61.9
+    ];
+
+    enum double[54] S1 =
+    [
+        0.02, 4.5, 22.4, 42.0, 40.6, 41.6, 38.0, 42.4, 38.5, 35.0,
+        43.4, 46.3, 43.9, 37.1, 36.7, 35.9, 32.6, 27.9, 24.3, 20.1,
+        16.2, 13.2, 8.6, 6.1, 4.2, 1.9, 0, -1.6, -3.5, -3.5,
+        -5.8, -7.2, -8.6, -9.5, -10.9, -10.7, -12.0, -14.0, -13.6, -12.0,
+        -13.3, -12.9, -10.60, -11.6, -12.20,  -10.20, -7.80, -11.2, -10.4, -10.6,
+        -9.7, -8.3, -9.3, -9.8
+    ];
+
+    enum double[54] S2 =
+    [
+        0.0, 2.0, 4.0, 8.5, 7.8, 6.7, 5.3, 6.1, 3.0, 1.2,
+        -1.10, -0.50, -0.70, -1.20, -2.60, -2.90, -2.80, -2.60, -2.60, -1.80,
+        -1.5, -1.3, -1.2, -1, -0.5, -0.3, 0, 0.2, 0.5, 2.1,
+        3.2, 4.1, 4.7, 5.1, 6.7, 7.3, 8.6, 9.8, 10.2, 8.3,
+        9.6, 8.5, 7.0, 7.6, 8.0, 6.7, 5.2, 7.4, 6.8, 7.0,
+        6.4, 5.5, 6.1, 6.5
+    ];
+
+    // return a D reference
+    SpectralDistribution makeDDistribution(double temperatureInK)
+    {
+        double M1, M2;
+
+        if (temperatureInK < 5000)
+        {
+            M1 = M1Data[0];
+            M2 = M2Data[0];
+        }
+        else if (temperatureInK >= 7500)
+        {
+            M1 = M1Data[5];
+            M2 = M2Data[5];
+        }
+        else
+        {
+            for (int i = 0; i < 5; ++i)
+            {
+                double T = 5000 + i * 500;
+                if (temperatureInK < T)
+                {
+                    M1 = mix(M1Data[i], M1Data[i + 1], (temperatureInK - T) / 500);
+                    M2 = mix(M2Data[i], M2Data[i + 1], (temperatureInK - T) / 500);
+                    break;
+                }
+            }
+        }
+
+        SpectralDistribution r;
+        for (int i = 0; i < 107; ++i)
+        {
+            double s0, s1, s2;
+            if (i % 2 == 0)
+            {
+                s0 = S0[i/2];
+                s1 = S1[i/2];
+                s2 = S2[i/2];
+            }
+            else
+            {
+                s0 = 0.5 * (S0[i/2] + S0[i/2+1]);
+                s1 = 0.5 * (S1[i/2] + S1[i/2+1]);
+                s2 = 0.5 * (S2[i/2] + S2[i/2+1]);
+            }
+            r.v[i] = s0 + M1 * s1 + M2 * s2;
+        }
+        return r;
+    }
 }
 
 unittest
 {
     vec3f white = vec3f(1.0f);
-    
+
     vec3f XYZ = linearRGBToXYZ!(RGBSpace.sRGB)(toLinearRGB!(RGBSpace.sRGB)(white));
     vec3f rgb = toCompandedRGB!(RGBSpace.sRGB)(XYZToLinearRGB!(RGBSpace.sRGB)(XYZ));
 
