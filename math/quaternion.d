@@ -108,7 +108,10 @@ align(1) struct Quaternion(T)
         }
 
         // convert to 3x3 rotation matrix
-        U opCast(U)() pure const nothrow if (is(Unqual!U == mat3!T))
+        // TODO: check out why we can't do is(Unqual!U == mat3!T)
+        U opCast(U)() pure const nothrow if (is(typeof(U._isMatrix))
+                                          && is(U._T : _T)
+                                          && (U._R == 3) && (U._C == 3))
         {
             // do not assume that quaternion is normalized
             T norm = x*x + y*y + z*z + w*w;
@@ -117,7 +120,7 @@ align(1) struct Quaternion(T)
             T xx = x * x * s, xy = x * y * s, xz = x * z * s, xw = x * w * s,
                               yy = y * y * s, yz = y * z * s, yw = y * w * s,
                                               zz = z * z * s, zw = z * w * s;
-            return mat3!(T)
+            return mat3!(U._T)
             (
                 1 - (yy + zz)   ,   (xy - zw)    ,   (xz + yw)    ,
                   (xy + zw)     , 1 - (xx + zz)  ,   (yz - xw)    ,
@@ -126,9 +129,13 @@ align(1) struct Quaternion(T)
         }
 
         // convert to 4x4 rotation matrix
-        U opCast(U)() pure const nothrow if (is(Unqual!U == mat4!T))
+        // TODO: check out why we can't do is(Unqual!U == mat4!T)
+        U opCast(U)() pure const nothrow if (is(typeof(U._isMatrix))
+                                          && is(U._T : _T)
+                                          && (U._R == 4) && (U._C == 4))
         {
-            return cast(mat4!T)(cast(mat3!T)(this));
+            auto m3 = cast(mat3!(U._T))(this);
+            return cast(U)(m3);
         }
 
         // Workaround Vector not being constructable through CTFE
