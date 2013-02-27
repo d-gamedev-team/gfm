@@ -188,7 +188,7 @@ align(1) struct Matrix(T, size_t R, size_t C)
 
         // cast to other small matrices type
         // if the size are different, the result matrix is truncated and/or filled with identity coefficients
-        U opCast(U)() pure nothrow const if (is(typeof(U._isMatrix)) && (U._R == R) && (U._C == C))
+        U opCast(U)() pure nothrow const if (is(typeof(U._isMatrix)))
         {
             U res = U.IDENTITY;
             enum minR = R < U._R ? R : U._R;
