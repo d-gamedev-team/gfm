@@ -26,7 +26,11 @@ final class SDL2GLContext
         {
             if (_initialized)
             {
-                SDL_GL_DeleteContext(_context);
+                // work-around Issue #19
+                // SDL complains with log message "wglMakeCurrent(): The handle is invalid."
+                // in the SDL_DestroyWindow() call if we destroy the OpenGL context before-hand
+                //
+                // SDL_GL_DeleteContext(_context);
                 _initialized = false;
             }
         }
