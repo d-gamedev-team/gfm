@@ -36,7 +36,7 @@ class IniFile
                     }
                     else
                     {
-                        int pos = countUntil(line, "=");
+                        ptrdiff_t pos = countUntil(line, "=");
                         if ((pos != -1) && (sectionName !is null))
                         {
                             string name = line[0..pos];
