@@ -526,7 +526,6 @@ align(1) struct Matrix(T, size_t R, size_t C)
 
     private
     {
-        // ### Work-around Issue 9932
         // ### "uninitialized variable 'XXX' cannot be returned from CTFE
         static void workaroundIssue9932(ref Matrix m) pure nothrow
         {
