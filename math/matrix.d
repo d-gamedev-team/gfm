@@ -526,11 +526,25 @@ align(1) struct Matrix(T, size_t R, size_t C)
 
     private
     {
+        // ### Work-around Issue 9932
+        // ### "uninitialized variable 'XXX' cannot be returned from CTFE
+        static void workaroundIssue9932(ref Matrix m) pure nothrow
+        {
+            if (__ctfe)
+            {
+                m.v = m.v.init;
+                m.c = m.c.init;
+                m.rows = m.rows.init;
+            }
+        }
+
         // Note: the identity matrix, while only meaningful for square matrices, is also
         //       defined for non-square ones.
         static Matrix makeIdentity() pure nothrow
         {
-            Matrix res;
+            Matrix res = void;
+            workaroundIssue9932(res);
+
             for (size_t i = 0; i < R; ++i)
                 for (size_t j = 0; j < C; ++j)
                     res.c[i][j] = (i == j) ? 1 : 0;
@@ -540,6 +554,8 @@ align(1) struct Matrix(T, size_t R, size_t C)
         static Matrix makeConstant(U)(U x) pure nothrow
         {
             Matrix res;
+            workaroundIssue9932(res);
+            
             for (size_t i = 0; i < R * C; ++i)
                 res.v[i] = cast(T)x;
             return res;
