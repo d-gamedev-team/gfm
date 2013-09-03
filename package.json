@@ -4,7 +4,7 @@
     "homepage": "http://github.com/p0nce/gfm/",
     "copyright": "Copyright © 2011-2013, Games From Mars, ",
     "license": "Public Domain except some parts",
-    "targetType": "staticLibrary",
+    "targetType": "library",
 
     "authors": [
         "ponce",
@@ -31,7 +31,7 @@
     "subPackages": [
         {
             "name": "common",
-            "targetType": "staticLibrary",
+            "targetType": "library",
             "sourcePaths": [
                 "import/gfm/common"
             ],
@@ -41,7 +41,7 @@
         },
         {
             "name": "math",
-            "targetType": "staticLibrary",
+            "targetType": "library",
             "sourcePaths": [
                 "import/gfm/math"
             ],
@@ -51,7 +51,7 @@
         },
         {
             "name": "image",
-            "targetType": "staticLibrary",
+            "targetType": "library",
             "sourcePaths": [
                 "import/gfm/image"
             ],
@@ -65,7 +65,7 @@
         },
         {
             "name": "net",
-            "targetType": "staticLibrary",
+            "targetType": "library",
             "sourcePaths": [
                 "import/gfm/net"
             ],
@@ -75,7 +75,7 @@
         },
         {
             "name": "assimp",
-            "targetType": "staticLibrary",
+            "targetType": "library",
             "sourcePaths": [
                 "import/gfm/assimp"
             ],
@@ -89,7 +89,7 @@
         },
         {
             "name": "opengl",
-            "targetType": "staticLibrary",
+            "targetType": "library",
             "sourcePaths": [
                 "import/gfm/opengl"
             ],
@@ -104,7 +104,7 @@
         },
         {
             "name": "sdl2",
-            "targetType": "staticLibrary",
+            "targetType": "library",
             "sourcePaths": [
                 "import/gfm/sdl2"
             ],
@@ -118,7 +118,7 @@
         },
         {
             "name": "freeimage",
-            "targetType": "staticLibrary",
+            "targetType": "library",
             "sourcePaths": [
                 "import/gfm/freeimage"
             ],
