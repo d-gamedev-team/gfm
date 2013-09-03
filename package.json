@@ -137,7 +137,7 @@
             "importPaths": [ "import" ],
             "sourcePaths": [ "examples/simplegl" ],
             "dependencies": {
-                "gfm:opengl": "~master"                        
+                "gfm:opengl": "~master"
             }
         },
         {
@@ -147,7 +147,7 @@
             "importPaths": [ "import" ],
             "sourcePaths": [ "examples/simplevbo" ],
             "dependencies": {
-                "gfm:opengl": "~master"                        
+                "gfm:opengl": "~master"
             }
         },
         {
@@ -157,7 +157,7 @@
             "importPaths": [ "import" ],
             "sourcePaths": [ "examples/simplehttp" ],
             "dependencies": {
-                "gfm:net": "~master"                      
+                "gfm:net": "~master"
             }
         }
     ]
