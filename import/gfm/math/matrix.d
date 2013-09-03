@@ -358,7 +358,7 @@ align(1) struct Matrix(T, size_t R, size_t C)
             /// make translation matrix
             static Matrix translation(Vector!(T, R-1) v) pure nothrow
             {
-                Matrix res = IDENTITY;
+                Matrix res = makeIdentity();
                 for (size_t i = 0; i + 1 < R; ++i)
                     res.c[i][C-1] += v.v[i];
                 return res;
@@ -375,7 +375,7 @@ align(1) struct Matrix(T, size_t R, size_t C)
             /// make scaling matrix
             static Matrix scaling(Vector!(T, R-1) v) pure nothrow
             {
-                Matrix res = IDENTITY;
+                Matrix res = makeIdentity();
                 for (size_t i = 0; i + 1 < R; ++i)
                     res.c[i][i] = v.v[i];
                 return res;
@@ -387,7 +387,7 @@ align(1) struct Matrix(T, size_t R, size_t C)
         {
             private static Matrix rotateAxis(size_t i, size_t j)(T angle) pure nothrow
             {
-                Matrix res = IDENTITY;
+                Matrix res = makeIdentity();
                 const T cosa = cos(angle);
                 const T sina = sin(angle);
                 res.c[i][i] = cosa;
@@ -405,7 +405,7 @@ align(1) struct Matrix(T, size_t R, size_t C)
             // Reference: http://www.cs.rutgers.edu/~decarlo/428/gl_man/rotate.html
             static Matrix rotation(T angle, vec3!T axis) pure nothrow
             {
-                Matrix res = IDENTITY;
+                Matrix res = makeIdentity();
                 const T c = cos(angle);
                 const oneMinusC = 1 - c;
                 const T s = sin(angle);
@@ -526,24 +526,11 @@ align(1) struct Matrix(T, size_t R, size_t C)
 
     private
     {
-        // ### "uninitialized variable 'XXX' cannot be returned from CTFE
-        static void workaroundIssue9932(ref Matrix m) pure nothrow
-        {
-            if (__ctfe)
-            {
-                m.v = m.v.init;
-                m.c = m.c.init;
-                m.rows = m.rows.init;
-            }
-        }
-
         // Note: the identity matrix, while only meaningful for square matrices, is also
         //       defined for non-square ones.
         static Matrix makeIdentity() pure nothrow
         {
             Matrix res = void;
-            workaroundIssue9932(res);
-
             for (size_t i = 0; i < R; ++i)
                 for (size_t j = 0; j < C; ++j)
                     res.c[i][j] = (i == j) ? 1 : 0;
@@ -552,23 +539,11 @@ align(1) struct Matrix(T, size_t R, size_t C)
 
         static Matrix makeConstant(U)(U x) pure nothrow
         {
-            Matrix res;
-            workaroundIssue9932(res);
+            Matrix res = void;
             
             for (size_t i = 0; i < R * C; ++i)
                 res.v[i] = cast(T)x;
             return res;
-        }
-    }
-
-    // put here because of order of declaration
-    public
-    {
-        enum ZERO = makeConstant(0);
-        enum ONES = makeConstant(1);
-        static if (R == C)
-        {
-            enum IDENTITY = makeIdentity();
         }
     }
 }
