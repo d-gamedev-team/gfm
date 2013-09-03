@@ -4,14 +4,16 @@
     "homepage": "http://github.com/p0nce/gfm/",
     "copyright": "Copyright © 2011-2013, Games From Mars, ",
     "license": "Public Domain except some parts",
-
     "targetPath": "lib",
-    
     "authors": [
         "ponce",
         "Ian Kaplan",
         "John D. Cook",
         "Robert Penner"
+    ],
+
+    "importPaths": [
+        "import"
     ],
 
     "dependencies": {
@@ -24,90 +26,141 @@
         "gfm:net": "~master",
         "gfm:opengl": "~master",
         "gfm:sdl2": "~master"
-    }
+    },
 
-    "subPackages" : [
+    "subPackages": [
         {
             "name": "common",
             "targetPath": "lib",
-            "sourcePaths": ["import/gfm/common"],
-            "importPaths": ["import"]
+            "sourcePaths": [
+                "import/gfm/common"
+            ],
+            "importPaths": [
+                "import"
+            ]
         },
         {
             "name": "math",
             "targetPath": "lib",
-            "sourcePaths": ["import/gfm/math"],
-            "importPaths": ["import"]            
+            "sourcePaths": [
+                "import/gfm/math"
+            ],
+            "importPaths": [
+                "import"
+            ]
         },
         {
             "name": "image",
             "targetPath": "lib",
-            "sourcePaths": ["import/gfm/image"],
-            "importPaths": ["import"]
+            "sourcePaths": [
+                "import/gfm/image"
+            ],
+            "importPaths": [
+                "import"
+            ],
             "dependencies": {
                 "gfm:common": "~master",
                 "gfm:math": "~master"
-            },
+            }
         },
         {
             "name": "net",
             "targetPath": "lib",
-            "sourcePaths": ["import/gfm/net"],
-            "importPaths": ["import"]            
+            "sourcePaths": [
+                "import/gfm/net"
+            ],
+            "importPaths": [
+                "import"
+            ]
         },
         {
             "name": "assimp",
             "targetPath": "lib",
-            "sourcePaths": ["import/gfm/assimp"],
-            "importPaths": ["import"]
+            "sourcePaths": [
+                "import/gfm/assimp"
+            ],
+            "importPaths": [
+                "import"
+            ],
             "dependencies": {
                 "derelict:assimp": "~master",
                 "gfm:common": "~master"
-            },
+            }
         },
         {
             "name": "opengl",
             "targetPath": "lib",
-            "sourcePaths": ["import/gfm/opengl"],
-            "importPaths": ["import"]
+            "sourcePaths": [
+                "import/gfm/opengl"
+            ],
+            "importPaths": [
+                "import"
+            ],
             "dependencies": {
                 "derelict:opengl3": "~master",
-                "gfm:common": "~master"
-            },
+                "gfm:common": "~master",
+                "gfm:math": "~master"
+            }
         },
         {
             "name": "sdl2",
             "targetPath": "lib",
-            "sourcePaths": ["import/gfm/sdl2"],
-            "importPaths": ["import"]
+            "sourcePaths": [
+                "import/gfm/sdl2"
+            ],
+            "importPaths": [
+                "import"
+            ],
             "dependencies": {
                 "derelict:sdl2": "~master",
                 "gfm:common": "~master"
-            },
+            }
         },
         {
             "name": "freeimage",
             "targetPath": "lib",
-            "sourcePaths": ["import/gfm/freeimage"],
-            "importPaths": ["import"]
+            "sourcePaths": [
+                "import/gfm/freeimage"
+            ],
+            "importPaths": [
+                "import"
+            ],
             "dependencies": {
                 "derelict:freeimage": "~master",
                 "gfm:common": "~master"
-            },
+            }
         },
-       
         {
             "name": "examples",
             "targetPath": "examples-build",
-            "sourcePaths": ["import/gfm/examples"],
-            "importPaths": ["import"]
-            "dependencies": {
-                "gfm:common": "~master",
-                "gfm:math": "~master",
-                "gfm:opengl": "~master",
-                "gfm:net": "~master",
-                "gfm:sdl2": "~master",
-            },
-        },
+
+            "importPaths": [
+                "import"
+            ],          
+
+            "subPackages": [
+                {
+                    "name": "simplegl",
+                    "sourcePaths": [ "examples/simplegl" ],
+                    "dependencies": {
+                        "gfm:opengl": "~master",                        
+                    }
+                },
+                {
+                    "name": "simplevbo",
+                    "sourcePaths": [ "examples/simplevbo" ],
+                    "dependencies": {
+                        "gfm:opengl": "~master",                        
+                    }
+                },
+                {
+                    "name": "simplehttp",
+                    "sourcePaths": [ "examples/simplehttp" ],
+                    "dependencies": {
+                        "gfm:net": "~master",                        
+                    }
+                }
+            ]
+        }
     ]
 }
