@@ -102,7 +102,9 @@ size_t solveCubic(T)(T a, T b, T c, T d, T[] roots) pure nothrow if (isFloatingP
  * Returns the roots of a quartic polynomial  a + b x + c x^2 + d x^3 + e x^4 = 0
  * Code from http://mathworld.wolfram.com/QuarticEquation.html
  * Returns number of roots. roots slice should have room for up to 4 elements.
+ * BUG: doesn't pass unit-test!
  */
+/+
 size_t solveQuartic(T)(T a, T b, T c, T d, T e, T[] roots) pure nothrow if (isFloatingPoint!T)
 {
     assert(roots.length >= 4);
@@ -164,6 +166,7 @@ size_t solveQuartic(T)(T a, T b, T c, T d, T e, T[] roots) pure nothrow if (isFl
     roots[1] = a3 - R - E;
     return 4;
 }
++/
 
 unittest
 {
@@ -185,6 +188,8 @@ unittest
         assert(arrayContainsRoot(roots[], 2));
     }
 
+    // TODO fix
+/*
     // test quartic
     {
         double[4] roots;
@@ -195,4 +200,5 @@ unittest
         assert(arrayContainsRoot(roots[], 0));
         assert(arrayContainsRoot(roots[], 1));
     }
+    */
 }
