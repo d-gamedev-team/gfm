@@ -164,7 +164,7 @@ class HTTPClient
 
                 while (!ss.eof())
                 {
-                    int read = ss.readBlock(buffer.ptr, buffer.length);
+                    int read = cast(int)( ss.readBlock(buffer.ptr, buffer.length));
                     res.content ~= buffer[0..read];
                 }
 
