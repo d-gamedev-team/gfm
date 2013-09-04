@@ -4,7 +4,6 @@
     "homepage": "http://github.com/p0nce/gfm/",
     "copyright": "Copyright © 2011-2013, Games From Mars, ",
     "license": "Public Domain except some parts",
-    "targetType": "library",
 
     "authors": [
         "ponce",
@@ -14,7 +13,7 @@
     ],
 
     "importPaths": [
-        "import"
+        "."
     ],
 
     "dependencies": {
@@ -31,33 +30,19 @@
     "subPackages": [
         {
             "name": "common",
-            "targetType": "library",
-            "sourcePaths": [
-                "import/gfm/common"
-            ],
-            "importPaths": [
-                "import"
-            ]
+            "sourcePaths": [ "gfm/common" ],
+            "importPaths": [ "." ]
         },
         {
             "name": "math",
-            "targetType": "library",
-            "sourcePaths": [
-                "import/gfm/math"
-            ],
-            "importPaths": [
-                "import"
-            ]
+            "sourcePaths": [ "gfm/math" ],
+            "importPaths": [ "." ]
         },
         {
             "name": "image",
-            "targetType": "library",
-            "sourcePaths": [
-                "import/gfm/image"
-            ],
-            "importPaths": [
-                "import"
-            ],
+
+            "sourcePaths": [ "gfm/image" ],
+            "importPaths": [ "." ],
             "dependencies": {
                 "gfm:common": "~master",
                 "gfm:math": "~master"
@@ -65,23 +50,13 @@
         },
         {
             "name": "net",
-            "targetType": "library",
-            "sourcePaths": [
-                "import/gfm/net"
-            ],
-            "importPaths": [
-                "import"
-            ]
+            "sourcePaths": [ "gfm/net" ],
+            "importPaths": [ "." ]
         },
         {
             "name": "assimp",
-            "targetType": "library",
-            "sourcePaths": [
-                "import/gfm/assimp"
-            ],
-            "importPaths": [
-                "import"
-            ],
+            "sourcePaths": [ "gfm/assimp" ],
+            "importPaths": [ "." ],
             "dependencies": {
                 "derelict:assimp": "~master",
                 "gfm:common": "~master"
@@ -89,13 +64,8 @@
         },
         {
             "name": "opengl",
-            "targetType": "library",
-            "sourcePaths": [
-                "import/gfm/opengl"
-            ],
-            "importPaths": [
-                "import"
-            ],
+            "sourcePaths": [ "gfm/opengl" ],
+            "importPaths": [ "." ],
             "dependencies": {
                 "derelict:opengl3": "~master",
                 "gfm:common": "~master",
@@ -104,13 +74,8 @@
         },
         {
             "name": "sdl2",
-            "targetType": "library",
-            "sourcePaths": [
-                "import/gfm/sdl2"
-            ],
-            "importPaths": [
-                "import"
-            ],
+            "sourcePaths": [ "gfm/sdl2" ],
+            "importPaths": [ "." ],
             "dependencies": {
                 "derelict:sdl2": "~master",
                 "gfm:common": "~master"
@@ -118,13 +83,8 @@
         },
         {
             "name": "freeimage",
-            "targetType": "library",
-            "sourcePaths": [
-                "import/gfm/freeimage"
-            ],
-            "importPaths": [
-                "import"
-            ],
+            "sourcePaths": [ "gfm/freeimage" ],
+            "importPaths": [ "." ],
             "dependencies": {
                 "derelict:freeimage": "~master",
                 "gfm:common": "~master"
@@ -134,7 +94,7 @@
             "name": "example-simplegl",
             "targetPath": "examples/build",
             "targetType": "executable",
-            "importPaths": [ "import" ],
+            "importPaths": [ "." ],
             "sourcePaths": [ "examples/simplegl" ],
             "dependencies": {
                 "gfm:opengl": "~master"
@@ -144,7 +104,7 @@
             "name": "example-simplevbo",
             "targetPath": "examples/build",
             "targetType": "executable",
-            "importPaths": [ "import" ],
+            "importPaths": [ "." ],
             "sourcePaths": [ "examples/simplevbo" ],
             "dependencies": {
                 "gfm:opengl": "~master"
@@ -154,7 +114,7 @@
             "name": "example-simplehttp",
             "targetPath": "examples/build",
             "targetType": "executable",
-            "importPaths": [ "import" ],
+            "importPaths": [ "." ],
             "sourcePaths": [ "examples/simplehttp" ],
             "dependencies": {
                 "gfm:net": "~master"
