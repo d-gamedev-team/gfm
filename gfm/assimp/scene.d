@@ -53,6 +53,12 @@ class AssimpScene
                 _assimp.throwAssimpException("aiApplyPostProcessing");
             _scene = newScene;
         }
+
+        /// Get ASSIMP scene handle
+        const(aiScene)* scene()
+        {
+            return _scene;
+        }
     }
 
     private
