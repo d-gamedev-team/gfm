@@ -49,7 +49,7 @@ final class GLUniform
         }
 
         // create fake disabled uniform variables, designed to cope with variables that are detected useless
-        // by the OpenGL driver and do not exist
+        // by the OpenGL driver, or thos which do not exist
         this(OpenGL gl, string name)
         {
             _gl = gl;
