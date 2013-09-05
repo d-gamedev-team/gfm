@@ -55,7 +55,7 @@ final class SDL2Keyboard
         SDL2 _sdl2;
         bool[SDL_NUM_SCANCODES] _state;
 
-        enum PRESSED = true,
-             RELEASED = false;
+        const PRESSED = true,
+              RELEASED = false;
     }
 }
