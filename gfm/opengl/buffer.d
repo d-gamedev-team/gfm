@@ -69,16 +69,17 @@ final class GLBuffer
         {
             glBindBuffer(_target, 0);
         }
-    }
 
-    package
-    {
-        GLuint _buffer;
+        GLuint handle() pure const nothrow
+        {
+            return _buffer;
+        }
     }
 
     private
     {
         OpenGL _gl;
+        GLuint _buffer;
         GLuint _target;
         GLuint _storage;
         GLuint _usage;
