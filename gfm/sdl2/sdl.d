@@ -44,6 +44,10 @@ final class SDL2
                 throw new SDL2Exception(e.msg);
             }
 
+            // It's unclear why MeinMein added these lines, commented out for a start
+            // SDL_InitSubSystem(SDL_INIT_VIDEO);
+            // SDL_InitSubSystem(SDL_INIT_AUDIO);
+
             // enable all logging, and pipe it to our own logger object
             {
                 SDL_LogGetOutputFunction(_previousLogCallback, &_previousLogUserdata);
