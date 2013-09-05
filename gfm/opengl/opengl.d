@@ -206,15 +206,33 @@ final class OpenGL
                 default:                   return "Unknown OpenGL error";
             }
         }
+    }
+
+    public
+    {
+        int maxTextureSize() pure const nothrow
+        {
+            return _maxTextureSize;
+        }
 
         int maxTextureUnits() pure const nothrow
         {
             return _maxTextureUnits;
         }
 
-        int maxTextureImageUnits() pure const nothrow
+        int maxFragmentTextureImageUnits() pure const nothrow
         {
-            return _maxTextureImageUnits;
+            return _maxFragmentTextureImageUnits;
+        }
+
+        int maxVertexImageUnits() pure const nothrow
+        {
+            return _maxVertexTextureImageUnits;
+        }
+
+        int maxCombinedImageUnits() pure const nothrow
+        {
+            return _maxCombinedTextureImageUnits;
         }
 
         int maxColorAttachments() pure const nothrow
@@ -224,7 +242,7 @@ final class OpenGL
 
         TextureUnits textureUnits() pure nothrow
         {
-            return textureUnits();
+            return _textureUnits;
         }
 
         float maxTextureMaxAnisotropy() pure const nothrow
@@ -241,7 +259,9 @@ final class OpenGL
         int _minorVersion;
         int _maxTextureSize;
         int _maxTextureUnits; // number of conventional units, deprecated
-        int _maxTextureImageUnits;
+        int _maxFragmentTextureImageUnits; // max for fragment shader
+        int _maxVertexTextureImageUnits; // max for vertex shader
+        int _maxCombinedTextureImageUnits; // max total
         int _maxColorAttachments;
         float _maxTextureMaxAnisotropy;
 
@@ -250,8 +270,16 @@ final class OpenGL
             _majorVersion = getInteger(GL_MAJOR_VERSION, 1, logging);
             _minorVersion = getInteger(GL_MINOR_VERSION, 1, logging);
             _maxTextureSize = getInteger(GL_MAX_TEXTURE_SIZE, 512, logging);
+            // For other textures, add calls to:
+            // GL_MAX_ARRAY_TEXTURE_LAYERS​, GL_MAX_3D_TEXTURE_SIZE​
             _maxTextureUnits = getInteger(GL_MAX_TEXTURE_UNITS, 2, logging);
-            _maxTextureImageUnits = getInteger(GL_MAX_TEXTURE_IMAGE_UNITS, 2, logging);
+
+            _maxFragmentTextureImageUnits = getInteger(GL_MAX_TEXTURE_IMAGE_UNITS, 2, logging); // odd GL enum name because of legacy reasons (initially only fragment shader could access textures)
+            _maxVertexTextureImageUnits = getInteger(GL_MAX_VERTEX_TEXTURE_IMAGE_UNITS, 2, logging);
+            _maxCombinedTextureImageUnits = getInteger(GL_MAX_COMBINED_TEXTURE_IMAGE_UNITS, 2, logging);
+            // Get texture unit max for other shader stages with:
+            // GL_MAX_GEOMETRY_TEXTURE_IMAGE_UNITS, GL_MAX_TESS_CONTROL_TEXTURE_IMAGE_UNITS, GL_MAX_TESS_EVALUATION_TEXTURE_IMAGE_UNITS
+
             _maxColorAttachments = getInteger(GL_MAX_COLOR_ATTACHMENTS, 4, logging);
 
             if (EXT_texture_filter_anisotropic())

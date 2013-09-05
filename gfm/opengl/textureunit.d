@@ -16,12 +16,9 @@ final class TextureUnits
             _gl = gl;
             _activeTexture = -1; // default is unknown
 
-            int imageUnits = gl.maxTextureUnits();
-            int textureImageUnits = gl.maxTextureImageUnits();
-
-            // use the min for more safety: the specification of 4.2 Compatibility profile is 
-            // not very clear
-            int units = imageUnits < textureImageUnits ? imageUnits : textureImageUnits;
+            // Use the max total image units
+            // Note: each shader stage has its own max to deal with
+            int units = gl.maxCombinedImageUnits();
 
             _textureUnits.length = units;
             for (int i = 0; i < units; ++i)
@@ -69,7 +66,7 @@ final class TextureUnits
     }
 }
 
-// Cache state of OpenGL of a single OpenGL texture units
+// Cache state of OpenGL of a single OpenGL texture unit
 final class TextureUnit
 {
     public
