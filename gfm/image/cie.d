@@ -441,8 +441,8 @@ private
                 double T = 5000 + i * 500;
                 if (temperatureInK < T)
                 {
-                    M1 = mix(M1Data[i], M1Data[i + 1], (temperatureInK - T) / 500);
-                    M2 = mix(M2Data[i], M2Data[i + 1], (temperatureInK - T) / 500);
+                    M1 = lerp(M1Data[i], M1Data[i + 1], (temperatureInK - T) / 500);
+                    M2 = lerp(M2Data[i], M2Data[i + 1], (temperatureInK - T) / 500);
                     break;
                 }
             }
