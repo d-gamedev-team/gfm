@@ -306,7 +306,7 @@ class GLFBOAttachment
 
                 void attach(bool useEXTFallback)
                 {
-                    attachOrDetach(useEXTFallback, _texture._handle, _renderbuffer._handle);
+                    attachOrDetach(useEXTFallback, _texture.handle(), _renderbuffer._handle);
                 }
 
                 void detach(bool useEXTFallback)
