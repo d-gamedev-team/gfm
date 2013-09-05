@@ -42,6 +42,7 @@ class GLTexture
 
         final void use(int textureUnit = 0)
         {
+            _gl.textureUnits().setActiveTexture(textureUnit);
             bind();
         }
 
@@ -76,11 +77,13 @@ class GLTexture
 
         final void setBaseLevel(int level)
         {
+            bind();
             glTexParameteri(_target, GL_TEXTURE_BASE_LEVEL, level);
         }
 
         final void setMaxLevel(int level)
         {
+            bind();
             glTexParameteri(_target, GL_TEXTURE_MAX_LEVEL, level);
         }
 
@@ -89,41 +92,49 @@ class GLTexture
 
         final void setMinLOD(float lod)
         {
+            bind();
             glTexParameterf(_target, GL_TEXTURE_MIN_LOD, lod);
         }
 
         final void setMaxLOD(float lod)
         {
+            bind();
             glTexParameterf(_target, GL_TEXTURE_MAX_LOD, lod);
         }
 
         final void setLODBias(float lodBias)
         {
+            bind();
             glTexParameterf(_target, GL_TEXTURE_LOD_BIAS, lodBias);
         }
 
         final void setWrapS(GLenum wrapS)
         {
+            bind();
             glTexParameteri(_target, GL_TEXTURE_WRAP_S, wrapS);
         }
 
         final void setWrapT(GLenum wrapT)
         {
+            bind();
             glTexParameteri(_target, GL_TEXTURE_WRAP_T, wrapT);
         }
 
         final void setWrapR(GLenum wrapR)
         {
+            bind();
             glTexParameteri(_target, GL_TEXTURE_WRAP_R, wrapR);
         }
 
         final void setMinFilter(GLenum minFilter)
         {
+            bind();
             glTexParameteri(_target, GL_TEXTURE_MIN_FILTER, minFilter);
         }
 
         final void setMagFilter(GLenum magFilter)
         {
+            bind();
             glTexParameteri(_target, GL_TEXTURE_MAG_FILTER, magFilter);
         }
 
@@ -141,23 +152,30 @@ class GLTexture
 
             glTexParameterf(_target, GL_TEXTURE_MAX_ANISOTROPY_EXT, f);
         }
+
+        GLuint handle() pure const nothrow
+        {
+          return _handle;
+        }
     }
 
     package
     {
-        GLuint  _handle;
         GLuint _target;
     }
 
     private
     {
         OpenGL _gl;
-        bool _initialized;    
+        GLuint _handle;
+        bool _initialized;
         int _textureUnit;
 
         void bind()
         {
-            // bind on whatever the current texture unit is
+            // Bind on whatever the current texture unit is!
+            // consequently, do not ever change texture parameters if you want 
+            // to rely on a texture being bound to a texture unit
             _gl.textureUnits().current().bind(_target, _handle);
         }
     }
@@ -245,6 +263,12 @@ final class GLTexture2DArray : GLTexture
         void setImage(int level, GLint internalFormat, int width, int height, int depth, int border, GLenum format, GLenum type, void* data)
         {
             glTexImage3D(_target, level, internalFormat, width, height, depth, border, format, type, data);
+            _gl.runtimeCheck();
+        }
+
+        void setSubImage(int level, int xoffset, int yoffset, int zoffset, int width, int height, int depth, GLenum format, GLenum type, void* data)
+        {
+            glTexSubImage3D(_target, level, xoffset, yoffset, zoffset, width, height, depth, format, type, data);
             _gl.runtimeCheck();
         }
     }
