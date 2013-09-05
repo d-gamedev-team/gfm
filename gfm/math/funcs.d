@@ -33,7 +33,14 @@ T radians(T)(T x) pure nothrow if (!isIntegral!T)
 /**
  * Linear intepolation, akin to GLSL's mix.
  */
-T mix(S, T, U)(S a, T b, U t) pure nothrow
+S lerp(S, T)(S a, S b, T t) pure nothrow
+{
+    return t * b + (1 - t) * a;
+}
+
+
+// old name of lerp was mix, but all in all it's a bad name
+deprecated S mix(S, T)(S a, S b, T t) pure nothrow
 {
     return t * b + (1 - t) * a;
 }
