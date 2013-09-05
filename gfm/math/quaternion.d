@@ -3,7 +3,8 @@ module gfm.math.quaternion;
 import std.math;
 
 import gfm.math.vector,
-       gfm.math.matrix;
+       gfm.math.matrix,
+       funcs = gfm.math.funcs;
 
 // hold a rotation + angle in a proper but wild space
 align(1) struct Quaternion(T)
@@ -66,6 +67,24 @@ align(1) struct Quaternion(T)
             res.v = v.normalized();
             return res;
         }
+
+        /// Inverse (aka conjugate) of quaternion
+        void inverse() pure nothrow
+        {
+            x = -x;
+            y = -y;
+            z = -z;
+        }
+
+        // return result of inversion
+        Quaternion inversed() pure const nothrow
+        {
+            Quaternion res = void;
+            res.v = v;
+            res.inverse();
+            return res;
+        }
+
 
         ref Quaternion opOpAssign(string op, U)(U q) pure nothrow
             if (is(U : Quaternion) && (op == "*"))
@@ -180,4 +199,14 @@ unittest
     quaternionf b = quaternionf.fromAxis(vec3f(0, 1, 0), 0);
 
     a = a * b;
+}
+
+/// Return Nlerp of quaternions
+/// See: http://keithmaggio.wordpress.com/2011/02/15/math-magician-lerp-slerp-and-nlerp/
+Quaternion!T Nlerp(T)(Quaternion!T a, Quaternion!T b, float t) pure nothrow
+{
+    Quaternion res = void;
+    res.v = lerp(a.v, b.v, t);
+    res.v.normalize();
+    return res;
 }
