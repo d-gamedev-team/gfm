@@ -3,6 +3,8 @@ module gfm.math.vector;
 import std.traits,
        std.math;
 
+import gfm.math.funcs;
+
 // generic 1D small vector
 // N is the element count, T the contained type
 // intended for 3D
@@ -660,5 +662,7 @@ unittest
     //assert(h == [-2, 1, 0]);
     assert(!__traits(compiles, h.xx = h.yy));
     vec4ub j;
+
+    assert(lerp(vec2f(-10, -1), vec2f(10, 1), 0.5) == vec2f(0, 0));
 }
 
