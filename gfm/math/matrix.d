@@ -8,7 +8,8 @@ import std.math,
 
 import gfm.math.vector,
        gfm.math.plane,
-       gfm.math.frustum;
+       gfm.math.frustum,
+       gfm.math.quaternion;
 
 // generic small non-resizeable matrix with R rows and C columns
 // N is the element count, T the contained type
@@ -223,6 +224,85 @@ align(1) struct Matrix(T, size_t R, size_t C)
             for (size_t i = 0; i < N; ++i)
                 mixin("res.v[i] = " ~ op ~ "v[i];");
             return res;
+        }
+
+        /// Convert 3x3 rotation matrix to quaternion
+        /// Source: 3D Math Primer for Graphics and Game Development
+        U opCast(U)() pure const nothrow if (is(typeof(U._isQuaternion))
+                                          && is(U._T : _T)
+                                          && (_R == 3) && (_C == 3))
+        {
+            T fourXSquaredMinus1 = c[0][0] - c[1][1] - c[2][2];
+            T fourYSquaredMinus1 = c[1][1] - c[0][0] - c[2][2];
+            T fourZSquaredMinus1 = c[2][2] - c[0][0] - c[1][1];
+            T fourWSquaredMinus1 = c[0][0] + c[1][1] + c[2][2];
+
+            int biggestIndex = 0;
+            T fourBiggestSquaredMinus1 = fourWSquaredMinus1;
+
+            if(fourXSquaredMinus1 > fourBiggestSquaredMinus1)
+            {
+                fourBiggestSquaredMinus1 = fourXSquaredMinus1;
+                biggestIndex = 1;
+            }
+
+            if(fourYSquaredMinus1 > fourBiggestSquaredMinus1)
+            {
+                fourBiggestSquaredMinus1 = fourYSquaredMinus1;
+                biggestIndex = 2;
+            }
+
+            if(fourZSquaredMinus1 > fourBiggestSquaredMinus1)
+            {
+                fourBiggestSquaredMinus1 = fourZSquaredMinus1;
+                biggestIndex = 3;
+            }
+
+            T biggestVal = sqrt(fourBiggestSquaredMinus1 + 1) / 2;
+            T mult = 1 / (biggestVal * 4);
+
+            U quat;
+            switch(biggestIndex)
+            {
+                case 1:
+                    quat.w = (c[1][2] - c[2][1]) * mult;
+                    quat.x = biggestVal;
+                    quat.y = (c[0][1] + c[1][0]) * mult;
+                    quat.z = (c[2][0] + c[0][2]) * mult;
+                    break;
+
+                case 2:
+                    quat.w = (c[2][0] - c[0][2]) * mult;
+                    quat.x = (c[0][1] + c[1][0]) * mult;
+                    quat.y = biggestVal;
+                    quat.z = (c[1][2] + c[2][1]) * mult;
+                    break;
+
+                case 3:
+                    quat.w = (c[0][1] - c[1][0]) * mult;
+                    quat.x = (c[2][0] + c[0][2]) * mult;
+                    quat.y = (c[1][2] + c[2][1]) * mult;
+                    quat.z = biggestVal;
+                    break;
+
+                default://case 0:
+                    quat.w = biggestVal; 
+                    quat.x = (c[1][2] - c[2][1]) * mult;
+                    quat.y = (c[2][0] - c[0][2]) * mult;
+                    quat.z = (c[0][1] - c[1][0]) * mult;
+                    break;
+            }
+
+            return quat;
+        }
+
+        // convert 4x4 rotation matrix to quaternion
+        U opCast(U)() pure const nothrow if (is(typeof(U._isQuaternion))
+                                          && is(U._T : _T)
+                                          && (_R == 4) && (_C == 4))
+        {
+            auto m3 = cast(mat3!T)(this);
+            return cast(U)(m3);
         }
 
         // matrix inversion, provided for 2x2, 3x3 and 4x4 floating point matrices
