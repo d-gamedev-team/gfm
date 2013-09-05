@@ -280,16 +280,17 @@ final class GLProgram
             }
             return *u;
         }
-    }
 
-    package
-    {
-        GLuint _program;
+        GLuint handle() pure const nothrow
+        {
+            return _program;
+        }
     }
 
     private
     {
         OpenGL _gl;
+        GLuint _program; // OpenGL handle
         bool _initialized;
         GLUniform[string] _activeUniforms;
     }
