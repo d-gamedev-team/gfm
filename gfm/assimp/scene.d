@@ -24,7 +24,7 @@ class AssimpScene
         {
             _assimp = assimp;
             _scene = aiImportFileFromMemory(cast(const(char)*)(data.ptr),
-                                            data.length,
+                                            cast(uint)data.length,
                                             postProcessFlags,
                                             null);
             if (_scene is null)
