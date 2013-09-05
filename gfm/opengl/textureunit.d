@@ -22,10 +22,7 @@ final class TextureUnits
 
             _textureUnits.length = units;
             for (int i = 0; i < units; ++i)
-            {
-                bool fixedPipelineCompatible = true;
-                _textureUnits[i] = new TextureUnit(gl, i, fixedPipelineCompatible);
-            }
+                _textureUnits[i] = new TextureUnit(gl, i);
         }
 
         // set "active texture" which is actually active texture unit
@@ -71,11 +68,10 @@ final class TextureUnit
 {
     public
     {
-        this(OpenGL gl, int index, bool fixedPipelineCompatible)
+        this(OpenGL gl, int index)
         {
             _gl = gl;
             _index = index;
-            _fixedPipelineCompatible = fixedPipelineCompatible;
 
             _currentBinding[] = -1; // default is unknown
         }
@@ -129,7 +125,6 @@ final class TextureUnit
 
         OpenGL _gl;
         int _index;
-        bool _fixedPipelineCompatible;
 
         GLuint[Target.max + 1] _currentBinding;
     }
