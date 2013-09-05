@@ -193,20 +193,70 @@ align(1) struct Quaternion(T)
 alias Quaternion!float quaternionf;
 alias Quaternion!double quaterniond;
 
+/// lerp, for quaternions
+Quaternion!T lerp(T)(Quaternion!T a, Quaternion!T b, float t) pure nothrow
+{
+    Quaternion!T res = void;
+    res.v = funcs.lerp(a.v, b.v, t);
+    return res;
+}
+
+
+/// return Nlerp of quaternions
+/// see: http://keithmaggio.wordpress.com/2011/02/15/math-magician-lerp-slerp-and-nlerp/
+Quaternion!T Nlerp(T)(Quaternion!T a, Quaternion!T b, float t) pure nothrow
+{
+    assert(t >= 0 && t <= 1); // else probably doesn't make sense 
+    Quaternion!T res = void;
+    res.v = funcs.lerp(a.v, b.v, t);
+    res.v.normalize();
+    return res;
+}
+
+/// return slerp of quaternions
+/// slerp is more expensive than Nlerp
+/// http://number-none.com/product/Understanding%20Slerp,%20Then%20Not%20Using%20It/
+/// TODO: see if it handles quaternions whose dot product is -1
+Quaternion!T slerp(T)(Quaternion!T a, Quaternion!T b, T t) pure nothrow
+{
+    assert(t >= 0 && t <= 1); // else probably doesn't make sense 
+
+    Quaternion!T res = void;
+
+    T dotProduct = dot(a.v, b.v);
+
+    // spherical lerp always has 2 potential paths
+    // here we always take the shortest
+    if (dotProduct < 0)
+    {
+        b.v *= -1;
+        dotProduct = dot(a.v, b.v);
+    }
+
+    immutable T threshold = 10 * T.epsilon; // idMath uses 1e-6f for 32-bits float precision
+    if ((1 - dotProduct) > threshold) // if small difference, use lerp
+        return lerp(a, b, t);
+
+    T theta_0 = funcs.safeAcos(dotProduct); // angle between this and other
+    T theta = theta_0 * t; // angle between this and result
+
+    vec3!T v2 = dot(b.v, a.v * dotProduct);
+    v2.normalize();
+
+    res.v = dot(b.v, a.v * dotProduct);
+    res.v.normalize();
+
+    res.v = a.v * cos(theta) + res.v * sin(theta);
+    return res;
+}
+
 unittest
 {
     quaternionf a = quaternionf.fromAxis(vec3f(1, 0, 0), 1);
     quaternionf b = quaternionf.fromAxis(vec3f(0, 1, 0), 0);
-
     a = a * b;
-}
 
-/// Return Nlerp of quaternions
-/// See: http://keithmaggio.wordpress.com/2011/02/15/math-magician-lerp-slerp-and-nlerp/
-Quaternion!T Nlerp(T)(Quaternion!T a, Quaternion!T b, float t) pure nothrow
-{
-    Quaternion res = void;
-    res.v = lerp(a.v, b.v, t);
-    res.v.normalize();
-    return res;
+    quaternionf c = lerp(a, b, 0.5f);
+    quaternionf d = Nlerp(a, b, 0.1f);
+    quaternionf e = slerp(a, b, 0.0f);
 }
