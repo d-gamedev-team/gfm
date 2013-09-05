@@ -341,7 +341,7 @@ final class GLUniform
             }
         }
 
-        static size_t sizeOfUniformType(GLenum type)
+        public static size_t sizeOfUniformType(GLenum type)
         {
             switch (type)
             {
