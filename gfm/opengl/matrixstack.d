@@ -65,6 +65,13 @@ final class MatrixStack(size_t R, T) if (R == 3 || R == 4)
             return _invMatrices[_top];
         }
 
+        /// set top matrix
+        void setTop(matrix_t m) pure nothrow
+        {
+            _matrices[_top] = m;
+            _invMatrices[_top] = m.inverse();
+        }
+
         /// replacement for glMultMatrix
         void mult(matrix_t m) pure nothrow
         {
