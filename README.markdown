@@ -52,6 +52,7 @@ See UNLICENSE for more details.
   * **plane.d** 3D plane
   * **frustum.d** 3D frustum
   * **funcs.d** useful math functions
+  * **simplexnoise.d** Simplex noise implementation
 
 
 ### image/
