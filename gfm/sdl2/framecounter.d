@@ -76,12 +76,11 @@ final class FrameCounter
             int avgFPS = cast(int)(0.5 + ( avg != 0 ? 1000 / avg : 0 ) );
             int avgdt = cast(int)(0.5 + avg);
 
-            return format("FPS: %s dt: avg %sms min %sms max %sms stddev %s",
+            return format("FPS: %s dt: avg %sms min %sms max %sms",
                           avgFPS,
                           avgdt,
                           minimum(_stats.range()),
-                          maximum(_stats.range()),
-                          standardDeviation(_stats.range()));
+                          maximum(_stats.range()));
 
         }
     }
