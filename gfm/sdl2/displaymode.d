@@ -4,7 +4,8 @@ import std.string;
 
 import derelict.sdl2.sdl;
 
-import gfm.math.box;
+import gfm.math.vector,
+       gfm.math.box;
 
 final class SDL2DisplayMode
 {
@@ -44,6 +45,11 @@ final class SDL2VideoDisplay
         const(SDL2DisplayMode[]) availableModes() pure const nothrow
         {
             return _availableModes;
+        }
+
+        const(vec2i) dimension() pure const nothrow
+        {
+            return vec2i(_bounds.width, _bounds.height);
         }
 
         const(box2i) bounds() pure const nothrow

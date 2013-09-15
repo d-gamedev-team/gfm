@@ -12,6 +12,7 @@ import gfm.sdl2.displaymode,
        gfm.sdl2.renderer,
        gfm.common.log,
        gfm.common.text,
+       gfm.math.vector,
        gfm.math.box;
 
 
@@ -166,6 +167,14 @@ final class SDL2
                 availableDisplays ~= new SDL2VideoDisplay(displayIndex, bounds, availableModes);
             }
             return availableDisplays;
+        }
+
+        vec2i firstDisplaySize()
+        {
+            auto displays = getDisplays();
+            if (displays.length == 0)
+                throw new SDL2Exception("no display");
+            return displays[0].dimension();
         }
 
         SDL2RendererInfo[] getRenderersInfo()
