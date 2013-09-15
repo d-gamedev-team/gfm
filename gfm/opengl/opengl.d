@@ -35,7 +35,11 @@ final class OpenGL
             DerelictGL.load(); // load deprecated functions too
 
             _log.infof("OpenGL loaded, version %s", DerelictGL3.loadedVersion());
-            getLimits(false);
+
+            // do not log here since unimportant errors might happen:
+            // no context is necessarily created at this point
+            getLimits(false); 
+
             _textureUnits = new TextureUnits(this);
         }
 
