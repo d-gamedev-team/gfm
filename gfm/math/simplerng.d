@@ -1,275 +1,210 @@
 module gfm.math.simplerng;
 
-import std.math,
-       std.random : unpredictableSeed;
-
-import gfm.math.vector;
+public import std.random;
+import std.math;
 
 // Translation of SimpleRNG the work of John D. Cook
 // http://www.johndcook.com/cpp_random_number_generation.html
 
-// A simple random number generator based on George Marsaglia's MWC (Multiply With Carry) generator.
-// This is not intended to take the place of the library's primary generator, Mersenne Twister.
-// Its primary benefit is that it is simple to extract its state.
+// Removed the builtin RNG, and kept the distribution functions
 
-struct SimpleRng
+
+
+// Normal (Gaussian) random sample
+double randNormal(RNG)(ref RNG rng, double mean = 0.0, double standardDeviation = 1.0) nothrow
 {
-    public
+    assert(standardDeviation > 0);
+
+    // Use Box-Muller algorithm
+    double u1 = uniform(0, 1, rng);
+    double u2 = uniform(0, 1, rng);
+    double r = sqrt(-2.0 * log(u1));
+    double theta = 2.0 * PI * u2;
+    return mean + standardDeviation * r * sin(theta);
+}
+
+// Get exponential random sample with specified mean
+double randExponential(RNG)(ref RNG rng, double mean = 1.0) nothrow
+{
+    assert(mean > 0);
+    return -mean*log(uniform(0, 1, rng));
+}
+
+// Gamma random sample
+double randGamma(RNG)(ref RNG rng, double shape, double scale) nothrow
+{
+    // Implementation based on "A Simple Method for Generating Gamma Variables"
+    // by George Marsaglia and Wai Wan Tsang.  ACM Transactions on Mathematical Software
+    // Vol 26, No 3, September 2000, pages 363-372.
+
+    double d, c, x, xsquared, v, u;
+
+    if (shape >= 1.0)
     {
-        this() @disable;
-
-        static SimpleRng make()
+        d = shape - 1.0/3.0;
+        c = 1.0/sqrt(9.0*d);
+        for (;;)
         {
-            return SimpleRng(randomSeed());
-        }
-
-        this(vec2ui s) nothrow
-        {
-            seed = s;
-        }
-
-        @property vec2ui seed() const nothrow
-        {
-            return vec2ui(_u, _v);
-        }
-
-        @property vec2ui seed(vec2ui s) nothrow
-        {
-            _u = s.x;
-            _v = s.y;
-            return s;
-        }
-
-        // A uniform random sample from the set of unsigned integers
-        uint getUint() nothrow
-        {
-            _v = 36969 * (_v & 65535) + (_v >> 16);
-            _u = 18000 * (_u & 65535) + (_u >> 16);
-            return (_v << 16) + _u;
-        }
-
-        // A uniform random sample from the open interval (0, 1)
-        double getUniform() nothrow
-        {
-            // The magic number is 1/(2^32 + 1) and so result is positive and less than 1.
-            return getUint() * 2.328306435996595e-10;
-        }
-
-        // Normal (Gaussian) random sample
-        double getNormal(double mean = 0.0, double standardDeviation = 1.0) nothrow
-        {
-            assert(standardDeviation > 0);
-
-            // Use Box-Muller algorithm
-            double u1 = getUniform();
-            double u2 = getUniform();
-            double r = sqrt(-2.0 * log(u1));
-            double theta = 2.0 * PI * u2;
-            return mean + standardDeviation * r * sin(theta);
-        }
-
-        // Get exponential random sample with specified mean
-        double getExponential(double mean = 1.0) nothrow
-        {
-            assert(mean > 0);
-            return -mean*log(getUniform());
-        }
-
-    // Gamma random sample
-        double getGamma(double shape, double scale) nothrow
-        {
-            // Implementation based on "A Simple Method for Generating Gamma Variables"
-            // by George Marsaglia and Wai Wan Tsang.  ACM Transactions on Mathematical Software
-            // Vol 26, No 3, September 2000, pages 363-372.
-
-            double d, c, x, xsquared, v, u;
-
-            if (shape >= 1.0)
-            {
-                d = shape - 1.0/3.0;
-                c = 1.0/sqrt(9.0*d);
-                for (;;)
-                {
-                    do
-                    {
-                        x = getNormal();
-                        v = 1.0 + c*x;
-                    }
-                    while (v <= 0.0);
-                    v = v*v*v;
-                    u = getUniform();
-                    xsquared = x*x;
-                    if (u < 1.0 -.0331*xsquared*xsquared || log(u) < 0.5*xsquared + d*(1.0 - v + log(v)))
-                        return scale*d*v;
-                }
-            }
-            else
-            {
-                assert(shape > 0);
-                double g = getGamma(shape+1.0, 1.0);
-                double w = getUniform();
-                return scale*g*pow(w, 1.0/shape);
-            }
-        }
-
-    // Chi-square sample
-        double getChiSquare(double degreesOfFreedom) nothrow
-        {
-            // A chi squared distribution with n degrees of freedom
-            // is a gamma distribution with shape n/2 and scale 2.
-            return getGamma(0.5 * degreesOfFreedom, 2.0);
-        }
-
-    // Inverse-gamma sample
-        double getInverseGamma(double shape, double scale) nothrow
-        {
-            // If X is gamma(shape, scale) then
-            // 1/Y is inverse gamma(shape, 1/scale)
-            return 1.0 / getGamma(shape, 1.0 / scale);
-        }
-
-        // Weibull sample
-        double getWeibull(double shape, double scale) nothrow
-        {
-            assert(shape > 0 && scale > 0);
-            return scale * pow(-log(getUniform()), 1.0 / shape);
-        }
-
-        // Cauchy sample
-        double getCauchy(double median, double scale) nothrow
-        {
-            assert(scale > 0);
-            double p = getUniform();
-
-            // Apply inverse of the Cauchy distribution function to a uniform
-            return median + scale*tan(PI*(p - 0.5));
-        }
-
-        // Student-t sample
-        double getStudentT(double degreesOfFreedom) nothrow
-        {
-            assert(degreesOfFreedom > 0);
-
-            // See Seminumerical Algorithms by Knuth
-            double y1 = getNormal();
-            double y2 = getChiSquare(degreesOfFreedom);
-            return y1 / sqrt(y2 / degreesOfFreedom);
-        }
-
-        // The Laplace distribution is also known as the double exponential distribution.
-        double getLaplace(double mean, double scale) nothrow
-        {
-            // The Laplace distribution is also known as the double exponential distribution.
-            double u = getUniform();
-            return (u < 0.5) ? (mean + scale*log(2.0*u))
-                             : (mean - scale*log(2*(1-u)));
-        }
-
-        // Log-normal sample
-        double getLogNormal(double mu, double sigma) nothrow
-        {
-            return exp(getNormal(mu, sigma));
-        }
-
-        // Beta sample
-        double getBeta(double a, double b) nothrow
-        {
-            assert(a > 0 && b > 0);
-
-            // There are more efficient methods for generating beta samples.
-            // However such methods are a little more efficient and much more complicated.
-            // For an explanation of why the following method works, see
-            // http://www.johndcook.com/distribution_chart.html#gamma_beta
-
-            double u = getGamma(a, 1.0);
-            double v = getGamma(b, 1.0);
-            return u / (u + v);
-        }
-
-        // Poisson sample
-        int getPoisson(double lambda) nothrow
-        {
-            return (lambda < 30.0) ? poissonSmall(lambda) : poissonLarge(lambda);
-        }
-    }
-
-    private
-    {
-        uint _u, _v;
-
-        int poissonSmall(double lambda) nothrow
-        {
-            // Algorithm due to Donald Knuth, 1969.
-            double p = 1.0, L = exp(-lambda);
-            int k = 0;
             do
             {
-                k++;
-                p *= getUniform();
+                x = getNormal(rng);
+                v = 1.0 + c*x;
             }
-            while (p > L);
-            return k - 1;
+            while (v <= 0.0);
+            v = v*v*v;
+            u = uniform(0, 1, rng);
+            xsquared = x*x;
+            if (u < 1.0 -.0331*xsquared*xsquared || log(u) < 0.5*xsquared + d*(1.0 - v + log(v)))
+                return scale*d*v;
         }
-
-        int poissonLarge(double lambda) nothrow
-        {
-            // "Rejection method PA" from "The Computer Generation of Poisson Random Variables" by A. C. Atkinson
-            // Journal of the Royal Statistical Society Series C (Applied Statistics) Vol. 28, No. 1. (1979)
-            // The article is on pages 29-35. The algorithm given here is on page 32.
-
-            double c = 0.767 - 3.36/lambda;
-            double beta = PI/sqrt(3.0*lambda);
-            double alpha = beta*lambda;
-            double k = log(c) - lambda - log(beta);
-
-            for(;;)
-            {
-                double u = getUniform();
-                double x = (alpha - log((1.0 - u)/u))/beta;
-                int n = cast(int)(floor(x + 0.5));
-                if (n < 0)
-                    continue;
-                double v = getUniform();
-                double y = alpha - beta*x;
-                double temp = 1.0 + exp(y);
-                double lhs = y + log(v/(temp*temp));
-                double rhs = k + n*log(lambda) - logFactorial(n);
-                if (lhs <= rhs)
-                    return n;
-            }
-        }
-
-        double logFactorial(int n) nothrow
-        {
-            assert(n >= 0);
-            if (n > 254)
-            {
-                double x = n + 1;
-                return (x - 0.5)*log(x) - x + 0.5*log(2*PI) + 1.0/(12.0*x);
-            }
-            else
-            {
-                return LOG_FACTORIAL[n];
-            }
-        }
-
+    }
+    else
+    {
+        assert(shape > 0);
+        double g = getGamma(shape+1.0, 1.0);
+        double w = uniform(0, 1, rng);
+        return scale*g*pow(w, 1.0/shape);
     }
 }
 
-vec2ui randomSeed()
+// Chi-square sample
+double randChiSquare(RNG)(ref RNG rng, double degreesOfFreedom) nothrow
 {
-    uint seed1 = std.random.unpredictableSeed;
-    uint seed2 = std.random.unpredictableSeed;
-    assert(seed1 != seed2);
-    return vec2ui(seed1, seed2);
+    // A chi squared distribution with n degrees of freedom
+    // is a gamma distribution with shape n/2 and scale 2.
+    return getGamma(rng, 0.5 * degreesOfFreedom, 2.0);
 }
 
-
-unittest
+// Inverse-gamma sample
+double randInverseGamma(RNG)(ref RNG rng, double shape, double scale) nothrow
 {
-    auto rng = SimpleRng.make();
+    // If X is gamma(shape, scale) then
+    // 1/Y is inverse gamma(shape, 1/scale)
+    return 1.0 / getGamma(rng, shape, 1.0 / scale);
 }
 
+// Weibull sample
+double randWeibull(RNG)(ref RNG rng, double shape, double scale) nothrow
+{
+    assert(shape > 0 && scale > 0);
+    return scale * pow(-log(uniform(0, 1, rng)), 1.0 / shape);
+}
+
+// Cauchy sample
+double randCauchy(RNG)(ref RNG rng, double median, double scale) nothrow
+{
+    assert(scale > 0);
+    double p = uniform(0, 1, rng);
+
+    // Apply inverse of the Cauchy distribution function to a uniform
+    return median + scale*tan(PI*(p - 0.5));
+}
+
+// Student-t sample
+double randStudentT(RNG)(ref RNG rng, double degreesOfFreedom) nothrow
+{
+    assert(degreesOfFreedom > 0);
+
+    // See Seminumerical Algorithms by Knuth
+    double y1 = getNormal(rng);
+    double y2 = getChiSquare(rng, degreesOfFreedom);
+    return y1 / sqrt(y2 / degreesOfFreedom);
+}
+
+// The Laplace distribution is also known as the double exponential distribution.
+double randLaplace(RNG)(ref RNG rng, double mean, double scale) nothrow
+{
+    // The Laplace distribution is also known as the double exponential distribution.
+    double u = uniform(0, 1, rng);
+    return (u < 0.5) ? (mean + scale*log(2.0*u))
+                        : (mean - scale*log(2*(1-u)));
+}
+
+// Log-normal sample
+double randLogNormal(RNG)(ref RNG rng, double mu, double sigma) nothrow
+{
+    return exp(getNormal(rng, mu, sigma));
+}
+
+// Beta sample
+double randBeta(RNG)(ref RNG rng, double a, double b) nothrow
+{
+    assert(a > 0 && b > 0);
+
+    // There are more efficient methods for generating beta samples.
+    // However such methods are a little more efficient and much more complicated.
+    // For an explanation of why the following method works, see
+    // http://www.johndcook.com/distribution_chart.html#gamma_beta
+
+    double u = getGamma(rng, a, 1.0);
+    double v = getGamma(rng, b, 1.0);
+    return u / (u + v);
+}
+
+// Poisson sample
+int randPoisson(RNG)(ref RNG rng, double lambda) nothrow
+{
+    return (lambda < 30.0) ? poissonSmall(rng, lambda) : poissonLarge(rng, lambda);
+}
+
+private
+{
+    int poissonSmall(RNG)(ref RNG rng, double lambda) nothrow
+    {
+        // Algorithm due to Donald Knuth, 1969.
+        double p = 1.0, L = exp(-lambda);
+        int k = 0;
+        do
+        {
+            k++;
+            p *= uniform(0, 1, rng);
+        }
+        while (p > L);
+        return k - 1;
+    }
+
+    int poissonLarge(RNG)(ref RNG rng, double lambda) nothrow
+    {
+        // "Rejection method PA" from "The Computer Generation of Poisson Random Variables" by A. C. Atkinson
+        // Journal of the Royal Statistical Society Series C (Applied Statistics) Vol. 28, No. 1. (1979)
+        // The article is on pages 29-35. The algorithm given here is on page 32.
+
+        double c = 0.767 - 3.36/lambda;
+        double beta = PI/sqrt(3.0*lambda);
+        double alpha = beta*lambda;
+        double k = log(c) - lambda - log(beta);
+
+        for(;;)
+        {
+            double u = uniform(0, 1, rng);
+            double x = (alpha - log((1.0 - u)/u))/beta;
+            int n = cast(int)(floor(x + 0.5));
+            if (n < 0)
+                continue;
+            double v = uniform(0, 1, rng);
+            double y = alpha - beta*x;
+            double temp = 1.0 + exp(y);
+            double lhs = y + log(v/(temp*temp));
+            double rhs = k + n*log(lambda) - logFactorial(n);
+            if (lhs <= rhs)
+                return n;
+        }
+    }
+
+    double logFactorial(int n) nothrow
+    {
+        assert(n >= 0);
+        if (n > 254)
+        {
+            double x = n + 1;
+            return (x - 0.5)*log(x) - x + 0.5*log(2*PI) + 1.0/(12.0*x);
+        }
+        else
+        {
+            return LOG_FACTORIAL[n];
+        }
+    }
+}
 
 private static const double[255] LOG_FACTORIAL =
 [
