@@ -101,11 +101,11 @@
             }
         },
         {
-            "name": "example-simplevbo",
+            "name": "example-simpleshader",
             "targetPath": "examples/build",
             "targetType": "executable",
             "importPaths": [ "." ],
-            "sourcePaths": [ "examples/simplevbo" ],
+            "sourcePaths": [ "examples/simpleshader" ],
             "dependencies": {
                 "gfm:opengl": "~master"
             }
