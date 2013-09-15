@@ -9,6 +9,14 @@ version(Windows)
     import core.sys.windows.windows;
 }
 
+// get default logging object: writes to both a file  and the console
+Log defaultLog()
+{
+    Log consoleLogger = new ConsoleLog();
+    Log fileLogger = new FileLog("output_log.html");
+    return new MultiLog( [ consoleLogger, fileLogger ] );
+}
+
 class Log
 {
     public
@@ -94,7 +102,7 @@ final class MultiLog : Log
         override void logMessage(MessageType type, lazy string message)
         {
             foreach(log; _logs)
-                logMessage(type, message);
+                log.logMessage(type, message);
         }
     }
 
@@ -177,10 +185,10 @@ final class FileLog : Log
                 _logFile.writefln("<style>");
                 _logFile.writefln("body { margin: 0px; padding: 0px; font-family: courier new, courier; font-size: 9pt; color: white; background-color: #000000; }");
                 _logFile.writefln("div { margin: 5px 5px 5px 5px; }");
-                _logFile.writefln(".CRAP { color: #9b7766; text-align: left;}");
-                _logFile.writefln(".INFO { color: #80cf49; text-align: left;}");
-                _logFile.writefln(".WTF { color: #ff8020; text-align: left; text-decoration: bold;}");
-                _logFile.writefln(".EPICFAIL { color: #ff2020; text-align: left; text-decoration: bold;}");
+                _logFile.writefln(".debug { color: #9b7766; text-align: left;}");
+                _logFile.writefln(".info { color: #80cf49; text-align: left;}");
+                _logFile.writefln(".warn { color: #ff8020; text-align: left; text-decoration: bold;}");
+                _logFile.writefln(".error { color: #ff2020; text-align: left; text-decoration: bold;}");
                 _logFile.writefln("b { color: #ffff20; text-align: left; }");
                 _logFile.writefln("</style>");
                 _logFile.writefln("</head>");
