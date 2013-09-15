@@ -16,8 +16,9 @@ class SDL2Window
 {
     public
     {
-        // initially invisible
-        this(SDL2 sdl2, box2i bounds, bool fullscreen, bool OpenGL, bool resizable)
+        // Initially invisible.
+        // Accepts same constants as the SDL2 function
+        this(SDL2 sdl2, int x, int y, int width, int height, int flags)
         {
             _sdl2 = sdl2;
             _log = sdl2._log;
@@ -25,16 +26,7 @@ class SDL2Window
             _glContext = null;
             _surfaceMustBeRenewed = false;
 
-            int flags = SDL_WINDOW_SHOWN;
-
-            if (OpenGL)
-                flags |= SDL_WINDOW_OPENGL;
-
-            if (resizable)
-                flags |= SDL_WINDOW_RESIZABLE;
-
-            if (fullscreen)
-                flags |= (SDL_WINDOW_FULLSCREEN | SDL_WINDOW_BORDERLESS);
+            bool OpenGL = (flags & SDL_WINDOW_OPENGL) != 0;
 
             if (OpenGL)
             {
@@ -46,10 +38,7 @@ class SDL2Window
                 //SDL_GL_SetAttribute(SDL_GL_CONTEXT_FLAGS, SDL_GL_CONTEXT_DEBUG_FLAG | SDL_GL_CONTEXT_FORWARD_COMPATIBLE_FLAG);
             }
 
-            _window = SDL_CreateWindow(toStringz(""), 
-                                       bounds.a.x, bounds.a.y,
-                                       bounds.width, bounds.height,
-                                       flags);
+            _window = SDL_CreateWindow(toStringz(""), x, y, width, height, flags);
             if (_window == null)
                 throw new SDL2Exception("SDL_CreateWindow failed: " ~ _sdl2.getErrorString());
 
@@ -147,12 +136,10 @@ class SDL2Window
 
         void onShow()
         {
-            _log.info("onShow");
         }
 
         void onHide()
         {
-            _log.info("onHide");
         }
 
         void onExposed()
