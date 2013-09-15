@@ -157,6 +157,12 @@ class GLTexture
         {
           return _handle;
         }
+
+        void generateMipmap()
+        {
+            bind();
+            glGenerateMipmap(_target);
+        }
     }
 
     package
