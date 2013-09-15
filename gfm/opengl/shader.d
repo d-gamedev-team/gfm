@@ -55,10 +55,7 @@ final class GLShader
 
             for (size_t i = 0; i < lineCount; ++i)
             {
-                localLines[i] = lines[i];
-                if (localLines[i] is null)
-                    localLines[i] = "";
-
+                localLines[i] = lines[i] ~ "\n";
                 lengths[i] = cast(GLint)(localLines[i].length);
                 addresses[i] = localLines[i].ptr;
             }
@@ -83,8 +80,6 @@ final class GLShader
 
             if (compiled != GL_TRUE)
                 throw new OpenGLException("shader did not compile");
-
-
         }
 
         string getInfoLog()

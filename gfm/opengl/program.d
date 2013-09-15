@@ -90,6 +90,7 @@ final class GLProgram
          */
         this(OpenGL gl, string[] source)
         {
+            _gl = gl;
             bool present[5];
             enum string[5] defines = 
             [ 
@@ -170,10 +171,17 @@ final class GLProgram
                         if (l != versionLine)
                             newSource ~= line;
 
-                    shaders ~= new GLShader(_gl, shaderTypes[i]);
+                    shaders ~= new GLShader(_gl, shaderTypes[i], newSource);
                 }
             }
             this(gl, shaders);
+        }
+
+        // idem, except with lines
+        this(OpenGL gl, string wholeSource)
+        {
+            // split on end-of-lines
+            this(gl, splitLines(wholeSource));
         }
 
         ~this()
@@ -206,7 +214,10 @@ final class GLProgram
             GLint res;
             glGetProgramiv(_program, GL_LINK_STATUS, &res);
             if (GL_TRUE != res)
+            {
+                _gl._log.errorf("%s", getLinkLog());
                 throw new OpenGLException("Cannot link program");
+            }
 
             // get active uniforms
             {
