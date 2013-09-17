@@ -12,7 +12,6 @@ public import gfm.math.funcs,
               gfm.math.quaternion,
               gfm.math.shapes,
               gfm.math.fixedpoint,
-              gfm.math.easing,
               gfm.math.solver,
               gfm.math.simplerng,
               gfm.math.simplexnoise;

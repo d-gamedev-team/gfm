@@ -47,7 +47,6 @@ See UNLICENSE for more details.
   * **statistics.d** statistical functions
   * **solver.d** polynomial solvers up to quadratic
   * **simplerng.d** random distributions: a port of SimpleRNG from John D. Cook\*
-  * **easing.d** a port of easing functions from Robert Penner\*
   * **shapes.d** segment, triangle, sphere, ray...
   * **plane.d** 3D plane
   * **frustum.d** 3D frustum
