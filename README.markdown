@@ -17,7 +17,7 @@ gfm is:
 ## Contents
 
 
-Everything in this repositery is "public domain", except for parts marked with a star (*).
+Everything in this repositery is public domain, except for parts marked with a star (*).
 See UNLICENSE for more details.
 
 
@@ -46,7 +46,7 @@ See UNLICENSE for more details.
   * **fraction.d** rational numbers
   * **statistics.d** statistical functions
   * **solver.d** polynomial solvers up to quadratic
-  * **simplerng.d** random distributions: a port of SimpleRNG from John D. Cook\*
+  * **simplerng.d** random distributions: a port of SimpleRNG from John D. Cook
   * **shapes.d** segment, triangle, sphere, ray...
   * **plane.d** 3D plane
   * **frustum.d** 3D frustum
@@ -81,4 +81,4 @@ See UNLICENSE for more details.
   * Assimp wrapper based on Derelict3
   * scene wrapper
 
-*More to come*
+*There is always more to come, don't fear to ask for things*

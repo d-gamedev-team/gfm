@@ -6,6 +6,7 @@ import std.math;
 // Translation of SimpleRNG the work of John D. Cook
 // http://www.johndcook.com/cpp_random_number_generation.html
 // Removed the builtin RNG, and kept the distribution functions
+// John D. Cook confirmed this code as public domain.
 
 // Normal (Gaussian) random sample
 double randNormal(RNG)(ref RNG rng, double mean = 0.0, double standardDeviation = 1.0) nothrow
