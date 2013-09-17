@@ -27,7 +27,7 @@ See UNLICENSE for more details.
   * **lockedqueue.d** synchronized queue for thread communication
   * **memory.d** aligned malloc/free/realloc
   * **alignedbuffer.d** aligned array-like container
-  * **structpool.d** small object area
+  * **structpool.d** small object arena
   * **text.d** string utilities
 
 
