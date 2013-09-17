@@ -3,11 +3,10 @@
     "description": "Kitchen-sink utility library for multimedia programming",
     "homepage": "http://github.com/p0nce/gfm/",
     "copyright": "Copyright © 2011-2013, Games From Mars, ",
-    "license": "Public Domain except some parts",
+    "license": "Public Domain (Unlicense)",
 
     "authors": [
         "ponce",
-        "Ian Kaplan",
         "John D. Cook",
     ],
 

@@ -17,7 +17,7 @@ gfm is:
 ## Contents
 
 
-Everything in this repositery is public domain, except for parts marked with a star (*).
+Everything in this repositery is Public Domain.
 See UNLICENSE for more details.
 
 
@@ -40,7 +40,7 @@ See UNLICENSE for more details.
   * **vector.d** small vectors for 2D and 3D
   * **matrix.d** small matrices for 2D and 3D
   * **quaternion.d** quaternions
-  * **softcent.d:** 128 bits integers (cent/ucent implentation), including division algorithm from Ian Kaplan\*
+  * **softcent.d:** 128 bits integers (cent/ucent implementation)
   * **box.d** half-open intervals (for eg. AABB)
   * **fixedpoint.d** fixed-point numbers
   * **fraction.d** rational numbers

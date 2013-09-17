@@ -2,7 +2,6 @@
  * Provide a 128-bit integer type
  * guaranteed to never allocate and expected binary layout
  * Designed to be easy to read, probably too slow for heavy use.
- * Relies on division algorithm from Ian Kaplan.
  */
 module gfm.math.softcent;
 
@@ -304,9 +303,9 @@ import std.traits,
             --lo;
         }
 
-        self signBit() pure const nothrow
+        bool signBit() pure const nothrow
         {
-            return self((hi >> 63) & 1);
+            return self((hi >> 63) & 1) != 0;
         }
 
         uint[4] toParts() pure const nothrow
@@ -335,18 +334,6 @@ public softcentImpl!signed abs(bool signed)(softcentImpl!signed x) pure nothrow
         return -x;
 }
 
-
-/*
-Copyright stuff
-
-Use of this program, for any purpose, is granted the author,
-Ian Kaplan, as long as this copyright notice is included in
-the source code or any source code derived from this program.
-The user assumes all responsibility for using this code.
-
-Ian Kaplan, October 1996
-
-*/
 @safe private struct Internals
 {
     static void unsignedDivide(softucent dividend, softucent divisor,
@@ -354,46 +341,32 @@ Ian Kaplan, October 1996
     {
         assert(divisor != 0);
 
-        softucent q = 0, r = 0;
+        softucent rQuotient = 0;
+        softucent cDividend = dividend;
 
-        if (divisor > dividend)
-            r = dividend;
-        else if (divisor == dividend)
-            q = 1;
-        else
+        while (divisor <= cDividend)
         {
-            size_t numBits = 128;
+            // find N so that (divisor << N) <= cDividend && cDividend < (divisor << (N + 1) )
 
-            softucent d = void;
-
-            while (r < divisor)
+            softucent N = 0;
+            softucent cDivisor = divisor;
+            while (cDividend > cDivisor) 
             {
-                r = (r << 1) | (dividend.signBit());
-                d = dividend;
-                dividend = dividend << 1;
-                --numBits;
-            }
+                if (cDivisor.signBit())
+                    break;
 
-            /* The loop, above, always goes one iteration too far.
-            To avoid inserting an "if" statement inside the loop
-            the last iteration is simply reversed. */
-            dividend = d;
-            r = r >>> 1;
-            ++numBits;
+                if (cDividend < (cDivisor << 1))
+                    break;
 
-            for (size_t i = 0; i < numBits; ++i)
-            {
-                r = (r << 1) | (dividend.signBit());
-                softucent t = r - divisor;
-                softucent s = (t.signBit()) ? 0 : 1;
-                dividend = dividend << 1;
-                q = (q << 1) | s;
-                if (s)
-                    r = t;
+                cDivisor <<= 1;
+                ++N;
             }
+            cDividend = cDividend - cDivisor;
+            rQuotient += (softucent(1) << N);
         }
-        quotient = q;
-        remainder = r;
+
+        quotient = rQuotient;
+        remainder = cDividend;
     }
 
     static void signedDivide(softcent dividend, softcent divisor,
@@ -402,11 +375,11 @@ Ian Kaplan, October 1996
         softucent q, r;
         unsignedDivide(softucent(abs(dividend)), softucent(abs(divisor)), q, r);
 
-        /* the sign of the remainder is the same as the sign of the dividend */
+        // remainder has same sign as the dividend
         if (dividend < 0)
             r = -r;
 
-        /* the quotient is negated if the signs of the operands are opposite */
+        // negate the quotient if opposite signs
         if ((dividend >= 0) != (divisor >= 0))
             q = -q;
 
