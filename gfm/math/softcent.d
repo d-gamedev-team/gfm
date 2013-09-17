@@ -469,7 +469,7 @@ unittest
                 if (si >= 0 && sj >= 0)
                 {
                     // those operations are not supposed to be the same at
-                    // higher bitdepth: a sign-extended negative will yield way higher dividend
+                    // higher bitdepth: a sign-extended negative may yield higher dividend
                     testMixed("/");
                     testUnsigned("/");
                     testMixed("%");
