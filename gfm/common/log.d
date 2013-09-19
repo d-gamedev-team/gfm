@@ -139,6 +139,27 @@ final class ConsoleLog : Log
             version(Windows)
             {
                 _console = GetStdHandle(STD_OUTPUT_HANDLE);
+
+                // saves console attributes
+                _savedInitialColor = (0 != GetConsoleScreenBufferInfo(_console, &consoleInfo));
+            }
+        }
+
+        ~this()
+        {
+            close();
+        }
+
+        void close()
+        {
+            version(Windows)
+            {
+                // restore initial console attributes
+                if (_savedInitialColor)
+                {
+                    SetConsoleTextAttribute(_console, consoleInfo.wAttributes);
+                    _savedInitialColor = false;
+                }
             }
         }
     }
@@ -177,6 +198,8 @@ final class ConsoleLog : Log
         version(Windows)
         {
             HANDLE _console;
+            bool _savedInitialColor;
+            CONSOLE_SCREEN_BUFFER_INFO consoleInfo;
         }
     }
 }
