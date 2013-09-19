@@ -335,7 +335,7 @@ extern(C) private
 
             try
                 sdl2.onLogMessage(category, priority, message);
-            catch (Throwable e)
+            catch (Exception e)
             {
                 // got exception while logging, ignore it
             }
