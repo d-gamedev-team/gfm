@@ -1,5 +1,7 @@
 module gfm.sdl2.sdl;
 
+import core.stdc.stdlib;
+
 import std.conv,
        std.string,
        std.array;
@@ -327,7 +329,22 @@ extern(C) private
 {
     void loggingCallbackSDL(void* userData, int category, SDL_LogPriority priority, const(char)* message)
     {
-        SDL2 sdl2 = cast(SDL2)userData;
-        sdl2.onLogMessage(category, priority, message);
+        try
+        {
+            SDL2 sdl2 = cast(SDL2)userData;
+
+            try
+                sdl2.onLogMessage(category, priority, message);
+            catch (Throwable e)
+            {
+                // got exception while logging, ignore it
+            }
+        }
+        catch (Throwable e)
+        {
+            // No Throwable is supposed to cross C callbacks boundaries
+            // Crash immediately
+            exit(-1);
+        }
     }
 }
