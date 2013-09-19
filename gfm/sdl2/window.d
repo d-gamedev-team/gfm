@@ -36,6 +36,12 @@ class SDL2Window
                 //SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 3);
                 //SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);
                 //SDL_GL_SetAttribute(SDL_GL_CONTEXT_FLAGS, SDL_GL_CONTEXT_DEBUG_FLAG | SDL_GL_CONTEXT_FORWARD_COMPATIBLE_FLAG);
+
+                // force debug OpenGL context creation in debug mode
+                debug
+                {
+                    SDL_GL_SetAttribute(SDL_GL_CONTEXT_FLAGS, SDL_GL_CONTEXT_DEBUG_FLAG);
+                }
             }
 
             _window = SDL_CreateWindow(toStringz(""), x, y, width, height, flags);

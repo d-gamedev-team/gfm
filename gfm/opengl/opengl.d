@@ -1,5 +1,7 @@
 module gfm.opengl.opengl;
 
+import core.stdc.stdlib;
+
 import std.string,
        std.conv,
        std.array;
@@ -66,6 +68,26 @@ final class OpenGL
             _log.infof("    - EXT_framebuffer_object is%s supported", EXT_framebuffer_object() ? "": " not");
             getLimits(true);
             _textureUnits = new TextureUnits(this);
+
+            debug
+            {
+                // now that the context exists, pipe OpenGL output
+                pipeOpenGLDebugOutput();
+            }
+        }
+
+        void pipeOpenGLDebugOutput()
+        {
+            if (KHR_debug())
+            {
+                glDebugMessageCallback(&loggingCallbackOpenGL, cast(void*)this);
+
+                // enable all messages
+                glDebugMessageControl(GL_DONT_CARE, GL_DONT_CARE, GL_DONT_CARE, 0, null, GL_TRUE);
+
+                glEnable(GL_DEBUG_OUTPUT);
+                //glEnable(GL_DEBUG_OUTPUT_SYNCHRONOUS);
+            }
         }
 
         void close()
@@ -314,6 +336,92 @@ final class OpenGL
             }
         }
 
+    }
+}
+
+extern(System) private
+{
+    // This callback can be called from multiple threads
+    // TODO synchronization for Log objects
+    nothrow void loggingCallbackOpenGL(GLenum source, GLenum type, GLuint id, GLenum severity, GLsizei length, const(GLchar)* message, GLvoid* userParam)
+    {
+        try
+        {
+            OpenGL opengl = cast(OpenGL)userParam;
+
+            try
+            {
+                Log log = opengl._log;
+
+                string ssource;
+                switch (source)
+                {
+                    case GL_DEBUG_SOURCE_API:             ssource = "API"; break;
+                    case GL_DEBUG_SOURCE_WINDOW_SYSTEM:   ssource = "window system"; break;
+                    case GL_DEBUG_SOURCE_SHADER_COMPILER: ssource = "shader compiler"; break;
+                    case GL_DEBUG_SOURCE_THIRD_PARTY:     ssource = "third party"; break;
+                    case GL_DEBUG_SOURCE_APPLICATION:     ssource = "application"; break;
+                    case GL_DEBUG_SOURCE_OTHER:           ssource = "other"; break;
+                    default:                              ssource= "unknown"; break;
+                }
+
+                string stype;
+                switch (type)
+                {
+                    case GL_DEBUG_TYPE_ERROR:               stype = "error"; break;
+                    case GL_DEBUG_TYPE_DEPRECATED_BEHAVIOR: stype = "deprecated behaviour"; break;
+                    case GL_DEBUG_TYPE_UNDEFINED_BEHAVIOR:  stype = "undefined behaviour"; break;
+                    case GL_DEBUG_TYPE_PORTABILITY:         stype = "portabiliy"; break;
+                    case GL_DEBUG_TYPE_PERFORMANCE:         stype = "performance"; break;
+                    case GL_DEBUG_TYPE_OTHER:               stype = "other"; break;
+                    default:                                stype = "unknown"; break;
+                }
+
+                Log.MessageType mt;
+                string sseverity;
+                switch (severity)
+                {
+                    case GL_DEBUG_SEVERITY_HIGH:
+                        mt = Log.MessageType.ERROR;
+                        sseverity = "high";
+                        break;
+
+                    case GL_DEBUG_SEVERITY_MEDIUM: 
+                        mt = Log.MessageType.WARNING;
+                        sseverity = "medium";
+                        break;
+
+                    case GL_DEBUG_SEVERITY_LOW:    
+                        mt = Log.MessageType.WARNING;
+                        sseverity = "low";
+                        break;
+
+                    case GL_DEBUG_SEVERITY_NOTIFICATION:
+                        mt = Log.MessageType.INFO;
+                        sseverity = "notification";
+                        break;
+
+                    default:
+                        mt = Log.MessageType.WARNING;
+                        sseverity = "unknown";
+                        break;
+                }
+
+                string text = sanitizeUTF8(message, log, "OpenGL debug output");
+
+                log.messagef(mt, format("opengl: %s (id: %s, source: %s, type: %s, severity: %s)", text, id, ssource, stype, sseverity)); 
+            }
+            catch (Exception e)
+            {
+                // got exception while logging, ignore it
+            }
+        }
+        catch (Throwable e)
+        {
+            // No Throwable is supposed to cross C callbacks boundaries
+            // Crash immediately
+            exit(-1);
+        }
     }
 }
 
