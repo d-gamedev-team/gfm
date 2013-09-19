@@ -82,34 +82,35 @@ final class OpenGL
                 GLint r = glGetError();
                 if (r != GL_NO_ERROR)
                 {
+                    flushGLErrors(); // flush other errors if any
                     _log.errorf("OpenGL error: %s", getErrorString(r));
                     assert(false); // break here
                 }
             }
         }
 
-        // throw OpenGLException in case of error
-        void runtimeCheck(bool warning = false)
+        /// throw OpenGLException in case of OpenGL error
+        void runtimeCheck()
         {
             GLint r = glGetError();
             if (r != GL_NO_ERROR)
             {
                 string errorString = getErrorString(r);
-
-                // flush out and logs others errors
-                int timeout = 0;
-                do
-                {
-                    // avoid infinite loop in a no-driver situation
-                    if (++timeout > 5)
-                        break;
-
-                    r = glGetError();
-                }
-                while(r != GL_NO_ERROR);
-
+                flushGLErrors(); // flush other errors if any
                 throw new OpenGLException(errorString);
             }
+        }
+
+        /// return false in case of OpenGL error
+        bool runtimeCheckNothrow() nothrow
+        {
+            GLint r = glGetError();
+            if (r != GL_NO_ERROR)
+            {
+                flushGLErrors(); // flush other errors if any
+                return false;
+            }
+            return true;
         }
 
         string getString(GLenum name)
@@ -146,24 +147,32 @@ final class OpenGL
             return getString(GL_EXTENSIONS);
         }
 
-        int getInteger(GLenum pname)
+        bool getInteger(GLenum pname, out int result) nothrow
         {
-            GLint res;
-            glGetIntegerv(pname, &res);
-            runtimeCheck();
-            return res;
+            GLint param;
+            glGetIntegerv(pname, &param);
+
+            if (runtimeCheckNothrow())
+            {
+                result = param;
+                return true;
+            }
+            else
+                return false;
         }
 
         int getInteger(GLenum pname, GLint defaultValue, bool logging)
         {
-            try
+            int result;
+
+            if (getInteger(pname, result))
             {
-                return getInteger(pname);
+                return result;
             }
-            catch(OpenGLException e)
+            else
             {
                 if (logging)
-                    _log.warn(e.msg);
+                    _log.warn("couldn't get OpenGL integer");
                 return defaultValue;
             }
         }
@@ -210,6 +219,7 @@ final class OpenGL
                 default:                   return "Unknown OpenGL error";
             }
         }
+
     }
 
     public
@@ -291,6 +301,19 @@ final class OpenGL
             else
                 _maxTextureMaxAnisotropy = 1.0f;
         }
+
+        /// flush out OpenGL errors
+        void flushGLErrors() nothrow
+        {            
+            int timeout = 0;
+            while (++timeout <= 5) // avoid infinite loop in a no-driver situation
+            {
+                GLint r = glGetError();
+                if (r == GL_NO_ERROR)
+                    break;
+            }
+        }
+
     }
 }
 
