@@ -68,6 +68,17 @@ class Log
         {
             logMessage(Log.MessageType.ERROR, format(args));
         }
+
+        // with severity as parameter (useful for piping library log output)
+        final void message(MessageType type, lazy string message)
+        {
+            return logMessage(type, message);
+        }
+
+        final void messagef(Args...)(MessageType type, Args args)
+        {
+            return logMessage(type, format(args));
+        }
     }
 
     protected
