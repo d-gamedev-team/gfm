@@ -118,7 +118,7 @@ final class OpenGL
             if (sZ is null)
                 return "(unknown)";
             else
-                return sanitizeUTF8(sZ);
+                return sanitizeUTF8(sZ, _log, "OpenGL");
         }
 
         string getVersionString()

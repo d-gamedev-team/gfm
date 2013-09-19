@@ -242,7 +242,7 @@ final class GLProgram
                                        &type,
                                        buffer.ptr);
                     _gl.runtimeCheck();
-                    string name = sanitizeUTF8(buffer.ptr);
+                    string name = sanitizeUTF8(buffer.ptr, _gl._log, "OpenGL uniform name");
                    _activeUniforms[name] = new GLUniform(_gl, _program, type, name, size);
                 }
             }
@@ -274,7 +274,7 @@ final class GLProgram
             GLint dummy;
             glGetProgramInfoLog(_program, logLength, &dummy, log.ptr);
             _gl.runtimeCheck();
-            return sanitizeUTF8(log.ptr);
+            return sanitizeUTF8(log.ptr, _gl._log, "shader link log");
         }
 
         GLUniform uniform(string name)

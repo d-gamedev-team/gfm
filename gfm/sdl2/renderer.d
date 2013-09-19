@@ -24,15 +24,16 @@ final class SDL2RendererInfo
 {
     public
     {
-        this(int index, SDL_RendererInfo info)
+        this(Log log, int index, SDL_RendererInfo info)
         {
+            _log = log;
             _index = index;
             _info = info;
         }
 
         string name()
         {
-            return sanitizeUTF8(_info.name);
+            return sanitizeUTF8(_info.name, _log, "SDL2 renderer name");
         }
 
         bool isSoftware()
@@ -70,6 +71,7 @@ final class SDL2RendererInfo
 
     private
     {
+        Log _log;
         int _index;
         SDL_RendererInfo _info;
     }

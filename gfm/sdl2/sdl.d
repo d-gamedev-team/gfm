@@ -65,7 +65,7 @@ final class SDL2
             subSystemInit(SDL_INIT_HAPTIC);
 
             _log.infof("Available drivers: %s", join(getVideoDrivers(), ", "));
-            _log.infof("Running using video driver: %s", sanitizeUTF8(SDL_GetCurrentVideoDriver()));
+            _log.infof("Running using video driver: %s", sanitizeUTF8(SDL_GetCurrentVideoDriver(), _log, "SDL_GetCurrentVideoDriver"));
 
             int numDisplays = SDL_GetNumVideoDisplays();
             
@@ -103,13 +103,13 @@ final class SDL2
             string[] res;
             res.length = numDrivers;
             for(int i = 0; i < numDrivers; ++i)
-                res[i] = sanitizeUTF8(SDL_GetVideoDriver(i));
+                res[i] = sanitizeUTF8(SDL_GetVideoDriver(i), _log, "SDL_GetVideoDriver");
             return res;
         }
 
         string getPlatform()
         {
-            return sanitizeUTF8(SDL_GetPlatform());
+            return sanitizeUTF8(SDL_GetPlatform(), _log, "SDL_GetPlatform");
         }
 
         int getL1LineSize()
@@ -190,7 +190,7 @@ final class SDL2
                 int err = SDL_GetRenderDriverInfo(i, &info);
                 if (err != 0)
                     throwSDL2Exception("SDL_GetRenderDriverInfo");
-                res ~= new SDL2RendererInfo(i, info);
+                res ~= new SDL2RendererInfo(_log, i, info);
             }
             return res;
         }
@@ -226,7 +226,7 @@ final class SDL2
             if (s is null)
                 throwSDL2Exception("SDL_GetClipboardText");
 
-            return sanitizeUTF8(s);
+            return sanitizeUTF8(s, _log, "SDL clipboard text");
         }
     }
 
@@ -243,7 +243,7 @@ final class SDL2
         {
             const(char)* message = SDL_GetError();
             SDL_ClearError(); // clear error
-            return sanitizeUTF8(message);
+            return sanitizeUTF8(message, _log, "SDL error string");
         } 
     }
 
@@ -311,7 +311,7 @@ final class SDL2
             string formattedMessage = format("SDL (category %s, priority %s): %s", 
                                              readableCategory(category), 
                                              readablePriority(priority), 
-                                             sanitizeUTF8(message));
+                                             sanitizeUTF8(message, _log, "SDL logging"));
 
             if (priority == SDL_LOG_PRIORITY_WARN)
                 _log.warn(formattedMessage);

@@ -99,7 +99,7 @@ final class Assimp
         string getLegalString()
         {
             const(char)* legalZ = aiGetLegalString();
-            return sanitizeUTF8(legalZ);
+            return sanitizeUTF8(legalZ, _log, "Assimp legal string");
         }
     }
 
@@ -117,7 +117,7 @@ final class Assimp
         string getErrorString()
         {
             const(char)* errorZ = aiGetErrorString();
-            return sanitizeUTF8(errorZ);
+            return sanitizeUTF8(errorZ, _log, "Assimp error string");
         }
     }
 
@@ -135,7 +135,8 @@ extern (C) private
         Assimp assimp = cast(Assimp)user;
         try
         {
-            assimp._log.infof("assimp: %s", sanitizeUTF8(message));
+            Log log = assimp._log;
+            log.infof("assimp: %s", sanitizeUTF8(message, log, "Assimp logging"));
         }
         catch(Exception e)
         {
