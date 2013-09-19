@@ -23,8 +23,8 @@ class Log
     {
         enum MessageType
         {
-            DEBUG = 0, // crap message for debugging to be removed in debug mode, forbidden in release mode
-            INFO = 1, // detailed functionning of the program, do not show in release mdoe
+            DEBUG = 0,
+            INFO = 1,
             WARNING = 2,
             ERROR = 3,
         }
