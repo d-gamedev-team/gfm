@@ -1,7 +1,7 @@
-module gfm.common.alignedbuffer;
+module gfm.core.alignedbuffer;
 
 import std.c.string;
-import gfm.common.memory;
+import gfm.core.memory;
 
 // Growable array, points to a memory aligned location.
 final class AlignedBuffer(T)

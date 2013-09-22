@@ -7,8 +7,8 @@ import std.conv,
 import derelict.assimp.assimp,
        derelict.util.exception;
 
-import gfm.common.log,
-       gfm.common.text;
+import gfm.core.log,
+       gfm.core.text;
 
 class AssimpException : Exception
 {

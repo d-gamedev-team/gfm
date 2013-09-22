@@ -4,8 +4,8 @@ import std.string;
 
 import derelict.sdl2.sdl;
 
-import gfm.common.log,
-       gfm.common.text,
+import gfm.core.log,
+       gfm.core.text,
        gfm.math.vector,
        gfm.math.box,
        gfm.sdl2.sdl,

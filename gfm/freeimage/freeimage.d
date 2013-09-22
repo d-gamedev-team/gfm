@@ -6,8 +6,8 @@ import std.conv,
 import derelict.freeimage.freeimage,
        derelict.util.exception;
 
-import gfm.common.log,
-       gfm.common.text;
+import gfm.core.log,
+       gfm.core.text;
 
 class FreeImageException : Exception
 {

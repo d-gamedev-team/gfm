@@ -1,4 +1,4 @@
-module gfm.common.log;
+module gfm.core.log;
 
 import std.stream,
        std.stdio,
@@ -9,7 +9,7 @@ version(Windows)
     import core.sys.windows.windows;
 }
 
-// get default logging object: writes to both a file  and the console
+// get default logging object: writes to both a file and the console
 Log defaultLog()
 {
     Log consoleLogger = new ConsoleLog();

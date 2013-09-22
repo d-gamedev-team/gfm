@@ -1,9 +1,9 @@
-module gfm.common.lockedqueue;
+module gfm.core.lockedqueue;
 
 import core.sync.mutex,
        core.sync.semaphore;
 
-import gfm.common.queue;
+import gfm.core.queue;
 
 // Locked queue for inter-thread communication
 // relies on Queue

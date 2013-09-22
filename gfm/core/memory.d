@@ -1,4 +1,4 @@
-module gfm.common.memory;
+module gfm.core.memory;
 
 import std.c.stdlib : malloc, free, realloc;
 

@@ -4,7 +4,7 @@ import std.string;
 
 import derelict.sdl2.sdl;
 
-import gfm.common.log,
+import gfm.core.log,
        gfm.sdl2.sdl,
        gfm.sdl2.window,
        gfm.sdl2.keyboard;

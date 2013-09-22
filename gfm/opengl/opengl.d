@@ -9,8 +9,8 @@ import std.string,
 import derelict.opengl3.gl3,
        derelict.opengl3.gl;
 
-import gfm.common.log,
-       gfm.common.text,
+import gfm.core.log,
+       gfm.core.text,
        gfm.opengl.textureunit;
 
 class OpenGLException : Exception

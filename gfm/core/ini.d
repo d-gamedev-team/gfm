@@ -1,10 +1,10 @@
-module gfm.common.ini;
+module gfm.core.ini;
 
 import std.stdio,
        std.string,
        std.algorithm;
 
-import gfm.common.text;
+import gfm.core.text;
 
 /// A dumb and permissive INI parser, AST and writer
 class IniFile

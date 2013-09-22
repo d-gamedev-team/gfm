@@ -12,8 +12,8 @@ import derelict.sdl2.sdl,
 
 import gfm.sdl2.displaymode,
        gfm.sdl2.renderer,
-       gfm.common.log,
-       gfm.common.text,
+       gfm.core.log,
+       gfm.core.text,
        gfm.math.vector,
        gfm.math.box;
 

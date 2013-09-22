@@ -1,4 +1,4 @@
-module gfm.common.queue;
+module gfm.core.queue;
 
 import std.range;
 

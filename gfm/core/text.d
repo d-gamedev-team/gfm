@@ -1,4 +1,4 @@
-module gfm.common.text;
+module gfm.core.text;
 
 import std.file,
        std.utf,
@@ -7,7 +7,7 @@ import std.file,
        std.array,
        std.c.string;
 
-import gfm.common.log;
+import gfm.core.log;
 
 string[] readTextFile(string filename)
 {

@@ -4,7 +4,7 @@ import std.string;
 
 import derelict.opengl3.gl3;
 
-import gfm.common.log,
+import gfm.core.log,
        gfm.opengl.opengl, 
        gfm.opengl.textureunit;
 

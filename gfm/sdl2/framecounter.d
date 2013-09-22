@@ -4,7 +4,7 @@ import std.string;
 
 import derelict.sdl2.sdl;
 
-import gfm.common.queue,
+import gfm.core.queue,
        gfm.math.statistics,
        gfm.sdl2.sdl;
 

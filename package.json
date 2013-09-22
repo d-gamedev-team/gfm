@@ -15,7 +15,7 @@
     ],
 
     "dependencies": {
-        "gfm:common": "~master",
+        "gfm:core": "~master",
         "gfm:assimp": "~master",
         "gfm:freeimage": "~master",
         "gfm:image": "~master",
@@ -27,8 +27,8 @@
 
     "subPackages": [
         {
-            "name": "common",
-            "sourcePaths": [ "gfm/common" ],
+            "name": "core",
+            "sourcePaths": [ "gfm/core" ],
             "importPaths": [ "." ]
         },
         {
@@ -42,7 +42,7 @@
             "sourcePaths": [ "gfm/image" ],
             "importPaths": [ "." ],
             "dependencies": {
-                "gfm:common": "~master",
+                "gfm:core": "~master",
                 "gfm:math": "~master"
             }
         },
@@ -57,7 +57,7 @@
             "importPaths": [ "." ],
             "dependencies": {
                 "derelict:assimp": "~master",
-                "gfm:common": "~master"
+                "gfm:core": "~master"
             }
         },
         {
@@ -66,7 +66,7 @@
             "importPaths": [ "." ],
             "dependencies": {
                 "derelict:opengl3": "~master",
-                "gfm:common": "~master",
+                "gfm:core": "~master",
                 "gfm:math": "~master"
             }
         },
@@ -76,7 +76,7 @@
             "importPaths": [ "." ],
             "dependencies": {
                 "derelict:sdl2": "~master",
-                "gfm:common": "~master"
+                "gfm:core": "~master"
             }
         },
         {
@@ -85,7 +85,7 @@
             "importPaths": [ "." ],
             "dependencies": {
                 "derelict:freeimage": "~master",
-                "gfm:common": "~master"
+                "gfm:core": "~master"
             }
         },
         {

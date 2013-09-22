@@ -6,8 +6,8 @@ import derelict.util.exception,
        derelict.sdl2.sdl,
        derelict.sdl2.image;
 
-import gfm.common.log,
-       gfm.common.text,
+import gfm.core.log,
+       gfm.core.text,
        gfm.sdl2.sdl, 
        gfm.sdl2.surface;
 

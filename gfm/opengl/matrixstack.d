@@ -1,6 +1,6 @@
 module gfm.opengl.matrixstack;
 
-import gfm.common.memory,
+import gfm.core.memory,
        gfm.math.vector,
        gfm.math.matrix;
 

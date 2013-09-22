@@ -1,4 +1,4 @@
-module gfm.common.structpool;
+module gfm.core.structpool;
 
 
 // manage memory allocation for same-sized non-contiguous structs

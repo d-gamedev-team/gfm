@@ -3,7 +3,7 @@ module gfm.math.statistics;
 import std.range,
        std.math;
 
-import gfm.common.queue;
+import gfm.core.queue;
 
 /**
  * Arithmetic mean.

@@ -3,8 +3,8 @@ module gfm.image.bitmap;
 import std.c.string, 
        std.math;
 
-import gfm.common.alignedbuffer,
-       gfm.common.memory,
+import gfm.core.alignedbuffer,
+       gfm.core.memory,
        gfm.math.vector;
 
 import gfm.image.image;

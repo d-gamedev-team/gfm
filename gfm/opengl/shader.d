@@ -5,8 +5,8 @@ import std.string,
 
 import derelict.opengl3.gl3;
 
-import gfm.common.log,
-       gfm.common.text,
+import gfm.core.log,
+       gfm.core.text,
        gfm.opengl.opengl;
 
 
