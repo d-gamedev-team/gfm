@@ -1,7 +1,7 @@
 import std.math,
        std.typecons;
 
-import gfm.common.all,
+import gfm.core.all,
        gfm.sdl2.all,
        gfm.opengl.all;
 
