@@ -56,7 +56,7 @@
             "sourcePaths": [ "gfm/assimp" ],
             "importPaths": [ "." ],
             "dependencies": {
-                "derelict:assimp": "~master",
+                "derelict:assimp3": "~master",
                 "gfm:core": "~master"
             }
         },

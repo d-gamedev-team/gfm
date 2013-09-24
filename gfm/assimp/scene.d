@@ -2,7 +2,7 @@ module gfm.assimp.scene;
 
 import std.string;
 
-import derelict.assimp.assimp;
+import derelict.assimp3.assimp;
 
 import gfm.assimp.assimp;
 

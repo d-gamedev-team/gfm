@@ -4,7 +4,7 @@ module gfm.assimp.all;
 
 public
 {
-    import derelict.assimp.assimp;
+    import derelict.assimp3.assimp;
 
     import gfm.assimp.assimp,
            gfm.assimp.scene;

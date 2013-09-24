@@ -4,7 +4,7 @@ import std.conv,
        std.string,
        std.array : join;
 
-import derelict.assimp.assimp,
+import derelict.assimp3.assimp,
        derelict.util.exception;
 
 import gfm.core.log,
@@ -31,7 +31,7 @@ final class Assimp
 
             try
             {
-                DerelictASSIMP.load();
+                DerelictASSIMP3.load();
             }
             catch(DerelictException e)
             {
@@ -65,15 +65,10 @@ final class Assimp
             if (_libInitialized)
             {
                 aiDetachLogStream(&_logStream);
-                DerelictASSIMP.unload();
+                DerelictASSIMP3.unload();
                 _libInitialized = false;
             }
         }
-
-        alias nothrow uint function() da_aiGetVersionMinor;
-        alias nothrow uint function() da_aiGetVersionMajor;
-        alias nothrow uint function() da_aiGetVersionRevision;
-        alias nothrow uint function() da_aiGetCompileFlags;
 
         string getVersion()
         {
