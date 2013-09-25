@@ -1,0 +1,41 @@
+{
+    "name": "gfm-examples",
+    "description": "GFM examples",
+    "homepage": "http://github.com/p0nce/gfm/",
+    "copyright": "none",
+    "license": "Public Domain (Unlicense)",
+    "authors": [ "ponce" ],
+    "importPaths": [ "." ],
+    "targetType": "executable",
+    "targetPath": "build",
+
+    "dependencies": 
+    {
+        "gfm:net": "~master",
+        "gfm:sdl2": "~master",
+        "gfm:opengl": "~master"
+    },
+
+    "configurations": [
+        {
+            "name": "simplehttp",            
+            "targetName": "simplehttp",            
+            "sourcePaths": [ "simplehttp/." ],
+
+          
+        },
+        {
+            "name": "simplegl",            
+            "targetName": "simplegl",            
+            "sourcePaths": [ "simplegl/." ],
+
+           
+        },
+        {
+            "name": "simpleshader",            
+            "targetName": "simpleshader",            
+            "sourcePaths": [ "simpleshader/." ],
+
+        }
+    ]
+}

@@ -87,36 +87,6 @@
                 "derelict:freeimage": "~master",
                 "gfm:core": "~master"
             }
-        },
-        {
-            "name": "example-simplegl",
-            "targetPath": "examples/build",
-            "targetType": "executable",
-            "importPaths": [ "." ],
-            "sourcePaths": [ "examples/simplegl" ],
-            "dependencies": {
-                "gfm:opengl": "~master"
-            }
-        },
-        {
-            "name": "example-simpleshader",
-            "targetPath": "examples/build",
-            "targetType": "executable",
-            "importPaths": [ "." ],
-            "sourcePaths": [ "examples/simpleshader" ],
-            "dependencies": {
-                "gfm:opengl": "~master"
-            }
-        },
-        {
-            "name": "example-simplehttp",
-            "targetPath": "examples/build",
-            "targetType": "executable",
-            "importPaths": [ "." ],
-            "sourcePaths": [ "examples/simplehttp" ],
-            "dependencies": {
-                "gfm:net": "~master"
-            }
         }
     ]
 }
