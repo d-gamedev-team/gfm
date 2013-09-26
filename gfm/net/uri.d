@@ -199,7 +199,7 @@ class URI
         // URI         = scheme ":" hier-part [ "?" query ] [ "#" fragment ]
         void parseURI(T)(ref T input)
         {
-            _scheme = toLowerString(parseScheme(input));
+            _scheme = toLower(parseScheme(input));
             consume(input, ':');
             parseHierPart(input);
 
@@ -351,7 +351,7 @@ class URI
                 {
                     input = iinput.save;
                     hostType = HostType.REG_NAME;
-                    res = toLowerString(parseRegName(input));
+                    res = toLower(parseRegName(input));
                 }
             }
         }
@@ -650,14 +650,6 @@ private pure
             i = i / 10;
         } while (i != 0);
         return res;
-    }
-
-    string toLowerString(string s)
-    {
-        string result;
-        foreach (dchar c; s)
-            result ~= toLower(c);
-        return result;
     }
 
     struct KnownScheme
