@@ -1,6 +1,9 @@
 module gfm.enet.host;
 
-import gfm.enet.peer;
+import derelict.enet.enet;
+
+import gfm.enet.enet,
+       gfm.enet.peer;
 
 class Host
 {
@@ -33,7 +36,7 @@ class Host
             ENetPeer* peer = enet_host_connect(_handle, address, channelCount, data);
             if (peer is null)
                 throw new ENetException("enet_host_connect failed");
-            return new ENetPeer(_enet, peer);
+            return new Peer(_enet, peer);
         }
 
         void broadcast(ubyte channelID, ENetPacket* packet)
@@ -53,7 +56,7 @@ class Host
 
         void bandwidthLimit(uint incomingBandwidth, uint outgoingBandwidth)
         {
-             enet_host_bandwidth_limit(_handle, incomingBandwidth, outcomingBandwidth);
+             enet_host_bandwidth_limit(_handle, incomingBandwidth, outgoingBandwidth);
         }
     }
 
