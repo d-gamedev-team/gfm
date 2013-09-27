@@ -17,6 +17,7 @@
     "dependencies": {
         "gfm:core": "~master",
         "gfm:assimp": "~master",
+        "gfm:enet": "~master",
         "gfm:freeimage": "~master",
         "gfm:image": "~master",
         "gfm:math": "~master",
@@ -50,6 +51,15 @@
             "name": "net",
             "sourcePaths": [ "gfm/net" ],
             "importPaths": [ "." ]
+        },
+         {
+            "name": "enet",
+            "sourcePaths": [ "gfm/enet" ],
+            "importPaths": [ "." ],
+             "dependencies": {
+                "derelict:enet": "~master",
+                "gfm:core": "~master"
+            }
         },
         {
             "name": "assimp",
