@@ -3,8 +3,8 @@ module gfm.enet.peer;
 import derelict.enet.enet;
 import gfm.enet.enet;
 
-// http://enet.bespin.org/group__peer.html
-
+/// ENet peer
+/// http://enet.bespin.org/group__peer.html
 class Peer
 {
     public

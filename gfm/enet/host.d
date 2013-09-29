@@ -5,14 +5,16 @@ import derelict.enet.enet;
 import gfm.enet.enet,
        gfm.enet.peer;
 
+/// ENet host
+/// http://enet.bespin.org/group__host.html
 class Host
 {
     public
     {
-        this(ENet enet, in ENetAddress address, size_t peerCount, size_t channelLimit, uint incomingBandwidth, uint outgoingBandwidth)
+        this(ENet enet, ENetAddress* address, size_t peerCount, size_t channelLimit, uint incomingBandwidth, uint outgoingBandwidth)
         {
             _enet = enet;
-            _handle = enet_host_create(&address, peerCount, channelLimit, incomingBandwidth, outgoingBandwidth);
+            _handle = enet_host_create(address, peerCount, channelLimit, incomingBandwidth, outgoingBandwidth);
             if (_handle is null)
                 throw new ENetException("enet_host_create failed");
         }
@@ -57,6 +59,22 @@ class Host
         void bandwidthLimit(uint incomingBandwidth, uint outgoingBandwidth)
         {
              enet_host_bandwidth_limit(_handle, incomingBandwidth, outgoingBandwidth);
+        }
+
+        int service(ENetEvent* event, uint timeout)
+        {
+            int res = enet_host_service(_handle, event, timeout);
+            if (res < 0)
+                throw new ENetException("enet_host_service failed");
+            return res;
+        }
+
+        int checkEvents(ENetHost* host, ENetEvent* event)
+        {
+            int res = enet_host_check_events(_handle, event);
+            if (res < 0)
+                throw new ENetException("enet_check_events failed");
+            return res;
         }
     }
 
