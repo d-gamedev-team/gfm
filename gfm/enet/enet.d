@@ -6,7 +6,8 @@ import std.conv,
 import derelict.enet.enet,
        derelict.util.exception;
 
-import gfm.core.log;
+import gfm.core.log,
+       gfm.enet.host;
 
 class ENetException : Exception
 {
@@ -63,14 +64,47 @@ final class ENet
             if (_libInitialized)
             {
                 enet_deinitialize();
-                _libInitialized = false;                
+                _libInitialized = false;
             }
         }
+
+        // Create a server
+        Host createServer(ushort port, int peerCount)
+        {
+            ENetAddress address;
+            address.port = port;
+            address.host = ENET_HOST_ANY;
+            return new Host(this, &address, peerCount, 0, 0, 0);
+        }
+        
+        // Create a client
+        Host createClient(int peerCount) 
+        {
+            return new Host(this, null, peerCount, 0, 0, 0);
+        }
+
+        // try to resolve host address
+        bool resolveHost(string hostName, out uint host)
+        {
+            ENetAddress address;
+            int errCode = enet_address_set_host(&address, toStringz(hostName));
+            if (errCode == 0)
+            {
+                host = address.host;
+                return true;
+            }
+            else
+                return false;
+        }
+    }
+
+    package
+    {
+        Log _log;
     }
 
     private
     {
-        Log _log;
         bool _libInitialized;
     }
 }

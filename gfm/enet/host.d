@@ -33,11 +33,12 @@ class Host
             }
         }
 
-        Peer connect(const(ENetAddress) *address, size_t channelCount, enet_uint32 data)
+        Peer connect(const(ENetAddress) *address, size_t channelCount, enet_uint32 data = 0)
         {
             ENetPeer* peer = enet_host_connect(_handle, address, channelCount, data);
             if (peer is null)
                 throw new ENetException("enet_host_connect failed");
+
             return new Peer(_enet, peer);
         }
 

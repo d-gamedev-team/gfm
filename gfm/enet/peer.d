@@ -34,7 +34,7 @@ class Peer
         }
 
         /// Request a disconnection from a peer. 
-        void disconnect(uint data)
+        void disconnect(uint data = 0)
         {
             enet_peer_disconnect(_handle, data);
         }

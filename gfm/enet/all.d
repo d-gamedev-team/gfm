@@ -7,5 +7,7 @@ public
     import derelict.enet.enet;
 
     import gfm.enet.enet,
-           gfm.enet.host;
+           gfm.enet.packet,
+           gfm.enet.host,
+           gfm.enet.peer;
 }
