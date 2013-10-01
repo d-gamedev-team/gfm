@@ -16,7 +16,7 @@ template wideint(int bits)
 
 template uwideint(int bits)
 {
-    alias integer!(false, bits) wideint;
+    alias integer!(false, bits) uwideint;
 }
 
 private template integer(bool signed, int bits)
@@ -45,7 +45,7 @@ private template integer(bool signed, int bits)
 }
 
 /// recursive 2^n integer implementation
-@safe struct wideIntImpl(bool signed, int bits)
+struct wideIntImpl(bool signed, int bits)
 {
     static assert(bits >= 128);
     private
@@ -60,12 +60,19 @@ private template integer(bool signed, int bits)
         alias integer!(true, bits/2) sub_int_t;   // signed bits/2 integer
         alias integer!(false, bits/2) sub_uint_t; // unsigned bits/2 integer
 
+        alias integer!(true, bits/4) sub_sub_int_t;   // signed bits/4 integer
+        alias integer!(false, bits/4) sub_sub_uint_t; // unsigned bits/4 integer
+
         static if(signed)
             alias sub_int_t hi_t; // hi_t has same signedness as the whole struct
         else
             alias sub_uint_t hi_t;
 
         alias sub_uint_t low_t;   // low_t is always unsigned
+
+        enum _isWideIntImpl = true,
+             _bits = bits,
+             _signed = signed;
     }
 
     this(T)(T x) pure nothrow
@@ -91,14 +98,7 @@ private template integer(bool signed, int bits)
         return this;
     }
 
-    ref self opAssign(T)(T n) pure nothrow if (is(Unqual!T == wideIntImpl!(!signed, bits))) // signed <=> unsigned
-    {
-        hi = n.hi;
-        lo = n.lo;
-        return this;
-    }
-
-    ref self opAssign(T)(T n) pure nothrow if (isSelf!T)
+    ref self opAssign(T)(T n) pure nothrow if (is(typeof(T._isWideIntImpl)) && T._bits == bits) // same size
     {
         hi = n.hi;
         lo = n.lo;
@@ -122,13 +122,11 @@ private template integer(bool signed, int bits)
 
         for (size_t i = 0; i < hexdigits; ++i)
         {
-            int idx = cast(int)(15 & (hi >> ((15 - i) * 4)));
-            outbuff ~= hexDigits[idx];
+            outbuff ~= hexDigits[cast(int)((hi >> ((15 - i) * 4)) & 15)];
         }
         for (size_t i = 0; i < hexdigits; ++i)
         {
-            int idx = cast(int)(15 & (lo >> ((15 - i) * 4)));
-            outbuff ~= hexDigits[idx];
+            outbuff ~= hexDigits[cast(int)((lo >> ((15 - i) * 4)) & 15)];
         }
         return outbuff;
     }
@@ -168,56 +166,55 @@ private template integer(bool signed, int bits)
         }
         else static if (op == "<<")
         {
-            assert(y >= 0); // should it be implemented through >>?
-            if (y >= 128)
+            if (y >= bits)
             {
                 hi = 0;
                 lo = 0;
             }
-            else if (y >= 64)
+            else if (y >= bits / 2)
             {
-                hi = lo << (y.lo - 64);
+                hi = lo << (y.lo - bits / 2);
                 lo = 0;
             }
             else if (y > 0)
             {
-                hi = (lo >>> (64 - y.lo)) | (hi << y.lo);
+                hi = (lo >>> (bits / 2 - y.lo)) | (hi << y.lo);
                 lo = lo << y.lo;
             }
         }
         else static if (op == ">>" || op == ">>>")
         {
-            assert(y >= 0); // should it be implemented through <<?
+            assert(y >= 0);
             static if (!signed || op == ">>>")
                 immutable(sub_int_t) signFill = 0;
             else
                 immutable(sub_int_t) signFill = isNegative() ? cast(sub_int_t)(-1) : 0;
 
-            if (y >= 128)
+            if (y >= bits)
             {
                 hi = signFill;
                 lo = signFill;
             }
-            else if (y >= 64)
+            else if (y >= bits/2)
             {
-                lo = hi >> (y.lo - 64);
+                lo = hi >> (y.lo - bits/2);
                 hi = signFill;
             }
             else if (y > 0)
             {
-                lo = (hi << (64 - y.lo)) | (lo >> y.lo);
+                lo = (hi << (bits/2 - y.lo)) | (lo >> y.lo);
                 hi = hi >> y.lo;
             }
         }
         else static if (op == "*")
         {
-            uint[4] a = toParts();
-            uint[4] b = y.toParts();
+            sub_sub_uint_t[4] a = toParts();
+            sub_sub_uint_t[4] b = y.toParts();
 
             this = 0;
             for(size_t i = 0; i < 4; ++i)
                 for(size_t j = 0; j < 4 - i; ++j)
-                    this += self(cast(sub_uint_t)(a[i]) * b[j]) << (32 * (i + j));
+                    this += self(cast(sub_uint_t)(a[i]) * b[j]) << ((bits/4) * (i + j));
         }
         else static if (op == "&")
         {
@@ -325,7 +322,7 @@ private template integer(bool signed, int bits)
         {
             bool isNegative() pure nothrow const
             {
-                return ((hi >> 63) & 1) != 0;
+                return signBit();
             }
         }
         else
@@ -356,16 +353,19 @@ private template integer(bool signed, int bits)
 
         bool signBit() pure const nothrow
         {
-            return self((hi >> 63) & 1) != 0;
+            enum SIGN_SHIFT = bits / 2 - 1;
+            return ((hi >> SIGN_SHIFT) & 1) != 0;
         }
 
-        uint[4] toParts() pure const nothrow
+        sub_sub_uint_t[4] toParts() pure const nothrow
         {
-            uint[4] p = void;
-            p[3] = hi >> 32;
-            p[2] = hi & 0xffff_ffff;
-            p[1] = lo >> 32;
-            p[0] = lo & 0xffff_ffff;
+            sub_sub_uint_t[4] p = void;
+            enum SHIFT = bits / 4;
+            immutable lomask = cast(sub_uint_t)(cast(sub_sub_int_t)(-1));
+            p[3] = cast(sub_sub_uint_t)(hi >> SHIFT);
+            p[2] = cast(sub_sub_uint_t)(hi & lomask);
+            p[1] = cast(sub_sub_uint_t)(lo >> SHIFT);
+            p[0] = cast(sub_sub_uint_t)(lo & lomask);
             return p;
         }
     }
@@ -378,10 +378,7 @@ alias wideIntImpl!(true, 128) softcent;
 //alias wideIntImpl!(false, 256) uint256; 
 //alias wideIntImpl!(true, 256) int256;
 
-static assert(softucent.sizeof == 16);
-static assert(softcent.sizeof == 16);
-
-@safe public wideIntImpl!(signed, bits) abs(bool signed, int bits)(wideIntImpl!(signed, bits) x) pure nothrow
+public wideIntImpl!(signed, bits) abs(bool signed, int bits)(wideIntImpl!(signed, bits) x) pure nothrow
 {
     if(x >= 0)
         return x;
@@ -389,7 +386,7 @@ static assert(softcent.sizeof == 16);
         return -x;
 }
 
-@safe private struct Internals(int bits)
+private struct Internals(int bits)
 {    
     alias wideIntImpl!(true, bits) wint_t;
     alias wideIntImpl!(false, bits) uwint_t;
