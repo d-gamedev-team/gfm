@@ -5,6 +5,7 @@
  *
  * TODO:
  * - add literals
+ * - it's not sure if the unsigned operand would take precedence in a comparison/division
  */
 module gfm.math.wideint;
 

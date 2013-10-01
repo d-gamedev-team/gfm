@@ -38,7 +38,7 @@ See UNLICENSE for more details.
   * **vector.d** small vectors for 2D and 3D
   * **matrix.d** small matrices for 2D and 3D
   * **quaternion.d** quaternions
-  * **softcent.d:** 128 bits integers (cent/ucent implementation)
+  * **wideint.d:** 2^N bits integers (recursive implementation, covers cent/ucent)
   * **box.d** half-open intervals (for eg. AABB)
   * **fixedpoint.d** fixed-point numbers
   * **fraction.d** rational numbers
