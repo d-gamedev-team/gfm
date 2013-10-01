@@ -2,6 +2,9 @@
  * Provide a 2^N-bit integer type.
  * Guaranteed to never allocate and expected binary layout
  * Recursive implementation with very slow division.
+ *
+ * TODO:
+ * - add literals
  */
 module gfm.math.wideint;
 
@@ -18,6 +21,14 @@ template uwideint(int bits)
 {
     alias integer!(false, bits) uwideint;
 }
+
+// Some predefined integers (any power of 2 greater than 128 would work)
+
+alias wideint!128 int128; // cent and ucent!
+alias uwideint!128 uint128;
+
+alias wideint!256 int256;
+alias uwideint!256 uint256;
 
 private template integer(bool signed, int bits)
 {
@@ -91,18 +102,38 @@ struct wideIntImpl(bool signed, int bits)
     {
         // shorter int always gets sign-extended,
         // regardless of the larger int being signed or not
-        hi = (n < 0) ? cast(hi_t)(-1) : 0;
+        hi = (n < 0) ? cast(hi_t)(-1) : cast(hi_t)0;
 
         // will also sign extend as well if needed
         lo = cast(sub_int_t)n;
         return this;
     }
 
-    ref self opAssign(T)(T n) pure nothrow if (is(typeof(T._isWideIntImpl)) && T._bits == bits) // same size
+    ref self opAssign(T)(T n) pure nothrow if (is(typeof(T._isWideIntImpl)) && T._bits == bits) // same size wideIntImpl
     {
         hi = n.hi;
         lo = n.lo;
         return this;
+    }
+
+    ref self opAssign(T)(T n) pure nothrow if (is(typeof(T._isWideIntImpl)) && T._bits < bits) // smaller size wideIntImpl
+    {
+        static if (T._signed)
+        {
+            // shorter int always gets sign-extended,
+            // regardless of the larger int being signed or not
+            hi = cast(hi_t)((n < 0) ? -1 : 0);
+
+            // will also sign extend as well if needed
+            lo = cast(sub_int_t)n;
+            return this;            
+        }
+        else
+        {
+            hi = 0;
+            lo = n;
+            return this;
+        }
     }
 
     T opCast(T)() pure const nothrow if (isIntegral!T)
@@ -113,6 +144,15 @@ struct wideIntImpl(bool signed, int bits)
     T opCast(T)() pure const nothrow if (is(T == bool))
     {
         return this != 0;
+    }
+
+    // cast to other sizes
+    T opCast(T)() pure const nothrow if (is(typeof(T._isWideIntImpl)))
+    {
+        static if (T._bits < bits)
+            return cast(T)lo;
+        else
+            return T(this);
     }
 
     string toString() pure const nothrow
@@ -178,7 +218,7 @@ struct wideIntImpl(bool signed, int bits)
             }
             else if (y > 0)
             {
-                hi = (lo >>> (bits / 2 - y.lo)) | (hi << y.lo);
+                hi = (lo >>> (-y.lo + bits / 2)) | (hi << y.lo);
                 lo = lo << y.lo;
             }
         }
@@ -188,7 +228,7 @@ struct wideIntImpl(bool signed, int bits)
             static if (!signed || op == ">>>")
                 immutable(sub_int_t) signFill = 0;
             else
-                immutable(sub_int_t) signFill = isNegative() ? cast(sub_int_t)(-1) : 0;
+                immutable(sub_int_t) signFill = cast(sub_int_t)(isNegative() ? -1 : 0);
 
             if (y >= bits)
             {
@@ -202,7 +242,7 @@ struct wideIntImpl(bool signed, int bits)
             }
             else if (y > 0)
             {
-                lo = (hi << (bits/2 - y.lo)) | (lo >> y.lo);
+                lo = (hi << (-y.lo + bits/2)) | (lo >> y.lo);
                 hi = hi >> y.lo;
             }
         }
@@ -371,13 +411,6 @@ struct wideIntImpl(bool signed, int bits)
     }
 }
 
-// cent and ucent!
-alias wideIntImpl!(false, 128) softucent; 
-alias wideIntImpl!(true, 128) softcent;
-
-//alias wideIntImpl!(false, 256) uint256; 
-//alias wideIntImpl!(true, 256) int256;
-
 public wideIntImpl!(signed, bits) abs(bool signed, int bits)(wideIntImpl!(signed, bits) x) pure nothrow
 {
     if(x >= 0)
@@ -454,10 +487,10 @@ unittest
         {
             ulong ui = cast(ulong)si;
             ulong uj = cast(ulong)sj;
-            softcent csi = si;
-            softucent cui = si;
-            softcent csj = sj;
-            softucent cuj = sj;
+            int128 csi = si;
+            uint128 cui = si;
+            int128 csj = sj;
+            uint128 cuj = sj;
             assert(csi == csi);
             assert(~~csi == csi);
             assert(-(-csi) == csi);
