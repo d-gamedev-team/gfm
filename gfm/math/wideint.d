@@ -28,6 +28,10 @@ template uwideint(int bits)
 alias wideint!128 int128; // cent and ucent!
 alias uwideint!128 uint128;
 
+// softcent and softucent were replaced by int128 and uint128
+deprecated alias int128 softcent;
+deprecated alias uint128 softucent;
+
 alias wideint!256 int256;
 alias uwideint!256 uint256;
 
