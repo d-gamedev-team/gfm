@@ -1,7 +1,7 @@
-# gfm
+# The Games From Mars library
 
 
-gfm is a feature-rich library to ease the creation of video games / multimedia applications with the D programming language.
+GFM is a feature-rich library to ease the creation of video games / multimedia applications with the D programming language.
 
 
 ## Design goals
