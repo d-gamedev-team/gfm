@@ -1,28 +1,71 @@
 /**
- * Provide a 128-bit integer type
- * guaranteed to never allocate and expected binary layout
- * Designed to be easy to read, probably too slow for heavy use.
+ * Provide a 2^N-bit integer type.
+ * Guaranteed to never allocate and expected binary layout
+ * Recursive implementation with very slow division.
  */
-module gfm.math.softcent;
+module gfm.math.wideint;
 
 import std.traits,
        std.ascii;
 
-@safe struct softcentImpl(bool signed)
+
+template wideint(int bits)
 {
+    alias integer!(true, bits) wideint;
+}
+
+template uwideint(int bits)
+{
+    alias integer!(false, bits) wideint;
+}
+
+private template integer(bool signed, int bits)
+{
+    static assert(bits >= 32);
+    static assert((bits & (bits - 1)) == 0); // bits is a power of 2    
+
+    static if (bits == 32)
+    {
+        static if (signed)
+            alias int integer;
+        else
+            alias uint integer;
+    }
+    else static if (bits == 64)
+    {
+        static if (signed)
+            alias long integer;
+        else
+            alias ulong integer;
+    }
+    else 
+    {
+        alias wideIntImpl!(signed, bits) integer;
+    }
+}
+
+/// recursive 2^n integer implementation
+@safe struct wideIntImpl(bool signed, int bits)
+{
+    static assert(bits >= 128);
     private
     {
-        alias softcentImpl self;
+        alias wideIntImpl self;
 
         template isSelf(T)
         {
             enum bool isSelf = is(Unqual!T == self);
         }
 
+        alias integer!(true, bits/2) sub_int_t;   // signed bits/2 integer
+        alias integer!(false, bits/2) sub_uint_t; // unsigned bits/2 integer
+
         static if(signed)
-            alias long hi_t;
+            alias sub_int_t hi_t; // hi_t has same signedness as the whole struct
         else
-            alias ulong hi_t;
+            alias sub_uint_t hi_t;
+
+        alias sub_uint_t low_t;   // low_t is always unsigned
     }
 
     this(T)(T x) pure nothrow
@@ -44,11 +87,11 @@ import std.traits,
         hi = (n < 0) ? cast(hi_t)(-1) : 0;
 
         // will also sign extend as well if needed
-        lo = cast(long)n;
+        lo = cast(sub_int_t)n;
         return this;
     }
 
-    ref self opAssign(T)(T n) pure nothrow if (is(Unqual!T == softcentImpl!(!signed))) // signed <=> unsigned
+    ref self opAssign(T)(T n) pure nothrow if (is(Unqual!T == wideIntImpl!(!signed, bits))) // signed <=> unsigned
     {
         hi = n.hi;
         lo = n.lo;
@@ -75,10 +118,18 @@ import std.traits,
     string toString() pure const nothrow
     {
         string outbuff = "0x";
-        for (size_t i = 0; i < 16; ++i)
-            outbuff ~= hexDigits[15 & (hi >> ((15 - i) * 4))];
-        for (size_t i = 0; i < 16; ++i)
-            outbuff ~= hexDigits[15 & (lo >> ((15 - i) * 4))];
+        enum hexdigits = bits / 8;
+
+        for (size_t i = 0; i < hexdigits; ++i)
+        {
+            int idx = cast(int)(15 & (hi >> ((15 - i) * 4)));
+            outbuff ~= hexDigits[idx];
+        }
+        for (size_t i = 0; i < hexdigits; ++i)
+        {
+            int idx = cast(int)(15 & (lo >> ((15 - i) * 4)));
+            outbuff ~= hexDigits[idx];
+        }
         return outbuff;
     }
 
@@ -138,9 +189,9 @@ import std.traits,
         {
             assert(y >= 0); // should it be implemented through <<?
             static if (!signed || op == ">>>")
-                immutable(long) signFill = 0;
+                immutable(sub_int_t) signFill = 0;
             else
-                immutable(long) signFill = isNegative() ? cast(long)(-1) : 0;
+                immutable(sub_int_t) signFill = isNegative() ? cast(sub_int_t)(-1) : 0;
 
             if (y >= 128)
             {
@@ -166,7 +217,7 @@ import std.traits,
             this = 0;
             for(size_t i = 0; i < 4; ++i)
                 for(size_t j = 0; j < 4 - i; ++j)
-                    this += self(cast(ulong)(a[i]) * b[j]) << (32 * (i + j));
+                    this += self(cast(sub_uint_t)(a[i]) * b[j]) << (32 * (i + j));
         }
         else static if (op == "&")
         {
@@ -187,9 +238,9 @@ import std.traits,
         {
             self q = void, r = void;
             static if(signed)
-                Internals.signedDivide(this, y, q, r);
+                Internals!bits.signedDivide(this, y, q, r);
             else
-                Internals.unsignedDivide(this, y, q, r);
+                Internals!bits.unsignedDivide(this, y, q, r);
             static if (op == "/")
                 this = q;
             else
@@ -259,13 +310,13 @@ import std.traits,
     // binary layout should be what is expected on this platform
     version (LittleEndian)
     {
-        ulong lo;
+        low_t lo;
         hi_t hi;
     }
     else
     {
         hi_t hi;
-        ulong lo;
+        low_t lo;
     }
 
     private
@@ -320,13 +371,17 @@ import std.traits,
     }
 }
 
-alias softcentImpl!false softucent;
-alias softcentImpl!true softcent;
+// cent and ucent!
+alias wideIntImpl!(false, 128) softucent; 
+alias wideIntImpl!(true, 128) softcent;
+
+//alias wideIntImpl!(false, 256) uint256; 
+//alias wideIntImpl!(true, 256) int256;
 
 static assert(softucent.sizeof == 16);
 static assert(softcent.sizeof == 16);
 
-public softcentImpl!signed abs(bool signed)(softcentImpl!signed x) pure nothrow
+@safe public wideIntImpl!(signed, bits) abs(bool signed, int bits)(wideIntImpl!(signed, bits) x) pure nothrow
 {
     if(x >= 0)
         return x;
@@ -334,22 +389,25 @@ public softcentImpl!signed abs(bool signed)(softcentImpl!signed x) pure nothrow
         return -x;
 }
 
-@safe private struct Internals
-{
-    static void unsignedDivide(softucent dividend, softucent divisor,
-                               out softucent quotient, out softucent remainder) pure nothrow
+@safe private struct Internals(int bits)
+{    
+    alias wideIntImpl!(true, bits) wint_t;
+    alias wideIntImpl!(false, bits) uwint_t;
+
+    static void unsignedDivide(uwint_t dividend, uwint_t divisor,
+                               out uwint_t quotient, out uwint_t remainder) pure nothrow
     {
         assert(divisor != 0);
 
-        softucent rQuotient = 0;
-        softucent cDividend = dividend;
+        uwint_t rQuotient = 0;
+        uwint_t cDividend = dividend;
 
         while (divisor <= cDividend)
         {
             // find N so that (divisor << N) <= cDividend && cDividend < (divisor << (N + 1) )
 
-            softucent N = 0;
-            softucent cDivisor = divisor;
+            uwint_t N = 0;
+            uwint_t cDivisor = divisor;
             while (cDividend > cDivisor) 
             {
                 if (cDivisor.signBit())
@@ -362,18 +420,18 @@ public softcentImpl!signed abs(bool signed)(softcentImpl!signed x) pure nothrow
                 ++N;
             }
             cDividend = cDividend - cDivisor;
-            rQuotient += (softucent(1) << N);
+            rQuotient += (uwint_t(1) << N);
         }
 
         quotient = rQuotient;
         remainder = cDividend;
     }
 
-    static void signedDivide(softcent dividend, softcent divisor,
-                             out softcent quotient, out softcent remainder) pure nothrow
+    static void signedDivide(wint_t dividend, wint_t divisor,
+                             out wint_t quotient, out wint_t remainder) pure nothrow
     {
-        softucent q, r;
-        unsignedDivide(softucent(abs(dividend)), softucent(abs(divisor)), q, r);
+        uwint_t q, r;
+        unsignedDivide(uwint_t(abs(dividend)), uwint_t(abs(divisor)), q, r);
 
         // remainder has same sign as the dividend
         if (dividend < 0)
@@ -385,6 +443,7 @@ public softcentImpl!signed abs(bool signed)(softcentImpl!signed x) pure nothrow
 
         quotient = q;
         remainder = r;
+
         assert(remainder == 0 || ((remainder < 0) == (dividend < 0)));
     }
 }
@@ -452,3 +511,4 @@ unittest
         }
     }
 }
+

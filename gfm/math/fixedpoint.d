@@ -9,7 +9,7 @@ module gfm.math.fixedpoint;
 
 import std.traits;
 
-import gfm.math.softcent;
+import gfm.math.wideint;
 
 /**
  * M.N fixed point integer
