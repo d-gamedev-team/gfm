@@ -30,7 +30,7 @@ double randNormal(RNG)(ref RNG rng, double mean = 0.0, double standardDeviation 
 double randExponential(RNG)(ref RNG rng, double mean = 1.0)
 {
     assert(mean > 0);
-    return -mean*log(uniform(0, 1, rng));
+    return -mean*log(uniform(0.0, 1.0, rng));
 }
 
 // Gamma random sample
@@ -55,7 +55,7 @@ double randGamma(RNG)(ref RNG rng, double shape, double scale)
             }
             while (v <= 0.0);
             v = v*v*v;
-            u = uniform(0, 1, rng);
+            u = uniform(0.0, 1.0, rng);
             xsquared = x*x;
             if (u < 1.0 -.0331*xsquared*xsquared || log(u) < 0.5*xsquared + d*(1.0 - v + log(v)))
                 return scale*d*v;
@@ -65,7 +65,7 @@ double randGamma(RNG)(ref RNG rng, double shape, double scale)
     {
         assert(shape > 0);
         double g = getGamma(shape+1.0, 1.0);
-        double w = uniform(0, 1, rng);
+        double w = uniform(0.0, 1.0, rng);
         return scale*g*pow(w, 1.0/shape);
     }
 }
@@ -90,14 +90,14 @@ double randInverseGamma(RNG)(ref RNG rng, double shape, double scale)
 double randWeibull(RNG)(ref RNG rng, double shape, double scale)
 {
     assert(shape > 0 && scale > 0);
-    return scale * pow(-log(uniform(0, 1, rng)), 1.0 / shape);
+    return scale * pow(-log(uniform(0.0, 1.0, rng)), 1.0 / shape);
 }
 
 // Cauchy sample
 double randCauchy(RNG)(ref RNG rng, double median, double scale)
 {
     assert(scale > 0);
-    double p = uniform(0, 1, rng);
+    double p = uniform(0.0, 1.0, rng);
 
     // Apply inverse of the Cauchy distribution function to a uniform
     return median + scale*tan(PI*(p - 0.5));
@@ -118,7 +118,7 @@ double randStudentT(RNG)(ref RNG rng, double degreesOfFreedom)
 double randLaplace(RNG)(ref RNG rng, double mean, double scale)
 {
     // The Laplace distribution is also known as the double exponential distribution.
-    double u = uniform(0, 1, rng);
+    double u = uniform(0.0, 1.0, rng);
     return (u < 0.5) ? (mean + scale*log(2.0*u))
                         : (mean - scale*log(2*(1-u)));
 }
@@ -160,7 +160,7 @@ private
         do
         {
             k++;
-            p *= uniform(0, 1, rng);
+            p *= uniform(0.0, 1.0, rng);
         }
         while (p > L);
         return k - 1;
@@ -179,12 +179,12 @@ private
 
         for(;;)
         {
-            double u = uniform(0, 1, rng);
+            double u = uniform(0.0, 1.0, rng);
             double x = (alpha - log((1.0 - u)/u))/beta;
             int n = cast(int)(floor(x + 0.5));
             if (n < 0)
                 continue;
-            double v = uniform(0, 1, rng);
+            double v = uniform(0.0, 1.0, rng);
             double y = alpha - beta*x;
             double temp = 1.0 + exp(y);
             double lhs = y + log(v/(temp*temp));
