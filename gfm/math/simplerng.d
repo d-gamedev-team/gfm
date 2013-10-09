@@ -9,7 +9,7 @@ import std.math;
 // John D. Cook confirmed this code as public domain.
 
 // Normal (Gaussian) random sample
-double randNormal(RNG)(ref RNG rng, double mean = 0.0, double standardDeviation = 1.0) nothrow
+double randNormal(RNG)(ref RNG rng, double mean = 0.0, double standardDeviation = 1.0)
 {
     assert(standardDeviation > 0);
 
@@ -22,14 +22,14 @@ double randNormal(RNG)(ref RNG rng, double mean = 0.0, double standardDeviation 
 }
 
 // Get exponential random sample with specified mean
-double randExponential(RNG)(ref RNG rng, double mean = 1.0) nothrow
+double randExponential(RNG)(ref RNG rng, double mean = 1.0)
 {
     assert(mean > 0);
     return -mean*log(uniform(0, 1, rng));
 }
 
 // Gamma random sample
-double randGamma(RNG)(ref RNG rng, double shape, double scale) nothrow
+double randGamma(RNG)(ref RNG rng, double shape, double scale)
 {
     // Implementation based on "A Simple Method for Generating Gamma Variables"
     // by George Marsaglia and Wai Wan Tsang.  ACM Transactions on Mathematical Software
@@ -66,7 +66,7 @@ double randGamma(RNG)(ref RNG rng, double shape, double scale) nothrow
 }
 
 // Chi-square sample
-double randChiSquare(RNG)(ref RNG rng, double degreesOfFreedom) nothrow
+double randChiSquare(RNG)(ref RNG rng, double degreesOfFreedom)
 {
     // A chi squared distribution with n degrees of freedom
     // is a gamma distribution with shape n/2 and scale 2.
@@ -74,7 +74,7 @@ double randChiSquare(RNG)(ref RNG rng, double degreesOfFreedom) nothrow
 }
 
 // Inverse-gamma sample
-double randInverseGamma(RNG)(ref RNG rng, double shape, double scale) nothrow
+double randInverseGamma(RNG)(ref RNG rng, double shape, double scale)
 {
     // If X is gamma(shape, scale) then
     // 1/Y is inverse gamma(shape, 1/scale)
@@ -82,14 +82,14 @@ double randInverseGamma(RNG)(ref RNG rng, double shape, double scale) nothrow
 }
 
 // Weibull sample
-double randWeibull(RNG)(ref RNG rng, double shape, double scale) nothrow
+double randWeibull(RNG)(ref RNG rng, double shape, double scale)
 {
     assert(shape > 0 && scale > 0);
     return scale * pow(-log(uniform(0, 1, rng)), 1.0 / shape);
 }
 
 // Cauchy sample
-double randCauchy(RNG)(ref RNG rng, double median, double scale) nothrow
+double randCauchy(RNG)(ref RNG rng, double median, double scale)
 {
     assert(scale > 0);
     double p = uniform(0, 1, rng);
@@ -99,7 +99,7 @@ double randCauchy(RNG)(ref RNG rng, double median, double scale) nothrow
 }
 
 // Student-t sample
-double randStudentT(RNG)(ref RNG rng, double degreesOfFreedom) nothrow
+double randStudentT(RNG)(ref RNG rng, double degreesOfFreedom)
 {
     assert(degreesOfFreedom > 0);
 
@@ -110,7 +110,7 @@ double randStudentT(RNG)(ref RNG rng, double degreesOfFreedom) nothrow
 }
 
 // The Laplace distribution is also known as the double exponential distribution.
-double randLaplace(RNG)(ref RNG rng, double mean, double scale) nothrow
+double randLaplace(RNG)(ref RNG rng, double mean, double scale)
 {
     // The Laplace distribution is also known as the double exponential distribution.
     double u = uniform(0, 1, rng);
@@ -119,13 +119,13 @@ double randLaplace(RNG)(ref RNG rng, double mean, double scale) nothrow
 }
 
 // Log-normal sample
-double randLogNormal(RNG)(ref RNG rng, double mu, double sigma) nothrow
+double randLogNormal(RNG)(ref RNG rng, double mu, double sigma)
 {
     return exp(getNormal(rng, mu, sigma));
 }
 
 // Beta sample
-double randBeta(RNG)(ref RNG rng, double a, double b) nothrow
+double randBeta(RNG)(ref RNG rng, double a, double b)
 {
     assert(a > 0 && b > 0);
 
@@ -140,14 +140,14 @@ double randBeta(RNG)(ref RNG rng, double a, double b) nothrow
 }
 
 // Poisson sample
-int randPoisson(RNG)(ref RNG rng, double lambda) nothrow
+int randPoisson(RNG)(ref RNG rng, double lambda)
 {
     return (lambda < 30.0) ? poissonSmall(rng, lambda) : poissonLarge(rng, lambda);
 }
 
 private
 {
-    int poissonSmall(RNG)(ref RNG rng, double lambda) nothrow
+    int poissonSmall(RNG)(ref RNG rng, double lambda)
     {
         // Algorithm due to Donald Knuth, 1969.
         double p = 1.0, L = exp(-lambda);
@@ -161,7 +161,7 @@ private
         return k - 1;
     }
 
-    int poissonLarge(RNG)(ref RNG rng, double lambda) nothrow
+    int poissonLarge(RNG)(ref RNG rng, double lambda)
     {
         // "Rejection method PA" from "The Computer Generation of Poisson Random Variables" by A. C. Atkinson
         // Journal of the Royal Statistical Society Series C (Applied Statistics) Vol. 28, No. 1. (1979)
@@ -189,7 +189,7 @@ private
         }
     }
 
-    double logFactorial(int n) nothrow
+    double logFactorial(int n)
     {
         assert(n >= 0);
         if (n > 254)
