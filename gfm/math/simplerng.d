@@ -14,8 +14,13 @@ double randNormal(RNG)(ref RNG rng, double mean = 0.0, double standardDeviation 
     assert(standardDeviation > 0);
 
     // Use Box-Muller algorithm
-    double u1 = uniform(0, 1, rng);
-    double u2 = uniform(0, 1, rng);
+    double u1;
+
+    do 
+    {
+        u1 = uniform(0.0, 1.0, rng);
+    } while (u1 == 0); // u1 must not be zero
+    double u2 = uniform(0.0, 1.0, rng);
     double r = sqrt(-2.0 * log(u1));
     double theta = 2.0 * PI * u2;
     return mean + standardDeviation * r * sin(theta);
