@@ -7,6 +7,7 @@ import gfm.enet.enet,
 
 /// ENet host
 /// http://enet.bespin.org/group__host.html
+/// Inherit this class to dispatch packets.
 class Host
 {
     public
@@ -24,7 +25,7 @@ class Host
             close();
         }
 
-        void close()
+        final void close()
         {
             if (_handle !is null)
             {
@@ -33,7 +34,7 @@ class Host
             }
         }
 
-        Peer connect(const(ENetAddress) *address, size_t channelCount, enet_uint32 data = 0)
+        final Peer connect(const(ENetAddress) *address, size_t channelCount, enet_uint32 data = 0)
         {
             ENetPeer* peer = enet_host_connect(_handle, address, channelCount, data);
             if (peer is null)
@@ -42,40 +43,83 @@ class Host
             return new Peer(_enet, peer);
         }
 
-        void broadcast(ubyte channelID, ENetPacket* packet)
+        final void broadcast(ubyte channelID, ENetPacket* packet)
         {
             enet_host_broadcast(_handle, channelID, packet);
         }
 
-        void flush()
+        final void flush()
         {
             enet_host_flush(_handle);
         }
         
-        void channelLimit(size_t channelLimit)
+        final void channelLimit(size_t channelLimit)
         {
             enet_host_channel_limit(_handle, channelLimit);
         }   
 
-        void bandwidthLimit(uint incomingBandwidth, uint outgoingBandwidth)
+        final void bandwidthLimit(uint incomingBandwidth, uint outgoingBandwidth)
         {
              enet_host_bandwidth_limit(_handle, incomingBandwidth, outgoingBandwidth);
         }
 
-        int service(ENetEvent* event, uint timeout)
+        // 0 => no timeout
+        final void processEvent(bool blocking, int timeout = 0)
         {
-            int res = enet_host_service(_handle, event, timeout);
-            if (res < 0)
-                throw new ENetException("enet_host_service failed");
-            return res;
+            ENetEvent event;
+
+            int nEvents;
+
+            if (blocking)
+                nEvents = service(&event, 100); // apparently throws if no peer connected...
+            else
+                nEvents = checkEvents(&event);
+  
+            // dispatch events
+            if (nEvents >= 0)
+            {
+                switch (event.type)
+                {
+                    case ENET_EVENT_TYPE_CONNECT:
+                        {
+                            Peer* p = event.peer in _knownPeers;
+                            if (p is null)
+                            {
+                                _knownPeers[event.peer] = new Peer(_enet, event.peer);
+                            }
+                            onPeerConnect(_knownPeers[event.peer]);
+                        }
+                        break;                    
+
+                    case ENET_EVENT_TYPE_DISCONNECT:
+                        onPeerDisconnect(event.peer, event.data);
+                        _knownPeers.remove(event.peer);
+                        break;
+
+                    case ENET_EVENT_TYPE_RECEIVE:
+                        onPacketReceive(event.peer, event.channelID, event.packet);
+                        enet_packet_destroy(event.packet);
+                        break;
+
+                    default:
+                }
+            }
+        }
+    }
+
+    protected
+    {
+        // called when a peer successfully connected
+        void onPeerConnect(ENetPeer* peer)
+        {
         }
 
-        int checkEvents(ENetHost* host, ENetEvent* event)
+        void onPeerDisconnect(ENetPeer* peer, uint data)
         {
-            int res = enet_host_check_events(_handle, event);
-            if (res < 0)
-                throw new ENetException("enet_check_events failed");
-            return res;
+        }
+
+        void onPacketReceive(ENetPeer* peer, ubyte channelID, ENetPacket* packet)
+        {
         }
     }
 
@@ -83,5 +127,24 @@ class Host
     {
         ENet _enet;
         ENetHost* _handle;
+
+        Peer[ENetPeer*] _knownPeers; // connected or not!
+        
+
+        final int service(ENetEvent* event, uint timeout)
+        {
+            int res = enet_host_service(_handle, event, timeout);
+            if (res < 0)
+                throw new ENetException("enet_host_service failed");
+            return res;
+        }
+
+        final int checkEvents(ENetEvent* event)
+        {
+            int res = enet_host_check_events(_handle, event);
+            if (res < 0)
+                throw new ENetException("enet_check_events failed");
+            return res;
+        }
     }
 }

@@ -9,10 +9,11 @@ class Peer
 {
     public
     {
-        this(ENet enet, ENetPeer* handle)
+        this(ENet enet, ENetPeer* handle, bool connected)
         {
             _enet = enet;
             _handle = handle;
+            _connected = connected;
         }
 
         void send(ubyte channelID, ENetPacket* packet)
@@ -78,5 +79,6 @@ class Peer
     {
         ENet _enet;
         ENetPeer* _handle;
+        bool _connected;
     }
 }
