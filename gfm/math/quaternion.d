@@ -1,6 +1,7 @@
 module gfm.math.quaternion;
 
-import std.math;
+import std.math,
+       std.string;
 
 import gfm.math.vector,
        gfm.math.matrix,
@@ -52,6 +53,14 @@ align(1) struct Quaternion(T)
         {
             v = u;
             return this;
+        }
+
+        string toString() const nothrow
+        {
+            try
+                return format("%s", v);
+            catch (Exception e) 
+                assert(false); // should not happen since format is right
         }
 
         // normalize quaternion

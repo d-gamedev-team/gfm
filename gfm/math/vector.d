@@ -1,7 +1,8 @@
 module gfm.math.vector;
 
 import std.traits,
-       std.math;
+       std.math,
+       std.string;
 
 import gfm.math.funcs;
 
@@ -161,6 +162,14 @@ nothrow:
         T* ptr() pure nothrow @property
         {
             return v.ptr;
+        }
+
+        string toString() const nothrow
+        {
+            try
+                return format("%s", v);
+            catch (Exception e) 
+                assert(false); // should not happen since format is right
         }
 
         bool opEquals(U)(U other) pure const nothrow

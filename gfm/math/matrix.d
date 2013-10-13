@@ -3,6 +3,7 @@ module gfm.math.matrix;
 import std.math,
        std.typetuple,
        std.traits,
+       std.string,
        std.typecons,
        std.conv;
 
@@ -144,6 +145,14 @@ align(1) struct Matrix(T, size_t R, size_t C)
         row_t row(size_t i) pure const nothrow
         {
             return rows[i];
+        }
+
+        string toString() const nothrow
+        {
+            try
+                return format("%s", v);
+            catch (Exception e) 
+                assert(false); // should not happen since format is right
         }
 
         // matrix * vector
