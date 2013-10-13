@@ -73,6 +73,11 @@ class Peer
         {
             enet_peer_throttle_configure(_handle, interval, acceleration, deceleration);
         }
+
+        ENetPeer* handle()
+        {
+            return _handle;
+        }
     }
 
     private

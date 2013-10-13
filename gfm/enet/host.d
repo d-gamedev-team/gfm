@@ -40,7 +40,7 @@ class Host
             if (peer is null)
                 throw new ENetException("enet_host_connect failed");
 
-            return new Peer(_enet, peer);
+            return new Peer(_enet, peer, false);
         }
 
         final void broadcast(ubyte channelID, ENetPacket* packet)
@@ -85,9 +85,9 @@ class Host
                             Peer* p = event.peer in _knownPeers;
                             if (p is null)
                             {
-                                _knownPeers[event.peer] = new Peer(_enet, event.peer);
+                                _knownPeers[event.peer] = new Peer(_enet, event.peer, true);
                             }
-                            onPeerConnect(_knownPeers[event.peer]);
+                            onPeerConnect(event.peer);
                         }
                         break;                    
 
