@@ -1,4 +1,4 @@
-module gfm.opengl.package;
+module gfm.opengl;
 
 public
 {

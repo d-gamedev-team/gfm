@@ -1,4 +1,4 @@
-module gfm.net.package;
+module gfm.net;
 
 public
 {

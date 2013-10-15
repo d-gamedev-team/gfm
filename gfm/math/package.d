@@ -1,4 +1,4 @@
-module gfm.math.package;
+module gfm.math;
 
 public
 {

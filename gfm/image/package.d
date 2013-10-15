@@ -1,4 +1,4 @@
-module gfm.image.package;
+module gfm.image;
 
 public
 {

@@ -1,4 +1,4 @@
-module gfm.core.package;
+module gfm.core;
 
 public
 {

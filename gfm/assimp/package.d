@@ -1,4 +1,4 @@
-module gfm.assimp.package;
+module gfm.assimp;
 
 public
 {

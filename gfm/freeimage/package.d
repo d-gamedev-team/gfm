@@ -1,4 +1,4 @@
-module gfm.freeimage.package;
+module gfm.freeimage;
 
 public
 {

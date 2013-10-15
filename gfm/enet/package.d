@@ -1,4 +1,4 @@
-module gfm.enet.package;
+module gfm.enet;
 
 public
 {

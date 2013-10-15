@@ -1,4 +1,4 @@
-module gfm.sdl2.package;
+module gfm.sdl2;
 
 public
 {
