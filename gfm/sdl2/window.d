@@ -74,6 +74,11 @@ class SDL2Window
             close();
         }
 
+        final void setFullscreen(bool activated)
+        {
+            SDL_SetWindowFullscreen(_window, activated ? SDL_WINDOW_FULLSCREEN : 0);
+        }
+
         final void setPosition(vec2i position)
         {
             SDL_SetWindowPosition(_window, position.x, position.y);
