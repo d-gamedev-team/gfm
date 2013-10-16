@@ -17,7 +17,7 @@ final class SDLImage
 {
     public
     {
-        this(SDL2 sdl2)
+        this(SDL2 sdl2, int flags = IMG_INIT_JPG | IMG_INIT_PNG | IMG_INIT_TIF | IMG_INIT_WEBP)
         {
             _sdl2 = sdl2; // force loading of SDL first
             _log = sdl2._log;
@@ -32,7 +32,6 @@ final class SDLImage
                 throw new SDL2Exception(e.msg);
             }
 
-            int flags = IMG_INIT_JPG | IMG_INIT_PNG | IMG_INIT_TIF | IMG_INIT_WEBP;
             int inited = IMG_Init(flags);
 
             if ((inited & IMG_INIT_JPG) != 0)
