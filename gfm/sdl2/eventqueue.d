@@ -38,7 +38,22 @@ final class SDL2EventQueue
             SDL_Event event;
 
             while(SDL_PollEvent(&event) != 0)
+            {
+                update(&event);
                 dispatch(&event);
+            }
+        }
+
+        // return true if returned an event
+        bool pollEvent(SDL_Event* event)
+        {
+            if (SDL_PollEvent(event) != 0)
+            {
+                update(event);
+                return true;
+            }
+            else
+                return false;
         }
 
         bool wasQuitResquested() const
@@ -59,7 +74,8 @@ final class SDL2EventQueue
         SDL2Window[uint] _knownWindows;
         bool _quitWasRequested = false;
 
-        void dispatch(const (SDL_Event*) event)
+        // update state based on event
+        void update(const (SDL_Event*) event)
         {
             switch(event.type)
             {
@@ -67,28 +83,24 @@ final class SDL2EventQueue
                     _quitWasRequested = true;
                     break;
 
-                case SDL_WINDOWEVENT:
-                    dispatchWindowEvent(&event.window);
-                    break;
-
                 case SDL_KEYDOWN:
                 case SDL_KEYUP:
-                    dispatchKeyboardEvent(&event.key);
+                    updateKeyboard(&event.key);
                     break;
 
-                //case SDL_TEXTEDITING:
-                //case SDL_TEXTINPUT:
-                
-                case SDL_MOUSEMOTION:
-                case SDL_MOUSEBUTTONDOWN:
-                case SDL_MOUSEBUTTONUP:
-                case SDL_MOUSEWHEEL:
+                default:
+                    break;
+            }
+        }
 
-                case SDL_JOYAXISMOTION:
-                case SDL_JOYBALLMOTION:
-                case SDL_JOYHATMOTION:
-                case SDL_JOYBUTTONDOWN:
-                case SDL_JOYBUTTONUP:                
+
+        // dispatch to callbacks
+        void dispatch(const (SDL_Event*) event)
+        {
+            switch(event.type)
+            {
+                case SDL_WINDOWEVENT:
+                    dispatchWindowEvent(&event.window);
                     break;
                 
                 default:
@@ -96,7 +108,7 @@ final class SDL2EventQueue
             }
         }
 
-        void dispatchKeyboardEvent(const(SDL_KeyboardEvent*) event)
+        void updateKeyboard(const(SDL_KeyboardEvent*) event)
         {
             // ignore key-repeat
             if (event.repeat != 0)
