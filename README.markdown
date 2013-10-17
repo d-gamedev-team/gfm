@@ -1,10 +1,10 @@
 # What's this?
 
-GFM is a feature-rich library to ease the creation of video games / multimedia applications with the D programming language.
+GFM is a feature-rich library to ease the creation of video games / multimedia applications with the D programming language. Pick what you need.
 
 ## License
 
-Public Domain. See UNLICENSE for more details.
+Public Domain (Unlicense).
 
 ## Contents
 
