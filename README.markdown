@@ -1,16 +1,6 @@
-# The Games From Mars library
-
+# What's this?
 
 GFM is a feature-rich library to ease the creation of video games / multimedia applications with the D programming language.
-
-
-## Design goals
-
-  * give more power to the library user providing code that will probably need to be written anyway.
-  * each module / sub-package is maximally decoupled (the major pain point right now is the lack of a standard logging facility).
-  * correctness and functionality are favoured over speed.
-  * wrappers are lightweight layers that expose the C libraries objects, turn every error code into an D exception and makes it easier to use the library correctly.
-  * as much as possible, gfm emit warnings when something goes wrong, try to recover when it makes sense and log every problem.
 
 ## License
 
@@ -80,3 +70,11 @@ Public Domain. See UNLICENSE for more details.
   * scene wrapper
 
 *There is always more to come, don't fear to ask for things*
+
+## Design goals
+
+  * give more power to the library user providing code that will probably need to be written anyway.
+  * each module / sub-package is maximally decoupled (the major pain point right now is the lack of a standard logging facility).
+  * correctness and functionality are favoured over speed.
+  * wrappers are lightweight layers that expose the C libraries objects, turn every error code into an D exception and makes it easier to use the library correctly.
+  * as much as possible, gfm emit warnings when something goes wrong, try to recover when it makes sense and log every problem.
