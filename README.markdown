@@ -14,8 +14,7 @@ GFM is a feature-rich library to ease the creation of video games / multimedia a
 
 ## License
 
-*Everything in this repositery is Public Domain.*
-See UNLICENSE for more details.
+Public Domain. See UNLICENSE for more details.
 
 ## Contents
 

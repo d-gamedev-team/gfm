@@ -1,9 +1,9 @@
 {
     "name": "gfm",
-    "description": "Kitchen-sink utility library for multimedia programming",
+    "description": "D gamedev toolkit",
     "homepage": "http://github.com/p0nce/gfm/",
     "copyright": "none",
-    "license": "Public Domain (Unlicense)",
+    "license": "public domain",
 
     "authors": [
         "ponce",
