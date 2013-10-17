@@ -83,12 +83,12 @@ final class SDL2Renderer
     public
     {
         // renderer for a window
-        this(SDL2Window window)
+        this(SDL2Window window, int flags)
         {
             _sdl2 = window._sdl2;
             _window = window;
             _surface = null;
-            _renderer = SDL_CreateRenderer(window._window, -1, 0);
+            _renderer = SDL_CreateRenderer(window._window, -1, flags);
             if (_renderer is null)
                 _sdl2.throwSDL2Exception("SDL_CreateRenderer");
         }
@@ -117,7 +117,6 @@ final class SDL2Renderer
         {
             close();
         }
-
 
         void clear()
         {
@@ -166,12 +165,16 @@ final class SDL2Renderer
         }
     }
 
-    private
+    package
     {
         SDL2 _sdl2;
+        SDL_Renderer* _renderer;
+    }
+
+    private
+    {
         SDL2Window _window; // not null if renderer to window
         SDL2Surface _surface; // not null if renderer to surface
-        SDL_Renderer* _renderer;
 
         static SDL_Rect box2i_to_SDL_Rect(box2i b) pure
         {
