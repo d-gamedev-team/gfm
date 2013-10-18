@@ -35,7 +35,7 @@ final class SDL2Texture
             close();
         }
 
-        void close()
+        void close() 
         {
             if (_handle !is null)
             {
@@ -44,10 +44,38 @@ final class SDL2Texture
             }
         }
 
+        void setBlendMode(SDL_BlendMode blendMode)
+        {
+            if (SDL_SetTextureBlendMode(_handle, blendMode) != 0)
+                _sdl2.throwSDL2Exception("SDL_SetTextureBlendMode");
+        }
+
+        void setColorMod(ubyte r, ubyte g, ubyte b)
+        {
+            if (SDL_SetTextureColorMod(_handle, r, g, b) != 0)
+                _sdl2.throwSDL2Exception("SDL_SetTextureColorMod");
+        }
+
+        void setAlphaMod(ubyte a)
+        {
+            if (SDL_SetTextureAlphaMod(_handle, a) != 0)
+                _sdl2.throwSDL2Exception("SDL_SetTextureAlphaMod");
+        }
+
         uint format()
         {
             uint res;
             int err = SDL_QueryTexture(_handle, &res, null, null, null);
+            if (err != 0)
+                _sdl2.throwSDL2Exception("SDL_QueryTexture");
+
+            return res;
+        }
+
+        int access()
+        {
+            int res;
+            int err = SDL_QueryTexture(_handle, null, &res, null, null);
             if (err != 0)
                 _sdl2.throwSDL2Exception("SDL_QueryTexture");
 
@@ -71,12 +99,16 @@ final class SDL2Texture
                 _sdl2.throwSDL2Exception("SDL_QueryTexture");
             return res;
         }
-    }      
+    }
+
+    package
+    {
+        SDL_Texture* _handle;
+    }
 
     private
     {
         SDL2 _sdl2;
-        SDL_Texture* _handle;
     }
 }
 

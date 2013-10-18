@@ -10,6 +10,7 @@ import gfm.core.log,
        gfm.math.box,
        gfm.sdl2.sdl,
        gfm.sdl2.window,
+       gfm.sdl2.texture,
        gfm.sdl2.surface;
 
 enum Blend
@@ -86,8 +87,6 @@ final class SDL2Renderer
         this(SDL2Window window, int flags)
         {
             _sdl2 = window._sdl2;
-            _window = window;
-            _surface = null;
             _renderer = SDL_CreateRenderer(window._window, -1, flags);
             if (_renderer is null)
                 _sdl2.throwSDL2Exception("SDL_CreateRenderer");
@@ -97,8 +96,6 @@ final class SDL2Renderer
         this(SDL2Surface surface)
         {
             _sdl2 = surface._sdl2;
-            _window = null;
-            _surface = surface;
             _renderer = SDL_CreateSoftwareRenderer(surface._surface);
             if (_renderer is null)
                 _sdl2.throwSDL2Exception("SDL_CreateSoftwareRenderer");
@@ -163,6 +160,30 @@ final class SDL2Renderer
         {
             SDL_RenderDrawPoints(_renderer, cast(SDL_Point*)(points.ptr), cast(int)(points.length));
         }
+
+        void drawRect(box2i rect)
+        {
+            SDL_Rect r = box2i_to_SDL_Rect(rect);
+            if (SDL_RenderDrawRect(_renderer, &r) != 0)
+                _sdl2.throwSDL2Exception("SDL_RenderDrawRect");
+        }
+
+        void fillRect(box2i rect)
+        {
+            SDL_Rect r = box2i_to_SDL_Rect(rect);
+            if (SDL_RenderFillRect(_renderer, &r) != 0)
+                _sdl2.throwSDL2Exception("SDL_RenderFillRect");
+        }
+
+        void copy(SDL2Texture texture, box2i srcRect, box2i dstRect)
+        {
+            auto f = texture.format();
+            SDL_Rect src = box2i_to_SDL_Rect(srcRect);
+            SDL_Rect dst = box2i_to_SDL_Rect(dstRect);
+            int err = SDL_RenderCopy(_renderer, texture._handle, &src, &dst);
+            if (err != 0)
+                _sdl2.throwSDL2Exception("SDL_RenderCopy");
+        }
     }
 
     package
@@ -173,9 +194,6 @@ final class SDL2Renderer
 
     private
     {
-        SDL2Window _window; // not null if renderer to window
-        SDL2Surface _surface; // not null if renderer to surface
-
         static SDL_Rect box2i_to_SDL_Rect(box2i b) pure
         {
             SDL_Rect res = void;

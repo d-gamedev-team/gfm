@@ -17,6 +17,7 @@ public
            gfm.sdl2.eventqueue,
            gfm.sdl2.keyboard,
            gfm.sdl2.renderer,
+           gfm.sdl2.texture,
            gfm.sdl2.framecounter,
            gfm.sdl2.sdlimage,
            gfm.sdl2.glcontext;
