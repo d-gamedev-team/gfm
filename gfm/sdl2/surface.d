@@ -53,6 +53,22 @@ final class SDL2Surface
         {
             return cast(ubyte*) _surface.pixels;
         }
+
+        void lock()
+        {
+            if (SDL_LockSurface(surface) != 0)
+                _sdl2.throwSDL2Exception("SDL_LockSurface");
+        }
+
+        void unlock()
+        {
+            SDL_UnlockSurface(surface);
+        }
+
+        SDL_Surface* handle()
+        {
+            return _surface;
+        }
     }
 
     package
