@@ -56,13 +56,13 @@ final class SDL2Surface
 
         void lock()
         {
-            if (SDL_LockSurface(surface) != 0)
+            if (SDL_LockSurface(_surface) != 0)
                 _sdl2.throwSDL2Exception("SDL_LockSurface");
         }
 
         void unlock()
         {
-            SDL_UnlockSurface(surface);
+            SDL_UnlockSurface(_surface);
         }
 
         SDL_Surface* handle()
