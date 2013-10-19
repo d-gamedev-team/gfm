@@ -56,7 +56,7 @@
             "sourcePaths": [ "gfm/assimp" ],
             "importPaths": [ "." ],
             "dependencies": {
-                "derelict:assimp3": "~master",
+                "derelict-assimp3": "~master",
                 "gfm:core": "~master"
             }
         },
@@ -65,7 +65,7 @@
             "sourcePaths": [ "gfm/opengl" ],
             "importPaths": [ "." ],
             "dependencies": {
-                "derelict:opengl3": "~master",
+                "derelict-opengl3": "~master",
                 "gfm:core": "~master",
                 "gfm:math": "~master"
             }
@@ -75,7 +75,7 @@
             "sourcePaths": [ "gfm/sdl2" ],
             "importPaths": [ "." ],
             "dependencies": {
-                "derelict:sdl2": "~master",
+                "derelict-sdl2": "~master",
                 "gfm:core": "~master"
             }
         },
@@ -84,7 +84,7 @@
             "sourcePaths": [ "gfm/freeimage" ],
             "importPaths": [ "." ],
             "dependencies": {
-                "derelict:freeimage": "~master",
+                "derelict-freeimage": "~master",
                 "gfm:core": "~master"
             }
         }

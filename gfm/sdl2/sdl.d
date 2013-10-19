@@ -325,7 +325,7 @@ final class SDL2
     }
 }
 
-extern(C) private
+extern(C) private nothrow
 {
     void loggingCallbackSDL(void* userData, int category, SDL_LogPriority priority, const(char)* message)
     {
