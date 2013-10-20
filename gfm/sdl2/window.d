@@ -9,7 +9,6 @@ import gfm.core.log,
        gfm.math.box,
        gfm.sdl2.sdl,
        gfm.sdl2.surface,
-       gfm.sdl2.eventqueue,
        gfm.sdl2.glcontext;
 
 class SDL2Window
@@ -50,6 +49,9 @@ class SDL2Window
 
             _id = SDL_GetWindowID(_window);
 
+            // register window for event dispatch
+            _sdl2.registerWindow(this);
+
             if (OpenGL)
                 _glContext = new SDL2GLContext(this);
         }
@@ -64,6 +66,7 @@ class SDL2Window
 
             if (_window !is null)
             {
+                _sdl2.unregisterWindow(this);
                 SDL_DestroyWindow(_window);
                 _window = null;
             }
@@ -87,6 +90,13 @@ class SDL2Window
         final void setSize(vec2i size)
         {
             SDL_SetWindowSize(_window, size.x, size.y);
+        }
+
+        final vec2i getSize()
+        {
+            int w, h;
+            SDL_GetWindowSize(_window, &w, &h);
+            return vec2i(w, h);
         }
 
         final void setTitle(string title)

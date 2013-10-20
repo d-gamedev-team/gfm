@@ -10,12 +10,14 @@ import derelict.sdl2.sdl,
        derelict.sdl2.image,
        derelict.util.exception;
 
-import gfm.sdl2.displaymode,
-       gfm.sdl2.renderer,
-       gfm.core.log,
+import gfm.core.log,
        gfm.core.text,
        gfm.math.vector,
-       gfm.math.box;
+       gfm.math.box,
+       gfm.sdl2.displaymode,
+       gfm.sdl2.renderer,
+       gfm.sdl2.window,
+       gfm.sdl2.keyboard;
 
 
 class SDL2Exception : Exception
@@ -72,7 +74,8 @@ final class SDL2
             int numDisplays = SDL_GetNumVideoDisplays();
             
             _log.infof("%s video display(s) detected.", numDisplays);
-            
+
+            _keyboard = new SDL2Keyboard(this);            
         }
 
         void close()
@@ -230,10 +233,50 @@ final class SDL2
 
             return sanitizeUTF8(s, _log, "SDL clipboard text");
         }
+
+        SDL2Keyboard keyboard()
+        {
+            return _keyboard;
+        }
+
+        bool wasQuitResquested() const
+        {
+            return _quitWasRequested;
+        }
+
+        // Get next SDL event.
+        // Note: state get updated and window callbacks called.
+        // return true if returned an event
+        bool pollEvent(SDL_Event* event)
+        {
+            if (SDL_PollEvent(event) != 0)
+            {
+                updateState(event);
+                dispatchEvent(event);
+                return true;
+            }
+            else
+                return false;
+        }   
+
+        // Process all pending SDL events.
+        // 
+        void processEvents()
+        {
+            SDL_Event event;
+
+            while(SDL_PollEvent(&event) != 0)
+            {
+                updateState(&event);
+                dispatchEvent(&event);
+            }
+        }
     }
 
     package
     {
+        Log _log;
+
         // exception mechanism that shall be used by every module here
         void throwSDL2Exception(string callThatFailed)
         {
@@ -241,17 +284,24 @@ final class SDL2
             throw new SDL2Exception(message);
         }
 
+        // return last SDL error and clears it
         string getErrorString()
         {
             const(char)* message = SDL_GetError();
             SDL_ClearError(); // clear error
             return sanitizeUTF8(message, _log, "SDL error string");
-        } 
-    }
+        }
 
-    package
-    {
-        Log _log;
+        void registerWindow(SDL2Window window)
+        {
+            _knownWindows[window.id()] = window;
+        }
+
+        void unregisterWindow(SDL2Window window)
+        {
+            assert((window.id() in _knownWindows) !is null);
+            _knownWindows.remove(window.id());
+        }        
     }
 
     private
@@ -262,6 +312,16 @@ final class SDL2
 
 
         bool _SDLInitialized;
+
+        // all created windows are keeped in this map
+        // to be able to dispatch event
+        SDL2Window[uint] _knownWindows;
+
+        // SDL_QUIT was received
+        bool _quitWasRequested = false;
+
+        // hold keyboard state
+        SDL2Keyboard _keyboard;
 
         bool subSystemInitialized(int subSystem)
         {
@@ -321,6 +381,143 @@ final class SDL2
                 _log.error(formattedMessage);
             else
                 _log.info(formattedMessage);
+        }
+
+        // dispatch to relevant event callbacks
+        void dispatchEvent(const (SDL_Event*) event)
+        {
+            switch(event.type)
+            {
+                case SDL_WINDOWEVENT:
+                    dispatchWindowEvent(&event.window);
+                    break;
+
+                default:
+                    break;
+            }
+        }
+
+        // update state based on event
+        // TODO: add mouse state
+        //       add joystick state
+        //       add haptic state
+        void updateState(const (SDL_Event*) event)
+        {
+            switch(event.type)
+            {
+                case SDL_QUIT: 
+                    _quitWasRequested = true;
+                    break;
+
+                case SDL_KEYDOWN:
+                case SDL_KEYUP:
+                    updateKeyboard(&event.key);
+                    break;
+
+                default:
+                    break;
+            }
+        }
+
+        // TODO: add window callbacks when pressing a key?
+        void updateKeyboard(const(SDL_KeyboardEvent*) event)
+        {
+            // ignore key-repeat
+            if (event.repeat != 0)
+                return;
+
+            switch (event.type)
+            {
+                case SDL_KEYDOWN:
+                    assert(event.state == SDL_PRESSED);
+                    _keyboard.markKeyAsPressed(event.keysym.scancode);
+                    break;
+
+                case SDL_KEYUP:
+                    assert(event.state == SDL_RELEASED);
+                    _keyboard.markKeyAsReleased(event.keysym.scancode);
+                    break;
+
+                default:
+                    break;
+            }
+        }
+
+        // call callbacks that can be overriden by subclassing SDL2Window
+        void dispatchWindowEvent(const (SDL_WindowEvent*) windowEvent)
+        {
+            assert(windowEvent.type == SDL_WINDOWEVENT);
+
+            SDL2Window* window = (windowEvent.windowID in _knownWindows);
+
+            if (window is null)
+            {
+                _log.warnf("Received a SDL event for an unknown window (id = %s)", windowEvent.windowID);
+                return; // no such id known, warning
+            }
+
+            switch (windowEvent.event)
+            {
+                case SDL_WINDOWEVENT_SHOWN:
+                    window.onShow();
+                    break;
+
+                case SDL_WINDOWEVENT_HIDDEN:
+                    window.onHide();
+                    break;
+
+                case SDL_WINDOWEVENT_EXPOSED:
+                    window.onExposed();
+                    break;
+
+                case SDL_WINDOWEVENT_MOVED:
+                    window.onMove(windowEvent.data1, windowEvent.data2);
+                    break;
+
+                case SDL_WINDOWEVENT_RESIZED:
+                    window.onResized(windowEvent.data1, windowEvent.data2);
+                    break;
+
+                case SDL_WINDOWEVENT_SIZE_CHANGED:
+                    window.onSizeChanged();
+                    break;
+
+                case SDL_WINDOWEVENT_MINIMIZED:
+                    window.onMinimized();
+                    break;
+
+                case SDL_WINDOWEVENT_MAXIMIZED:
+                    window.onMaximized();
+                    break;
+
+                case SDL_WINDOWEVENT_RESTORED:
+                    window.onRestored();
+                    break;
+
+                case SDL_WINDOWEVENT_ENTER:
+                    window.onEnter();
+                    break;
+
+                case SDL_WINDOWEVENT_LEAVE:
+                    window.onLeave();
+                    break;
+
+                case SDL_WINDOWEVENT_FOCUS_GAINED:
+                    window.onFocusGained();
+                    break;
+
+                case SDL_WINDOWEVENT_FOCUS_LOST:
+                    window.onFocusLost();
+                    break;
+
+                case SDL_WINDOWEVENT_CLOSE:
+                    window.onClose();
+                    break;
+
+                default:
+                    // not a window event
+                    break;
+            }
         }
     }
 }
