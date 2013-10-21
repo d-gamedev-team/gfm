@@ -75,9 +75,9 @@
             "sourcePaths": [ "gfm/opengl" ],
             "importPaths": [ "." ],
             "dependencies": {
-                "derelict-opengl3": "~master",
                 "gfm:core": "~master",
-                "gfm:math": "~master"
+                "gfm:math": "~master",
+                "derelict-gl3": "~master"
             }
         },
         {
@@ -95,7 +95,7 @@
             "sourcePaths": [ "gfm/freeimage" ],
             "importPaths": [ "." ],
             "dependencies": {
-                "derelict-freeimage": "~master",
+                "derelict-fi": "~master",
                 "gfm:core": "~master"
             }
         }
