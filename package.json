@@ -86,7 +86,8 @@
             "importPaths": [ "." ],
             "dependencies": {
                 "derelict-sdl2": "~master",
-                "gfm:core": "~master"
+                "gfm:core": "~master",
+                "gfm:math": "~master"
             }
         },
         {
