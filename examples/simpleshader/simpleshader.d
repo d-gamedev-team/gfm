@@ -28,10 +28,6 @@ void main()
                                     width, height,
                                     SDL_WINDOW_OPENGL);    
 
-    // create an event queue and register that window
-    auto eventQueue = scoped!SDL2EventQueue(sdl2);
-    eventQueue.registerWindow(window);
-
     // reload OpenGL now that a context exists
     gl.reload();
 
@@ -102,9 +98,9 @@ void main()
     noiseTexture.generateMipmap();
 
     double time = 0;
-    while(!eventQueue.keyboard().isPressed(SDLK_ESCAPE))
+    while(!sdl2.keyboard().isPressed(SDLK_ESCAPE))
     {
-        eventQueue.processEvents();
+        sdl2.processEvents();
 
         double dt = fc.tickMs();
         time += 0.001 * dt;

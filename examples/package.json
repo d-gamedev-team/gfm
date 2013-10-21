@@ -3,7 +3,7 @@
     "description": "GFM examples",
     "homepage": "http://github.com/p0nce/gfm/",
     "copyright": "none",
-    "license": "Public Domain (Unlicense)",
+    "license": "public domain",
     "authors": [ "ponce" ],
     "importPaths": [ "." ],
     "targetType": "executable",
@@ -18,24 +18,19 @@
 
     "configurations": [
         {
-            "name": "simplehttp",            
-            "targetName": "simplehttp",            
-            "sourcePaths": [ "simplehttp/." ],
-
-          
+            "name": "simplehttp",
+            "targetName": "simplehttp",
+            "sourcePaths": [ "simplehttp/." ]
         },
         {
-            "name": "simplegl",            
-            "targetName": "simplegl",            
-            "sourcePaths": [ "simplegl/." ],
-
-           
+            "name": "simplegl",
+            "targetName": "simplegl",
+            "sourcePaths": [ "simplegl/." ]
         },
         {
-            "name": "simpleshader",            
-            "targetName": "simpleshader",            
-            "sourcePaths": [ "simpleshader/." ],
-
+            "name": "simpleshader",
+            "targetName": "simpleshader",
+            "sourcePaths": [ "simpleshader/." ]
         }
     ]
 }
