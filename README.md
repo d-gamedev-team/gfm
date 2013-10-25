@@ -41,7 +41,7 @@ Public Domain (Unlicense).
   * **simplexnoise.d** Simplex noise implementation
 
 ### opengl/
-  * OpenGL wrapper based on Derelict3
+  * OpenGL wrapper based on package derelict-gl3
   * makes easier to use the OpenGL API correctly
   * including a matrix stack to replace fixed pipeline
   * including compilation of a single source for multiple shaders
@@ -51,7 +51,7 @@ Public Domain (Unlicense).
   * built-in OpenGL debug output forwarding
 
 ### sdl2/
-  * SDL 2.0 wrapper based on Derelict3
+  * SDL 2.0 wrapper based on package derelict-sdl2
   * including SDL_image and SDL_ttf wrappers
   * built-in SDL logging forwarding
   * framerate statistics  
@@ -62,14 +62,24 @@ Public Domain (Unlicense).
   * **cie.d** physical color computations  
 
 ### freeimage/
-  * FreeImage wrapper based on Derelict3
+  * FreeImage wrapper based on package derelict-fi
   * FIBITMAP wrapper  
 
 ### assimp/
-  * Assimp wrapper based on Derelict3
+  * Assimp wrapper based on package derelict-assimp3
   * scene wrapper
 
+### enet/
+  * ENet wrapper based on derelict_extras-enet
+  * scene wrapper  
+
 *There is always more to come, don't fear to ask for things*
+
+## How to use gfm?
+
+See the examples/ directory, or https://github.com/p0nce/aliasthis as an example of a game.
+
+
 
 ## Design goals
 
