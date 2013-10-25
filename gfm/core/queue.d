@@ -11,7 +11,7 @@ template Queue(T)
 // cannot grow
 template FixedSizeQueue(T) 
 { 
-    alias QueueImpl!(T, OverflowPolicy.ASSERT) FixedSizeQueue;
+    alias QueueImpl!(T, OverflowPolicy.CRASH) FixedSizeQueue;
 }
 
 // cannot grow, drop excess elements in case of overflow
@@ -24,7 +24,7 @@ template RingBuffer(T)
 private enum OverflowPolicy
 {
     GROW,
-    ASSERT,
+    CRASH,
     DROP
 }
 
@@ -67,7 +67,7 @@ final class QueueImpl(T, OverflowPolicy overflowPolicy)
 
         T popFront() nothrow
         {
-            assert(_count > 0);
+            crashIfEmpty();
             T res = _data[_first];
             _first = (_first + 1) % _data.length;
             --_count;
@@ -76,7 +76,7 @@ final class QueueImpl(T, OverflowPolicy overflowPolicy)
 
         T popBack() nothrow
         {
-            assert(_count > 0);
+            crashIfEmpty();
             --_count;
             return _data[(_first + _count) % _data.length];
         }
@@ -90,6 +90,18 @@ final class QueueImpl(T, OverflowPolicy overflowPolicy)
         size_t length() pure const nothrow
         {
             return _count;
+        }
+
+        T front() pure
+        {
+            crashIfEmpty();
+            return _data[_first];
+        }
+
+        T back() pure
+        {
+            crashIfEmpty();
+            return _data[(_first + _count + _data.length - 1) % _data.length];
         }
 
         // range type, random access
@@ -167,6 +179,13 @@ final class QueueImpl(T, OverflowPolicy overflowPolicy)
 
     private
     {
+        void crashIfEmpty()
+        {
+            // popping if empty is not a recoverable error
+            if (_count == 0)
+                assert(false);
+        }
+
         // element lie from _first to _first + _count - 1 index, modulo the allocated size
         T[] _data;
         size_t _first;
@@ -179,8 +198,8 @@ final class QueueImpl(T, OverflowPolicy overflowPolicy)
                 static if (overflowPolicy == OverflowPolicy.GROW)
                     extend();
 
-                static if (overflowPolicy == OverflowPolicy.ASSERT)
-                    assert(false);
+                static if (overflowPolicy == OverflowPolicy.CRASH)
+                    assert(false); // not recoverable to overflow such a queue
 
                 static if (overflowPolicy == OverflowPolicy.DROP)
                     popMethod();
@@ -221,6 +240,9 @@ unittest
         auto fifo = new Queue!int(N);
         foreach(n; 0..N)
             fifo.pushBack(n);
+
+        assert(fifo.back() == N);
+        assert(fifo.front() == 0);
 
         foreach(n; 0..N)
         {

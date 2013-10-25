@@ -85,6 +85,8 @@ See the examples/ directory, or https://github.com/p0nce/aliasthis as an example
 
   * give more power to the library user providing code that will probably need to be written anyway.
   * each module / sub-package is maximally decoupled (the major pain point right now is the lack of a standard logging facility).
+  * logging interface for everything which need to output messages.
   * correctness and functionality are favoured over speed.
   * wrappers are lightweight layers that expose the C libraries objects, turn every error code into an D exception and makes it easier to use the library correctly.
   * as much as possible, gfm emit warnings when something goes wrong, try to recover when it makes sense and log every problem.
+
