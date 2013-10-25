@@ -127,51 +127,65 @@ final class SDL2Renderer
 
         void setColor(ubyte r, ubyte g, ubyte b, ubyte a)
         {
-            SDL_SetRenderDrawColor(_renderer, r, g, b, a);
+            if (0 != SDL_SetRenderDrawColor(_renderer, r, g, b, a))
+                _sdl2.throwSDL2Exception("SDL_RenderSetViewport");
         }
 
         void setViewport(box2i b)
         {
             SDL_Rect r = box2i_to_SDL_Rect(b);
-            SDL_RenderSetViewport(_renderer, &r);
+            if (0 != SDL_RenderSetViewport(_renderer, &r))
+                _sdl2.throwSDL2Exception("SDL_RenderSetViewport");
+        }
+
+        void setViewportFull()
+        {
+            if (0 != SDL_RenderSetViewport(_renderer, null))
+                _sdl2.throwSDL2Exception("SDL_RenderSetViewport");
         }
 
         void setBlend(Blend b)
         {
-            SDL_SetRenderDrawBlendMode(_renderer, b);
+            if (0 != SDL_SetRenderDrawBlendMode(_renderer, b))
+                _sdl2.throwSDL2Exception("SDL_SetRenderDrawBlendMode");
         }
 
         void drawLine(vec2i a, vec2i b)
         {
-            SDL_RenderDrawLine(_renderer, a.x, a.y, b.x, b.y);
+            if (0 != SDL_RenderDrawLine(_renderer, a.x, a.y, b.x, b.y))
+                _sdl2.throwSDL2Exception("SDL_RenderDrawLine");
+
         }
 
         void drawLines(vec2i[] points)
         {
-            SDL_RenderDrawLines(_renderer, cast(SDL_Point*)(points.ptr), cast(int)(points.length));
+            if (0 != SDL_RenderDrawLines(_renderer, cast(SDL_Point*)(points.ptr), cast(int)(points.length)))
+                _sdl2.throwSDL2Exception("SDL_RenderDrawLines");
         }
 
         void drawPoint(vec2i point)
         {
-            SDL_RenderDrawPoint(_renderer, point.x, point.y);
+            if (0 != SDL_RenderDrawPoint(_renderer, point.x, point.y))
+                _sdl2.throwSDL2Exception("SDL_RenderDrawPoint");
         }
 
         void drawPoints(vec2i[] points)
         {
-            SDL_RenderDrawPoints(_renderer, cast(SDL_Point*)(points.ptr), cast(int)(points.length));
+            if (0 != SDL_RenderDrawPoints(_renderer, cast(SDL_Point*)(points.ptr), cast(int)(points.length)))
+                _sdl2.throwSDL2Exception("SDL_RenderDrawPoints");
         }
 
         void drawRect(box2i rect)
         {
             SDL_Rect r = box2i_to_SDL_Rect(rect);
-            if (SDL_RenderDrawRect(_renderer, &r) != 0)
+            if (0 != SDL_RenderDrawRect(_renderer, &r))
                 _sdl2.throwSDL2Exception("SDL_RenderDrawRect");
         }
 
         void fillRect(box2i rect)
         {
             SDL_Rect r = box2i_to_SDL_Rect(rect);
-            if (SDL_RenderFillRect(_renderer, &r) != 0)
+            if (0 != SDL_RenderFillRect(_renderer, &r))
                 _sdl2.throwSDL2Exception("SDL_RenderFillRect");
         }
 
@@ -180,8 +194,7 @@ final class SDL2Renderer
             auto f = texture.format();
             SDL_Rect src = box2i_to_SDL_Rect(srcRect);
             SDL_Rect dst = box2i_to_SDL_Rect(dstRect);
-            int err = SDL_RenderCopy(_renderer, texture._handle, &src, &dst);
-            if (err != 0)
+            if (0 != SDL_RenderCopy(_renderer, texture._handle, &src, &dst))
                 _sdl2.throwSDL2Exception("SDL_RenderCopy");
         }
     }
