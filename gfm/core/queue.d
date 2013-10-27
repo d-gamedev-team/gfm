@@ -104,6 +104,15 @@ final class QueueImpl(T, OverflowPolicy overflowPolicy)
             return _data[(_first + _count + _data.length - 1) % _data.length];
         }
 
+        T opIndex(size_t index) 
+        { 
+            // crash if index out-of-bounds (not recoverable)
+            if (index > _count)
+                assert(0);
+
+            return _data[(_first + index) % _data.length];
+        }
+
         // range type, random access
         static struct Range
         {
@@ -148,9 +157,13 @@ final class QueueImpl(T, OverflowPolicy overflowPolicy)
                     return this;
                 }
 
-                T opIndex(size_t n) 
+                T opIndex(size_t i) 
                 { 
-                    return _data[(_first + n) % _data.length];
+                    // crash if index out-of-bounds of the range (not recoverable)
+                    if (i > _count)
+                        assert(0);
+
+                    return _data[(_first + _index + i) % _data.length];
                 }
 
                 @property size_t length() pure
