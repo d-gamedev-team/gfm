@@ -72,15 +72,15 @@ final class FrameCounter
 
         string getFPSString()
         {
-            double avg = average(_stats.range());
+            double avg = average(_stats[]);
             int avgFPS = cast(int)(0.5 + ( avg != 0 ? 1000 / avg : 0 ) );
             int avgdt = cast(int)(0.5 + avg);
 
             return format("FPS: %s dt: avg %sms min %sms max %sms",
                           avgFPS,
                           avgdt,
-                          minimum(_stats.range()),
-                          maximum(_stats.range()));
+                          minimum(_stats[]),
+                          maximum(_stats[]));
 
         }
     }

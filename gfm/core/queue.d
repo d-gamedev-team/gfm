@@ -113,6 +113,30 @@ final class QueueImpl(T, OverflowPolicy overflowPolicy)
             return _data[(_first + index) % _data.length];
         }
 
+        // get random-access range
+        Range opSlice() nothrow
+        {
+            return Range(this);
+        }
+
+        deprecated alias opSlice range;
+
+        // get random-access range
+        Range opSlice(size_t i, size_t j) nothrow
+        {
+            // verify that all elements are in bound
+            if (i != j && i >= _count)
+                assert(false);
+
+            if (j > _count)
+                assert(false);
+
+            if (j < i)
+                assert(false);
+
+            return Range(this);
+        }
+
         // range type, random access
         static struct Range
         {
@@ -121,10 +145,17 @@ final class QueueImpl(T, OverflowPolicy overflowPolicy)
             {
                 this(QueueImpl queue) pure
                 {
-                    _index = 0;
-                    _data = queue._data;
+                    this(queue, 0, queue._count);                    
                     _first = queue._first;
                     _count = queue._count;
+                }
+
+                this(QueueImpl queue, size_t index, size_t count) pure
+                {
+                    _index = index;
+                    _data = queue._data;
+                    _first = (queue._first + index) % _data.length;
+                    _count = _count;
                 }
 
                 @property bool empty() pure const
@@ -181,13 +212,7 @@ final class QueueImpl(T, OverflowPolicy overflowPolicy)
                 size_t _first;
                 size_t _count;
             }
-        }
-
-        // get random-access range
-        Range range() nothrow
-        {
-            return Range(this);
-        }
+        }        
     }
 
     private
@@ -229,7 +254,7 @@ final class QueueImpl(T, OverflowPolicy overflowPolicy)
 
             T[] newData = new T[newCapacity];
 
-            auto r = range();
+            auto r = this[];
             size_t i = 0;
             while (!r.empty())
             {
