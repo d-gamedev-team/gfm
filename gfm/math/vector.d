@@ -86,7 +86,7 @@ nothrow:
             {
                 x = xyz_.x;
                 y = xyz_.y;
-                z = zwz_.z;
+                z = xyz_.z;
                 w = w_;
             }
 
