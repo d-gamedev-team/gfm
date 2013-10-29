@@ -54,6 +54,11 @@ final class SDL2Surface
             return cast(ubyte*) _surface.pixels;
         }
 
+        size_t pitch()
+        {
+            return _surface.pitch;
+        }
+
         void lock()
         {
             if (SDL_LockSurface(_surface) != 0)
@@ -68,6 +73,33 @@ final class SDL2Surface
         SDL_Surface* handle()
         {
             return _surface;
+        }
+
+        SDL_PixelFormat* pixelFormat()
+        {
+            return _surface.format;
+        }
+
+        // Warning: must be locked when using this method.
+        // Slow!
+        vec4ub getRGBA(int x, int y)
+        {
+            // crash if out of image
+            if (x < 0 || x >= width())
+                assert(0);
+
+            if (y < 0 || y >= height())
+                assert(0);
+            
+            SDL_PixelFormat* fmt = _surface.format;
+
+            ubyte* pixels = cast(ubyte*)_surface.pixels;
+            int pitch = _surface.pitch;
+
+            uint* pixel = cast(uint*)(pixels + y * pitch + x * fmt.BytesPerPixel);
+            ubyte r, g, b, a;
+            SDL_GetRGBA(*pixel, fmt, &r, &g, &b, &a);
+            return vec4ub(r, g, b, a);
         }
     }
 
