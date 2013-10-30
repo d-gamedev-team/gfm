@@ -3,6 +3,9 @@ module gfm.core.alignedbuffer;
 import std.c.string;
 import gfm.core.memory;
 
+
+// TODO: make this module disappear when std.allocator is out, and we have something like std::vector.
+
 // Growable array, points to a memory aligned location.
 final class AlignedBuffer(T)
 {

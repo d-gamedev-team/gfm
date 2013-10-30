@@ -2,6 +2,9 @@ module gfm.core.queue;
 
 import std.range;
 
+
+// TODO: make this module disappear when std.container has equivalents.
+
 // can grow
 template Queue(T) 
 { 

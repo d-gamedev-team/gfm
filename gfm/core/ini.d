@@ -7,6 +7,7 @@ import std.stdio,
 import gfm.core.text;
 
 /// A dumb and permissive INI parser, AST and writer
+// TODO: more robust parser
 class IniFile
 {
     public

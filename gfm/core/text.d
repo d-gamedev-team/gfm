@@ -9,6 +9,10 @@ import std.file,
 
 import gfm.core.log;
 
+
+// Reads a text file at once.
+// TODO: remove in favor of std.file.read
+//       this means shaders must compile from a single string instead of string[]
 string[] readTextFile(string filename)
 {
     try

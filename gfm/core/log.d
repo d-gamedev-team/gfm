@@ -4,6 +4,8 @@ import std.stream,
        std.stdio,
        std.string;
 
+// TODO: make this module disappear when std.logger is out
+
 version(Windows)
 {
     import core.sys.windows.windows;
