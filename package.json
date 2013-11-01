@@ -9,8 +9,8 @@
         "ponce",
         "Gerbrand Kamphuis / vuaru: many fixes",
         "John D. Cook: SimpleRNG author",
-        "Sam Hocevar: many bits of code"
-		"Daniel Cousens / RommelVR: GL fix",
+        "Sam Hocevar: many bits of code",
+		"Daniel Cousens / RommelVR: GL fix"
     ],
 
     "importPaths": [
@@ -26,7 +26,7 @@
         "gfm:math": "~master",
         "gfm:net": "~master",
         "gfm:opengl": "~master",
-        "gfm:sdl2": "~master",
+        "gfm:sdl2": "~master"
     },
 
     "subPackages": [
