@@ -7,7 +7,9 @@
 
     "authors": [
         "ponce",
+        "Gerbrand Kamphuis (vuaru)",
         "John D. Cook",
+        "Daniel Cousens (RommelVR)",
     ],
 
     "importPaths": [
