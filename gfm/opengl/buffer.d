@@ -18,6 +18,7 @@ final class GLBuffer
 
             glGenBuffers(1, &_buffer);
             _initialized = true;
+            _size = 0;
         }
 
         ~this()
@@ -34,9 +35,16 @@ final class GLBuffer
             }
         }
 
+        /// Return size in bytes.
+        size_t size() pure const nothrow
+        {
+            return _size;
+        }
+
         void setData(size_t size, void * data)
         {
             bind();
+            _size = size;
 
             // discard previous data
             if (!_firstLoad)
@@ -57,6 +65,23 @@ final class GLBuffer
             bind();
             glBufferSubData(_target, offset, size, data);
             _gl.runtimeCheck();
+        }
+
+        /// Get a sub-part of a buffer.
+        void getSubData(size_t offset, size_t size, void* data)
+        {
+            bind();
+            glGetBufferSubData(_target, offset, size, data);
+            _gl.runtimeCheck();
+        }
+
+        /// Get a whole-buffer in a newly allocated array.
+        /// Debugging-purpose.
+        ubyte[] getBytes()
+        {
+            auto buffer = new ubyte[_size];
+            getSubData(0, _size, buffer.ptr);
+            return buffer;
         }
 
         void bind()
@@ -80,6 +105,7 @@ final class GLBuffer
     {
         OpenGL _gl;
         GLuint _buffer;
+        size_t _size;
         GLuint _target;
         GLuint _storage;
         GLuint _usage;
