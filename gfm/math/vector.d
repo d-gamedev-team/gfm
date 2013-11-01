@@ -55,6 +55,13 @@ nothrow:
                 y = xy_.y;
                 z = z_;
             }
+
+            this(X : T, Y : T)(X x_, Vector!(Y, 2u) yz_) pure nothrow
+            {
+                x = x_;
+                y = yz_.x;
+                z = yz_.y;
+            }
         }
         else static if (N == 4u)
         {
@@ -66,7 +73,7 @@ nothrow:
                 w = w_;
             }
 
-            this(X : T, Y : T)(Vector!(X, 2u) xy_, Vector!(Y, 2u)zwy_) pure nothrow
+            this(X : T, Y : T)(Vector!(X, 2u) xy_, Vector!(Y, 2u)zw_) pure nothrow
             {
                 x = xy_.x;
                 y = xy_.y;
