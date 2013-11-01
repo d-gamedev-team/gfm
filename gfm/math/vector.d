@@ -25,10 +25,26 @@ nothrow:
             T[N] v;
             struct
             {
-                static if (N >= 1) T x;
-                static if (N >= 2) T y;
-                static if (N >= 3) T z;
-                static if (N >= 4) T w;
+                static if (N >= 1)
+                {
+                    T x;
+                    alias x r;
+                }
+                static if (N >= 2)
+                {
+                    T y;
+                    alias y g;
+                }
+                static if (N >= 3)
+                {
+                    T z;
+                    alias z b;
+                }
+                static if (N >= 4)
+                {
+                    T w;
+                    alias w a;
+                }
             }
         }
 
@@ -284,7 +300,7 @@ nothrow:
         {
             alias Vector!(T, op.length) returnType;
             returnType res = void;
-            enum indexTuple = swizzleTuple!(op, op.length).result;
+            enum indexTuple = swizzleTuple!op;
             foreach(i, index; indexTuple)
                 res.v[i] = v[index];
             return res;
@@ -412,14 +428,18 @@ nothrow:
             enum bool isForeign = (!isConvertible!T) && (!is(T: Vector));
         }
 
-        template isValidSwizzle(string op)
+        template isValidSwizzle(string op, int lastSwizzleClass = -1)
         {
             static if (op.length == 0)
                 enum bool isValidSwizzle = true;
             else
             {
                 enum len = op.length;
-                enum bool isValidSwizzle = (swizzleIndex!(op[0]) != -1) && isValidSwizzle!(op[1..len]);
+                enum int swizzleClass = swizzleClassify!(op[0]);
+                enum bool swizzleClassValid = (lastSwizzleClass == -1 || (swizzleClass == lastSwizzleClass));
+                enum bool isValidSwizzle = (swizzleIndex!(op[0]) != -1) 
+                                         && swizzleClassValid 
+                                         && isValidSwizzle!(op[1..len], swizzleClass);
             }
         }
 
@@ -460,33 +480,35 @@ nothrow:
 
         template swizzleIndex(char c)
         {
-            static if(c == 'x' && N >= 1)
-                enum size_t swizzleIndex = 0u;
-            else static if(c == 'y' && N >= 2)
-                enum size_t swizzleIndex = 1u;
-            else static if(c == 'z' && N >= 3)
-                enum size_t swizzleIndex = 2u;
-            else static if (c == 'w' && N >= 4)
-                enum size_t swizzleIndex = 3u;
+            static if((c == 'x' || c == 'r') && N >= 1)
+                enum swizzleIndex = 0;
+            else static if((c == 'y' || c == 'g') && N >= 2)
+                enum swizzleIndex = 1;
+            else static if((c == 'z' || c == 'b') && N >= 3)
+                enum swizzleIndex = 2;
+            else static if ((c == 'w' || c == 'a') && N >= 4)
+                enum swizzleIndex = 3;
             else
-                enum size_t swizzleIndex = cast(size_t)(-1);
+                enum swizzleIndex = -1;
         }
 
-        template swizzleTuple(string op, size_t opLength)
+        template swizzleClassify(char c)
         {
-            static assert(opLength > 0);
-            enum c = op[0];
-            static if (opLength == 1)
-            {
-                enum result = [swizzleIndex!c];
-            }
+            static if(c == 'x' || c == 'y' || c == 'z' || c == 'w')
+                enum swizzleClassify = 0;
+            else static if(c == 'r' || c == 'g' || c == 'b' || c == 'a')
+                enum swizzleClassify = 1;
             else
-            {
-                enum string rest = op[1..opLength];
-                enum recurse = swizzleTuple!(rest, opLength - 1).result;
-                enum result = [swizzleIndex!c] ~ recurse;
-            }
+                enum swizzleClassify = -1;
+        }
 
+        template swizzleTuple(string op)
+        {
+            enum opLength = op.length;
+            static if (op.length == 0)
+                enum swizzleTuple = [];
+            else
+                enum swizzleTuple = [ swizzleIndex!(op[0]) ] ~ swizzleTuple!(op[1..op.length]);
         }
     }
 }
@@ -523,7 +545,6 @@ Vector!(T, N) min(T, size_t N)(const Vector!(T, N) a, const Vector!(T, N) b) pur
         res[i] = min(a[i], b[i]);
     return res;
 }
-
 
 /// element-wise maximum
 Vector!(T, N) max(T, size_t N)(const Vector!(T, N) a, const Vector!(T, N) b) pure nothrow
@@ -585,6 +606,8 @@ unittest
 {
     static assert(vec2i.isValidSwizzle!"xyx");
     static assert(!vec2i.isValidSwizzle!"xyz");
+    static assert(vec4i.isValidSwizzle!"brra");
+    static assert(!vec4i.isValidSwizzle!"rgyz");
     static assert(vec2i.isValidSwizzleUnique!"xy");
     static assert(vec2i.isValidSwizzleUnique!"yx");
     static assert(!vec2i.isValidSwizzleUnique!"xx");
@@ -617,6 +640,7 @@ unittest
     assert(x == [4, 1, 83, 10]);
     assert(x.xxywz == [4, 4, 1, 10, 83]);
     assert(x.xxxxxxx == [4, 4, 4, 4, 4, 4, 4]);
+    assert(x.abgr == [10, 83, 1, 4]);
     assert(a != b);
 
     vec2l e = a;
