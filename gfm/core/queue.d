@@ -282,7 +282,7 @@ unittest
         foreach(n; 0..N)
             fifo.pushBack(n);
 
-        assert(fifo.back() == N);
+        assert(fifo.back() == N - 1);
         assert(fifo.front() == 0);
 
         foreach(n; 0..N)
