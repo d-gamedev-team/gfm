@@ -71,7 +71,7 @@ Public Domain (Unlicense).
 
 ### enet/
   * ENet wrapper based on derelict_extras-enet
-  * scene wrapper  
+  * currently useless
 
 *There is always more to come, don't fear to ask for things*
 
