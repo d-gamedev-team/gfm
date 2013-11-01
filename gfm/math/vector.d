@@ -286,9 +286,7 @@ nothrow:
             returnType res = void;
             enum indexTuple = swizzleTuple!(op, op.length).result;
             foreach(i, index; indexTuple)
-            {
                 res.v[i] = v[index];
-            }
             return res;
         }
 
@@ -417,12 +415,11 @@ nothrow:
         template isValidSwizzle(string op)
         {
             static if (op.length == 0)
-            {
-                enum bool isValidSwizzle = false;
-            }
+                enum bool isValidSwizzle = true;
             else
             {
-                enum bool isValidSwizzle = isValidSwizzleImpl!(op, op.length).result;
+                enum len = op.length;
+                enum bool isValidSwizzle = (swizzleIndex!(op[0]) != -1) && isValidSwizzle!(op[1..len]);
             }
         }
 
@@ -452,50 +449,25 @@ nothrow:
             }
         }
 
+        // true if the swizzle has at the maximum one time each letter
         template isValidSwizzleUnique(string op)
         {
             static if (isValidSwizzle!op)
-            {
                 enum isValidSwizzleUnique = hasNoDuplicates!op.result;
-            }
             else
-            {
                 enum bool isValidSwizzleUnique = false;
-            }
-        }
-
-        template isValidSwizzleImpl(string op, size_t opLength)
-        {
-            static if (opLength == 0)
-            {
-                enum bool result = true;
-            }
-            else
-            {
-                enum len = op.length;
-                enum bool result = (swizzleIndex!(op[0]) != -1)
-                                   && isValidSwizzleImpl!(op[1..len], opLength - 1).result;
-            }
         }
 
         template swizzleIndex(char c)
         {
             static if(c == 'x' && N >= 1)
-            {
                 enum size_t swizzleIndex = 0u;
-            }
             else static if(c == 'y' && N >= 2)
-            {
                 enum size_t swizzleIndex = 1u;
-            }
             else static if(c == 'z' && N >= 3)
-            {
                 enum size_t swizzleIndex = 2u;
-            }
             else static if (c == 'w' && N >= 4)
-            {
                 enum size_t swizzleIndex = 3u;
-            }
             else
                 enum size_t swizzleIndex = cast(size_t)(-1);
         }
