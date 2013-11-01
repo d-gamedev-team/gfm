@@ -386,10 +386,10 @@ final class GLUniform
 
                     // image samplers
                 case GL_IMAGE_1D: .. case GL_UNSIGNED_INT_IMAGE_2D_MULTISAMPLE_ARRAY:
-                    return is(T == int);
+                    return int.sizeof;
 
                 case GL_UNSIGNED_INT_ATOMIC_COUNTER:
-                    return is(T == uint);
+                    return uint.sizeof;
 
                 case GL_SAMPLER_1D:
                 case GL_SAMPLER_2D:
