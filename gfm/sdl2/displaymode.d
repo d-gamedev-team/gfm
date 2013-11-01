@@ -60,7 +60,7 @@ final class SDL2VideoDisplay
         override string toString()
         {
             string res = format("display #%s (start = %s,%s - dimension = %s x %s)\n", _displayindex, 
-                                _bounds.a.x, _bounds.a.y, _bounds.width, _bounds.height);
+                                _bounds.min.x, _bounds.min.y, _bounds.width, _bounds.height);
             foreach (mode; _availableModes)
                 res ~= format("  - %s\n", mode);
             return res;

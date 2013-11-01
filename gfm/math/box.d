@@ -16,39 +16,42 @@ align(1) struct Box(T, size_t N)
     {
         alias Vector!(T, N) bound_t;
 
-        bound_t a; // not enforced, the box can have negative volume
-        bound_t b;
+        bound_t min; // not enforced, the box can have negative volume
+        bound_t max;
 
-        this(bound_t a_, bound_t b_) pure nothrow
+        deprecated alias min a;
+        deprecated alias max b;
+
+        this(bound_t min_, bound_t max_) pure nothrow
         {
-            a = a_;
-            b = b_;
+            min = min_;
+            max = max_;
         }
 
         static if (N == 1u)
         {
-            this(T ax, T bx) pure nothrow
+            this(T min_, T max_) pure nothrow
             {
-                a.x = ax;
-                b.x = bx;
+                min.x = min_;
+                max.x = max_;
             }
         }
 
         static if (N == 2u)
         {
-            this(T ax, T ay, T bx, T by) pure nothrow
+            this(T min_x, T min_y, T max_x, T max_y) pure nothrow
             {
-                a = bound_t(ax, ay);
-                b = bound_t(bx, by);
+                min = bound_t(min_x, min_y);
+                max = bound_t(max_x, max_y);
             }
         }
 
         static if (N == 3u)
         {
-            this(T ax, T ay, T az, T bx, T by, T bz) pure nothrow
+            this(T min_x, T min_y, T min_z, T max_x, T max_y, T max_z) pure nothrow
             {
-                a = bound_t(ax, ay, az);
-                b = bound_t(bx, by, bz);
+                min = bound_t(min_x, min_y, min_z);
+                max = bound_t(max_x, max_y, max_z);
             }
         }
 
@@ -57,36 +60,33 @@ align(1) struct Box(T, size_t N)
         {
             bound_t size() pure const nothrow
             {
-                return b - a;
+                return max - min;
             }
 
             bound_t center() pure const nothrow
             {
-                return (a + b) / 2;
+                return (min + max) / 2;
             }
 
+            /// Get the width of the box.
             static if (N >= 1)
+            T width() pure const nothrow @property
             {
-                T width() pure const nothrow @property
-                {
-                    return b.x - a.x;
-                }
+                return max.x - min.x;
             }
 
+            /// Get the height of the box if applicable.
             static if (N >= 2)
+            T height() pure const nothrow @property
             {
-                T height() pure const nothrow @property
-                {
-                    return b.y - a.y;
-                }
+                return max.y - min.y;
             }
 
+            /// Get the depth of the box if applicable.
             static if (N >= 3)
+            T depth() pure const nothrow @property
             {
-                T depth() pure const nothrow @property
-                {
-                    return b.z - a.z;
-                }
+                return max.z - min.z;
             }
 
             T volume() pure const nothrow
@@ -103,7 +103,7 @@ align(1) struct Box(T, size_t N)
         bool contains(bound_t p) pure const nothrow
         {
             for(size_t i = 0; i < N; ++i)
-                if ((p[i] < a[i]) || (p[i] >= b[i]))
+                if ((p[i] < min[i]) || (p[i] >= max[i]))
                     return false;
 
             return true;
@@ -116,23 +116,23 @@ align(1) struct Box(T, size_t N)
             assert(o.isSorted());
 
             for(size_t i = 0; i < N; ++i)
-                if (o.a[i] >= b[i] || o.b[i] < a[i])
+                if (o.min[i] >= max[i] || o.max[i] < min[i])
                     return false;
             return true;
         }
 
-        // Euclidean squared distance from a point
-        // source: Numerical Recipes Third Edition (2007)
+        /// Euclidean squared distance from a point
+        /// source: Numerical Recipes Third Edition (2007)
         double squaredDistance(bound_t point)
         {
             double distanceSquared = 0;
             for (size_t i = 0; i < N; ++i)
             {
-                if (point[i] < a[i])
-                    distanceSquared += sqr(point[i] - a[i]);
+                if (point[i] < min[i])
+                    distanceSquared += sqr(point[i] - min[i]);
 
-                if (point[i] > b[i])
-                    distanceSquared += sqr(point[i] - b[i]);
+                if (point[i] > max[i])
+                    distanceSquared += sqr(point[i] - max[i]);
             }
             return distanceSquared;
         }
@@ -149,25 +149,25 @@ align(1) struct Box(T, size_t N)
             {
                 assert(isSorted());
                 assert(o.isSorted());
-                auto xmin = max(a.x, o.a.x);
-                auto ymin = max(a.y, o.a.y);
-                auto xmax = min(b.x, o.b.x);
-                auto ymax = min(b.y, o.b.y);
+                auto xmin = .max(min.x, o.min.x);
+                auto ymin = .max(min.y, o.min.y);
+                auto xmax = .min(max.x, o.max.x);
+                auto ymax = .min(max.y, o.max.y);
                 return Box(xmin, ymin, xmax, ymax);
             }
         }
 
 
-        // extends the bounds of this Box
+        /// Extends the area of this Box.
         Box grow(bound_t space) pure const nothrow
         {
             Box res = this;
-            res.a -= space;
-            res.b += space;
+            res.min -= space;
+            res.max += space;
             return res;
         }
 
-        // shrink the area of this Box
+        /// Shrink the area of this Box.
         Box shrink(bound_t space) pure const nothrow
         {
             return grow(-space);
@@ -185,12 +185,11 @@ align(1) struct Box(T, size_t N)
             return shrink(bound_t(space));
         }
 
-
         bool isSorted() pure const nothrow
         {
             for(size_t i = 0; i < N; ++i)
             {
-                if (a[i] > b[i])
+                if (min[i] > max[i])
                     return false;
             }
             return true;
@@ -202,8 +201,8 @@ align(1) struct Box(T, size_t N)
             {
                 static if(U._size == _size)
                 {
-                    a = x.a;
-                    b = x.b;
+                    min = x.min;
+                    max = x.max;
                 }
                 else
                 {
@@ -219,7 +218,7 @@ align(1) struct Box(T, size_t N)
 
         bool opEquals(U)(U other) pure const nothrow if (is(U : Box))
         {
-            return (a == other.a) && (b == other.b);
+            return (min == other.min) && (max == other.max);
         }
     }
 

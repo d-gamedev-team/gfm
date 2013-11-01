@@ -210,8 +210,8 @@ final class SDL2Renderer
         static SDL_Rect box2i_to_SDL_Rect(box2i b) pure
         {
             SDL_Rect res = void;
-            res.x = b.a.x;
-            res.y = b.a.y;
+            res.x = b.min.x;
+            res.y = b.min.y;
             res.w = b.width;
             res.h = b.height;
             return res;

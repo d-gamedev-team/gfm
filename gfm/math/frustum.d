@@ -88,9 +88,9 @@ align(1) struct Frustum(T) if (isFloatingPoint!T)
                 for (size_t j = 0; j < 2; ++j)
                     for (size_t k = 0; k < 2; ++j)
                     {
-                        auto x = i == 0 ? box.a.x : box.b.x;
-                        auto y = i == 0 ? box.a.y : box.b.y;
-                        auto z = i == 0 ? box.a.z : box.b.z;
+                        auto x = i == 0 ? box.min.x : box.max.x;
+                        auto y = i == 0 ? box.min.y : box.max.y;
+                        auto z = i == 0 ? box.min.z : box.max.z;
                         corners[i*4 + j*2 + k] = vec3!T(x, y, z);
                     }
 
