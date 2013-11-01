@@ -7,9 +7,10 @@
 
     "authors": [
         "ponce",
-        "Gerbrand Kamphuis (vuaru)",
-        "John D. Cook",
-        "Daniel Cousens (RommelVR)",
+        "Gerbrand Kamphuis / vuaru: many fixes",
+        "John D. Cook: SimpleRNG author",
+        "Sam Hocevar: many bits of code"
+		"Daniel Cousens / RommelVR: GL fix",
     ],
 
     "importPaths": [
