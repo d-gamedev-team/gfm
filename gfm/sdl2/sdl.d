@@ -14,12 +14,11 @@ import gfm.core.log,
        gfm.core.text,
        gfm.math.vector,
        gfm.math.box,
-       gfm.sdl2.displaymode,
        gfm.sdl2.renderer,
        gfm.sdl2.window,
        gfm.sdl2.keyboard;
 
-
+/// The one exception type used in this wrapper.
 class SDL2Exception : Exception
 {
     public
@@ -31,10 +30,15 @@ class SDL2Exception : Exception
     }
 }
 
+/// Owns both the loader, logging, keyboard state...
+/// This object is passed around to other SDL wrapper objects primarily
+/// to ensure library loading.
 final class SDL2
 {
     public
     {
+        /// Load SDL2 library, redirect logging to our logger.
+        /// You can pass a null logger if you don't want logging.
         this(Log log)
         {
             _log = log is null ? new NullLog() : log;
@@ -131,16 +135,6 @@ final class SDL2
             if (res <= 0)
                 res = 1;
             return res;
-        }
-
-        void delay(int milliseconds)
-        {
-            SDL_Delay(milliseconds);
-        }
-
-        uint getTicks()
-        {
-            return SDL_GetTicks();
         }
 
         SDL2VideoDisplay[] getDisplays()
@@ -545,3 +539,72 @@ extern(C) private nothrow
         }
     }
 }
+
+final class SDL2DisplayMode
+{
+    public
+    {
+        this(int modeIndex, SDL_DisplayMode mode)
+        {
+            _modeIndex = modeIndex;
+            _mode = mode;
+        }
+
+        override string toString()
+        {
+            return format("mode #%s (width = %spx, height = %spx, rate = %shz, format = %s)", 
+                          _modeIndex, _mode.w, _mode.h, _mode.refresh_rate, _mode.format);
+        }
+    }
+
+    private
+    {
+        int _modeIndex;
+        SDL_DisplayMode _mode;
+    }
+}
+
+final class SDL2VideoDisplay
+{
+    public
+    {
+        this(int displayindex, box2i bounds, SDL2DisplayMode[] availableModes)
+        {
+            _displayindex = displayindex;
+            _bounds = bounds;
+            _availableModes = availableModes;
+        }
+
+        const(SDL2DisplayMode[]) availableModes() pure const nothrow
+        {
+            return _availableModes;
+        }
+
+        const(vec2i) dimension() pure const nothrow
+        {
+            return vec2i(_bounds.width, _bounds.height);
+        }
+
+        const(box2i) bounds() pure const nothrow
+        {
+            return _bounds;
+        }
+
+        override string toString()
+        {
+            string res = format("display #%s (start = %s,%s - dimension = %s x %s)\n", _displayindex, 
+                                _bounds.min.x, _bounds.min.y, _bounds.width, _bounds.height);
+            foreach (mode; _availableModes)
+                res ~= format("  - %s\n", mode);
+            return res;
+        }
+    }
+
+    private
+    {
+        int _displayindex;
+        SDL2DisplayMode[] _availableModes;
+        box2i _bounds;
+    }
+}
+

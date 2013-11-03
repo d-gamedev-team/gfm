@@ -9,7 +9,8 @@ import gfm.core.queue,
        gfm.sdl2.sdl;
 
 
-// gets intra-frame delta time
+/// Utility class which gives time delta between frames, and 
+/// logs some framerate statistics.
 final class FrameCounter
 {
     public
@@ -22,10 +23,8 @@ final class FrameCounter
             _stats = new RingBuffer!ulong(10);
         }
 
-        /**
-         * Mark the beginning of a new frame, and get the current delta
-         * time in milliseconds.
-         */
+        /// Mark the beginning of a new frame.
+        /// Returns: current timle difference since last frame, in milliseconds.
         ulong tickMs()
         {
             if (_firstFrame)
@@ -46,30 +45,26 @@ final class FrameCounter
             }
         }
 
-        /**
-         * Same in seconds.
-         */
+        /// Mark the beginning of a new frame.
+        /// Returns: current timle difference since last frame, in seconds.
         double tick()
         {
             return tickMs() * 0.001;
         }
 
-        /**
-         * Number of elapsed milliseconds.
-         */
+        /// Returns: Number of elapsed milliseconds, in milliseconds.
         ulong elapsedTimeMs() const
         {
             return _elapsedTime;
         }
 
-        /**
-         * Same in seconds.
-         */
+        /// Returns: Number of elapsed milliseconds, in seconds.
         double elapsedTime() const
         {
             return _elapsedTime * 0.001;
         }
 
+        /// Returns displayable framerate statistics.
         string getFPSString()
         {
             double avg = average(_stats[]);
@@ -81,7 +76,6 @@ final class FrameCounter
                           avgdt,
                           minimum(_stats[]),
                           maximum(_stats[]));
-
         }
     }
 

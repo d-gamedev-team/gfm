@@ -11,8 +11,7 @@ import gfm.core.log,
        gfm.sdl2.sdl, 
        gfm.sdl2.surface;
 
-// Load images using SDL_image
-
+/// Load images using SDL_image, a SDL companion library able to load various image formats.
 final class SDLImage
 {
     public
