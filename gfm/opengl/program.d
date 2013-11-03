@@ -219,12 +219,16 @@ final class GLProgram
                 throw new OpenGLException("Cannot link program");
             }
 
+            // When getting uniform and attribute names, add some length because of stories like this:
+            // http://stackoverflow.com/questions/12555165/incorrect-value-from-glgetprogramivprogram-gl-active-uniform-max-length-outpa
+            enum SAFETY_SPACE = 128;
+
             // get active uniforms
             {
                 GLint uniformNameMaxLength;
                 glGetProgramiv(_program, GL_ACTIVE_UNIFORM_MAX_LENGTH, &uniformNameMaxLength);
 
-                GLchar[] buffer = new GLchar[GL_ACTIVE_UNIFORM_MAX_LENGTH + 16];
+                GLchar[] buffer = new GLchar[uniformNameMaxLength + SAFETY_SPACE];
 
                 GLint numActiveUniforms;
                 glGetProgramiv(_program, GL_ACTIVE_UNIFORMS, &numActiveUniforms);
@@ -246,6 +250,32 @@ final class GLProgram
                    _activeUniforms[name] = new GLUniform(_gl, _program, type, name, size);
                 }
             }
+
+            // get active attributes
+            {
+                GLint attribNameMaxLength;
+                glGetProgramiv(_program, GL_ACTIVE_ATTRIBUTE_MAX_LENGTH, &attribNameMaxLength);
+
+                GLchar[] buffer = new GLchar[attribNameMaxLength + SAFETY_SPACE];
+
+                GLint numActiveAttribs;
+                glGetProgramiv(_program, GL_ACTIVE_ATTRIBUTES, &numActiveAttribs);
+
+                for (GLint i = 0; i < numActiveAttribs; ++i)
+                {
+                    GLint size;
+                    GLenum type;
+                    GLsizei length;
+                    glGetActiveAttrib(_program, cast(GLuint)i, cast(GLint)(buffer.length), &length, &size, &type, buffer.ptr);                    
+                    _gl.runtimeCheck();
+                    string name = sanitizeUTF8(buffer.ptr, _gl._log, "OpenGL attribute name");
+                    GLint location = glGetAttribLocation(_program, buffer.ptr);
+                    _gl.runtimeCheck();
+
+                    _activeAttributes[name] = new GLAttribute(_gl, name, location, type, size);
+                }
+            }
+
         }
 
         void use()
@@ -292,6 +322,14 @@ final class GLProgram
             return *u;
         }
 
+        GLAttribute attrib(string name)
+        {
+            GLAttribute* a = name in _activeAttributes;
+            if (a is null)
+                throw new OpenGLException(format("Attribute %s is unknown", name));
+            return *a;
+        }
+
         GLuint handle() pure const nothrow
         {
             return _program;
@@ -304,7 +342,33 @@ final class GLProgram
         GLuint _program; // OpenGL handle
         bool _initialized;
         GLUniform[string] _activeUniforms;
+        GLAttribute[string] _activeAttributes;
     }
 }
 
 
+// Represent an OpenGL program attribute. Owned by a GLProgram.
+final class GLAttribute
+{
+    public
+    {
+        this(OpenGL gl, string name, GLint location, GLenum type, GLsizei size)
+        {
+            _gl = gl;
+            _name = name;
+            _location = location;
+            _type = type;
+            _size = size;
+        }
+
+    }
+
+    private
+    {
+        OpenGL _gl;
+        GLint _location;
+        GLenum _type;
+        GLsizei _size;
+        string _name;
+    }
+}
