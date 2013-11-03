@@ -35,6 +35,7 @@ final class SDL2Keyboard
             _state[] = RELEASED;
         }
 
+        /// Mark key as pressed and return previous state.
         bool markKeyAsPressed(SDL_Scancode scancode)
         {
             bool oldState = _state[scancode];
@@ -42,6 +43,7 @@ final class SDL2Keyboard
             return oldState;
         }
 
+        /// Mark key as released and return previous state.
         bool markKeyAsReleased(SDL_Scancode scancode)
         {
             bool oldState = _state[scancode];
