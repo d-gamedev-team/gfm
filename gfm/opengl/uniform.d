@@ -16,7 +16,7 @@ import gfm.core.log,
 // Both uniform locations and values are cached, to minimize OpenGL calls.
 final class GLUniform
 {
-    package
+    public
     {
         this(OpenGL gl, GLuint program, GLenum type, string name, GLsizei size)
         {
@@ -49,7 +49,7 @@ final class GLUniform
         }
 
         // create fake disabled uniform variables, designed to cope with variables that are detected useless
-        // by the OpenGL driver, or thos which do not exist
+        // by the OpenGL driver, or those which do not exist
         this(OpenGL gl, string name)
         {
             _gl = gl;
