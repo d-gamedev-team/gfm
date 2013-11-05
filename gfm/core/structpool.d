@@ -153,34 +153,3 @@ deprecated class StructPool(T)
     }
 }
 
-unittest
-{
-    void test(T)()
-    {
-        immutable N = 100;
-        auto pool = new StructPool!int(N);
-        assert(pool.count == 0);
-        assert(pool.capacity == N);
-
-        int*[N] p;
-
-        for (size_t k = 0; k < 10; k++)
-        {
-            for(size_t i = 0; i < N; ++i)
-            {
-                assert(pool.count == i);
-                p[i] = pool.alloc();
-            }
-            assert(pool.full);
-
-            for(size_t i = 0; i < N; ++i)
-            {
-                pool.release(p[i]);
-            }
-            assert(pool.empty);
-        }
-    }
-    test!int();
-    test!ubyte();
-}
-
