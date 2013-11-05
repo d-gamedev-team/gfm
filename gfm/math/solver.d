@@ -181,7 +181,7 @@ unittest
     // test quadratic
     {
         double[3] roots;
-        int numRoots = solveCubic!double(-2, -3 / 2.0, 3 / 4.0, 1 / 4.0, roots[]);
+        size_t numRoots = solveCubic!double(-2, -3 / 2.0, 3 / 4.0, 1 / 4.0, roots[]);
         assert(numRoots == 3);
         assert(arrayContainsRoot(roots[], -4));
         assert(arrayContainsRoot(roots[], -1));
