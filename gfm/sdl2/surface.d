@@ -15,13 +15,31 @@ final class SDL2Surface
             NO, YES
         }
 
+        /// Create from exisint SDL_Surface* handle.
         this(SDL2 sdl2, SDL_Surface* surface, Owned owned)
         {
             assert(surface !is null);
             _sdl2 = sdl2;
             _surface = surface;
             _owned = owned;
-        }      
+        }
+
+        /// Create surface from RGBA data
+        /// See: SDL_CreateRGBSurfaceFrom
+        this(SDL2 sdl2, void* pixels, int width, int height, int depth, int pitch, 
+             uint Rmask, uint Gmask, uint Bmask, uint Amask)
+        {
+            _sdl2 = sdl2;
+            _surface = SDL_CreateRGBSurfaceFrom(pixels, width, height, depth, pitch, Rmask, Gmask, Bmask, Amask);
+            if (_surface is null)
+                _sdl2.throwSDL2Exception("SDL_CreateRGBSurfaceFrom");
+            _owned = Owned.YES;
+        }
+
+        ~this()
+        {
+            close();
+        }
 
         void close()
         {
@@ -31,12 +49,6 @@ final class SDL2Surface
                     SDL_FreeSurface(_surface);
                 _surface = null;
             }
-        }
-
-
-        ~this()
-        {
-            close();
         }
 
         @property int width() const
