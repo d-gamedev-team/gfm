@@ -4,6 +4,7 @@ import std.range,
        std.bigint,
        std.conv,
        std.utf,
+       std.array,
        std.exception,
        std.numeric,
        std.bigint;
@@ -49,7 +50,7 @@ struct CBORValue
         long           integer;
         ulong          uinteger;
         BigInt         bigint;
-        real           floating;
+        double         floating;
         CBORValue[]    array;
         CBORValue[2][] map; // implemented as an array of (CBOR value, CBOR value) pairs
     }
@@ -206,7 +207,7 @@ struct CBORValue
 
     /// Typesafe way of accessing $(D store.floating).
     /// Throws $(D CBORException) if $(D type) is not $(D CBORType.FLOATING).
-    @property ref inout(real) floating() inout
+    @property ref inout(double) floating() inout
     {
         enforceEx!CBORException(type == CBORType.FLOATING, "CBORValue is not a floating point");
         return store.floating;
@@ -249,24 +250,25 @@ CBORValue decodeCBOR(R)(R input) if (isInputRange(R))
     CBORValue result; 
 
     ubyte firstByte = popByte();
-    int majorType = firstByte() >> 5;
+    MajorType majorType = firstByte() >> 5;
     ubyte rem = firstByte & 31;
 
     final switch(majorType)
     {
-        case 0: // positive integer
+        case CBORMajorType.POSITIVE_INTEGER:
             return CBORValue(readBigEndianInt(input, rem));
 
-        case 1: // negative integer
+        case CBORMajorType.NEGATIVE_INTEGER:
         {
             ulong ui = readBigEndianInt(input, rem);
-
-            // (1 - ui) does not necessarily fits into a long
-            // TODO choose either bigint or long
-            assert(false);
+            long neg = -1 - ui;
+            if (neg < 0)
+                return CBORValue(neg); // does fit in a longs
+            else
+                return CBORValue(-BigInt(ui) - 1); // doesn't fit in a a long
         }
 
-        case 2: // byte string
+        case CBORMajorType.BYTE_STRING:
         {
             ulong ui = readBigEndianInt(input, rem);
             ubyte[] bytes = new ubyte[ui];
@@ -275,7 +277,7 @@ CBORValue decodeCBOR(R)(R input) if (isInputRange(R))
             return CBORValue(assumeUnique(bytes));
         }
 
-        case 3: // UTF-8 string
+        case CBORMajorType.UTF8_STRING:
         {
             ulong ui = readBigEndianInt(input, rem);
             char[] sbytes = new char[ui];
@@ -294,7 +296,7 @@ CBORValue decodeCBOR(R)(R input) if (isInputRange(R))
             return CBORValue(assumeUnique(sbytes));
         }
 
-        case 4: // array
+        case CBORMajorType.ARRAY:
         {
             ulong ui = readBigEndianInt(input, rem);
             CBORValue[] items = new CBORValue[ui];
@@ -305,7 +307,7 @@ CBORValue decodeCBOR(R)(R input) if (isInputRange(R))
             return CBORValue(assumeUnique(items));
         }
 
-        case 5: // map
+        case CBORMajorType.MAP:
         {
             ulong ui = readBigEndianInt(input, rem);
             CBORValue[2][] items = new CBORValue[2][ui];
@@ -319,7 +321,7 @@ CBORValue decodeCBOR(R)(R input) if (isInputRange(R))
             return CBORValue(assumeUnique(items));
         }
 
-        case 6: // tag
+        case CBORMajorType.SEMANTIC_TAG:
         {
             // skip tag value
             readBigEndianInt(input, rem);
@@ -328,7 +330,7 @@ CBORValue decodeCBOR(R)(R input) if (isInputRange(R))
             return decodeCBOR(input);
         }
 
-        case 7: // type 7
+        case CBORMajorType.TYPE_7:
         {
             if (rem == 25) // half-float
             {
@@ -338,7 +340,7 @@ CBORValue decodeCBOR(R)(R input) if (isInputRange(R))
                     ushort i;
                 } u;
                 u.i = cast(ushort)readBigEndianIntN(input, 2);
-                return CBORValue(cast(real)i.f);
+                return CBORValue(cast(double)i.f);
             }
             else if (rem == 26) // float
             {
@@ -348,7 +350,7 @@ CBORValue decodeCBOR(R)(R input) if (isInputRange(R))
                     uint i;
                 } u;
                 u.i = cast(uint)readBigEndianIntN(input, 2);
-                return CBORValue(cast(real)i.f);
+                return CBORValue(cast(double)i.f);
             }
             else if (rem == 27) // double
             {
@@ -364,9 +366,11 @@ CBORValue decodeCBOR(R)(R input) if (isInputRange(R))
             {
                 ubyte simpleID = rem;
                 if (rem == 24)
+                {
                     simpleID =  input.popByte();
+                }
 
-                // TODO warn for unknown?
+                // unknown simple values are kept as is
                 return CBORValue.simpleValue(simpleID);
             }
         }
@@ -375,15 +379,96 @@ CBORValue decodeCBOR(R)(R input) if (isInputRange(R))
     return result;
 }
 
-/// Encode a single CBOR object.
+/// Encode a single CBOR object to an array of bytes.
 /// Only ever output so-called Canonical CBOR.
 ubyte[] encodeCBOR(CBORValue value)
 {
-    assert(0); // unimplemented
+    auto app = std.array.appender!(ubyte[]);
+    encodeCBOR(app, value);
+    return app.data();
+}
+
+/// Encode a single CBOR object in a range.
+/// Only ever output so-called Canonical CBOR.
+void encodeCBOR(R)(R output, CBORValue value) if (isOutputRange!(R, ubyte))
+{
+    final switch(value.type)
+    {
+        case CBORType.STRING:
+        {
+            writeMajorTypeAndBigEndianInt(output, CBORMajorType.UTF8_STRING, value.store.str.length);
+            foreach(char b; value.store.str)
+                output.put(b);
+            break;
+        }
+        case CBORType.BYTE_STRING: 
+        {            
+            writeMajorTypeAndBigEndianInt(output, CBORMajorType.BYTE_STRING, value.store.byteStr.length);
+            foreach(ubyte b; value.store.byteStr)
+                output.put(b);
+            break;
+        }
+        case CBORType.INTEGER:
+        {
+            long x = value.store.integer;
+            if (x >= 0)
+                writeMajorTypeAndBigEndianInt(output, CBORMajorType.POSITIVE_INTEGER, x);
+            else
+                writeMajorTypeAndBigEndianInt(output, CBORMajorType.NEGATIVE_INTEGER, -x - 1); // always fit
+        }
+        case CBORType.UINTEGER:
+            writeMajorTypeAndBigEndianInt(output, CBORMajorType.POSITIVE_INTEGER, value.store.uinteger);
+            break;
+
+        case CBORType.BIGINT: 
+            assert(false); // TODO
+            break;
+
+        case CBORType.FLOATING:
+            assert(false); // TODO
+            break;
+
+        case CBORType.ARRAY:
+        {
+            size_t l = value.store.array.length;
+            writeMajorTypeAndBigEndianInt(output, CBORMajorType.ARRAY, l);
+            for(size_t i = 0; i < l; ++i)
+                encodeCBOR(output, value.store.array[i]);
+            break;
+        }
+        case CBORType.MAP:
+        {
+            size_t l = value.store.map.length;
+            writeMajorTypeAndBigEndianInt(output, CBORMajorType.MAP, l);
+            for(size_t i = 0; i < l; ++i)
+            {
+                encodeCBOR(output, value.store.map[i][0]);
+                encodeCBOR(output, value.store.map[i][1]);
+            }
+            break;
+        }
+
+        case CBORType.SIMPLE: 
+            assert(false); // TODO
+            break;
+    }
+    assert(false);
 }
 
 private 
 {
+    enum CBORMajorType
+    {
+        POSITIVE_INTEGER = 0,
+            NEGATIVE_INTEGER = 1,
+            BYTE_STRING      = 2,
+            UTF8_STRING      = 3,
+            ARRAY            = 4,
+            MAP              = 5,
+            SEMANTIC_TAG     = 6,
+            TYPE_7           = 7
+    }
+
     ubyte peekByte(R)(R input) if (isInputRange(R))
     {
         if (input.empty)
@@ -420,5 +505,48 @@ private
         for (int i = 0; i < numBytes; ++i)
             result = (result << 8) | input.popByte();
         return result;
+    }
+
+    void writeMajorTypeAndBigEndianInt(R)(R output, ubyte majorType, ulong n) if (isOutputRange!(R, ubyte))
+    {
+        int nAddBytes;
+        ubyte firstB = (majorType << 5) & 255;
+        if (0 <= n && n <= 23)
+        {
+            // encode with major type
+            ubyte b = firstB | (n & 255);
+            output.put(b);
+            nAddBytes = 0;
+        }
+        else if (24 <= n && n <= 255)
+        {
+            ubyte b = firstB | 24;
+            output.put(b);
+            nAddBytes = 1;
+        }
+        else if (256 <= n && n <= 65535)
+        {
+            ubyte b = firstB | 25;
+            output.put(b);
+            nAddBytes = 2;
+        }
+        else if (65536 <= n && n <= 4294967295)
+        {
+            ubyte b = firstB | 26;
+            output.put(b);
+            nAddBytes = 4;
+        }
+        else 
+        {
+            ubyte b = firstB | 27;
+            output.put(b);
+            nAddBytes = 8;
+        }
+
+        for (int i = 0; i < nAddBytes; ++i)
+        {
+            ubyte b = (n >> ((nAddBytes - 1 - i) * 8)) & 255;
+            output.put(b);
+        }
     }
 }
