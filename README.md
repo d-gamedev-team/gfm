@@ -15,7 +15,7 @@ Public Domain (Unlicense).
   * **lockedqueue.d** synchronized queue for thread communication
   * **memory.d** aligned malloc/free/realloc
   * **alignedbuffer.d** aligned array-like container
-  * **structpool.d** small object arena
+  * **cbor.d** CBOR serialization/deserialization (RFC 7049)
   * **text.d** string utilities
 
 ### net/
