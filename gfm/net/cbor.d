@@ -19,6 +19,8 @@ import std.range,
 
  */
 
+immutable string CBOR_MIME_TYPE = "application/cbor";
+
 /// Possible type of a CBORValue. Does not map 1:1 to CBOR major types.
 enum CBORType
 {
@@ -60,6 +62,7 @@ enum CBORTag
     MIME_MESSAGE           = 35,
     SELF_DESCRIBE_CBOR     = 55799
 }
+
 
 /**
  
@@ -311,14 +314,9 @@ CBORValue decodeCBOR(R)(R input) if (isInputRange(R))
                 sbytes[i] = input.popByte();
 
             try
-            {
                 validate(sbytes);
-            }
             catch(Exception e)
-            {
-                // ill-formed unicode
                 throw CBORException("Invalid UTF-8 string");
-            }
             return CBORValue(assumeUnique(sbytes));
         }
 
@@ -358,46 +356,51 @@ CBORValue decodeCBOR(R)(R input) if (isInputRange(R))
 
         case CBORMajorType.TYPE_7:
         {
-            if (rem == 25) // half-float
+            switch (rem)
             {
-                union
+                case 0: .. case 23: // one byte simple value
+                    return CBORValue.simpleValue(rem);
+
+                case 24: // two bytes simple value
+                    // TODO check illegal/unknown values
+                    return CBORValue.simpleValue(input.popByte());
+
+                case 25: // half-float
                 {
-                    CustomFloat!16 f;
-                    ushort i;
-                } u;
-                u.i = cast(ushort)readBigEndianIntN(input, 2);
-                return CBORValue(cast(double)i.f);
-            }
-            else if (rem == 26) // float
-            {
-                union
+                    union
+                    {
+                        CustomFloat!16 f;
+                        ushort i;
+                    } u;
+                    u.i = cast(ushort)readBigEndianIntN(input, 2);
+                    return CBORValue(cast(double)i.f);
+                }
+                case 26: //float
                 {
-                    float f;
-                    uint i;
-                } u;
-                u.i = cast(uint)readBigEndianIntN(input, 2);
-                return CBORValue(cast(double)i.f);
-            }
-            else if (rem == 27) // double
-            {
-                union
+                    union
+                    {
+                        float f;
+                        uint i;
+                    } u;
+                    u.i = cast(uint)readBigEndianIntN(input, 2);
+                    return CBORValue(cast(double)i.f);
+                }
+                case 27: // double
                 {
-                    double f;
-                    ulong i;
-                } u;
-                u.i = readBigEndianIntN(input, 2);
-                return CBORValue(cast(real)i.f);
-            }
-            else
-            {
-                ubyte simpleID = rem;
-                if (rem == 24)
-                {
-                    simpleID =  input.popByte();
+                    union
+                    {
+                        double f;
+                        ulong i;
+                    } u;
+                    u.i = readBigEndianIntN(input, 2);
+                    return CBORValue(cast(real)i.f);
                 }
 
-                // unknown simple values are kept as is
-                return CBORValue.simpleValue(simpleID);
+                case 28: .. case 30:
+                    throw new CBORException("Unknown type-7 sub-type");
+
+                case 31:
+                    throw new CBORException("Unexpected break stop code");
             }
         }
     }
@@ -497,6 +500,7 @@ void encodeCBOR(R)(R output, CBORValue value) if (isOutputRange!(R, ubyte))
                 encodeCBOR(output, value.store.array[i]);
             break;
         }
+
         case CBORType.MAP:
         {
             size_t l = value.store.map.length;
@@ -510,8 +514,20 @@ void encodeCBOR(R)(R output, CBORValue value) if (isOutputRange!(R, ubyte))
         }
 
         case CBORType.SIMPLE: 
-            assert(false); // TODO
-            break;
+        {
+            ubyte simpleID = value.store.simpleID;
+            if (simpleID <= 23)
+            {
+                ubyte b = (CBORMajorType.TYPE_7 << 5) | simpleID;
+                output.put(b);
+            }
+            else
+            {
+                ubyte b = (CBORMajorType.TYPE_7 << 5) | 24;
+                output.put(b);
+                output.put(simpleID);
+            }
+        }
     }
     assert(false);
 }
