@@ -74,8 +74,8 @@ final class FrameCounter
             return format("FPS: %s dt: avg %sms min %sms max %sms",
                           avgFPS,
                           avgdt,
-                          minimum(_stats[]),
-                          maximum(_stats[]));
+                          minElement(_stats[]),
+                          maxElement(_stats[]));
         }
     }
 

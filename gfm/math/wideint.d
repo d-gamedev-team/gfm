@@ -38,8 +38,9 @@ alias uwideint!256 uint256;
 private template integer(bool signed, int bits)
 {
     static assert(bits >= 32);
-    static assert((bits & (bits - 1)) == 0); // bits is a power of 2    
+    static assert((bits & (bits - 1)) == 0); // bits is a power of 2
 
+    // forward to native type for lower numbers of bits
     static if (bits == 32)
     {
         static if (signed)
@@ -316,11 +317,11 @@ struct wideIntImpl(bool signed, int bits)
     }
 
     // non-const unary operations
-    self opUnary(string op)() pure nothrow if (op=="++" || op=="--")
+    self opUnary(string op)() pure nothrow if (op == "++" || op == "--")
     {
-        static if (op=="++")
+        static if (op == "++")
             increment();
-        else static if (op=="--")
+        else static if (op == "--")
             decrement();
         return this;
     }

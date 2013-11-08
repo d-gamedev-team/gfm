@@ -1,13 +1,14 @@
 module gfm.math.statistics;
 
+
+/// Range-based statistic computations.
+
 import std.range,
        std.math;
 
 import gfm.core.queue;
 
-/**
- * Arithmetic mean.
- */
+/// Arithmetic mean.
 double average(R)(R r) if (isInputRange!R)
 {
     if (r.empty)
@@ -23,39 +24,30 @@ double average(R)(R r) if (isInputRange!R)
     return sum / count;
 }
 
-/**
- * Minimum of a range.
- */
-double minimum(R)(R r) if (isInputRange!R)
+/// Minimum of a range.
+double minElement(R)(R r) if (isInputRange!R)
 {
     // do like Javascript for an empty range
     if (r.empty)
         return double.infinity;
 
     return minmax!("<", R)(r);
-
-    // To be activated with DMD 2.061+
-    // return minCount(r)[0];
 }
 
-/**
- * Maximum of a range.
- */
-double maximum(R)(R r) if (isInputRange!R)
+/// Maximum of a range.
+double maxElement(R)(R r) if (isInputRange!R)
 {
     // do like Javascript for an empty range
     if (r.empty)
         return -double.infinity;
 
     return minmax!(">", R)(r);
-
-    // To be activated with DMD 2.061+
-    // return maxCount(r)[0];
 }
 
-/**
- * Variance of a range.
- */
+deprecated alias minElement minimum;
+deprecated alias maxElement maximum;
+
+/// Variance of a range.
 double variance(R)(R r) if (isForwardRange!R)
 {
     if (r.empty)
@@ -76,9 +68,7 @@ double variance(R)(R r) if (isForwardRange!R)
         return (sum / (count - 1.0)); // using sample std deviation as estimator
 }
 
-/**
- * Standard deviation of a range.
- */
+/// Standard deviation of a range.
 double standardDeviation(R)(R r) if (isForwardRange!R)
 {
     return sqrt(variance(r));
