@@ -452,29 +452,36 @@ void encodeCBOR(R)(R output, CBORValue value) if (isOutputRange!(R, ubyte))
         }
 
         case CBORType.BIGINT:
-        {/*
-            BigInt x = value.store.bigint;
-            if (0 <= x && x <= 4294967295)
+        {
+            BigInt N = value.store.bigint;
+            if (0 <= N && N <= 4294967295)
             {
                 // fit in a positive integer
-                ulong n = cast(ulong)x;
-                writeMajorTypeAndBigEndianInt(output, CBORMajorType.POSITIVE_INTEGER, n);
+                writeMajorTypeAndBigEndianInt(output, CBORMajorType.POSITIVE_INTEGER, N.toLong());
             }
-            else if (-4294967296 <= x && x < 0)
+            else if (-4294967296 <= N && N < 0)
             {
                 // fit in a negative integer
-                writeMajorTypeAndBigEndianInt(output, CBORMajorType.NEGATIVE_INTEGER, cast(ulong)(-x-1));
+                writeMajorTypeAndBigEndianInt(output, CBORMajorType.NEGATIVE_INTEGER, (-N-1).toLong());
             }
             else
             {
                 // doesn't fit in integer major types
                 // lack of access to byte data => using a hex string for now
-                if (x >= 0)
-                    putTag(CBORTag.POSITIVE_BIGNUM);
+                if (N >= 0)
+                    output.putTag(CBORTag.POSITIVE_BIGNUM);
                 else
-                    putTag(CBORTag.NEGATIVE_BIGNUM);
+                {
+                    output.putTag(CBORTag.NEGATIVE_BIGNUM);
+                    N = -N - 1;
+                }
+
+                ubyte[] bytes = bigintBytes(N);
                 
-            }*/
+                writeMajorTypeAndBigEndianInt(output, CBORMajorType.BYTE_STRING, bytes.length);
+                foreach(ubyte b; bytes)
+                    output.put(b);
+            }
             break;
         }
 
@@ -610,8 +617,9 @@ private
     }
 
     // Convert BigInt to bytes, much too involved.
-    ubyte[] bigintToBytes(BigInt n)
+    ubyte[] bigintBytes(BigInt n)
     {
+        assert(n >= 0);
         string s = n.toHex();
         if (s.length % 2 != 0)
             assert(false);
