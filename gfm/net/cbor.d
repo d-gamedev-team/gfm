@@ -63,6 +63,19 @@ enum CBORTag
     SELF_DESCRIBE_CBOR     = 55799
 }
 
+/// Exception thrown on CBOR errors
+class CBORException : Exception
+{
+    this(string msg)
+    {
+        super(msg);
+    }
+
+    this(string msg, string file, size_t line)
+    {
+        super(msg, file, line);
+    }
+}
 
 /**
  
@@ -259,20 +272,6 @@ struct CBORValue
     }
 }
 
-/// Exception thrown on CBOR errors
-class CBORException : Exception
-{
-    this(string msg)
-    {
-        super(msg);
-    }
-
-    this(string msg, string file, size_t line)
-    {
-        super(msg, file, line);
-    }
-}
-
 /// Decode a single CBOR object from an input range.
 CBORValue decodeCBOR(R)(R input) if (isInputRange(R))
 {
@@ -362,38 +361,30 @@ CBORValue decodeCBOR(R)(R input) if (isInputRange(R))
                     return CBORValue.simpleValue(rem);
 
                 case 24: // two bytes simple value
-                    // TODO check illegal/unknown values
+                {
+                    ubyte b = input.popByte();
+                    if (24 <= b && b <= 31) 
+                        throw new CBORException("Reserved value used in Type 7 Additional Information");
                     return CBORValue.simpleValue(input.popByte());
+                }
 
                 case 25: // half-float
                 {
-                    union
-                    {
-                        CustomFloat!16 f;
-                        ushort i;
-                    } u;
-                    u.i = cast(ushort)readBigEndianIntN(input, 2);
-                    return CBORValue(cast(double)i.f);
+                    half_ushort hu = void;
+                    hu.i = cast(ushort)readBigEndianIntN(input, 2);
+                    return CBORValue(cast(double)hu.f);
                 }
                 case 26: //float
                 {
-                    union
-                    {
-                        float f;
-                        uint i;
-                    } u;
-                    u.i = cast(uint)readBigEndianIntN(input, 2);
-                    return CBORValue(cast(double)i.f);
+                    float_uint fu = void;
+                    fu.i = cast(uint)readBigEndianIntN(input, 4);
+                    return CBORValue(cast(double)fu.f);
                 }
                 case 27: // double
                 {
-                    union
-                    {
-                        double f;
-                        ulong i;
-                    } u;
-                    u.i = readBigEndianIntN(input, 2);
-                    return CBORValue(cast(real)i.f);
+                    double_ulong du = void;
+                    du.i = readBigEndianIntN(input, 8);
+                    return CBORValue(cast(real)du.f);
                 }
 
                 case 28: .. case 30:
@@ -489,8 +480,35 @@ void encodeCBOR(R)(R output, CBORValue value) if (isOutputRange!(R, ubyte))
         }
 
         case CBORType.FLOATING:
-            assert(false); // TODO
+        {
+            double d = value.store.floating;
+            half_t asHalf = cast(half_t)d;
+            float asFloat = cast(float)d;
+            
+            if (cast(double)asHalf == d) // does it fit in a half?
+            {
+                half_ushort hu = void;
+                hu.f = asHalf;
+                output.writeMajorType(CBORMajorType.TYPE_7, 25);
+                output.writeBigEndianIntN(2, hu.i);
+            }
+            else if (cast(double)asFloat == d) // does it fit in a float?
+            {
+                float_uint fu = void;
+                fu.f = asFloat;
+                output.writeMajorType(CBORMajorType.TYPE_7, 26);
+                output.writeBigEndianIntN(4, fu.i);
+            }
+            else 
+            {
+                // encode as double
+                double_ulong du = void;
+                du.f = d;
+                output.writeMajorType(CBORMajorType.TYPE_7, 27);
+                output.writeBigEndianIntN(8, du.i);
+            }
             break;
+        }
 
         case CBORType.ARRAY:
         {
@@ -517,14 +535,10 @@ void encodeCBOR(R)(R output, CBORValue value) if (isOutputRange!(R, ubyte))
         {
             ubyte simpleID = value.store.simpleID;
             if (simpleID <= 23)
-            {
-                ubyte b = (CBORMajorType.TYPE_7 << 5) | simpleID;
-                output.put(b);
-            }
+                output.writeMajorType(CBORMajorType.TYPE_7, simpleID);
             else
             {
-                ubyte b = (CBORMajorType.TYPE_7 << 5) | 24;
-                output.put(b);
+                output.writeMajorType(CBORMajorType.TYPE_7, 24);
                 output.put(simpleID);
             }
         }
@@ -534,6 +548,26 @@ void encodeCBOR(R)(R output, CBORValue value) if (isOutputRange!(R, ubyte))
 
 private 
 {
+    alias CustomFloat!16 half_t; // when std.halffloat will be here, use it instead
+
+    union half_ushort
+    {
+        half_t f;
+        ushort i;
+    }
+
+    union float_uint
+    {
+        float f;
+        uint i;
+    }
+
+    union double_ulong
+    {
+        double f;
+        ulong i;
+    }
+
     enum CBORMajorType
     {
         POSITIVE_INTEGER = 0,
@@ -582,6 +616,21 @@ private
         for (int i = 0; i < numBytes; ++i)
             result = (result << 8) | input.popByte();
         return result;
+    }
+
+    void writeBigEndianIntN(R)(R output, int numBytes, ulong n) if (isOutputRange!(R, ubyte))
+    {
+        for (int i = 0; i < numBytes; ++i)
+        {
+            ubyte b = (n >> (numBytes - 1 - i)) & 255;
+            output.put(b);
+        }
+    }
+
+    void writeMajorType(R)(R output, CBORMajorType majorType, ubyte rem) if (isOutputRange!(R, ubyte))
+    {
+        ubyte b = cast(ubyte)((majorType << 5) | rem);
+        output.put(b);
     }
 
     void writeMajorTypeAndBigEndianInt(R)(R output, ubyte majorType, ulong n) if (isOutputRange!(R, ubyte))
