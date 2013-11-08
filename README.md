@@ -15,12 +15,12 @@ Public Domain (Unlicense).
   * **lockedqueue.d** synchronized queue for thread communication
   * **memory.d** aligned malloc/free/realloc
   * **alignedbuffer.d** aligned array-like container
-  * **cbor.d** CBOR serialization/deserialization (RFC 7049)
   * **text.d** string utilities
 
 ### net/
   * **uri.d** URI parsing (RFC 3986)
   * **httpclient.d** HTTP client (RFC 2616)
+  * **cbor.d** CBOR serialization/deserialization (RFC 7049)
 
 
 ### math/
@@ -60,6 +60,7 @@ Public Domain (Unlicense).
   * **image.d** generic abstract image and software rendering routines
   * **bitmap.d** planar and tile-based concrete images
   * **cie.d** physical color computations  
+  * **hsv.d** RGB <-> HSV conversions
 
 ### freeimage/
   * FreeImage wrapper based on package derelict-fi

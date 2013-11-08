@@ -1,4 +1,4 @@
-module cbor;
+module gfm.net.cbor;
 
 import std.range,
        std.bigint,
@@ -19,6 +19,7 @@ import std.range,
 
  */
 
+/// Possible type of a CBORValue. Does not map 1:1 to CBOR major types.
 enum CBORType
 {
     STRING,      /// an UTF-8 encoded string
@@ -32,6 +33,7 @@ enum CBORType
     SIMPLE       /// null, undefined, true, false, break, and future values
 }
 
+/// CBOR "simple" values
 enum : ubyte
 {
     CBOR_FALSE = 20,
@@ -40,6 +42,30 @@ enum : ubyte
     CBOR_UNDEF = 23
 }
 
+/// CBOR tags are prefixes that add a semantic meaning + required type to a value
+/// Currently emitted (bignums) but not parsed.
+enum CBORTag
+{
+    DATE_TIME              = 0,
+    EPOCH_DATE_TIME        = 1,
+    POSITIVE_BIGNUM        = 2,
+    NEGATIVE_BIGNUM        = 3,
+    DECIMAL_FRACTION       = 4,
+    BIG_FLOAT              = 5,
+    ENCODED_CBOR_DATA_ITEM = 24,
+    URI                    = 32,
+    BASE64_URI             = 33,
+    BASE64                 = 34,
+    REGEXP                 = 35,
+    MIME_MESSAGE           = 35,
+    SELF_DESCRIBE_CBOR     = 55799
+}
+
+/**
+ 
+    Holds a single CBOR value.
+
+ */
 struct CBORValue
 {
     union Store
@@ -401,6 +427,7 @@ void encodeCBOR(R)(R output, CBORValue value) if (isOutputRange!(R, ubyte))
                 output.put(b);
             break;
         }
+
         case CBORType.BYTE_STRING: 
         {            
             writeMajorTypeAndBigEndianInt(output, CBORMajorType.BYTE_STRING, value.store.byteStr.length);
@@ -408,6 +435,7 @@ void encodeCBOR(R)(R output, CBORValue value) if (isOutputRange!(R, ubyte))
                 output.put(b);
             break;
         }
+
         case CBORType.INTEGER:
         {
             long x = value.store.integer;
@@ -416,13 +444,39 @@ void encodeCBOR(R)(R output, CBORValue value) if (isOutputRange!(R, ubyte))
             else
                 writeMajorTypeAndBigEndianInt(output, CBORMajorType.NEGATIVE_INTEGER, -x - 1); // always fit
         }
+
         case CBORType.UINTEGER:
+        {
             writeMajorTypeAndBigEndianInt(output, CBORMajorType.POSITIVE_INTEGER, value.store.uinteger);
             break;
+        }
 
-        case CBORType.BIGINT: 
-            assert(false); // TODO
+        case CBORType.BIGINT:
+        {/*
+            BigInt x = value.store.bigint;
+            if (0 <= x && x <= 4294967295)
+            {
+                // fit in a positive integer
+                ulong n = cast(ulong)x;
+                writeMajorTypeAndBigEndianInt(output, CBORMajorType.POSITIVE_INTEGER, n);
+            }
+            else if (-4294967296 <= x && x < 0)
+            {
+                // fit in a negative integer
+                writeMajorTypeAndBigEndianInt(output, CBORMajorType.NEGATIVE_INTEGER, cast(ulong)(-x-1));
+            }
+            else
+            {
+                // doesn't fit in integer major types
+                // lack of access to byte data => using a hex string for now
+                if (x >= 0)
+                    putTag(CBORTag.POSITIVE_BIGNUM);
+                else
+                    putTag(CBORTag.NEGATIVE_BIGNUM);
+                
+            }*/
             break;
+        }
 
         case CBORType.FLOATING:
             assert(false); // TODO
@@ -460,13 +514,13 @@ private
     enum CBORMajorType
     {
         POSITIVE_INTEGER = 0,
-            NEGATIVE_INTEGER = 1,
-            BYTE_STRING      = 2,
-            UTF8_STRING      = 3,
-            ARRAY            = 4,
-            MAP              = 5,
-            SEMANTIC_TAG     = 6,
-            TYPE_7           = 7
+        NEGATIVE_INTEGER = 1,
+        BYTE_STRING      = 2,
+        UTF8_STRING      = 3,
+        ARRAY            = 4,
+        MAP              = 5,
+        SEMANTIC_TAG     = 6,
+        TYPE_7           = 7
     }
 
     ubyte peekByte(R)(R input) if (isInputRange(R))
@@ -548,5 +602,38 @@ private
             ubyte b = (n >> ((nAddBytes - 1 - i) * 8)) & 255;
             output.put(b);
         }
+    }
+
+    void putTag(R)(R output, CBORTag tag) if (isOutputRange!(R, ubyte))
+    {
+        output.writeMajorTypeAndBigEndianInt(CBORMajorType.SEMANTIC_TAG, tag);
+    }
+
+    // Convert BigInt to bytes, much too involved.
+    ubyte[] bigintToBytes(BigInt n)
+    {
+        string s = n.toHex();
+        if (s.length % 2 != 0)
+            assert(false);
+
+        int hexCharToInt(char c)
+        {
+            if (c >= '0' && c <= '9')
+                return c - '0';
+            else if (c >= 'a' && c <= 'f')
+                return c - 'a' + 10;
+            else if (c >= 'A' && c <= 'F')
+                return c - 'A' + 10;
+            else
+                assert(false);
+        }
+
+        size_t len = s.length / 2;
+        ubyte[] bytes = new ubyte[len];
+        for (size_t i = 0; i < len; ++i)
+        {
+            bytes[i] = cast(ubyte)(hexCharToInt(s[i * 2]) * 16 + hexCharToInt(s[i * 2 + 1]));
+        }           
+        return bytes;
     }
 }
