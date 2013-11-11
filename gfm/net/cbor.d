@@ -338,8 +338,6 @@ struct CBORValue
 /// Decode a single CBOR object from an input range.
 CBORValue decodeCBOR(R)(R input) if (isInputRange!R)
 {
-    CBORValue result; 
-
     ubyte firstByte = input.popByte();
     CBORMajorType majorType = cast(CBORMajorType)(firstByte >> 5);
     ubyte rem = firstByte & 31;
@@ -461,8 +459,6 @@ CBORValue decodeCBOR(R)(R input) if (isInputRange!R)
             }
         }
     }
-    
-    return result;
 }
 
 /// Encode a single CBOR object to an array of bytes.

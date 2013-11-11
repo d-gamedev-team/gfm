@@ -73,7 +73,6 @@ class URI
             catch (Exception e)
             {
                 assert(false); // came here? Fix the library by writing the missing catch-case.
-                return false;
             }
         }
 
