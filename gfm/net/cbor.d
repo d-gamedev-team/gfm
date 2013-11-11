@@ -11,7 +11,7 @@ import std.range,
        std.bigint;
 
 
-/*
+/**
   CBOR: Concise Binary Object Representation.
   Implementation of RFC 7049.
 
@@ -21,6 +21,15 @@ import std.range,
  * TODO: support unbounded arrays/strings
  *       try to fit const-correctness, not that easy
  */
+
+
+/*--------------------------- The Angry Implementer Rant ---------------------------------
+  WHY OH WHY can CBOR represents integers on up to 65 bits? Yes you are reading correctly.
+  When reading a negative integer, values range from -1 to -2^32.
+  This makes parsing requires 65+ bits storage, for no apparent reason. 
+  Seriously, use msgpack-d.
+  ----------------------------------------------------------------------------------------*/
+
 
 immutable string CBOR_MIME_TYPE = "application/cbor";
 
@@ -345,7 +354,7 @@ CBORValue decodeCBOR(R)(R input) if (isInputRange!R)
             ulong ui = readBigEndianInt(input, rem);
             long neg = -1 - ui;
             if (neg < 0)
-                return CBORValue(neg); // does fit in a longs
+                return CBORValue(neg); // does fit in a long
             else
                 return CBORValue(-BigInt(ui) - 1); // doesn't fit in a long
         }
