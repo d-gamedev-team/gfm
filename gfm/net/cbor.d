@@ -1,7 +1,6 @@
 module gfm.net.cbor;
 
 import std.range,
-       std.bigint,
        std.conv,
        std.utf,
        std.array,
@@ -30,6 +29,7 @@ import std.range,
   Seriously, use msgpack-d.
   ----------------------------------------------------------------------------------------*/
 
+// ALMOST UNTESTED
 
 immutable string CBOR_MIME_TYPE = "application/cbor";
 
