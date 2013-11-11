@@ -19,7 +19,7 @@ class URIException : Exception
 {
     public
     {
-        this(string msg)
+        this(string msg) pure
         {
             super(msg);
         }
@@ -56,15 +56,23 @@ class URI
         }
 
         // test for URI validity
-        static bool isValid(T)(T input) pure /* nothrow */
+        static bool isValid(T)(T input) /* pure */ nothrow
         {
             try
             {
-                URI uri = new URI(input);
-                return true;
+                try
+                {
+                    URI uri = new URI(input); 
+                    return true;
+                }
+                catch (URIException e)
+                {
+                    return false;
+                }
             }
-            catch (URIException e)
+            catch (Exception e)
             {
+                assert(false); // came here? Fix the library by writing the missing catch-case.
                 return false;
             }
         }
