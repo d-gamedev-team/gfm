@@ -5,6 +5,7 @@ import std.range,
        std.conv,
        std.utf,
        std.array,
+       std.traits,
        std.exception,
        std.numeric,
        std.bigint;
@@ -17,6 +18,8 @@ import std.range,
   References: $(LINK http://tools.ietf.org/rfc/rfc7049.txt)
   Heavily inspired by std.json by Jeremie Pelletier.
 
+ * TODO: support unbounded arrays/strings
+ *       try to fit const-correctness, not that easy
  */
 
 immutable string CBOR_MIME_TYPE = "application/cbor";
@@ -100,13 +103,13 @@ struct CBORValue
     CBORType type;
     Store store; 
 
-    this(T)(T arg)
+    this(T)(T arg) pure
     {
         this = arg;
     }
 
     /// Create an undefined CBOR value.
-    static CBORValue simpleValue(ubyte which)
+    static CBORValue simpleValue(ubyte which) pure nothrow
     {
         CBORValue result;
         result.type = CBORType.SIMPLE;
@@ -114,7 +117,7 @@ struct CBORValue
         return result;
     }
 
-    void opAssign(T)(T arg)
+    void opAssign(T)(T arg) pure
     {
         static if(is(T : typeof(null)))
         {
@@ -136,6 +139,13 @@ struct CBORValue
             type = CBORType.UINTEGER;
             store.uinteger = arg;
         }
+        else static if(is(T : BigInt))
+        {
+            type = CBORType.BIGINT;
+            // HACK: it seems BigInt opAssign don't work with const(BigInt)
+            store.bigint = 0;
+            store.bigint = store.bigint + arg;
+        }
         else static if(is(T : long))
         {
             type = CBORType.INTEGER;
@@ -143,7 +153,7 @@ struct CBORValue
         }
         else static if(isFloatingPoint!T)
         {
-            type = CBORType.FLOAT;
+            type = CBORType.FLOATING;
             store.floating = arg;
         }
         else static if(is(T : bool))
@@ -163,7 +173,7 @@ struct CBORValue
             type = CBORType.ARRAY;
             static if(is(ElementEncodingType!T : CBORValue))
             {
-                store.array = arg;
+                store.array = arg.dup;
             }
             else
             {
@@ -172,11 +182,55 @@ struct CBORValue
                     new_arg[i] = CBORValue(e);
                 store.array = new_arg;
             }
-        }       
-        else static if(is(T : CBORValue))
+        }
+        else static if(is(Unqual!T : CBORValue))
         {
             type = arg.type;
-            store = arg.store;
+            final switch(arg.type)
+            {
+                case CBORType.ARRAY:
+                {
+                    size_t n = arg.store.array.length;
+                    store.array = new CBORValue[n];
+                    foreach(i ; 0..n)
+                        store.array[i] = arg.store.array[i];
+                    break;
+                }
+                case CBORType.BIGINT:
+                {
+                    store.bigint = arg.store.bigint;
+                    break;
+                }
+                case CBORType.BYTE_STRING:
+                    store.byteStr = arg.store.byteStr.dup;
+                    break;
+                case CBORType.FLOATING:
+                    store.floating = arg.store.floating;
+                    break;
+                case CBORType.INTEGER:
+                    store.integer = arg.store.integer;
+                    break;
+                case CBORType.MAP:
+                {
+                    size_t n = arg.store.map.length;
+                    store.array = new CBORValue[n];
+                    foreach(i ; 0..n)
+                    {
+                        store.map[i][0] = arg.store.map[i][0];
+                        store.map[i][1] = arg.store.map[i][1];
+                    }
+                    break;
+                }                    
+                case CBORType.SIMPLE:
+                    store.simpleID = arg.store.simpleID;
+                    break;
+                case CBORType.STRING:
+                    store.str = arg.store.str.idup;
+                    break;
+                case CBORType.UINTEGER:
+                    store.uinteger = arg.store.uinteger;
+                    break;
+            }
         }
         else
         {
@@ -273,12 +327,12 @@ struct CBORValue
 }
 
 /// Decode a single CBOR object from an input range.
-CBORValue decodeCBOR(R)(R input) if (isInputRange(R))
+CBORValue decodeCBOR(R)(R input) if (isInputRange!R)
 {
     CBORValue result; 
 
-    ubyte firstByte = popByte();
-    MajorType majorType = firstByte() >> 5;
+    ubyte firstByte = input.popByte();
+    CBORMajorType majorType = cast(CBORMajorType)(firstByte >> 5);
     ubyte rem = firstByte & 31;
 
     final switch(majorType)
@@ -293,13 +347,13 @@ CBORValue decodeCBOR(R)(R input) if (isInputRange(R))
             if (neg < 0)
                 return CBORValue(neg); // does fit in a longs
             else
-                return CBORValue(-BigInt(ui) - 1); // doesn't fit in a a long
+                return CBORValue(-BigInt(ui) - 1); // doesn't fit in a long
         }
 
         case CBORMajorType.BYTE_STRING:
         {
             ulong ui = readBigEndianInt(input, rem);
-            ubyte[] bytes = new ubyte[ui];
+            ubyte[] bytes = new ubyte[cast(size_t)ui];
             for(uint i = 0; i < ui; ++i)
                 bytes[i] = input.popByte();
             return CBORValue(assumeUnique(bytes));
@@ -308,21 +362,21 @@ CBORValue decodeCBOR(R)(R input) if (isInputRange(R))
         case CBORMajorType.UTF8_STRING:
         {
             ulong ui = readBigEndianInt(input, rem);
-            char[] sbytes = new char[ui];
+            char[] sbytes = new char[cast(size_t)ui];
             for(uint i = 0; i < ui; ++i)
                 sbytes[i] = input.popByte();
 
             try
                 validate(sbytes);
             catch(Exception e)
-                throw CBORException("Invalid UTF-8 string");
+                throw new CBORException("Invalid UTF-8 string");
             return CBORValue(assumeUnique(sbytes));
         }
 
         case CBORMajorType.ARRAY:
         {
             ulong ui = readBigEndianInt(input, rem);
-            CBORValue[] items = new CBORValue[ui];
+            CBORValue[] items = new CBORValue[cast(size_t)ui];
 
             foreach(ref item; items)
                 item = decodeCBOR(input);
@@ -333,7 +387,7 @@ CBORValue decodeCBOR(R)(R input) if (isInputRange(R))
         case CBORMajorType.MAP:
         {
             ulong ui = readBigEndianInt(input, rem);
-            CBORValue[2][] items = new CBORValue[2][ui];
+            CBORValue[2][] items = new CBORValue[2][cast(size_t)ui];
 
             for(ulong i = 0; i < ui; ++i)
             {
@@ -392,6 +446,9 @@ CBORValue decodeCBOR(R)(R input) if (isInputRange(R))
 
                 case 31:
                     throw new CBORException("Unexpected break stop code");
+
+                default:
+                    assert(false); // impossible
             }
         }
     }
@@ -401,7 +458,7 @@ CBORValue decodeCBOR(R)(R input) if (isInputRange(R))
 
 /// Encode a single CBOR object to an array of bytes.
 /// Only ever output so-called Canonical CBOR.
-ubyte[] encodeCBOR(CBORValue value)
+ubyte[] encodeCBORBytes(CBORValue value)
 {
     auto app = std.array.appender!(ubyte[]);
     encodeCBOR(app, value);
@@ -409,7 +466,7 @@ ubyte[] encodeCBOR(CBORValue value)
 }
 
 /// Encode a single CBOR object in a range.
-/// Only ever output so-called Canonical CBOR.
+/// Only ever output so-called Canonical CBOR (as small as possible).
 void encodeCBOR(R)(R output, CBORValue value) if (isOutputRange!(R, ubyte))
 {
     final switch(value.type)
@@ -437,6 +494,7 @@ void encodeCBOR(R)(R output, CBORValue value) if (isOutputRange!(R, ubyte))
                 writeMajorTypeAndBigEndianInt(output, CBORMajorType.POSITIVE_INTEGER, x);
             else
                 writeMajorTypeAndBigEndianInt(output, CBORMajorType.NEGATIVE_INTEGER, -x - 1); // always fit
+            break;
         }
 
         case CBORType.UINTEGER:
@@ -580,21 +638,21 @@ private
         TYPE_7           = 7
     }
 
-    ubyte peekByte(R)(R input) if (isInputRange(R))
+    ubyte peekByte(R)(R input) if (isInputRange!R)
     {
         if (input.empty)
-            throw CBORException("Expected a byte, found end of input");
-        return next;
+            throw new CBORException("Expected a byte, found end of input");
+        return input.front;
     }
 
-    ubyte popByte(R)(R input) if (isInputRange(R))
+    ubyte popByte(R)(R input) if (isInputRange!R)
     {
-        ubyte b = peekByte();
+        ubyte b = peekByte(input);
         input.popFront();
         return b;
     }
 
-    ulong readBigEndianInt(R)(R input, ubyte rem) if (isInputRange(R))
+    ulong readBigEndianInt(R)(R input, ubyte rem) if (isInputRange!R)
     {
         if (rem <= 23)
             return rem;
@@ -607,10 +665,10 @@ private
             return readBigEndianIntN(input, numBytes);
         }
         else
-            throw CBORException(text("Unexpected 5-bit value: ", rem));
+            throw new CBORException(text("Unexpected 5-bit value: ", rem));
     }
 
-    ulong readBigEndianIntN(R)(R input, int numBytes) if (isInputRange(R))
+    ulong readBigEndianIntN(R)(R input, int numBytes) if (isInputRange!R)
     {
         ulong result = 0;
         for (int i = 0; i < numBytes; ++i)
@@ -709,4 +767,23 @@ private
         }           
         return bytes;
     }
+}
+
+
+unittest
+{
+    ubyte[] x(string s)
+    {
+        ubyte[] res = new ubyte[s.length];
+        memcpy(res.ptr, s.ptr, s.length);
+        return res;
+    }
+
+    int[] arr = [1, 2, 3];
+   CBORValue a = CBORValue(arr);
+    CBORValue b = CBORValue(2);
+    CBORValue c = CBORValue(true);
+    ubyte[] bytes = x(x"83 01 02 03");
+    CBORValue v = decodeCBOR(bytes);
+    assert(v == a);
 }
