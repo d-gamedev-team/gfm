@@ -6,8 +6,6 @@ module gfm.math.statistics;
 import std.range,
        std.math;
 
-import gfm.core.queue;
-
 /// Arithmetic mean.
 double average(R)(R r) if (isInputRange!R)
 {
