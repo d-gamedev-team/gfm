@@ -27,6 +27,7 @@ Public Domain (Unlicense).
   * **vector.d** small vectors for 2D and 3D
   * **matrix.d** small matrices for 2D and 3D
   * **quaternion.d** quaternions
+  * **half.d** 16-bit floating point type
   * **wideint.d:** 2^N bits integers (recursive implementation, covers cent/ucent)
   * **box.d** half-open intervals (for eg. AABB)
   * **fixedpoint.d** fixed-point numbers
