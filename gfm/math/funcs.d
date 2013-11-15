@@ -85,10 +85,11 @@ T fract(T)(real x) nothrow
 /**
  * Square
  */
-T sqr(T)(T s) pure nothrow
+T square(T)(T s) pure nothrow
 {
     return s * s;
 }
+deprecated alias square sqr;
 
 /**
  * Cube

@@ -129,10 +129,10 @@ align(1) struct Box(T, size_t N)
             for (size_t i = 0; i < N; ++i)
             {
                 if (point[i] < min[i])
-                    distanceSquared += sqr(point[i] - min[i]);
+                    distanceSquared += square(point[i] - min[i]);
 
                 if (point[i] > max[i])
-                    distanceSquared += sqr(point[i] - max[i]);
+                    distanceSquared += square(point[i] - max[i]);
             }
             return distanceSquared;
         }
