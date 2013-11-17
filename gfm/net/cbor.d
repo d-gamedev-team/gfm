@@ -24,8 +24,8 @@ import std.range,
 
 /*--------------------------- The Angry Implementer Rant ---------------------------------
   WHY OH WHY can CBOR represents integers on up to 65 bits? Yes you are reading correctly.
-  When reading a negative integer, values range from -1 to -2^32.
-  This makes parsing requires 65+ bits storage, for no apparent reason. 
+  When reading a negative integer, values range from -1 to -2^64.
+  This requires 65+ bits storage, for no apparent reason. 
   Seriously, use msgpack-d.
   ----------------------------------------------------------------------------------------*/
 
@@ -785,7 +785,7 @@ unittest
     }
 
     int[] arr = [1, 2, 3];
-   CBORValue a = CBORValue(arr);
+    CBORValue a = CBORValue(arr);
     CBORValue b = CBORValue(2);
     CBORValue c = CBORValue(true);
     ubyte[] bytes = x(x"83 01 02 03");
