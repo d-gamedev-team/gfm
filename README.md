@@ -17,12 +17,6 @@ Public Domain (Unlicense).
   * **alignedbuffer.d** aligned array-like container
   * **text.d** string utilities
 
-### net/
-  * **uri.d** URI parsing (RFC 3986)
-  * **httpclient.d** HTTP client (RFC 2616)
-  * **cbor.d** CBOR serialization/deserialization (RFC 7049)
-
-
 ### math/
   * **vector.d** small vectors for 2D and 3D
   * **matrix.d** small matrices for 2D and 3D
@@ -50,6 +44,11 @@ Public Domain (Unlicense).
   * legacy multi-texture support which is needed for a low-spec game
   * FBO support with GL_EXT_framebuffer_object fallback
   * built-in OpenGL debug output forwarding
+
+### net/
+  * **uri.d** URI parsing (RFC 3986)
+  * **httpclient.d** HTTP client (RFC 2616)
+  * **cbor.d** CBOR serialization/deserialization (RFC 7049)
 
 ### sdl2/
   * SDL 2.0 wrapper based on package derelict-sdl2
