@@ -17,8 +17,7 @@ import std.range,
   References: $(LINK http://tools.ietf.org/rfc/rfc7049.txt)
   Heavily inspired by std.json by Jeremie Pelletier.
 
- * TODO: support unbounded arrays/strings
- *       try to fit const-correctness, not that easy
+  TODO: try to fit const-correctness, not that easy
  */
 
 
@@ -359,19 +358,45 @@ CBORValue decodeCBOR(R)(R input) if (isInputRange!R)
 
         case CBORMajorType.BYTE_STRING:
         {
-            ulong ui = readBigEndianInt(input, rem);
-            ubyte[] bytes = new ubyte[cast(size_t)ui];
-            for(uint i = 0; i < ui; ++i)
-                bytes[i] = input.popByte();
+            ubyte[] bytes;
+            if (rem == 31) // indefinite length
+            {
+                ubyte b = input.popByte();
+                while (b != 0xff)
+                {
+                    bytes ~= b;
+                    b = input.popByte();
+                }           
+            }
+            else
+            {
+                ulong ui = readBigEndianInt(input, rem);
+                bytes = new ubyte[cast(size_t)ui];
+                for(uint i = 0; i < ui; ++i)
+                    bytes[i] = input.popByte();
+            }
             return CBORValue(assumeUnique(bytes));
         }
 
         case CBORMajorType.UTF8_STRING:
         {
-            ulong ui = readBigEndianInt(input, rem);
-            char[] sbytes = new char[cast(size_t)ui];
-            for(uint i = 0; i < ui; ++i)
-                sbytes[i] = input.popByte();
+            char[] sbytes;
+            if (rem == 31)
+            {
+                char b = input.popByte();
+                while (b != 0xff)
+                {
+                    sbytes ~= b;
+                    b = input.popByte();
+                }
+            }
+            else
+            {
+                ulong ui = readBigEndianInt(input, rem);
+                sbytes = new char[cast(size_t)ui];
+                for(uint i = 0; i < ui; ++i)
+                    sbytes[i] = input.popByte();
+            }
 
             try
                 validate(sbytes);
@@ -382,26 +407,60 @@ CBORValue decodeCBOR(R)(R input) if (isInputRange!R)
 
         case CBORMajorType.ARRAY:
         {
-            ulong ui = readBigEndianInt(input, rem);
-            CBORValue[] items = new CBORValue[cast(size_t)ui];
-
-            foreach(ref item; items)
-                item = decodeCBOR(input);
-            
+            CBORValue[] items;
+            if (rem == 31) // indefinite length
+            {
+                while (true)
+                {
+                    ubyte b = input.peekByte();
+                    if (b == 0xff)
+                    {
+                        input.popFront();
+                        break;
+                    }
+                    items ~= decodeCBOR(input);
+                }        
+            }
+            else
+            {
+                ulong ui = readBigEndianInt(input, rem);
+                items = new CBORValue[cast(size_t)ui];
+                foreach(ref item; items)
+                    item = decodeCBOR(input);
+            }            
             return CBORValue(assumeUnique(items));
         }
 
         case CBORMajorType.MAP:
         {
-            ulong ui = readBigEndianInt(input, rem);
-            CBORValue[2][] items = new CBORValue[2][cast(size_t)ui];
-
-            for(ulong i = 0; i < ui; ++i)
+            CBORValue[2][] items;
+            if (rem == 31) // indefinite length
             {
-                items[0] = decodeCBOR(input);
-                items[1] = decodeCBOR(input);
+                while (true)
+                {
+                    ubyte b = input.peekByte();
+                    if (b == 0xff)
+                    {
+                        input.popFront();
+                        break;
+                    }
+                    CBORValue[2] item;
+                    item[0] = decodeCBOR(input);
+                    item[1] = decodeCBOR(input);
+                    items ~= item;
+                }        
             }
-            
+            else
+            {
+                ulong ui = readBigEndianInt(input, rem);
+                items = new CBORValue[2][cast(size_t)ui];
+
+                for(ulong i = 0; i < ui; ++i)
+                {
+                    items[i][0] = decodeCBOR(input);
+                    items[i][1] = decodeCBOR(input);
+                }
+            }            
             return CBORValue(assumeUnique(items));
         }
 
