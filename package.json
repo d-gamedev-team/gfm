@@ -60,7 +60,7 @@
             "sourcePaths": [ "gfm/enet" ],
             "importPaths": [ "." ],
              "dependencies": {
-                "derelict_extras-enet": "~master",
+                "derelict_extras-enet": ">=1.3.10",
                 "gfm:core": "~master"
             }
         },
