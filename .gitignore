@@ -1,0 +1,10 @@
+*.sln
+*.suo
+*.lib
+*.exe
+*.pdb
+.dub
+*.dll
+examples/build
+*.visualdproj
+output_log.html
