@@ -33,18 +33,18 @@
         {
             "name": "core",
             "sourcePaths": [ "gfm/core" ],
-            "importPaths": [ "." ]
+            "importPaths": [ "gfm/core" ]
         },
         {
             "name": "math",
             "sourcePaths": [ "gfm/math" ],
-            "importPaths": [ "." ]
+            "importPaths": [ "gfm/math" ]
         },
         {
             "name": "image",
 
             "sourcePaths": [ "gfm/image" ],
-            "importPaths": [ "." ],
+            "importPaths": [ "gfm/image" ],
             "dependencies": {
                 "gfm:core": "~master",
                 "gfm:math": "~master"
@@ -53,12 +53,12 @@
         {
             "name": "net",
             "sourcePaths": [ "gfm/net" ],
-            "importPaths": [ "." ]
+            "importPaths": [ "gfm/net" ]
         },
          {
             "name": "enet",
             "sourcePaths": [ "gfm/enet" ],
-            "importPaths": [ "." ],
+            "importPaths": [ "gfm/enet" ],
              "dependencies": {
                 "derelict_extras-enet": ">=1.3.10",
                 "gfm:core": "~master"
@@ -67,7 +67,7 @@
         {
             "name": "assimp",
             "sourcePaths": [ "gfm/assimp" ],
-            "importPaths": [ "." ],
+            "importPaths": [ "gfm/assimp" ],
             "dependencies": {
                 "derelict-assimp3": "~master",
                 "gfm:core": "~master"
@@ -76,7 +76,7 @@
         {
             "name": "opengl",
             "sourcePaths": [ "gfm/opengl" ],
-            "importPaths": [ "." ],
+            "importPaths": [ "gfm/opengl" ],
             "dependencies": {
                 "gfm:core": "~master",
                 "gfm:math": "~master",
@@ -86,7 +86,7 @@
         {
             "name": "sdl2",
             "sourcePaths": [ "gfm/sdl2" ],
-            "importPaths": [ "." ],
+            "importPaths": [ "gfm/sdl2" ],
             "dependencies": {
                 "derelict-sdl2": "~2.0.0",
                 "gfm:core": "~master",
@@ -96,7 +96,7 @@
         {
             "name": "freeimage",
             "sourcePaths": [ "gfm/freeimage" ],
-            "importPaths": [ "." ],
+            "importPaths": [ "gfm/freeimage" ],
             "dependencies": {
                 "derelict-fi": "~master",
                 "gfm:core": "~master"
