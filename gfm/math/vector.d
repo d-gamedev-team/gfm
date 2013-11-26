@@ -264,38 +264,14 @@ nothrow:
             return v[i];
         }
 
-        /*
-        T opIndex(size_t i) pure const nothrow
-        {
-            return v[i];
-        }*/
-
         T opIndexAssign(U : T)(U x, size_t i) pure nothrow
         {
             return v[i] = x;
         }
-    /+
-        T opIndexOpAssign(string op, U)(size_t i, U x) if (is(U : T))
-        {
-            mixin("v[i] " ~ op ~ "= x;");
-            return v[i];
-        }
 
-         T opIndexUnary(string op, U)(size_t i) if (op == "+" || op == "-" || op == "~")
-        {
-            mixin("return " ~ op ~ "v[i];");
-        }
-
-        ref T opIndexUnary(string op, U, I)(I i) if (op == "++" || op == "--")
-        {
-            mixin(op ~ "v[i];");
-            return v[i];
-        }
-    +/
 
         // implement swizzling
-        @property auto opDispatch(string op, U = void)() pure const nothrow
-            if (isValidSwizzle!(op))
+        @property auto opDispatch(string op, U = void)() pure const nothrow if (isValidSwizzle!(op))
         {
             alias Vector!(T, op.length) returnType;
             returnType res = void;
@@ -305,23 +281,18 @@ nothrow:
             return res;
         }
 
-        /+
-        // Support swizzling assignment like in shader languages.
-        // eg: eg: vec.yz = vec.zx;
+        /// Support swizzling assignment like in shader languages.
+        /// eg: eg: vec.yz = vec.zx;
         void opDispatch(string op, U)(U x) pure
             if ((op.length >= 2)
-                && (isValidSwizzleUnique!op)                  // v.xyy will be rejected
-                && is(typeof(Vector!(op.length, T)(x)))) // can be converted to a small vector of the right size
+                && (isValidSwizzleUnique!op)                   // v.xyy will be rejected
+                && is(typeof(Vector!(T, op.length)(x)))) // can be converted to a small vector of the right size
         {
-            Vector!(op.length, T) conv = x;
-            enum indexTuple = swizzleTuple!(op, op.length).result;
+            Vector!(T, op.length) conv = x;
+            enum indexTuple = swizzleTuple!op;
             foreach(i, index; indexTuple)
-            {
                 v[index] = conv[i];
-            }
-            return res;
         }
-        +/
 
         // casting to small vectors of the same size
         U opCast(U)() pure const nothrow if (is(typeof(U._isVector)) && (U._N == _N))
@@ -676,8 +647,13 @@ unittest
     assert(h[] == [0, 1, -2]);
     assert(h[1..3] == [1, -2]);
     assert(h.zyx == [-2, 1, 0]);
-//    h.xy = vec2i(0, 1);
-    assert(h.xy == [0, 1]);
+
+    h.yx = vec2i(5, 2); // swizzle assignment
+
+    assert(h.xy == [2, 5]);
+    assert(-h[1] == -5);
+    assert(++h[0] == 3);
+
     //assert(h == [-2, 1, 0]);
     assert(!__traits(compiles, h.xx = h.yy));
     vec4ub j;
