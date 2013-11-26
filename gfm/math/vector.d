@@ -6,12 +6,11 @@ import std.traits,
 
 import gfm.math.funcs;
 
-// generic 1D small vector
-// N is the element count, T the contained type
-// intended for 3D
-// TODO: - find a way to enable swizzling assignment
-// TBD:  - do we need support for slice assignment and opSliceOpAsssign? meh.
-
+/// Generic 1D small vector.
+/// N is the element count, T the contained type
+/// Mostly intended for 3D.
+/// TODO: - find a way to enable swizzling assignment
+///       - do we need support for slice assignment and opSliceOpAsssign?
 align(1) struct Vector(T, size_t N)
 {
 nothrow:
@@ -342,7 +341,8 @@ nothrow:
             return N;
         }
 
-        // vec[]
+        /// vec[]
+        /// Returns: a slice which covers the whole Vector.
         T[] opSlice() pure nothrow
         {
             return v[];
@@ -379,13 +379,13 @@ nothrow:
                 return sqrt(squaredLength());
             }
 
-            // Euclidean distance
+            /// Returns: Euclidean distance.
             T distanceTo(Vector v) pure const nothrow
             {
                 return (v - this).length();
             }
 
-            // normalization
+            /// In-place normalization.
             void normalize() pure nothrow
             {
                 auto invLength = 1 / length();
@@ -395,11 +395,23 @@ nothrow:
                 }
             }
 
+            /// Returns: normalized vector.
             Vector normalized() pure const nothrow
             {
                 Vector res = this;
                 res.normalize();
                 return res;
+            }
+
+            static if (N == 3)
+            {
+                /// Gets an orthogonal vector from a 3-dimensional vector.
+                /// Doesn’t normalise the output.
+                /// By Sam Hocevar: http://lolengine.net/blog/2013/09/21/picking-orthogonal-vector-combing-coconuts
+                Vector getOrthogonalVector()
+                {
+                    return abs(x) > abs(z) ? Vector(-y, x, 0.0) : Vector(0.0, -z, y);
+                }
             }
         }
     }
@@ -537,7 +549,7 @@ mixin(definePostfixAliases("vec3"));
 mixin(definePostfixAliases("vec4"));
 
 
-/// element-wise minimum
+/// Element-wise minimum.
 Vector!(T, N) min(T, size_t N)(const Vector!(T, N) a, const Vector!(T, N) b) pure nothrow
 {
     Vector!(T, N) res = void;
@@ -546,7 +558,7 @@ Vector!(T, N) min(T, size_t N)(const Vector!(T, N) a, const Vector!(T, N) b) pur
     return res;
 }
 
-/// element-wise maximum
+/// Element-wise maximum.
 Vector!(T, N) max(T, size_t N)(const Vector!(T, N) a, const Vector!(T, N) b) pure nothrow
 {
     Vector!(T, N) res = void;
@@ -555,8 +567,7 @@ Vector!(T, N) max(T, size_t N)(const Vector!(T, N) a, const Vector!(T, N) b) pur
     return res;
 }
 
-
-/// dot product
+/// Returns: dot product.
 T dot(T, size_t N)(const Vector!(T, N) a, const Vector!(T, N) b) pure nothrow
 {
     T sum = 0;
@@ -567,8 +578,7 @@ T dot(T, size_t N)(const Vector!(T, N) a, const Vector!(T, N) b) pure nothrow
     return sum;
 }
 
-
-/// 3D cross product
+/// 3D cross product.
 /// Thanks to vuaru for corrections.
 Vector!(T, 3u) cross(T)(const Vector!(T, 3u) a, const Vector!(T, 3u) b) pure nothrow
 {
@@ -577,18 +587,15 @@ Vector!(T, 3u) cross(T)(const Vector!(T, 3u) a, const Vector!(T, 3u) b) pure not
                           a.x * b.y - a.y * b.x);
 }
 
-
-/// 3D reflect, like the GLSL function
+/// 3D reflect, like the GLSL function.
 Vector!(T, 3u) reflect(T)(const Vector!(T, 3u) a, const Vector!(T, 3u) b) pure nothrow
 {
     return a - (2 * dot(b, a)) * b;
 }
 
 
-/**
- * Return angle between vectors
- * see "The Right Way to Calculate Stuff" at http://www.plunk.org/~hatch/rightway.php
- */
+/// Returns: angle between vectors.
+/// See "The Right Way to Calculate Stuff" at http://www.plunk.org/~hatch/rightway.php
 T angleBetween(T, size_t N)(const Vector!(T, N) a, const Vector!(T, N) b) pure nothrow
 {
     auto aN = a.normalized();
