@@ -455,7 +455,7 @@ CBORValue decodeCBOR(R)(R input) if (isInputRange!R)
                 ulong ui = readBigEndianInt(input, rem);
                 items = new CBORValue[2][cast(size_t)ui];
 
-                for(ulong i = 0; i < ui; ++i)
+                for(size_t i = 0; i < cast(size_t)ui; ++i)
                 {
                     items[i][0] = decodeCBOR(input);
                     items[i][1] = decodeCBOR(input);
