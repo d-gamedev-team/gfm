@@ -30,8 +30,7 @@ Public Domain (Unlicense).
   * **solver.d** polynomial solvers up to quadratic
   * **simplerng.d** random distributions: a port of SimpleRNG from John D. Cook
   * **shapes.d** segment, triangle, sphere, ray...
-  * **plane.d** 3D plane
-  * **frustum.d** 3D frustum
+  * **frustum.d** 3D frustum and 3D plane
   * **funcs.d** useful math functions
   * **simplexnoise.d** Simplex noise implementation
 
