@@ -121,19 +121,20 @@ nothrow:
             }
         }
 
+        /// Construct a Vector from a value.
         this(U)(U x) pure nothrow
         {
             opAssign!U(x);
         }
 
-        // assign with compatible type
+        /// Assign from a compatible type.
         ref Vector opAssign(U)(U x) pure nothrow if (is(U: T))
         {
             v[] = x; // copy to each component
             return this;
         }
 
-        // assign with a static array type
+        /// Assign with a static array type.
         ref Vector opAssign(U)(U arr) pure nothrow if ((isStaticArray!(U) && is(typeof(arr[0]) : T) && (arr.length == N)))
         {
             for (size_t i = 0; i < N; ++i)
@@ -141,7 +142,8 @@ nothrow:
             return this;
         }
 
-        // assign with a dynamic array (check size)
+        /// Assign with a dynamic array.
+        /// Size is checked in debug-mode.
         ref Vector opAssign(U)(U arr) pure nothrow if (isDynamicArray!(U) && is(typeof(arr[0]) : T))
         {
             assert(arr.length == N);
@@ -150,7 +152,7 @@ nothrow:
             return this;
         }
 
-        // same small vectors
+        /// Assign from a samey Vector.
         ref Vector opAssign(U)(U u) pure nothrow if (is(U : Vector))
         {
             static if (N <= 4u)
@@ -170,7 +172,7 @@ nothrow:
             return this;
         }
 
-        // other small vectors (same size, compatible type)
+        /// Assign from other vectors (same size, compatible type).
         ref Vector opAssign(U)(U x) pure nothrow if (is(typeof(U._isVector))
                                                  && is(U._T : T)
                                                  && (!is(U: Vector))
@@ -181,11 +183,13 @@ nothrow:
             return this;
         }
 
+        /// Returns: a pointer to content.
         T* ptr() pure nothrow @property
         {
             return v.ptr;
         }
 
+        /// Converts to a pretty string.
         string toString() const nothrow
         {
             try
@@ -270,7 +274,7 @@ nothrow:
         }
 
 
-        // implement swizzling
+        /// Implements swizzling.
         @property auto opDispatch(string op, U = void)() pure const nothrow if (isValidSwizzle!(op))
         {
             alias Vector!(T, op.length) returnType;
@@ -294,7 +298,7 @@ nothrow:
                 v[index] = conv[i];
         }
 
-        // casting to small vectors of the same size
+        /// Casting to small vectors of the same size.
         U opCast(U)() pure const nothrow if (is(typeof(U._isVector)) && (U._N == _N))
         {
             U res = void;
@@ -305,8 +309,8 @@ nothrow:
             return res;
         }
 
-        // implement slices operator overloading
-        // allows to go back to slice world
+        /// Implement slices operator overloading.
+        /// Allows to go back to slice world.
         size_t opDollar() pure const nothrow
         {
             return N;
@@ -325,7 +329,7 @@ nothrow:
             return v[a..b];
         }
 
-        // Squared length
+        /// Returns: squared length.
         T squaredLength() pure const nothrow
         {
             T sumSquares = 0;
@@ -336,7 +340,7 @@ nothrow:
             return sumSquares;
         }
 
-        // Euclidean distance
+        // Returns: squared Euclidean distance.
         T squaredDistanceTo(Vector v) pure const nothrow
         {
             return (v - this).squaredLength();
@@ -344,16 +348,16 @@ nothrow:
 
         static if (isFloatingPoint!T)
         {
-            // Euclidean length
+            // Returns: Euclidean length
             T length() pure const nothrow
             {
                 return sqrt(squaredLength());
             }
 
-            /// Returns: Euclidean distance.
-            T distanceTo(Vector v) pure const nothrow
+            /// Returns: Euclidean distance between this and other.
+            T distanceTo(Vector other) pure const nothrow
             {
-                return (v - this).length();
+                return (other - this).length();
             }
 
             /// In-place normalization.
