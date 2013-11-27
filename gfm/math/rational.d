@@ -1,31 +1,38 @@
-module gfm.math.fraction;
+module gfm.math.rational;
 
 /**
-* Fractions, always in reduced form.
-*/
+  
+  Rational numbers, always in reduced form.
+
+  TODO: remove this module once std.rational is here.
+
+ */
 
 import std.traits,
        std.string;
 
-align(1) struct Fraction
+deprecated("Fraction was renamed to Rational.") alias Rational Fraction;
+
+align(1) struct Rational
 {
     public
     {
         long num;
         long denom;
 
-        // construct with integer
+        /// Construct a Rational from an integer.
         this(long n) pure nothrow
         {
             opAssign!long(n);
         }
 
-        this(Fraction f) pure nothrow
+        /// Construct a Rational from another Rational.
+        this(Rational f) pure nothrow
         {
-            opAssign!Fraction(f);
+            opAssign!Rational(f);
         }
 
-        // construct from numerator and denominator
+        /// Construct a Rational from numerator and denominator.
         this(long numerator, long denominator) pure nothrow
         {
             num = numerator;
@@ -33,39 +40,40 @@ align(1) struct Fraction
             reduce();
         }
 
+        /// Converts to pretty string.
         string toString() const
         {
             return format("%s/%s", num, denom);
         }
 
-        ref Fraction opAssign(T)(T other) pure nothrow if (is(Unqual!T == Fraction))
+        ref Rational opAssign(T)(T other) pure nothrow if (is(Unqual!T == Rational))
         {
             num = other.num;
             denom = other.denom;
             return this;
         }
 
-        ref Fraction opAssign(T)(T n) pure nothrow if (isIntegral!T)
+        ref Rational opAssign(T)(T n) pure nothrow if (isIntegral!T)
         {
             num = n;
             denom = 1;
             return this;
         }
 
-        Fraction opBinary(string op, T)(T o) pure const nothrow
+        Rational opBinary(string op, T)(T o) pure const nothrow
         {
-            Fraction r = this;
-            Fraction y = o;
+            Rational r = this;
+            Rational y = o;
             return r.opOpAssign!(op)(y);
         }
 
-        ref Fraction opOpAssign(string op, T)(T o) pure nothrow if (!is(Unqual!T == Fraction))
+        ref Rational opOpAssign(string op, T)(T o) pure nothrow if (!is(Unqual!T == Rational))
         {
             const(self) o = y;
             return opOpAssign!(op)(o);
         }
 
-        ref Fraction opOpAssign(string op, T)(T o) pure nothrow if (is(Unqual!T == Fraction))
+        ref Rational opOpAssign(string op, T)(T o) pure nothrow if (is(Unqual!T == Rational))
         {
             static if (op == "+")
             {
@@ -95,11 +103,11 @@ align(1) struct Fraction
         }
 
         // const unary operations
-        Fraction opUnary(string op)() pure const nothrow if (op == "+" || op == "-")
+        Rational opUnary(string op)() pure const nothrow if (op == "+" || op == "-")
         {
             static if (op == "-")
             {
-                Fraction f = this;
+                Rational f = this;
                 f.num = -f.num;
                 return f;
             }
@@ -108,7 +116,7 @@ align(1) struct Fraction
         }
 
         // non-const unary operations
-        Fraction opUnary(string op)() pure nothrow if (op=="++" || op=="--")
+        Rational opUnary(string op)() pure nothrow if (op=="++" || op=="--")
         {
             static if (op=="++")
             {
@@ -123,23 +131,23 @@ align(1) struct Fraction
             return this;
         }
 
-        bool opEquals(T)(T y) pure const if (!is(Unqual!T == Fraction))
+        bool opEquals(T)(T y) pure const if (!is(Unqual!T == Rational))
         {
-            return this == Fraction(y);
+            return this == Rational(y);
         }
 
-        bool opEquals(T)(T o) pure const if (is(Unqual!T == Fraction))
+        bool opEquals(T)(T o) pure const if (is(Unqual!T == Rational))
         {
-            // invariants ensures equal fraction have equal representations
+            // invariants ensures two equal Rationals have equal representations
             return num == o.num && denom == o.denom;
         }
 
-        int opCmp(T)(T o) pure const if (!is(Unqual!T == Fraction))
+        int opCmp(T)(T o) pure const if (!is(Unqual!T == Rational))
         {
-            return opCmp(Fraction(o));
+            return opCmp(Rational(o));
         }
 
-        int opCmp(T)(T o) pure const if (is(Unqual!T == Fraction))
+        int opCmp(T)(T o) pure const if (is(Unqual!T == Rational))
         {
             assert(denom > 0);
             assert(o.denom > 0);
@@ -152,9 +160,10 @@ align(1) struct Fraction
                 return 0;
         }
 
-        Fraction inverse() pure const nothrow
+        /// Returns: inverse of this fraction.
+        Rational inverse() pure const nothrow
         {
-            return Fraction(denom, num);
+            return Rational(denom, num);
         }
     }
 
@@ -193,28 +202,28 @@ align(1) struct Fraction
 
 unittest
 {
-    Fraction x = Fraction(9, 3);
+    Rational x = Rational(9, 3);
     assert(x.num == 3);
     assert(x.denom == 1);
 
     assert(x < 4);
     assert(x > 2);
-    assert(x > Fraction(8,3));
-    assert(x > Fraction(-8,3));
-    assert(x == Fraction(-27, -9));
+    assert(x > Rational(8,3));
+    assert(x > Rational(-8,3));
+    assert(x == Rational(-27, -9));
 
-    assert(Fraction(-4, 7) + 2 == Fraction(10, 7));
-    assert(Fraction(-4, 7) == Fraction(10, 7) - 2);
+    assert(Rational(-4, 7) + 2 == Rational(10, 7));
+    assert(Rational(-4, 7) == Rational(10, 7) - 2);
 
-    assert(++Fraction(3,7) == Fraction(10,7));
-    assert(--Fraction(3,7) == Fraction(-4,7));
+    assert(++Rational(3,7) == Rational(10,7));
+    assert(--Rational(3,7) == Rational(-4,7));
     assert(+x == 3);
     assert(-x == -3);
 
-    Fraction y = -4;
+    Rational y = -4;
     assert(y.num == -4);
     assert(y.denom == 1);
 
-    assert(Fraction(2, 3) * Fraction(15, 7) == Fraction(10, 7));
-    assert(Fraction(2, 3) == Fraction(10, 7) / Fraction(15, 7));
+    assert(Rational(2, 3) * Rational(15, 7) == Rational(10, 7));
+    assert(Rational(2, 3) == Rational(10, 7) / Rational(15, 7));
 }
