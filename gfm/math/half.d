@@ -1,28 +1,26 @@
 module gfm.math.half;
 
+import std.traits,
+       std.string;
+
 // Half floats
 // Implements conversion from ftp://www.fox-toolkit.org/pub/fasthalffloatconversion.pdf
 // by Jeroen van der Zijp
 
 // WARNING: rounding is not IEEE compliant
-
-import std.traits,
-       std.string;
-
-
 struct half
 {
     public
     {
         ushort value;
 
-        // construct from float
+        /// Construct a half from a float.
         this(float n) pure nothrow
         {
             opAssign!float(n);
         }
 
-        // construct from copy
+        /// Construct a half from another half.
         this(half h) pure nothrow
         {
             opAssign!half(h);
@@ -96,7 +94,8 @@ struct half
 
 static assert (half.sizeof == 2);
 
-// conversions
+
+// Conversions.
 
 private union uint_float
 {
@@ -104,6 +103,7 @@ private union uint_float
     uint ui;
 }
 
+/// Converts from float to half.
 ushort floatToHalf(float f) pure nothrow
 {
     uint_float uf = void;
@@ -112,6 +112,7 @@ ushort floatToHalf(float f) pure nothrow
     return cast(ushort)(basetable[idx] + ((uf.ui & 0x007fffff) >> shifttable[idx]));
 }
 
+/// Converts from half to float.
 float halfToFloat(ushort h) pure nothrow
 {
     uint_float uf = void;
