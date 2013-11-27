@@ -8,7 +8,6 @@ import std.math,
        std.conv;
 
 import gfm.math.vector,
-       gfm.math.plane,
        gfm.math.frustum,
        gfm.math.quaternion;
 
