@@ -1,27 +1,18 @@
 module gfm.math.fixedpoint;
 
-/**
- * Fixed point integers.
- *
- * Status:
- *   Use at your own risk.
- */
-
 import std.traits;
 
-import gfm.math.wideint;
+import gfm.math.wideint,
+       gfm.math.funcs;
 
-/**
- * M.N fixed point integer
- * Designed for fast execution instead of proper rounding
- * Does not manage overflow
- * If M + N > 32, then softcent is used and this will likely be slow.
- */
+/// M.N fixed point integer. use at your own risk.
+/// Designed for fast execution instead of proper rounding.
+/// Does not manage overflow.
+/// If M + N > 32, then wide integers are used and this will likely be slow.
 struct FixedPoint(int M, int N)
 {
-    static assert(M > 0);       // unsupported
-    static assert(N > 0);
-    static assert(M + N <= 64);
+    static assert(M > 0);       // M == 0 is unsupported
+    static assert(N > 0);       // N == 0 also unsupported, but in this case you can use wideint!M
 
     public
     {
@@ -169,42 +160,21 @@ struct FixedPoint(int M, int N)
     }
 }
 
-alias FixedPoint!(4,4) fix4;
-alias FixedPoint!(8,8) fix8;
-alias FixedPoint!(16,16) fix16;
-alias FixedPoint!(24,8) fix24_8;
-alias FixedPoint!(32,32) fix32_32;
-
-// select an integer type suitable to hold bits
-private template TypeNeeded(int bits)
+// Selects a signed integer type suitable to hold numBits bits.
+private template TypeNeeded(int numBits)
 {
-    static if (bits <= 8)
+    static if (numBits <= 8)
     {
         alias byte TypeNeeded;
     }
-    else static if (bits <= 16)
-    {
-        alias short TypeNeeded;
-    }
-    else static if (bits <= 32)
-    {
-        alias int TypeNeeded;
-    }
-    else static if (bits <= 64)
-    {
-        alias long TypeNeeded;
-    }
-    else static if (bits <= 128)
-    {
-        alias softcent TypeNeeded;
-    }
     else
     {
-        // bigger fixed-point integers are not supported
-        static assert(false);
+        enum N = nextPowerOf2(numBits);
+        alias wideint!N TypeNeeded;
     }
 }
 
+/// abs() function for fixed-point numbers.
 FixedPoint!(M, N) abs(int M, int N)(FixedPoint!(M, N) x) pure nothrow
 {
     FixedPoint!(M, N) res = void;
@@ -214,6 +184,12 @@ FixedPoint!(M, N) abs(int M, int N)(FixedPoint!(M, N) x) pure nothrow
 
 unittest
 {
+    alias FixedPoint!(4,4) fix4;
+    alias FixedPoint!(8,8) fix8;
+    alias FixedPoint!(16,16) fix16;
+    alias FixedPoint!(24,8) fix24_8;
+    alias FixedPoint!(32,32) fix32_32;
+
     static assert (is(fix24_8.value_t == int));
     static assert (is(fix16.value_t == int));
     static assert (is(fix8.value_t == short));

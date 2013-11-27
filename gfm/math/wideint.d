@@ -37,11 +37,24 @@ alias uwideint!256 uint256;
 
 private template integer(bool signed, int bits)
 {
-    static assert(bits >= 32);
-    static assert((bits & (bits - 1)) == 0); // bits is a power of 2
+    static assert((bits & (bits - 1)) == 0); // bits must be a power of 2
 
     // forward to native type for lower numbers of bits
-    static if (bits == 32)
+    static if (bits == 8)
+    {
+        static if (signed)
+            alias byte integer;
+        else
+            alias ubyte integer;
+    }
+    else static if (bits == 16)
+    {
+        static if (signed)
+            alias short integer;
+        else
+            alias ushort integer;
+    }
+    else static if (bits == 32)
     {
         static if (signed)
             alias int integer;
