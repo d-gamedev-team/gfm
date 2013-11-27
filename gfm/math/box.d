@@ -6,8 +6,7 @@ import std.math,
 import gfm.math.vector, 
        gfm.math.funcs;
 
-// N dimensional half-open interval [a, b[
-
+/// N-dimensional half-open interval [a, b[
 align(1) struct Box(T, size_t N)
 {
     static assert(N > 0);
@@ -19,9 +18,12 @@ align(1) struct Box(T, size_t N)
         bound_t min; // not enforced, the box can have negative volume
         bound_t max;
 
-        deprecated alias min a;
-        deprecated alias max b;
+        deprecated("Box.a was renamed to Box.min") alias min a;
+        deprecated("Box.b was renamed to Box.max") alias max b;
 
+        /// Construct a box which extends between 2 points.
+        /// min is inside the box.
+        /// max is just outside.
         this(bound_t min_, bound_t max_) pure nothrow
         {
             min = min_;
@@ -58,11 +60,13 @@ align(1) struct Box(T, size_t N)
 
         @property
         {
+            /// Returns: dimensions of the box.
             bound_t size() pure const nothrow
             {
                 return max - min;
             }
 
+            /// Returns: center of the box.
             bound_t center() pure const nothrow
             {
                 return (min + max) / 2;
@@ -99,24 +103,24 @@ align(1) struct Box(T, size_t N)
             }
         }
 
-        // contains a point
-        bool contains(bound_t p) pure const nothrow
+        /// Returns: true if it contains point.
+        bool contains(bound_t point) pure const nothrow
         {
             for(size_t i = 0; i < N; ++i)
-                if ((p[i] < min[i]) || (p[i] >= max[i]))
+                if ((point[i] < min[i]) || (point[i] >= max[i]))
                     return false;
 
             return true;
         }
 
-        // contains another box
-        bool contains(Box o) pure const nothrow
+        /// Returns: true if it contains box other.
+        bool contains(Box other) pure const nothrow
         {
             assert(isSorted());
-            assert(o.isSorted());
+            assert(other.isSorted());
 
             for(size_t i = 0; i < N; ++i)
-                if (o.min[i] >= max[i] || o.max[i] < min[i])
+                if (other.min[i] >= max[i] || other.max[i] < min[i])
                     return false;
             return true;
         }

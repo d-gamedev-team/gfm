@@ -122,7 +122,7 @@ final class QueueImpl(T, OverflowPolicy overflowPolicy)
             return Range(this);
         }
 
-        deprecated alias opSlice range;
+        deprecated("Queue.range() is deprecated, use opSlice instead") alias opSlice range;
 
         // get random-access range
         Range opSlice(size_t i, size_t j) nothrow

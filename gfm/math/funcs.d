@@ -34,7 +34,7 @@ S lerp(S, T)(S a, S b, T t) pure nothrow
 }
 
 /// old name of lerp was mix, but all in all it's a bad name
-deprecated S mix(S, T)(S a, S b, T t) pure nothrow
+deprecated("mix was renamed to lerp") S mix(S, T)(S a, S b, T t) pure nothrow
 {
     return t * b + (1 - t) * a;
 }
@@ -69,16 +69,14 @@ T fract(T)(real x) nothrow
 }
 
 /// Square
-/// Deprecated: use the ^^ operator instead.
-deprecated T square(T)(T s) pure nothrow
+deprecated("square is deprecated, use the ^^ operator instead") T square(T)(T s) pure nothrow
 {
     return s * s;
 }
 deprecated alias square sqr;
 
 /// Cube
-/// Deprecated: use the ^^ operator instead.
-deprecated T cube(T)(T s) pure nothrow
+deprecated("cube is deprecated, use the ^^ operator instead") T cube(T)(T s) pure nothrow
 {
     return s * s * s;
 }
@@ -119,7 +117,7 @@ T smoothStep(T)(T a, T b, T t) pure nothrow
 
 /// Fast conversion from [0 - 1] range to [0..255]
 ///  Credits: Sam Hocevar.
-deprecated ubyte ubyteFromFloat(float x) nothrow
+deprecated("ubyteFromFloat has nothing to do here, it will be removed") ubyte ubyteFromFloat(float x) nothrow
 {
     union IntFloat32
     {

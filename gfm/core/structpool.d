@@ -1,11 +1,10 @@
 module gfm.core.structpool;
 
-
-// Manage memory allocation for same-sized non-contiguous structs
-// non-growable
-// for POD types only
-// TODO: this class sucks. Will be removed once std.allocator is ready.
-deprecated class StructPool(T)
+/// Manage memory allocation for same-sized non-contiguous structs
+/// Non-growable.
+/// For POD types only.
+/// TODO: this class sucks. Will be removed once std.allocator is ready.
+deprecated("StructPool is useless, it will be removed.") class StructPool(T)
 {
     public
     {
@@ -152,4 +151,3 @@ deprecated class StructPool(T)
         }
     }
 }
-

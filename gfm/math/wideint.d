@@ -29,8 +29,8 @@ alias wideint!128 int128; // cent and ucent!
 alias uwideint!128 uint128;
 
 // softcent and softucent were replaced by int128 and uint128
-deprecated alias int128 softcent;
-deprecated alias uint128 softucent;
+deprecated("softcent was renamed to int128") alias int128 softcent;
+deprecated("softucent was renamed to uint128") alias uint128 softucent;
 
 alias wideint!256 int256;
 alias uwideint!256 uint256;
