@@ -8,12 +8,10 @@ import gfm.math.vector,
        gfm.math.shapes,
        gfm.math.box;
 
-/**
- * 3D frustum.
- * From the flipcode article by Dion Picco.
- * http://www.flipcode.com/archives/Frustum_Culling.shtml
- * TODO: verify proper signedness of half-spaces
- */
+/// 3D frustum.
+/// Implemented from the flipcode article by Dion Picco.
+/// http://www.flipcode.com/archives/Frustum_Culling.shtml
+/// TODO: verify proper signedness of half-spaces
 align(1) struct Frustum(T) if (isFloatingPoint!T)
 {
     public
@@ -27,7 +25,7 @@ align(1) struct Frustum(T) if (isFloatingPoint!T)
 
         Plane!T[6] planes;
 
-        /// create from 6 planes
+        /// Create a frustum from 6 planes.
         this(Plane!T left, Plane!T right, Plane!T top, Plane!T bottom, Plane!T near, Plane!T far) pure nothrow
         {
             planes[LEFT] = left;
@@ -45,7 +43,7 @@ align(1) struct Frustum(T) if (isFloatingPoint!T)
             INSIDE     /// object is inside the frustum
         }
 
-        /// point-frustum intersection
+        /// Point vs frustum intersection.
         bool contains(vec3!T point) pure const nothrow
         {
             for(size_t i = 0; i < 6; ++i) 
@@ -58,7 +56,8 @@ align(1) struct Frustum(T) if (isFloatingPoint!T)
             return true;
         }
 
-        /// sphere-frustum intersection
+        /// Sphere vs frustum intersection.
+        /// Returns: Frustum.OUTSIDE, Frustum.INTERSECT or Frustum.INSIDE.
         int contains(Sphere!(T, 3u) sphere) pure const nothrow
         {
             // calculate our distances to each of the planes
@@ -78,7 +77,8 @@ align(1) struct Frustum(T) if (isFloatingPoint!T)
             return INSIDE;
         }
 
-        /// AABB-frustum intersection
+        /// AABB vs frustum intersection.
+        /// Returns: Frustum.OUTSIDE, Frustum.INTERSECT or Frustum.INSIDE.
         int contains(box3!T box) pure const nothrow
         {
             vec3!T corners[8];
