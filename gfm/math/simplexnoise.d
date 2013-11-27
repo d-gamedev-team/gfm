@@ -3,12 +3,13 @@ module gfm.math.simplexnoise;
 import std.math,
        std.random;
 
-// Simplex noise in 2D, 3D and 4D
-// Translated from "Simplex noise demystified", Stefan Gustavson
+/// Simplex noise in 2D, 3D and 4D.
+/// Translated from "Simplex noise demystified", Stefan Gustavson
 class SimplexNoise(UniformRNG) if (isUniformRNG!UniformRNG)
 {    
     public
     {
+        /// Create from a RNG.
         this(ref UniformRNG rng)
         {
             for (int i = 0; i < 256; ++i)
@@ -25,7 +26,7 @@ class SimplexNoise(UniformRNG) if (isUniformRNG!UniformRNG)
             }
         }
 
-        // 2D simplex noise
+        /// Returns: 2D simplex noise.
         double noise(double xin, double yin)
         {
             double n0, n1, n2;
@@ -91,7 +92,9 @@ class SimplexNoise(UniformRNG) if (isUniformRNG!UniformRNG)
             // The result is scaled to return values in the interval [-1,1].
             return 70.0 * (n0 + n1 + n2);
         }
-        // 3D simplex noise
+
+
+        /// Returns: 3D simplex noise.
         double noise(double xin, double yin, double zin)
         {
             double n0, n1, n2, n3;
@@ -192,7 +195,8 @@ class SimplexNoise(UniformRNG) if (isUniformRNG!UniformRNG)
             return 32.0*(n0 + n1 + n2 + n3);
         }
 
-        // 4D simplex noise
+
+        /// Returns: 4D simplex noise.
         double noise(double x, double y, double z, double w)
         {
             // The skewing and unskewing factors are hairy again for the 4D case
