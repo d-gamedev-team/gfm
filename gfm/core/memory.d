@@ -4,20 +4,15 @@ import std.c.stdlib : malloc, free, realloc;
 
 // TODO: make this module disappear when std.allocator is out.
 
-// only works with powers of 2
-size_t nextMultipleOf(size_t n, size_t powerOfTwo) pure nothrow
-{
-    size_t mask = ~(powerOfTwo - 1);
-    return (n + powerOfTwo - 1) & mask;
-}
 
+/// Returns: next pointer aligned with alignment bytes.
 void* nextAlignedPointer(void* start, size_t alignment) pure nothrow
 {
     return cast(void*)nextMultipleOf(cast(size_t)(start), alignment);
 }
 
-// allocate aligned memory
-// functionally equivalent to Visual C++ _aligned_malloc
+/// Allocates an aligned memory chunk.
+/// Functionally equivalent to Visual C++ _aligned_malloc.
 void* alignedMalloc(size_t size, size_t alignment) nothrow
 {
     if (size == 0)
@@ -28,8 +23,8 @@ void* alignedMalloc(size_t size, size_t alignment) nothrow
     return storeRawPointerAndReturnAligned(raw, alignment);
 }
 
-// free aligned memory
-// functionally equivalent to Visual C++ _aligned_free
+/// Frees aligned memory allocated by alignedMalloc or alignedRealloc.
+/// Functionally equivalent to Visual C++ _aligned_free.
 void alignedFree(void* aligned) nothrow
 {
     // support for free(NULL)
@@ -40,8 +35,8 @@ void alignedFree(void* aligned) nothrow
     free(*rawLocation);
 }
 
-// realloc aligned memory
-// functionally equivalent to Visual C++ _aligned_realloc
+/// Reallocates an aligned memory chunk allocated by alignedMalloc or alignedRealloc.
+/// Functionally equivalent to Visual C++ _aligned_realloc.
 void* alignedRealloc(void* aligned, size_t size, size_t alignment) nothrow
 {
     if (aligned is null)
@@ -64,22 +59,35 @@ void* alignedRealloc(void* aligned, size_t size, size_t alignment) nothrow
     return storeRawPointerAndReturnAligned(newRaw, alignment);
 }
 
-// return number of bytes to actually allocate when asking
-// for a particular alignement
-private size_t requestedSize(size_t askedSize, size_t alignment) pure nothrow
+private
 {
-    enum size_t pointerSize = size_t.sizeof;
-    return askedSize + alignment - 1 + pointerSize;
-}
+    // Returns number of bytes to actually allocate when asking
+    // for a particular alignement
+    size_t requestedSize(size_t askedSize, size_t alignment) pure nothrow
+    {
+        enum size_t pointerSize = size_t.sizeof;
+        return askedSize + alignment - 1 + pointerSize;
+    }
 
-private void* storeRawPointerAndReturnAligned(void* raw, size_t alignment) nothrow
-{
-    enum size_t pointerSize = size_t.sizeof;
-    char* start = cast(char*)raw + pointerSize;
-    void* aligned = nextAlignedPointer(start, alignment);
-    void** rawLocation = cast(void**)(cast(char*)aligned - pointerSize);
-    *rawLocation = raw;
-    return aligned;
+    void* storeRawPointerAndReturnAligned(void* raw, size_t alignment) nothrow
+    {
+        enum size_t pointerSize = size_t.sizeof;
+        char* start = cast(char*)raw + pointerSize;
+        void* aligned = nextAlignedPointer(start, alignment);
+        void** rawLocation = cast(void**)(cast(char*)aligned - pointerSize);
+        *rawLocation = raw;
+        return aligned;
+    }
+
+    // Returns: x, multiple of powerOfTwo, so that x >= n.
+    size_t nextMultipleOf(size_t n, size_t powerOfTwo) pure nothrow
+    {
+        // check power-of-two
+        assert( (powerOfTwo != 0) && ((powerOfTwo & (powerOfTwo - 1)) == 0));
+
+        size_t mask = ~(powerOfTwo - 1);
+        return (n + powerOfTwo - 1) & mask;
+    }
 }
 
 unittest
