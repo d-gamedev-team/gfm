@@ -123,16 +123,16 @@ align(1) struct Box(T, size_t N)
 
         /// Euclidean squared distance from a point
         /// source: Numerical Recipes Third Edition (2007)
-        double squaredDistance(bound_t point)
+        double squaredDistance(bound_t point) pure const nothrow
         {
             double distanceSquared = 0;
             for (size_t i = 0; i < N; ++i)
             {
                 if (point[i] < min[i])
-                    distanceSquared += square(point[i] - min[i]);
+                    distanceSquared += (point[i] - min[i]) ^^ 2;
 
                 if (point[i] > max[i])
-                    distanceSquared += square(point[i] - max[i]);
+                    distanceSquared += (point[i] - max[i]) ^^ 2;
             }
             return distanceSquared;
         }
