@@ -24,19 +24,19 @@ final class FrameCounter
         }
 
         /// Mark the beginning of a new frame.
-        /// Returns: current timle difference since last frame, in milliseconds.
+        /// Returns: current time difference since last frame, in milliseconds.
         ulong tickMs()
         {
             if (_firstFrame)
             {
-                _lastTime = getCurrentTime();
+                _lastTime = SDL_GetTicks();
                 _firstFrame = false;
                 _stats.pushBack(0);
                 return 0; // no advance for first frame
             }
             else
             {
-                uint now = getCurrentTime();
+                uint now = SDL_GetTicks();
                 uint delta = now - _lastTime;
                 _elapsedTime += delta;
                 _lastTime = now;
@@ -46,19 +46,19 @@ final class FrameCounter
         }
 
         /// Mark the beginning of a new frame.
-        /// Returns: current timle difference since last frame, in seconds.
+        /// Returns: current time difference since last frame, in seconds.
         double tick()
         {
             return tickMs() * 0.001;
         }
 
-        /// Returns: Number of elapsed milliseconds, in milliseconds.
+        /// Returns: elapsed time since creation, in milliseconds.
         ulong elapsedTimeMs() const
         {
             return _elapsedTime;
         }
 
-        /// Returns: Number of elapsed milliseconds, in seconds.
+        /// Returns: elapsed time since creation, in seconds.
         double elapsedTime() const
         {
             return _elapsedTime * 0.001;
@@ -86,11 +86,6 @@ final class FrameCounter
         bool _firstFrame;
         uint _lastTime;
         ulong _elapsedTime;
-
-        uint getCurrentTime()
-        {
-            return SDL_GetTicks();
-        }
     }
 }
 
