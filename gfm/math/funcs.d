@@ -85,7 +85,7 @@ T fract(T)(real x) nothrow
 /**
  * Square
  */
-T square(T)(T s) pure nothrow
+deprecated T square(T)(T s) pure nothrow
 {
     return s * s;
 }
