@@ -84,6 +84,7 @@ T fract(T)(real x) nothrow
 
 /**
  * Square
+ * Deprecated: use the ^^ operator instead.
  */
 deprecated T square(T)(T s) pure nothrow
 {
@@ -93,8 +94,9 @@ deprecated alias square sqr;
 
 /**
  * Cube
+ * Deprecated: use the ^^ operator instead.
  */
-T cube(T)(T s) pure nothrow
+deprecated T cube(T)(T s) pure nothrow
 {
     return s * s * s;
 }
