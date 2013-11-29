@@ -1,0 +1,14 @@
+PROJECTNAME = gfm
+REFERENCETOP = http://github.com/p0nce/gfm/
+REPOSRCTREE = http://github.com/p0nce/gfm/tree/master
+TITLEBARTEXT = <a href="https://github.com/p0nce/gfm">Github Page</a>
+RESOURCEROOT = bootDoc/
+ISSUETRACKER = https://github.com/p0nce/gfm/issues/$1
+DEFAULTPACKAGE = gfm.math
+PACKAGESEP = .
+FAVICON = $(RESOURCEROOT)assets/ico/favicon.ico
+LOGOSRC = $(RESOURCEROOT)assets/img/icon-github.png
+LOGOALT = $(PROJECTNAME)
+LOGOLINK = $(REFERENCETOP)
+COPYRIGHT = None.
+COPYRIGHTFOOTER = Public domain.

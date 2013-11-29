@@ -1,0 +1,427 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+	<meta charset="utf-8">
+	<title>gfm.math.vector - gfm documentation</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta name="description" content="">
+	<meta name="author" content="">
+
+	<!-- styles -->
+	<link href="bootDoc/assets/css/bootstrap.css" rel="stylesheet">
+	<style type="text/css">
+		body {
+		padding-top: 60px;
+		padding-bottom: 40px;
+		}
+		.sidebar-nav {
+		padding: 9px 0;
+		}
+	</style>
+	<link href="bootDoc/assets/css/bootstrap-responsive.css" rel="stylesheet">
+	<link href="bootDoc/bootdoc.css" rel="stylesheet">
+
+	<!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
+	<!--[if lt IE 9]>
+		<script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+	<![endif]-->
+
+	<!-- fav and touch icons -->
+	<link rel="shortcut icon" href="bootDoc/assets/ico/favicon.ico">
+	<link rel="apple-touch-icon-precomposed" sizes="114x114" href="bootDoc/assets/ico/apple-touch-icon-114-precomposed.png">
+	<link rel="apple-touch-icon-precomposed" sizes="72x72" href="bootDoc/assets/ico/apple-touch-icon-72-precomposed.png">
+	<link rel="apple-touch-icon-precomposed" href="bootDoc/assets/ico/apple-touch-icon-57-precomposed.png">
+	
+	<!-- Introduce DDoc settings required by JavaScript -->
+	<script type="text/javascript">
+		var Title = 'gfm.math.vector';
+		var SourceRepository = 'http://github.com/p0nce/gfm/tree/master';
+		var PackageSeparator = '.';
+	</script>
+	
+	<style type="text/css">
+		.ddoc-icon-variable { background-image: url('bootDoc/ddoc-icons/var.png'); }
+		.ddoc-icon-function { background-image: url('bootDoc/ddoc-icons/func.png'); }
+		.ddoc-icon-property { background-image: url('bootDoc/ddoc-icons/property.png'); }
+		.ddoc-icon-struct { background-image: url('bootDoc/ddoc-icons/struct.png'); }
+		.ddoc-icon-class { background-image: url('bootDoc/ddoc-icons/class.png'); }
+		.ddoc-icon-enum { background-image: url('bootDoc/ddoc-icons/enum.png'); }
+		.ddoc-icon-template { background-image: url('bootDoc/ddoc-icons/template.png'); }
+	</style>
+	</head>
+
+	<body>
+	<!--
+	JavaScript reaps the module list from this element.
+	This is required for the MODULES macro to be reusable
+	in a noscript element later.
+	-->
+	<ul id="module-list-source" class="hidden">
+		
+    <li class="sidebar-list-entry tree-leaf"><a href="index.html" title="index"><i class="icon-th"></i>index</a></li>
+	<li class="sidebar-list-entry tree-leaf"><a href="gfm.core.log.html" title="gfm.core.log"><i class="icon-th"></i>gfm.core.log</a></li>
+    <li class="sidebar-list-entry tree-leaf"><a href="gfm.core.queue.html" title="gfm.core.queue"><i class="icon-th"></i>gfm.core.queue</a></li>
+    <li class="sidebar-list-entry tree-leaf"><a href="gfm.core.lockedqueue.html" title="gfm.core.lockedqueue"><i class="icon-th"></i>gfm.core.lockedqueue</a></li>
+    <li class="sidebar-list-entry tree-leaf"><a href="gfm.core.memory.html" title="gfm.core.memory"><i class="icon-th"></i>gfm.core.memory</a></li>
+    <li class="sidebar-list-entry tree-leaf"><a href="gfm.core.ini.html" title="gfm.core.ini"><i class="icon-th"></i>gfm.core.ini</a></li>
+    <li class="sidebar-list-entry tree-leaf"><a href="gfm.core.text.html" title="gfm.core.text"><i class="icon-th"></i>gfm.core.text</a></li>    
+    <li class="sidebar-list-entry tree-leaf"><a href="gfm.core.structpool.html" title="gfm.core.structpool"><i class="icon-th"></i>gfm.core.structpool</a></li>
+
+    <li class="sidebar-list-entry tree-leaf"><a href="gfm.math.vector.html" title="gfm.math.vector"><i class="icon-th"></i>gfm.math.vector</a></li>
+    <li class="sidebar-list-entry tree-leaf"><a href="gfm.math.matrix.html" title="gfm.math.matrix"><i class="icon-th"></i>gfm.math.matrix</a></li>
+    <li class="sidebar-list-entry tree-leaf"><a href="gfm.math.quaternion.html" title="gfm.math.quaternion"><i class="icon-th"></i>gfm.math.quaternion</a></li>
+    <li class="sidebar-list-entry tree-leaf"><a href="gfm.math.half.html" title="gfm.math.half"><i class="icon-th"></i>gfm.math.half</a></li>
+    <li class="sidebar-list-entry tree-leaf"><a href="gfm.math.wideint.html" title="gfm.math.wideint"><i class="icon-th"></i>gfm.math.wideint</a></li>
+    <li class="sidebar-list-entry tree-leaf"><a href="gfm.math.box.html" title="gfm.math.box"><i class="icon-th"></i>gfm.math.box</a></li>    
+    <li class="sidebar-list-entry tree-leaf"><a href="gfm.math.fixedpoint.html" title="gfm.math.fixedpoint"><i class="icon-th"></i>gfm.math.fixedpoint</a></li>
+    <li class="sidebar-list-entry tree-leaf"><a href="gfm.math.rational.html" title="gfm.math.rational"><i class="icon-th"></i>gfm.math.rational</a></li>
+    <li class="sidebar-list-entry tree-leaf"><a href="gfm.math.statistics.html" title="gfm.math.statistics"><i class="icon-th"></i>gfm.math.statistics</a></li>
+    <li class="sidebar-list-entry tree-leaf"><a href="gfm.math.solver.html" title="gfm.math.solver"><i class="icon-th"></i>gfm.math.solver</a></li>
+    <li class="sidebar-list-entry tree-leaf"><a href="gfm.math.simplerng.html" title="gfm.math.simplerng"><i class="icon-th"></i>gfm.math.simplerng</a></li>
+    <li class="sidebar-list-entry tree-leaf"><a href="gfm.math.shapes.html" title="gfm.math.shapes"><i class="icon-th"></i>gfm.math.shapes</a></li>
+    <li class="sidebar-list-entry tree-leaf"><a href="gfm.math.frustum.html" title="gfm.math.frustum"><i class="icon-th"></i>gfm.math.frustum</a></li>
+    <li class="sidebar-list-entry tree-leaf"><a href="gfm.math.funcs.html" title="gfm.math.funcs"><i class="icon-th"></i>gfm.math.funcs</a></li>
+    <li class="sidebar-list-entry tree-leaf"><a href="gfm.math.simplexnoise.html" title="gfm.math.simplexnoise"><i class="icon-th"></i>gfm.math.simplexnoise</a></li>
+
+    <li class="sidebar-list-entry tree-leaf"><a href="gfm.net.uri.html" title="gfm.net.uri"><i class="icon-th"></i>gfm.net.uri</a></li>
+    <li class="sidebar-list-entry tree-leaf"><a href="gfm.net.httpclient.html" title="gfm.net.httpclient"><i class="icon-th"></i>gfm.net.httpclient</a></li>
+    <li class="sidebar-list-entry tree-leaf"><a href="gfm.net.cbor.html" title="gfm.net.cbor"><i class="icon-th"></i>gfm.net.cbor</a></li>
+
+    <li class="sidebar-list-entry tree-leaf"><a href="gfm.sdl2.sdl.html" title="gfm.sdl2.sdl"><i class="icon-th"></i>gfm.sdl2.sdl</a></li>
+    <li class="sidebar-list-entry tree-leaf"><a href="gfm.sdl2.sdl.html" title="gfm.sdl2.sdl"><i class="icon-th"></i>gfm.sdl2.sdl</a></li>
+    <li class="sidebar-list-entry tree-leaf"><a href="gfm.sdl2.keyboard.html" title="gfm.sdl2.keyboard"><i class="icon-th"></i>gfm.sdl2.keyboard</a></li>
+    <li class="sidebar-list-entry tree-leaf"><a href="gfm.sdl2.surface.html" title="gfm.sdl2.surface"><i class="icon-th"></i>gfm.sdl2.surface</a></li>
+    <li class="sidebar-list-entry tree-leaf"><a href="gfm.sdl2.window.html" title="gfm.sdl2.window"><i class="icon-th"></i>gfm.sdl2.window</a></li>
+    <li class="sidebar-list-entry tree-leaf"><a href="gfm.sdl2.renderer.html" title="gfm.sdl2.renderer"><i class="icon-th"></i>gfm.sdl2.renderer</a></li>
+    <li class="sidebar-list-entry tree-leaf"><a href="gfm.sdl2.texture.html" title="gfm.sdl2.texture"><i class="icon-th"></i>gfm.sdl2.texture</a></li>
+    <li class="sidebar-list-entry tree-leaf"><a href="gfm.sdl2.sdlimage.html" title="gfm.sdl2.sdlimage"><i class="icon-th"></i>gfm.sdl2.sdlimage</a></li>
+    <li class="sidebar-list-entry tree-leaf"><a href="gfm.sdl2.sdlttf.html" title="gfm.sdl2.sdlttf"><i class="icon-th"></i>gfm.sdl2.sdlttf</a></li>
+    
+    <li class="sidebar-list-entry tree-leaf"><a href="gfm.opengl.opengl.html" title="gfm.opengl.opengl"><i class="icon-th"></i>gfm.opengl.opengl</a></li>
+    <li class="sidebar-list-entry tree-leaf"><a href="gfm.opengl.matrixstack.html" title="gfm.opengl.matrixstack"><i class="icon-th"></i>gfm.opengl.matrixstack</a></li>
+    <li class="sidebar-list-entry tree-leaf"><a href="gfm.opengl.texture.html" title="gfm.opengl.texture"><i class="icon-th"></i>gfm.opengl.texture</a></li>
+    <li class="sidebar-list-entry tree-leaf"><a href="gfm.opengl.renderbuffer.html" title="gfm.opengl.renderbuffer"><i class="icon-th"></i>gfm.opengl.renderbuffer</a></li>
+    <li class="sidebar-list-entry tree-leaf"><a href="gfm.opengl.textureunit.html" title="gfm.opengl.textureunit"><i class="icon-th"></i>gfm.opengl.textureunit</a></li>
+    <li class="sidebar-list-entry tree-leaf"><a href="gfm.opengl.fbo.html" title="gfm.opengl.fbo"><i class="icon-th"></i>gfm.opengl.fbo</a></li>
+    <li class="sidebar-list-entry tree-leaf"><a href="gfm.opengl.buffer.html" title="gfm.opengl.buffer"><i class="icon-th"></i>gfm.opengl.buffer</a></li>
+    <li class="sidebar-list-entry tree-leaf"><a href="gfm.opengl.program.html" title="gfm.opengl.program"><i class="icon-th"></i>gfm.opengl.program</a></li>
+    <li class="sidebar-list-entry tree-leaf"><a href="gfm.opengl.shader.html" title="gfm.opengl.shader"><i class="icon-th"></i>gfm.opengl.shader</a></li>    
+    <li class="sidebar-list-entry tree-leaf"><a href="gfm.opengl.vbo.html" title="gfm.opengl.vbo"><i class="icon-th"></i>gfm.opengl.vbo</a></li>
+    <li class="sidebar-list-entry tree-leaf"><a href="gfm.opengl.vao.html" title="gfm.opengl.vao"><i class="icon-th"></i>gfm.opengl.vao</a></li>
+
+    <li class="sidebar-list-entry tree-leaf"><a href="gfm.image.image.html" title="gfm.image.image"><i class="icon-th"></i>gfm.image.image</a></li>
+    <li class="sidebar-list-entry tree-leaf"><a href="gfm.image.bitmap.html" title="gfm.image.bitmap"><i class="icon-th"></i>gfm.image.bitmap</a></li>
+    <li class="sidebar-list-entry tree-leaf"><a href="gfm.image.hsv.html" title="gfm.image.hsv"><i class="icon-th"></i>gfm.image.hsv</a></li>
+    <li class="sidebar-list-entry tree-leaf"><a href="gfm.image.vao.html" title="gfm.image.vao"><i class="icon-th"></i>gfm.image.vao</a></li>
+    <li class="sidebar-list-entry tree-leaf"><a href="gfm.image.cie.html" title="gfm.image.cie"><i class="icon-th"></i>gfm.image.cie</a></li>
+
+    <li class="sidebar-list-entry tree-leaf"><a href="gfm.freeimage.freeimage.html" title="gfm.freeimage.freeimage"><i class="icon-th"></i>gfm.freeimage.freeimage</a></li>
+    <li class="sidebar-list-entry tree-leaf"><a href="gfm.freeimage.fibitmap.html" title="gfm.freeimage.fibitmap"><i class="icon-th"></i>gfm.freeimage.fibitmap</a></li>
+	</ul>
+	
+	<div class="navbar navbar-fixed-top">
+		<div class="navbar-inner">
+			<div class="container-fluid">
+				<a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+					<span class="icon-bar"></span>
+					<span class="icon-bar"></span>
+					<span class="icon-bar"></span>
+				</a>
+				<a class="brand" href="http://github.com/p0nce/gfm/">gfm</a>
+				<div class="nav-collapse">
+					<ul class="nav">
+						<li class="active"><a href="http://github.com/p0nce/gfm/">Reference</a></li>
+					</ul>
+					
+					<form id="gotosymbol" class="navbar-search pull-left hidden">
+						<input type="text" class="search-query" placeholder="Go to symbol in gfm.math.vector" data-provide="typeahead" data-items="4">
+					</form>
+					
+					<p class="navbar-text pull-right"><a href="https://github.com/p0nce/gfm">Github Page</a></p>
+				</div><!--/.nav-collapse -->
+			</div>
+		</div>
+	</div>
+
+	<div class="container-fluid">
+		<div class="row-fluid">
+			<div class="span2">
+				<div class="well sidebar-nav">
+				<ul class="nav nav-list">
+					<li id="module-list" class="nav-header sidebar-list-entry">Modules<li>
+					<noscript>
+						
+    <li class="sidebar-list-entry tree-leaf"><a href="index.html" title="index"><i class="icon-th"></i>index</a></li>
+	<li class="sidebar-list-entry tree-leaf"><a href="gfm.core.log.html" title="gfm.core.log"><i class="icon-th"></i>gfm.core.log</a></li>
+    <li class="sidebar-list-entry tree-leaf"><a href="gfm.core.queue.html" title="gfm.core.queue"><i class="icon-th"></i>gfm.core.queue</a></li>
+    <li class="sidebar-list-entry tree-leaf"><a href="gfm.core.lockedqueue.html" title="gfm.core.lockedqueue"><i class="icon-th"></i>gfm.core.lockedqueue</a></li>
+    <li class="sidebar-list-entry tree-leaf"><a href="gfm.core.memory.html" title="gfm.core.memory"><i class="icon-th"></i>gfm.core.memory</a></li>
+    <li class="sidebar-list-entry tree-leaf"><a href="gfm.core.ini.html" title="gfm.core.ini"><i class="icon-th"></i>gfm.core.ini</a></li>
+    <li class="sidebar-list-entry tree-leaf"><a href="gfm.core.text.html" title="gfm.core.text"><i class="icon-th"></i>gfm.core.text</a></li>    
+    <li class="sidebar-list-entry tree-leaf"><a href="gfm.core.structpool.html" title="gfm.core.structpool"><i class="icon-th"></i>gfm.core.structpool</a></li>
+
+    <li class="sidebar-list-entry tree-leaf"><a href="gfm.math.vector.html" title="gfm.math.vector"><i class="icon-th"></i>gfm.math.vector</a></li>
+    <li class="sidebar-list-entry tree-leaf"><a href="gfm.math.matrix.html" title="gfm.math.matrix"><i class="icon-th"></i>gfm.math.matrix</a></li>
+    <li class="sidebar-list-entry tree-leaf"><a href="gfm.math.quaternion.html" title="gfm.math.quaternion"><i class="icon-th"></i>gfm.math.quaternion</a></li>
+    <li class="sidebar-list-entry tree-leaf"><a href="gfm.math.half.html" title="gfm.math.half"><i class="icon-th"></i>gfm.math.half</a></li>
+    <li class="sidebar-list-entry tree-leaf"><a href="gfm.math.wideint.html" title="gfm.math.wideint"><i class="icon-th"></i>gfm.math.wideint</a></li>
+    <li class="sidebar-list-entry tree-leaf"><a href="gfm.math.box.html" title="gfm.math.box"><i class="icon-th"></i>gfm.math.box</a></li>    
+    <li class="sidebar-list-entry tree-leaf"><a href="gfm.math.fixedpoint.html" title="gfm.math.fixedpoint"><i class="icon-th"></i>gfm.math.fixedpoint</a></li>
+    <li class="sidebar-list-entry tree-leaf"><a href="gfm.math.rational.html" title="gfm.math.rational"><i class="icon-th"></i>gfm.math.rational</a></li>
+    <li class="sidebar-list-entry tree-leaf"><a href="gfm.math.statistics.html" title="gfm.math.statistics"><i class="icon-th"></i>gfm.math.statistics</a></li>
+    <li class="sidebar-list-entry tree-leaf"><a href="gfm.math.solver.html" title="gfm.math.solver"><i class="icon-th"></i>gfm.math.solver</a></li>
+    <li class="sidebar-list-entry tree-leaf"><a href="gfm.math.simplerng.html" title="gfm.math.simplerng"><i class="icon-th"></i>gfm.math.simplerng</a></li>
+    <li class="sidebar-list-entry tree-leaf"><a href="gfm.math.shapes.html" title="gfm.math.shapes"><i class="icon-th"></i>gfm.math.shapes</a></li>
+    <li class="sidebar-list-entry tree-leaf"><a href="gfm.math.frustum.html" title="gfm.math.frustum"><i class="icon-th"></i>gfm.math.frustum</a></li>
+    <li class="sidebar-list-entry tree-leaf"><a href="gfm.math.funcs.html" title="gfm.math.funcs"><i class="icon-th"></i>gfm.math.funcs</a></li>
+    <li class="sidebar-list-entry tree-leaf"><a href="gfm.math.simplexnoise.html" title="gfm.math.simplexnoise"><i class="icon-th"></i>gfm.math.simplexnoise</a></li>
+
+    <li class="sidebar-list-entry tree-leaf"><a href="gfm.net.uri.html" title="gfm.net.uri"><i class="icon-th"></i>gfm.net.uri</a></li>
+    <li class="sidebar-list-entry tree-leaf"><a href="gfm.net.httpclient.html" title="gfm.net.httpclient"><i class="icon-th"></i>gfm.net.httpclient</a></li>
+    <li class="sidebar-list-entry tree-leaf"><a href="gfm.net.cbor.html" title="gfm.net.cbor"><i class="icon-th"></i>gfm.net.cbor</a></li>
+
+    <li class="sidebar-list-entry tree-leaf"><a href="gfm.sdl2.sdl.html" title="gfm.sdl2.sdl"><i class="icon-th"></i>gfm.sdl2.sdl</a></li>
+    <li class="sidebar-list-entry tree-leaf"><a href="gfm.sdl2.sdl.html" title="gfm.sdl2.sdl"><i class="icon-th"></i>gfm.sdl2.sdl</a></li>
+    <li class="sidebar-list-entry tree-leaf"><a href="gfm.sdl2.keyboard.html" title="gfm.sdl2.keyboard"><i class="icon-th"></i>gfm.sdl2.keyboard</a></li>
+    <li class="sidebar-list-entry tree-leaf"><a href="gfm.sdl2.surface.html" title="gfm.sdl2.surface"><i class="icon-th"></i>gfm.sdl2.surface</a></li>
+    <li class="sidebar-list-entry tree-leaf"><a href="gfm.sdl2.window.html" title="gfm.sdl2.window"><i class="icon-th"></i>gfm.sdl2.window</a></li>
+    <li class="sidebar-list-entry tree-leaf"><a href="gfm.sdl2.renderer.html" title="gfm.sdl2.renderer"><i class="icon-th"></i>gfm.sdl2.renderer</a></li>
+    <li class="sidebar-list-entry tree-leaf"><a href="gfm.sdl2.texture.html" title="gfm.sdl2.texture"><i class="icon-th"></i>gfm.sdl2.texture</a></li>
+    <li class="sidebar-list-entry tree-leaf"><a href="gfm.sdl2.sdlimage.html" title="gfm.sdl2.sdlimage"><i class="icon-th"></i>gfm.sdl2.sdlimage</a></li>
+    <li class="sidebar-list-entry tree-leaf"><a href="gfm.sdl2.sdlttf.html" title="gfm.sdl2.sdlttf"><i class="icon-th"></i>gfm.sdl2.sdlttf</a></li>
+    
+    <li class="sidebar-list-entry tree-leaf"><a href="gfm.opengl.opengl.html" title="gfm.opengl.opengl"><i class="icon-th"></i>gfm.opengl.opengl</a></li>
+    <li class="sidebar-list-entry tree-leaf"><a href="gfm.opengl.matrixstack.html" title="gfm.opengl.matrixstack"><i class="icon-th"></i>gfm.opengl.matrixstack</a></li>
+    <li class="sidebar-list-entry tree-leaf"><a href="gfm.opengl.texture.html" title="gfm.opengl.texture"><i class="icon-th"></i>gfm.opengl.texture</a></li>
+    <li class="sidebar-list-entry tree-leaf"><a href="gfm.opengl.renderbuffer.html" title="gfm.opengl.renderbuffer"><i class="icon-th"></i>gfm.opengl.renderbuffer</a></li>
+    <li class="sidebar-list-entry tree-leaf"><a href="gfm.opengl.textureunit.html" title="gfm.opengl.textureunit"><i class="icon-th"></i>gfm.opengl.textureunit</a></li>
+    <li class="sidebar-list-entry tree-leaf"><a href="gfm.opengl.fbo.html" title="gfm.opengl.fbo"><i class="icon-th"></i>gfm.opengl.fbo</a></li>
+    <li class="sidebar-list-entry tree-leaf"><a href="gfm.opengl.buffer.html" title="gfm.opengl.buffer"><i class="icon-th"></i>gfm.opengl.buffer</a></li>
+    <li class="sidebar-list-entry tree-leaf"><a href="gfm.opengl.program.html" title="gfm.opengl.program"><i class="icon-th"></i>gfm.opengl.program</a></li>
+    <li class="sidebar-list-entry tree-leaf"><a href="gfm.opengl.shader.html" title="gfm.opengl.shader"><i class="icon-th"></i>gfm.opengl.shader</a></li>    
+    <li class="sidebar-list-entry tree-leaf"><a href="gfm.opengl.vbo.html" title="gfm.opengl.vbo"><i class="icon-th"></i>gfm.opengl.vbo</a></li>
+    <li class="sidebar-list-entry tree-leaf"><a href="gfm.opengl.vao.html" title="gfm.opengl.vao"><i class="icon-th"></i>gfm.opengl.vao</a></li>
+
+    <li class="sidebar-list-entry tree-leaf"><a href="gfm.image.image.html" title="gfm.image.image"><i class="icon-th"></i>gfm.image.image</a></li>
+    <li class="sidebar-list-entry tree-leaf"><a href="gfm.image.bitmap.html" title="gfm.image.bitmap"><i class="icon-th"></i>gfm.image.bitmap</a></li>
+    <li class="sidebar-list-entry tree-leaf"><a href="gfm.image.hsv.html" title="gfm.image.hsv"><i class="icon-th"></i>gfm.image.hsv</a></li>
+    <li class="sidebar-list-entry tree-leaf"><a href="gfm.image.vao.html" title="gfm.image.vao"><i class="icon-th"></i>gfm.image.vao</a></li>
+    <li class="sidebar-list-entry tree-leaf"><a href="gfm.image.cie.html" title="gfm.image.cie"><i class="icon-th"></i>gfm.image.cie</a></li>
+
+    <li class="sidebar-list-entry tree-leaf"><a href="gfm.freeimage.freeimage.html" title="gfm.freeimage.freeimage"><i class="icon-th"></i>gfm.freeimage.freeimage</a></li>
+    <li class="sidebar-list-entry tree-leaf"><a href="gfm.freeimage.fibitmap.html" title="gfm.freeimage.fibitmap"><i class="icon-th"></i>gfm.freeimage.fibitmap</a></li>
+					</noscript>
+					<li id="symbol-list" class="nav-header sidebar-list-entry hidden">gfm.math.vector</li>
+				</ul>
+				</div><!--/.well -->
+			</div><!--/span-->
+			
+			<div class="span10">
+				<div class="row-fluid">
+					<div class="span11">
+						<ul id="module-breadcrumb" class="breadcrumb">
+							<noscript><h1>gfm.math.vector</h1></noscript>
+						</ul>
+						
+					</div>
+					<div class="span1 offset11">
+						<a href="http://github.com/p0nce/gfm/"><img src="bootDoc/assets/img/icon-github.png" alt="gfm"/></a>
+					</div>
+				</div>
+				<div id="declaration-list">
+					<!-- Generated by Ddoc from ..\gfm2\gfm\math\vector.d -->
+<br><br>
+<hr><div class="row-fluid declaration"><h3>struct <span class="symbol-target" id="Vector">&nbsp;</span><a class="symbol-link" href="#Vector">Vector</a>(T, size_t N);
+</h3></div>
+<div class="declaration-content"><dl><p>Generic 1D small vector.
+ N is the element count, T the contained type
+ Mostly intended for 3D.
+</p>
+
+<dt>TODO:</dt><dd>
+ - find a way to enable swizzling assignment
+       - do we need support for slice assignment and opSliceOpAsssign?</dd>
+</dl>
+<div class="offset1 member-list"><hr><div class="row-fluid declaration"><h3>pure nothrow  this(U)(U <i>x</i>);
+</h3></div>
+<div class="declaration-content"><dl><p>Construct a Vector from a value.</p>
+
+</dl>
+</div>
+<hr><div class="row-fluid declaration"><h3>pure nothrow Vector <span class="symbol-target" id="opAssign">&nbsp;</span><a class="symbol-link" href="#opAssign">opAssign</a>(U)(U <i>x</i>) if (is(U : T));
+</h3></div>
+<div class="declaration-content"><dl><p>Assign from a compatible type.</p>
+
+</dl>
+</div>
+<hr><div class="row-fluid declaration"><h3>pure nothrow Vector <span class="symbol-target" id="opAssign">&nbsp;</span><a class="symbol-link" href="#opAssign">opAssign</a>(U)(U <i>arr</i>) if (isStaticArray!U &amp;&amp; is(typeof(<i>arr</i>[0]) : T) &amp;&amp; <i>arr</i>.length == N);
+</h3></div>
+<div class="declaration-content"><dl><p>Assign with a static array type.</p>
+
+</dl>
+</div>
+<hr><div class="row-fluid declaration"><h3>pure nothrow Vector <span class="symbol-target" id="opAssign">&nbsp;</span><a class="symbol-link" href="#opAssign">opAssign</a>(U)(U <i>arr</i>) if (isDynamicArray!U &amp;&amp; is(typeof(<i>arr</i>[0]) : T));
+</h3></div>
+<div class="declaration-content"><dl><p>Assign with a dynamic array.
+ Size is checked in debug-mode.</p>
+
+</dl>
+</div>
+<hr><div class="row-fluid declaration"><h3>pure nothrow Vector <span class="symbol-target" id="opAssign">&nbsp;</span><a class="symbol-link" href="#opAssign">opAssign</a>(U)(U <i>u</i>) if (is(U : Vector));
+</h3></div>
+<div class="declaration-content"><dl><p>Assign from a samey Vector.</p>
+
+</dl>
+</div>
+<hr><div class="row-fluid declaration"><h3>pure nothrow Vector <span class="symbol-target" id="opAssign">&nbsp;</span><a class="symbol-link" href="#opAssign">opAssign</a>(U)(U <i>x</i>) if (is(typeof(U._isVector)) &amp;&amp; is(U._T : T) &amp;&amp; !is(U : Vector) &amp;&amp; U._N == _N);
+</h3></div>
+<div class="declaration-content"><dl><p>Assign from other vectors (same size, compatible type).</p>
+
+</dl>
+</div>
+<hr><div class="row-fluid declaration"><h3>pure nothrow @property T* <span class="symbol-target" id="ptr">&nbsp;</span><a class="symbol-link" href="#ptr">ptr</a>();
+</h3></div>
+<div class="declaration-content"><dl><dt>Returns</dt><dd>a pointer to content.</dd>
+</dl>
+</div>
+<hr><div class="row-fluid declaration"><h3>const nothrow string <span class="symbol-target" id="toString">&nbsp;</span><a class="symbol-link" href="#toString">toString</a>();
+</h3></div>
+<div class="declaration-content"><dl><p>Converts to a pretty string.</p>
+
+</dl>
+</div>
+<hr><div class="row-fluid declaration"><h3>const pure nothrow @property auto <span class="symbol-target" id="opDispatch">&nbsp;</span><a class="symbol-link" href="#opDispatch">opDispatch</a>(string op, U = void)() if (isValidSwizzle!op);
+</h3></div>
+<div class="declaration-content"><dl><p>Implements swizzling.</p>
+
+</dl>
+</div>
+<hr><div class="row-fluid declaration"><h3>pure void <span class="symbol-target" id="opDispatch">&nbsp;</span><a class="symbol-link" href="#opDispatch">opDispatch</a>(string op, U)(U <i>x</i>) if (op.length &gt;= 2 &amp;&amp; isValidSwizzleUnique!op &amp;&amp; is(typeof(Vector!(T, op.length)(<i>x</i>))));
+</h3></div>
+<div class="declaration-content"><dl><p>Support swizzling assignment like in shader languages.
+</p>
+
+<dt>eg:</dt><dd>
+</dd>
+<dt>eg:</dt><dd>
+vec.yz = vec.zx;</dd>
+</dl>
+</div>
+<hr><div class="row-fluid declaration"><h3>const pure nothrow U <span class="symbol-target" id="opCast">&nbsp;</span><a class="symbol-link" href="#opCast">opCast</a>(U)() if (is(typeof(U._isVector)) &amp;&amp; U._N == _N);
+</h3></div>
+<div class="declaration-content"><dl><p>Casting to small vectors of the same size.</p>
+
+</dl>
+</div>
+<hr><div class="row-fluid declaration"><h3>const pure nothrow size_t <span class="symbol-target" id="opDollar">&nbsp;</span><a class="symbol-link" href="#opDollar">opDollar</a>();
+</h3></div>
+<div class="declaration-content"><dl><p>Implement slices operator overloading.
+ Allows to go back to slice world.</p>
+
+</dl>
+</div>
+<hr><div class="row-fluid declaration"><h3>pure nothrow T[] <span class="symbol-target" id="opSlice">&nbsp;</span><a class="symbol-link" href="#opSlice">opSlice</a>();
+</h3></div>
+<div class="declaration-content"><dl><p>vec[]
+</p>
+
+<dt>Returns</dt><dd>a slice which covers the whole Vector.</dd>
+</dl>
+</div>
+<hr><div class="row-fluid declaration"><h3>const pure nothrow T <span class="symbol-target" id="squaredLength">&nbsp;</span><a class="symbol-link" href="#squaredLength">squaredLength</a>();
+</h3></div>
+<div class="declaration-content"><dl><dt>Returns</dt><dd>squared length.</dd>
+</dl>
+</div>
+<hr><div class="row-fluid declaration"><h3>const pure nothrow T <span class="symbol-target" id="distanceTo">&nbsp;</span><a class="symbol-link" href="#distanceTo">distanceTo</a>(Vector <i>other</i>);
+</h3></div>
+<div class="declaration-content"><dl><dt>Returns</dt><dd>Euclidean distance between this and <i>other</i>.</dd>
+</dl>
+</div>
+<hr><div class="row-fluid declaration"><h3>pure nothrow void <span class="symbol-target" id="normalize">&nbsp;</span><a class="symbol-link" href="#normalize">normalize</a>();
+</h3></div>
+<div class="declaration-content"><dl><p>In-place normalization.</p>
+
+</dl>
+</div>
+<hr><div class="row-fluid declaration"><h3>const pure nothrow Vector <span class="symbol-target" id="normalized">&nbsp;</span><a class="symbol-link" href="#normalized">normalized</a>();
+</h3></div>
+<div class="declaration-content"><dl><dt>Returns</dt><dd><span class="symbol-target" id="normalized">&nbsp;</span><a class="symbol-link" href="#normalized">normalized</a> vector.</dd>
+</dl>
+</div>
+<hr><div class="row-fluid declaration"><h3>Vector <span class="symbol-target" id="getOrthogonalVector">&nbsp;</span><a class="symbol-link" href="#getOrthogonalVector">getOrthogonalVector</a>();
+</h3></div>
+<div class="declaration-content"><dl><p>Gets an orthogonal vector from a 3-dimensional vector.
+ Doesn’t normalise the output.
+ By Sam Hocevar: http://lolengine.net/blog/2013/09/21/picking-orthogonal-vector-combing-coconuts</p>
+
+</dl>
+</div>
+</div>
+</div>
+<hr><div class="row-fluid declaration"><h3>pure nothrow Vector!(T, N) <span class="symbol-target" id="min">&nbsp;</span><a class="symbol-link" href="#min">min</a>(T, size_t N)(const Vector!(T, N) <i>a</i>, const Vector!(T, N) <i>b</i>);
+</h3></div>
+<div class="declaration-content"><dl><p>Element-wise minimum.</p>
+
+</dl>
+</div>
+<hr><div class="row-fluid declaration"><h3>pure nothrow Vector!(T, N) <span class="symbol-target" id="max">&nbsp;</span><a class="symbol-link" href="#max">max</a>(T, size_t N)(const Vector!(T, N) <i>a</i>, const Vector!(T, N) <i>b</i>);
+</h3></div>
+<div class="declaration-content"><dl><p>Element-wise maximum.</p>
+
+</dl>
+</div>
+<hr><div class="row-fluid declaration"><h3>pure nothrow T <span class="symbol-target" id="dot">&nbsp;</span><a class="symbol-link" href="#dot">dot</a>(T, size_t N)(const Vector!(T, N) <i>a</i>, const Vector!(T, N) <i>b</i>);
+</h3></div>
+<div class="declaration-content"><dl><dt>Returns</dt><dd><span class="symbol-target" id="dot">&nbsp;</span><a class="symbol-link" href="#dot">dot</a> product.</dd>
+</dl>
+</div>
+<hr><div class="row-fluid declaration"><h3>pure nothrow Vector!(T, 3u) <span class="symbol-target" id="cross">&nbsp;</span><a class="symbol-link" href="#cross">cross</a>(T)(const Vector!(T, 3u) <i>a</i>, const Vector!(T, 3u) <i>b</i>);
+</h3></div>
+<div class="declaration-content"><dl><p>3D <span class="symbol-target" id="cross">&nbsp;</span><a class="symbol-link" href="#cross">cross</a> product.
+ Thanks to vuaru for corrections.</p>
+
+</dl>
+</div>
+<hr><div class="row-fluid declaration"><h3>pure nothrow Vector!(T, 3u) <span class="symbol-target" id="reflect">&nbsp;</span><a class="symbol-link" href="#reflect">reflect</a>(T)(const Vector!(T, 3u) <i>a</i>, const Vector!(T, 3u) <i>b</i>);
+</h3></div>
+<div class="declaration-content"><dl><p>3D <span class="symbol-target" id="reflect">&nbsp;</span><a class="symbol-link" href="#reflect">reflect</a>, like the GLSL function.</p>
+
+</dl>
+</div>
+<hr><div class="row-fluid declaration"><h3>pure nothrow T <span class="symbol-target" id="angleBetween">&nbsp;</span><a class="symbol-link" href="#angleBetween">angleBetween</a>(T, size_t N)(const Vector!(T, N) <i>a</i>, const Vector!(T, N) <i>b</i>);
+</h3></div>
+<div class="declaration-content"><dl><dt>Returns</dt><dd>angle between vectors.
+ See "The Right Way to Calculate Stuff" at http://www.plunk.org/~hatch/rightway.php</dd>
+</dl>
+</div>
+
+
+				</div>
+				
+				<hr>
+				
+				<footer class="pull-left">
+					<p>Page generated with <a href="https://github.com/JakobOvrum/bootDoc">bootDoc</a>.</p>
+				</footer>
+				
+				<footer class="pull-right">
+					<p>Public domain.</p>
+				</footer>
+			</div>
+		</div>
+	</div><!--/.fluid-container-->
+
+	<!-- Bootstrap javascript
+	================================================== -->
+	<!-- Placed at the end of the document so the pages load faster -->
+	<script src="bootDoc/assets/js/jquery.min.js"></script>
+	<script src="bootDoc/assets/js/bootstrap.min.js"></script>
+	
+	<!-- bootDoc javascript
+	================================================== -->
+	<script src="bootDoc/bootdoc.js"></script>
+	
+	</body>
+</html>
+
