@@ -27,7 +27,7 @@ T radians(T)(T x) pure nothrow if (!isIntegral!T)
     return x * (PI / 180);
 }
 
-/// Linear intepolation, akin to GLSL's mix.
+/// Linear interpolation, akin to GLSL's mix.
 S lerp(S, T)(S a, S b, T t) pure nothrow
 {
     return t * b + (1 - t) * a;
