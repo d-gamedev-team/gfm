@@ -2,6 +2,9 @@
 
 GFM is a feature-rich library to ease the creation of video games / multimedia applications with the D programming language. Pick what you need.
 
+Documentation can be found here: http://p0nce.github.com/gfm/
+
+
 ## License
 
 Public Domain (Unlicense).
@@ -75,12 +78,12 @@ Public Domain (Unlicense).
 
 *There is always more to come, don't fear to ask for things*
 
-## How to use gfm?
+## How to use GFM?
 
 See the examples/ directory, or https://github.com/p0nce/aliasthis as an example of a game.
 
 
-## Why use gfm?
+## Why use GFM?
 
 In the D1 days, I created several multimedia applications:
 
@@ -92,7 +95,7 @@ In the D1 days, I created several multimedia applications:
 
 This all came with some insight with how to do OpenGL applications in D.
 During this time I became acutely aware that my quick & dirty coding style wouldn't cut it in the long run.
-gfm is the clean successor library to the unfortunate code I was using at this time.
+GFM is the clean successor library to the unfortunate code I was using at this time.
 
 
 ## Design goals
@@ -102,5 +105,5 @@ gfm is the clean successor library to the unfortunate code I was using at this t
   * logging interface for everything which need to output messages.
   * correctness and functionality are favoured over speed.
   * wrappers are lightweight layers that expose the C libraries objects, turn every error code into an D exception and makes it easier to use the library correctly.
-  * as much as possible, gfm emit warnings when something goes wrong, try to recover when it makes sense and log every problem.
+  * as much as possible, GFM emit warnings when something goes wrong, try to recover when it makes sense and log every problem.
 
