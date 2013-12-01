@@ -53,7 +53,6 @@ MODULES =
     $(MODULE gfm.image.image, abstract image trait)
     $(MODULE gfm.image.bitmap, memory images / tiled images)
     $(MODULE gfm.image.hsv, HSV conversions)
-    $(MODULE gfm.image.vao, OpenGL VAO wrapper)
     $(MODULE gfm.image.cie, physical color computations)
 
     $(MODULE gfm.freeimage.freeimage, FreeImage library wrapper)
