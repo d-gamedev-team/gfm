@@ -5,7 +5,7 @@
     "copyright": "none",
     "license": "public domain",
     "authors": [ "ponce" ],
-    "importPaths": [ "." ],
+
     "targetType": "executable",
     "targetPath": "build",
 
@@ -20,17 +20,23 @@
         {
             "name": "simplehttp",
             "targetName": "simplehttp",
-            "sourcePaths": [ "simplehttp/." ]
+            "sourcePaths": [ "simplehttp/." ],
+            "importPaths": [ "simplehttp/." ],
+            "mainSourceFile": "simplehttp/simplehttp.d"
         },
         {
             "name": "simplegl",
             "targetName": "simplegl",
-            "sourcePaths": [ "simplegl/." ]
+            "sourcePaths": [ "simplegl/." ],
+            "importPaths": [ "simplegl/." ],
+            "mainSourceFile": "simplegl/simplegl.d"
         },
         {
             "name": "simpleshader",
             "targetName": "simpleshader",
-            "sourcePaths": [ "simpleshader/." ]
+            "sourcePaths": [ "simpleshader/." ],
+            "importPaths": [ "simpleshader/." ],
+            "mainSourceFile": "simpleshader/simpleshader.d"
         }
     ]
 }
