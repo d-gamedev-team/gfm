@@ -1,3 +1,6 @@
+
+
+
 module gfm.core.log;
 
 import std.stream,
@@ -19,72 +22,20 @@ Log defaultLog()
     return new MultiLog( [ consoleLogger, fileLogger ] );
 }
 
+/**
+Provides a common logging interface for GFM.
+
+Bugs: 
+    Log is not thread-safe. Messages will get squashed.
+
+Deprecated: 
+    This whole module will go away when std.logger is there.
+*/
 class Log
 {
-    public
-    {
-        enum MessageType
-        {
-            DEBUG = 0,
-            INFO = 1,
-            WARNING = 2,
-            ERROR = 3,
-        }
-
-        final void info(lazy string s)
-        {
-            logMessage(Log.MessageType.INFO, s);
-        }
-
-        final void infof(Args...)(Args args)
-        {
-            logMessage(Log.MessageType.INFO, format(args));
-        }
-
-        final void crap(lazy string s)
-        {
-            logMessage(Log.MessageType.DEBUG, s);
-        }
-
-        final void crapf(Args...)(Args args)
-        {
-            logMessage(Log.MessageType.DEBUG, format(args));
-        }
-
-        final void warn(lazy string s)
-        {
-            logMessage(Log.MessageType.WARNING, s);
-        }
-
-        final void warnf(Args...)(Args args)
-        {
-            logMessage(Log.MessageType.WARNING, format(args));
-        }
-
-        final void error(lazy string s)
-        {
-            logMessage(Log.MessageType.ERROR, s);
-        }
-
-        final void errorf(Args...)(Args args)
-        {
-            logMessage(Log.MessageType.ERROR, format(args));
-        }
-
-        // with severity as parameter (useful for piping library log output)
-        final void message(MessageType type, lazy string message)
-        {
-            return logMessage(type, message);
-        }
-
-        final void messagef(Args...)(MessageType type, Args args)
-        {
-            return logMessage(type, format(args));
-        }
-    }
-
     protected
     {
+        /// Custom loggers must implement this one method.
         abstract void logMessage(MessageType type, lazy string message);
 
         string getTopic(MessageType type)
@@ -98,8 +49,89 @@ class Log
             }
         }
     }
+
+    public
+    {
+        /// Log message severities.
+        enum MessageType
+        {
+            DEBUG   = 0, /// This level is intended for debugging and should not happen in production.
+            INFO    = 1, /// This level is for informational messages.
+            WARNING = 2, /// An error which is not fatal and was recovered.
+            ERROR   = 3, /// A serious error that can't be recovered.
+        }
+
+        /// Logs a message.
+        final void message(MessageType type, lazy string message)
+        {
+            return logMessage(type, message);
+        }
+
+        /// Logs a formatted message.
+        final void messagef(Args...)(MessageType type, Args args)
+        {
+            return logMessage(type, format(args));
+        }
+
+        // <shortcuts>
+
+        /// Logs an INFO message.
+        final void info(lazy string s)
+        {
+            logMessage(Log.MessageType.INFO, s);
+        }
+
+        /// Logs an INFO message, with formatting.
+        final void infof(Args...)(Args args)
+        {
+            logMessage(Log.MessageType.INFO, format(args));
+        }
+
+        /// Logs a DEBUG message, with formatting.
+        final void crap(lazy string s)
+        {
+            logMessage(Log.MessageType.DEBUG, s);
+        }
+
+        /// Logs a DEBUG message, with formatting.
+        final void crapf(Args...)(Args args)
+        {
+            logMessage(Log.MessageType.DEBUG, format(args));
+        }
+
+        /// Logs a WARNING message, with formatting.
+        final void warn(lazy string s)
+        {
+            logMessage(Log.MessageType.WARNING, s);
+        }
+
+        /// Logs a WARNING message, with formatting.
+        final void warnf(Args...)(Args args)
+        {
+            logMessage(Log.MessageType.WARNING, format(args));
+        }
+
+        /// Logs an ERROR message, with formatting.
+        final void error(lazy string s)
+        {
+            logMessage(Log.MessageType.ERROR, s);
+        }
+
+        /// Logs an ERROR message, with formatting.
+        final void errorf(Args...)(Args args)
+        {
+            logMessage(Log.MessageType.ERROR, format(args));
+        }        
+
+        // </shortcuts>        
+    }
 }
 
+/**
+
+Dispatch log messages to multiple loggers.
+
+ */
 final class MultiLog : Log
 {
     public
@@ -122,6 +154,12 @@ final class MultiLog : Log
     private Log[] _logs;
 }
 
+
+/**
+
+Throw-away log messages.
+
+*/
 final class NullLog : Log
 {
     protected
@@ -132,6 +170,11 @@ final class NullLog : Log
     }
 }
 
+/**
+
+Displays coloured log messages in the console.
+
+*/
 final class ConsoleLog : Log
 {
     public
@@ -206,6 +249,12 @@ final class ConsoleLog : Log
     }
 }
 
+
+/**
+
+Output log messages in a file.
+
+*/
 final class FileLog : Log
 {
     public
