@@ -10,9 +10,9 @@ import std.file,
 import gfm.core.log;
 
 
-// Reads a text file at once.
-// TODO: remove in favor of std.file.read
-//       this means shaders must compile from a single string instead of string[]
+/// Reads a text file at once.
+/// Bugs: Remove in favor of std.file.read.
+//        This means shaders must compile from a single string instead of string[].
 string[] readTextFile(string filename)
 {
     try
@@ -30,14 +30,15 @@ string[] readTextFile(string filename)
     }    
 }
 
-/// Read a C string and return a sanitized utf-8 string.
-/// Used when interfacing with C libraries which may output anything.
+/// Sanitize a C string from a library.
+/// Returns: Sanitized UTF-8 string. Invalid UTF-8 sequences are replaced by question marks.
 string sanitizeUTF8(const(char*) inputZ)
 {
     return sanitizeUTF8(inputZ, null, null);
 }
 
-/// Same but warns when invalid unicode is found
+/// Sanitize a C string from a library.
+/// Returns: Sanitized UTF-8 string. Invalid UTF-8 sequences generate warning messages.
 string sanitizeUTF8(const(char*) inputZ, Log log, string source)
 {
     assert(inputZ != null);

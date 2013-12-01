@@ -7,17 +7,17 @@ import std.stdio,
 import gfm.core.text;
 
 /// A dumb and permissive INI parser, AST and writer
-// TODO: more robust parser
+/// Bugs: this parser is not robust.
 class IniFile
 {
     public
     {
-        // create empty (for saving)
+        /// Create empty (eg. to save settings).
         this()
         {
         }
 
-        // create from a file (for loading settings)
+        /// Create from a file (eg. to load settings).
         this(string filename)
         {
             string[] lines = readTextFile(filename);
@@ -49,6 +49,7 @@ class IniFile
             }
         }
 
+        /// Saves in an INI file.
         void save(string filename)
         {
             try
@@ -62,9 +63,12 @@ class IniFile
             catch(StdioException e)
             {
                 // ignoring errors for the moment
+                assert(false);
             }
         }
 
+        /// Gets the content of a given INI entry.        
+        /// Returns: the value of the INI entry if available, or defaultValue is missing.
         string read(string section, string name, string defaultValue)
         {
             string res = findValue(section, name);
@@ -74,6 +78,8 @@ class IniFile
                 return res;
         }    
      
+        /// Sets the content of a given INI entry.
+        /// Asked section and name are lazily created if missing.
         void write(string section, string name, string value) nothrow
         {
             auto s = findOrCreateSection(section);

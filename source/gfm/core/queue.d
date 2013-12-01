@@ -3,25 +3,6 @@ module gfm.core.queue;
 import std.range;
 
 
-// TODO: make this module disappear when std.container has equivalents.
-
-// can grow
-template Queue(T) 
-{ 
-    alias QueueImpl!(T, OverflowPolicy.GROW) Queue;
-}
-
-// cannot grow
-template FixedSizeQueue(T) 
-{ 
-    alias QueueImpl!(T, OverflowPolicy.CRASH) FixedSizeQueue;
-}
-
-// cannot grow, drop excess elements in case of overflow
-template RingBuffer(T) 
-{ 
-    alias QueueImpl!(T, OverflowPolicy.DROP) RingBuffer;
-}
 
 // what to do when capacity is exceeded?
 private enum OverflowPolicy
@@ -31,28 +12,37 @@ private enum OverflowPolicy
     DROP
 }
 
-// doubly-indexed queue, can be used as a FIFO or stack
-// grow-only
+/**
+  
+    Doubly-indexed queue, can be used as a FIFO or stack.
+
+    Bugs:
+        Doesn't call struct destructors.
+ */
 final class QueueImpl(T, OverflowPolicy overflowPolicy)
 {
     public
     {
+        /// Create a QueueImpl with specified initial capacity.
         this(size_t initialCapacity) nothrow
         {
             _data.length = initialCapacity;
             clear();
         }
 
+        /// Returns: true if the queue is full.
         @property bool isFull() pure const nothrow
         {
             return _count == capacity;
         }
 
+        /// Returns: capacity of the queue.
         @property size_t capacity() pure const nothrow
         {
             return _data.length;
         }
 
+        /// Adds an item on the back of the queue.
         void pushBack(T x) nothrow
         {
             checkOverflow!popFront();
@@ -60,6 +50,7 @@ final class QueueImpl(T, OverflowPolicy overflowPolicy)
             ++_count;
         }
 
+        /// Adds an item on the front of the queue.
         void pushFront(T x) nothrow
         {
             checkOverflow!popBack();
@@ -68,6 +59,8 @@ final class QueueImpl(T, OverflowPolicy overflowPolicy)
             _data[_first] = x;
         }
 
+        /// Removes an item from the front of the queue.
+        /// Returns: the removed item.
         T popFront() nothrow
         {
             crashIfEmpty();
@@ -77,6 +70,8 @@ final class QueueImpl(T, OverflowPolicy overflowPolicy)
             return res;
         }
 
+        /// Removes an item from the back of the queue.
+        /// Returns: the removed item.
         T popBack() nothrow
         {
             crashIfEmpty();
@@ -84,29 +79,34 @@ final class QueueImpl(T, OverflowPolicy overflowPolicy)
             return _data[(_first + _count) % _data.length];
         }
 
+        /// Removes all items from the queue.
         void clear() nothrow
         {
             _first = 0;
             _count = 0;
         }
 
+        /// Returns: number of items in the queue.
         size_t length() pure const nothrow
         {
             return _count;
         }
 
+        /// Returns: item at the front of the queue.
         T front() pure
         {
             crashIfEmpty();
             return _data[_first];
         }
 
+        /// Returns: item on the back of the queue.
         T back() pure
         {
             crashIfEmpty();
             return _data[(_first + _count + _data.length - 1) % _data.length];
         }
 
+        /// Returns: item index from the queue.
         T opIndex(size_t index) 
         { 
             // crash if index out-of-bounds (not recoverable)
@@ -116,7 +116,7 @@ final class QueueImpl(T, OverflowPolicy overflowPolicy)
             return _data[(_first + index) % _data.length];
         }
 
-        // get random-access range
+        /// Returns: random-access range over the whole queue.
         Range opSlice() nothrow
         {
             return Range(this);
@@ -124,7 +124,7 @@ final class QueueImpl(T, OverflowPolicy overflowPolicy)
 
         deprecated("Queue.range() is deprecated, use opSlice instead") alias opSlice range;
 
-        // get random-access range
+        /// Returns: random-access range over a queue sub-range.
         Range opSlice(size_t i, size_t j) nothrow
         {
             // verify that all elements are in bound
@@ -303,3 +303,41 @@ unittest
     }
 }
 
+
+/**
+
+A queue that can only grow.
+
+
+See_also: $(LINK2 #QueueImpl, QueueImpl)
+
+*/
+template Queue(T) 
+{ 
+    alias QueueImpl!(T, OverflowPolicy.GROW) Queue;
+}
+
+/**
+
+A fixed-sized queue that will crash on overflow.
+
+See_also: $(LINK2 #QueueImpl, QueueImpl)
+
+
+*/
+template FixedSizeQueue(T) 
+{ 
+    alias QueueImpl!(T, OverflowPolicy.CRASH) FixedSizeQueue;
+}
+
+/**
+
+Ring buffer, it drops if its capacity is exceeded.
+
+See_also: $(LINK2 #QueueImpl, QueueImpl)
+
+*/
+template RingBuffer(T) 
+{ 
+    alias QueueImpl!(T, OverflowPolicy.DROP) RingBuffer;
+}

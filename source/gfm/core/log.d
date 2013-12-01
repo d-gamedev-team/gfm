@@ -7,26 +7,17 @@ import std.stream,
        std.stdio,
        std.string;
 
-// TODO: make this module disappear when std.logger is out
 
 version(Windows)
 {
     import core.sys.windows.windows;
 }
 
-// get default logging object: writes to both a file and the console
-Log defaultLog()
-{
-    Log consoleLogger = new ConsoleLog();
-    Log fileLogger = new FileLog("output_log.html");
-    return new MultiLog( [ consoleLogger, fileLogger ] );
-}
-
 /**
 Provides a common logging interface for GFM.
 
 Bugs: 
-    Log is not thread-safe. Messages will get squashed.
+    Log is not thread-safe. Messages will get squashed when output by multiple threads.
 
 Deprecated: 
     This whole module will go away when std.logger is there.
@@ -36,18 +27,7 @@ class Log
     protected
     {
         /// Custom loggers must implement this one method.
-        abstract void logMessage(MessageType type, lazy string message);
-
-        string getTopic(MessageType type)
-        {
-            final switch (type)
-            {
-                case MessageType.DEBUG: return "debug";
-                case MessageType.INFO: return "info";
-                case MessageType.WARNING: return "warn";
-                case MessageType.ERROR: return "error";
-            }
-        }
+        abstract void logMessage(MessageType type, lazy string message);        
     }
 
     public
@@ -124,6 +104,17 @@ class Log
         }        
 
         // </shortcuts>        
+    }
+
+    private string getTopic(MessageType type)
+    {
+        final switch (type)
+        {
+            case MessageType.DEBUG: return "debug";
+            case MessageType.INFO: return "info";
+            case MessageType.WARNING: return "warn";
+            case MessageType.ERROR: return "error";
+        }
     }
 }
 
@@ -339,4 +330,13 @@ final class FileLog : Log
             }
         }
     }
+}
+
+/// Gets the default logger.
+/// Returns: the default logging object, which writes to both a file and the console.
+Log defaultLog()
+{
+    Log consoleLogger = new ConsoleLog();
+    Log fileLogger = new FileLog("output_log.html");
+    return new MultiLog( [ consoleLogger, fileLogger ] );
 }
