@@ -66,13 +66,13 @@ align(1) struct Quaternion(T)
                 assert(false); // should not happen since format is right
         }
 
-        /// Normalizes quaternion.
+        /// Normalizes a quaternion.
         void normalize() pure nothrow
         {
             v.normalize();
         }
 
-        /// Returns: result of normalization.
+        /// Returns: Normalized quaternion.
         Quaternion normalized() pure const nothrow
         {
             Quaternion res = void;
@@ -80,7 +80,7 @@ align(1) struct Quaternion(T)
             return res;
         }
 
-        /// Inverse (aka conjugate) of quaternion.
+        /// Inverse a quaternion.
         void inverse() pure nothrow
         {
             x = -x;
@@ -88,7 +88,7 @@ align(1) struct Quaternion(T)
             z = -z;
         }
 
-        /// Returns: result of inversion.
+        /// Returns: Inversed quaternion.
         Quaternion inversed() pure const nothrow
         {
             Quaternion res = void;
@@ -158,8 +158,8 @@ align(1) struct Quaternion(T)
             );
         }
 
-        /// convert to a 4x4 rotation matrix.
-        /// TODO: check out why we can't do is(Unqual!U == mat4!T)
+        /// Converts a to a 4x4 rotation matrix.
+        /// Bugs: check why we can't do is(Unqual!U == mat4!T)
         U opCast(U)() pure const nothrow if (is(typeof(U._isMatrix))
                                           && is(U._T : _T)
                                           && (U._R == 4) && (U._C == 4))
@@ -214,7 +214,7 @@ Quaternion!T lerp(T)(Quaternion!T a, Quaternion!T b, float t) pure nothrow
 
 
 /// Returns: Nlerp of quaternions.
-/// See: http://keithmaggio.wordpress.com/2011/02/15/math-magician-lerp-slerp-and-nlerp/
+/// See_also: http://keithmaggio.wordpress.com/2011/02/15/math-magician-lerp-slerp-and-nlerp/
 Quaternion!T Nlerp(T)(Quaternion!T a, Quaternion!T b, float t) pure nothrow
 {
     assert(t >= 0 && t <= 1); // else probably doesn't make sense 
@@ -224,10 +224,8 @@ Quaternion!T Nlerp(T)(Quaternion!T a, Quaternion!T b, float t) pure nothrow
     return res;
 }
 
-/// Returns: slerp of quaternions.
-/// See: http://number-none.com/product/Understanding%20Slerp,%20Then%20Not%20Using%20It/
-/// Note: slerp is more expensive than Nlerp.
-/// TODO: see if it handles quaternions whose dot product is -1
+/// Returns: Slerp of quaternions. Slerp is more expensive than Nlerp.
+/// See_also: http://number-none.com/product/Understanding%20Slerp,%20Then%20Not%20Using%20It/
 Quaternion!T slerp(T)(Quaternion!T a, Quaternion!T b, T t) pure nothrow
 {
     assert(t >= 0 && t <= 1); // else probably doesn't make sense 

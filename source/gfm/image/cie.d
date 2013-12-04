@@ -4,8 +4,8 @@ import gfm.math.funcs,
        gfm.math.vector,
        gfm.math.matrix;
 
-// This module performs various color computation and conversions.
-// See: http://www.brucelindbloom.com
+/// This module performs various color computation and conversions.
+// See_also: $(WEB http://www.brucelindbloom.com)
 // TODO: tag XYZ values with a ReferenceWhite?
 // WARNING: this is very beta
 

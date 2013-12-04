@@ -12,9 +12,12 @@ import gfm.math.vector,
        gfm.math.quaternion;
 
 /// Generic non-resizeable matrix with R rows and C columns.
-/// N is the element count, T the contained type
 /// Intended for 3D use (size 3x3 and 4x4).
-/// IMPORTANT: matrices here are in ROW-MAJOR order while OpenGL is column-major.
+/// Important: <b>Matrices here are in row-major order whereas OpenGL is column-major.</b>
+/// Params: 
+///   T = type of elements
+///   R = number of rows
+///   C = number of columns
 align(1) struct Matrix(T, size_t R, size_t C)
 {
     public
@@ -233,7 +236,7 @@ align(1) struct Matrix(T, size_t R, size_t C)
         }
 
         /// Convert 3x3 rotation matrix to quaternion.
-        /// Source: 3D Math Primer for Graphics and Game Development.
+        /// See_also: 3D Math Primer for Graphics and Game Development.
         U opCast(U)() pure const nothrow if (is(typeof(U._isQuaternion))
                                           && is(U._T : _T)
                                           && (_R == 3) && (_C == 3))
@@ -487,12 +490,17 @@ align(1) struct Matrix(T, size_t R, size_t C)
                 return res;
             }
 
+            /// Returns: rotation matrix along axis X
             public alias rotateAxis!(1, 2) rotateX;
+
+            /// Returns: rotation matrix along axis Y
             public alias rotateAxis!(2, 0) rotateY;
+
+            /// Returns: rotation matrix along axis Z
             public alias rotateAxis!(0, 1) rotateZ;
 
             /// Similar to the glRotate matrix, however the angle is expressed in radians
-            /// Reference: http://www.cs.rutgers.edu/~decarlo/428/gl_man/rotate.html
+            /// See_also: $(LINK http://www.cs.rutgers.edu/~decarlo/428/gl_man/rotate.html)
             static Matrix rotation(T angle, vec3!T axis) pure nothrow
             {
                 Matrix res = identity();

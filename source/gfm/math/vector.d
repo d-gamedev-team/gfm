@@ -6,11 +6,12 @@ import std.traits,
 
 import gfm.math.funcs;
 
-/// Generic 1D small vector.
-/// N is the element count, T the contained type
-/// Mostly intended for 3D.
-/// TODO: - find a way to enable swizzling assignment
-///       - do we need support for slice assignment and opSliceOpAsssign?
+/**
+ * Generic 1D small vector.
+ * Params: 
+ *    N = number of elements
+ *    T = type of elements
+ */
 align(1) struct Vector(T, size_t N)
 {
 nothrow:
@@ -49,6 +50,7 @@ nothrow:
 
         static if (N == 2u)
         {
+            /// Creates a vector of 2 elements.
             this(X : T, Y : T)(X x_, Y y_) pure nothrow
             {
                 x = x_;
@@ -57,6 +59,7 @@ nothrow:
         }
         else static if (N == 3u)
         {
+            /// Creates a vector of 3 elements.
             this(X : T, Y : T, Z : T)(X x_, Y y_, Z z_) pure nothrow
             {
                 x = x_;
@@ -64,6 +67,7 @@ nothrow:
                 z = z_;
             }
 
+            /// Creates a vector of 3 elements.
             this(X : T, Y : T)(Vector!(X, 2u) xy_, Y z_) pure nothrow
             {
                 x = xy_.x;
@@ -71,6 +75,7 @@ nothrow:
                 z = z_;
             }
 
+            /// Creates a vector of 3 elements.
             this(X : T, Y : T)(X x_, Vector!(Y, 2u) yz_) pure nothrow
             {
                 x = x_;
@@ -80,6 +85,7 @@ nothrow:
         }
         else static if (N == 4u)
         {
+            /// Creates a vector of 4 elements.
             this(X : T, Y : T, Z : T, W : T)(X x_, Y y_, Z z_, W w_) pure nothrow
             {
                 x = x_;
@@ -88,6 +94,7 @@ nothrow:
                 w = w_;
             }
 
+            /// Creates a vector of 4 elements.
             this(X : T, Y : T)(Vector!(X, 2u) xy_, Vector!(Y, 2u)zw_) pure nothrow
             {
                 x = xy_.x;
@@ -96,6 +103,7 @@ nothrow:
                 w = zw_.y;
             }
 
+            /// Creates a vector of 4 elements.
             this(X : T, Y : T, Z : T)(Vector!(X, 2u) xy_, Y z_, Z w_) pure nothrow
             {
                 x = xy_.x;
@@ -104,6 +112,7 @@ nothrow:
                 w = w_;
             }
 
+            /// Creates a vector of 4 elements.
             this(X : T, Y : T)(Vector!(X, 3u) xyz_, Y w_) pure nothrow
             {
                 x = xyz_.x;
@@ -112,6 +121,7 @@ nothrow:
                 w = w_;
             }
 
+            /// Creates a vector of 4 elements.
             this(X : T, Y : T)(X x_, Vector!(X, 3u) yzw_) pure nothrow
             {
                 x = x_;
@@ -127,14 +137,14 @@ nothrow:
             opAssign!U(x);
         }
 
-        /// Assign from a compatible type.
+        /// Assign a Vector from a compatible type.
         ref Vector opAssign(U)(U x) pure nothrow if (is(U: T))
         {
             v[] = x; // copy to each component
             return this;
         }
 
-        /// Assign with a static array type.
+        /// Assign a Vector with a static array type.
         ref Vector opAssign(U)(U arr) pure nothrow if ((isStaticArray!(U) && is(typeof(arr[0]) : T) && (arr.length == N)))
         {
             for (size_t i = 0; i < N; ++i)
@@ -172,7 +182,7 @@ nothrow:
             return this;
         }
 
-        /// Assign from other vectors (same size, compatible type).
+        /// Assign from other vectors types (same size, compatible type).
         ref Vector opAssign(U)(U x) pure nothrow if (is(typeof(U._isVector))
                                                  && is(U._T : T)
                                                  && (!is(U: Vector))
@@ -275,6 +285,12 @@ nothrow:
 
 
         /// Implements swizzling.
+        ///
+        /// Example:
+        /// ---
+        /// vec4i vi = [4, 1, 83, 10];
+        /// assert(vi.zxxyw == [83, 4, 4, 1, 10]);
+        /// ---
         @property auto opDispatch(string op, U = void)() pure const nothrow if (isValidSwizzle!(op))
         {
             alias Vector!(T, op.length) returnType;
@@ -286,7 +302,13 @@ nothrow:
         }
 
         /// Support swizzling assignment like in shader languages.
-        /// eg: eg: vec.yz = vec.zx;
+        ///
+        /// Example:
+        /// ---
+        /// vec3f v = [0, 1, 2];
+        /// v.yz = v.zx;
+        /// assert(v == [0, 2, 0]);
+        /// ---
         void opDispatch(string op, U)(U x) pure
             if ((op.length >= 2)
                 && (isValidSwizzleUnique!op)                   // v.xyy will be rejected
@@ -299,6 +321,11 @@ nothrow:
         }
 
         /// Casting to small vectors of the same size.
+        /// Example:
+        /// ---
+        /// vec4f vf;
+        /// vec4d vd = cast!(vec4d)vf;
+        /// ---
         U opCast(U)() pure const nothrow if (is(typeof(U._isVector)) && (U._N == _N))
         {
             U res = void;
@@ -311,12 +338,12 @@ nothrow:
 
         /// Implement slices operator overloading.
         /// Allows to go back to slice world.
+        /// Returns: length.
         size_t opDollar() pure const nothrow
         {
             return N;
         }
 
-        /// vec[]
         /// Returns: a slice which covers the whole Vector.
         T[] opSlice() pure nothrow
         {
@@ -348,7 +375,7 @@ nothrow:
 
         static if (isFloatingPoint!T)
         {
-            // Returns: Euclidean length
+            /// Returns: Euclidean length
             T length() pure const nothrow
             {
                 return sqrt(squaredLength());
@@ -370,7 +397,7 @@ nothrow:
                 }
             }
 
-            /// Returns: normalized vector.
+            /// Returns: Normalized vector.
             Vector normalized() pure const nothrow
             {
                 Vector res = this;
@@ -382,7 +409,8 @@ nothrow:
             {
                 /// Gets an orthogonal vector from a 3-dimensional vector.
                 /// Doesn’t normalise the output.
-                /// By Sam Hocevar: http://lolengine.net/blog/2013/09/21/picking-orthogonal-vector-combing-coconuts
+                /// Authors: Sam Hocevar
+                /// See_also: Source at $(WEB lolengine.net/blog/2013/09/21/picking-orthogonal-vector-combing-coconuts).
                 Vector getOrthogonalVector()
                 {
                     return abs(x) > abs(z) ? Vector(-y, x, 0.0) : Vector(0.0, -z, y);
@@ -542,7 +570,7 @@ Vector!(T, N) max(T, size_t N)(const Vector!(T, N) a, const Vector!(T, N) b) pur
     return res;
 }
 
-/// Returns: dot product.
+/// Returns: Dot product.
 T dot(T, size_t N)(const Vector!(T, N) a, const Vector!(T, N) b) pure nothrow
 {
     T sum = 0;
@@ -553,7 +581,7 @@ T dot(T, size_t N)(const Vector!(T, N) a, const Vector!(T, N) b) pure nothrow
     return sum;
 }
 
-/// 3D cross product.
+/// Returns: 3D cross product.
 /// Thanks to vuaru for corrections.
 Vector!(T, 3u) cross(T)(const Vector!(T, 3u) a, const Vector!(T, 3u) b) pure nothrow
 {
@@ -563,6 +591,7 @@ Vector!(T, 3u) cross(T)(const Vector!(T, 3u) a, const Vector!(T, 3u) b) pure not
 }
 
 /// 3D reflect, like the GLSL function.
+/// Returns: a reflected by normal b.
 Vector!(T, 3u) reflect(T)(const Vector!(T, 3u) a, const Vector!(T, 3u) b) pure nothrow
 {
     return a - (2 * dot(b, a)) * b;
@@ -570,7 +599,7 @@ Vector!(T, 3u) reflect(T)(const Vector!(T, 3u) a, const Vector!(T, 3u) b) pure n
 
 
 /// Returns: angle between vectors.
-/// See "The Right Way to Calculate Stuff" at http://www.plunk.org/~hatch/rightway.php
+/// See_also: "The Right Way to Calculate Stuff" at $(WEB www.plunk.org/~hatch/rightway.php)
 T angleBetween(T, size_t N)(const Vector!(T, N) a, const Vector!(T, N) b) pure nothrow
 {
     auto aN = a.normalized();

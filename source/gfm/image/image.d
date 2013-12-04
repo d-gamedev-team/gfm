@@ -4,6 +4,17 @@ import gfm.math.vector;
 
 // An image is a concept
 
+
+/**
+ * Test if I is an Image.
+ *
+ * A, imùage has at least the following features:
+ * $(UL
+ * $(LI defines element_t as the type of elements (eg. pixels))
+ * $(LI has a dimension of type vec2i)
+ * $(LI has getter/setter for individual elements)
+ * )
+ */
 template isImage(I)
 {
     enum bool isImage = is(typeof(
@@ -31,6 +42,7 @@ void drawPixel(I, P)(I img, int x, int y, P p) if (isImage!I && is(P : I.element
     img.set(x, y, p);
 }
 
+/// Edge modes define how images are samples beyond their boundaries.
 enum EdgeMode
 {
     BLACK,
@@ -39,7 +51,8 @@ enum EdgeMode
     ASSERT
 }
 
-/// Return pixel with given behaviour at boundaries
+/// Returns: pixel of an Image at position (x, y). 
+/// At boundaries, what happens depends on em.
 I.element_t getPixel(I)(I img, int x, int y, EdgeMode em)
 {
     if (!img.contains(x, y))
@@ -73,6 +86,8 @@ I.element_t getPixel(I)(I img, int x, int y, EdgeMode em)
     return img.get(x, y);
 }
 
+
+/// Fills an uniform rectangle area in an Image.
 void fillRect(I, P)(I img, int x, int y, int width, int height, P e) if (isImage!I && is(P : I.element_t))
 {
     for (int j = 0; j < height; ++j)
@@ -80,7 +95,7 @@ void fillRect(I, P)(I img, int x, int y, int width, int height, P e) if (isImage
             img.set(x + i, y + j, e);
 }
 
-
+/// Fill a whole image with a single element value.
 void fillImage(I, P)(I img, P e) if (isImage!I && is(P : I.element_t))
 {
     immutable int width = img.dimension.x;
@@ -90,6 +105,7 @@ void fillImage(I, P)(I img, P e) if (isImage!I && is(P : I.element_t))
             img.set(i, j, e);
 }
 
+/// Performs an image blit from src to dest.
 void copyRect(I)(I dest, I src) if (isImage!I)
 {
     // check same size
@@ -105,12 +121,14 @@ void copyRect(I)(I dest, I src) if (isImage!I)
         }
 }
 
+/// Draws an horizontal line on an Image.
 void drawHorizontalLine(I, P)(I img, int x1, int x2, int y, P p) if (isImage!I && is(P : I.element_t))
 {
     for (int x = x1; x < x2; ++x)
         img.drawPixel(x, y, p);
 }
 
+/// Draws a vertical line on an Image.
 void drawVerticalLine(I, P)(I img, int x, int y1, int y2, P p) if (isImage!I && is(P : I.element_t))
 {
     for (int y = y1; y < y2; ++y)
