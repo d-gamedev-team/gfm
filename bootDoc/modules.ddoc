@@ -1,2 +1,0 @@
-MODULES = 
-	$(MODULE example.example)
