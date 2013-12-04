@@ -1,0 +1,54 @@
+﻿.symbol-target {
+	padding-top: 40px;
+	margin-top: -40px;
+	width: 1px; /* '0' will not work for Opera */
+	display: inline-block;
+}
+
+.sidebar-list-entry {
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+}
+
+.highlighted-symbol {
+	background-color: rgba(255, 200, 0, 0.5);
+}
+
+.declaration-content {
+	margin: 6px 18px;
+}
+
+.tree-node, .tree-leaf {
+	text-transform: none;
+}
+
+.custom-icon-list {
+	list-style-type: none;
+}
+
+.hidden {
+	display: none;
+}
+
+.d_keyword {
+	color: blue;
+}
+
+.d_string {
+	color: red;
+}
+
+.d_comment {
+	color: gray;
+}
+
+.inlinecode {
+	font-family: "Consolas", "Bitstream Vera Sans Mono", "Andale Mono", "Monaco", "DejaVu Sans Mono", "Lucida Console", "monospace";
+}
+
+[class*='ddoc-icon-'] {
+	display: inline-block;
+	width: 16px;
+	height: 16px;
+}
