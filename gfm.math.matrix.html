@@ -232,12 +232,22 @@
 <hr><div class="row-fluid declaration"><h3>struct <span class="symbol-target" id="Matrix">&nbsp;</span><a class="symbol-link" href="#Matrix">Matrix</a>(T, size_t R, size_t C);
 </h3></div>
 <div class="declaration-content"><dl><p>Generic non-resizeable matrix with R rows and C columns.
- N is the element count, T the contained type
  Intended for 3D use (size 3x3 and 4x4).
 </p>
 
-<dt>IMPORTANT:</dt><dd>
-matrices here are in ROW-MAJOR order while OpenGL is column-major.</dd>
+<dt>Important:</dt><dd>
+<b>Matrices here are in row-major order whereas OpenGL is column-major.</b>
+</dd>
+<dt>Parameters</dt><dd><table class="table table-condensed table-bordered"><tr><td>T</td>
+<td>type of elements</td>
+</tr>
+<tr><td>R</td>
+<td>number of rows</td>
+</tr>
+<tr><td>C</td>
+<td>number of columns</td>
+</tr>
+</table></dd>
 </dl>
 <div class="offset1 member-list"><hr><div class="row-fluid declaration"><h3>pure nothrow Matrix <span class="symbol-target" id="fromColumns">&nbsp;</span><a class="symbol-link" href="#fromColumns">fromColumns</a>(column_t[] <i>columns</i>);
 </h3></div>
@@ -328,8 +338,7 @@ matrices here are in ROW-MAJOR order while OpenGL is column-major.</dd>
 <div class="declaration-content"><dl><p>Convert 3x3 rotation matrix to quaternion.
 </p>
 
-<dt>Source:</dt><dd>
-3D Math Primer for Graphics and Game Development.</dd>
+<dt>See Also</dt><dd>3D Math Primer for Graphics and Game Development.</dd>
 </dl>
 </div>
 <hr><div class="row-fluid declaration"><h3>const pure nothrow U <span class="symbol-target" id="opCast">&nbsp;</span><a class="symbol-link" href="#opCast">opCast</a>(U)() if (is(typeof(U._isQuaternion)) &amp;&amp; is(U._T : _T) &amp;&amp; _R == 4 &amp;&amp; _C == 4);
@@ -383,15 +392,27 @@ matrices here are in ROW-MAJOR order while OpenGL is column-major.</dd>
 
 </dl>
 </div>
+<hr><div class="row-fluid declaration"><h3>alias <span class="symbol-target" id="rotateX">&nbsp;</span><a class="symbol-link" href="#rotateX">rotateX</a> = rotateAxis!(1, 2);
+</h3></div>
+<div class="declaration-content"><dl><dt>Returns</dt><dd>rotation matrix along axis X</dd>
+</dl>
+</div>
+<hr><div class="row-fluid declaration"><h3>alias <span class="symbol-target" id="rotateY">&nbsp;</span><a class="symbol-link" href="#rotateY">rotateY</a> = rotateAxis!(2, 0);
+</h3></div>
+<div class="declaration-content"><dl><dt>Returns</dt><dd>rotation matrix along axis Y</dd>
+</dl>
+</div>
+<hr><div class="row-fluid declaration"><h3>alias <span class="symbol-target" id="rotateZ">&nbsp;</span><a class="symbol-link" href="#rotateZ">rotateZ</a> = rotateAxis!(0, 1);
+</h3></div>
+<div class="declaration-content"><dl><dt>Returns</dt><dd>rotation matrix along axis Z</dd>
+</dl>
+</div>
 <hr><div class="row-fluid declaration"><h3>pure nothrow Matrix <span class="symbol-target" id="rotation">&nbsp;</span><a class="symbol-link" href="#rotation">rotation</a>(T <i>angle</i>, vec3!T <i>axis</i>);
 </h3></div>
 <div class="declaration-content"><dl><p>Similar to the glRotate matrix, however the <i>angle</i> is expressed in radians
 </p>
 
-<dt>Reference:</dt><dd>
-</dd>
-<dt>http:</dt><dd>
-//www.cs.rutgers.edu/~decarlo/428/gl_man/rotate.html</dd>
+<dt>See Also</dt><dd><a href="http://www.cs.rutgers.edu/~decarlo/428/gl_man/rotate.html">http://www.cs.rutgers.edu/~decarlo/428/gl_man/rotate.html</a></dd>
 </dl>
 </div>
 <hr><div class="row-fluid declaration"><h3>pure nothrow Matrix <span class="symbol-target" id="orthographic">&nbsp;</span><a class="symbol-link" href="#orthographic">orthographic</a>(T <i>left</i>, T <i>right</i>, T <i>bottom</i>, T <i>top</i>, T <i>near</i>, T <i>far</i>);

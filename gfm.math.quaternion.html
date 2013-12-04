@@ -267,24 +267,24 @@
 </div>
 <hr><div class="row-fluid declaration"><h3>pure nothrow void <span class="symbol-target" id="normalize">&nbsp;</span><a class="symbol-link" href="#normalize">normalize</a>();
 </h3></div>
-<div class="declaration-content"><dl><p>Normalizes quaternion.</p>
+<div class="declaration-content"><dl><p>Normalizes a quaternion.</p>
 
 </dl>
 </div>
 <hr><div class="row-fluid declaration"><h3>const pure nothrow Quaternion <span class="symbol-target" id="normalized">&nbsp;</span><a class="symbol-link" href="#normalized">normalized</a>();
 </h3></div>
-<div class="declaration-content"><dl><dt>Returns</dt><dd>result of normalization.</dd>
+<div class="declaration-content"><dl><dt>Returns</dt><dd>Normalized quaternion.</dd>
 </dl>
 </div>
 <hr><div class="row-fluid declaration"><h3>pure nothrow void <span class="symbol-target" id="inverse">&nbsp;</span><a class="symbol-link" href="#inverse">inverse</a>();
 </h3></div>
-<div class="declaration-content"><dl><p>Inverse (aka conjugate) of quaternion.</p>
+<div class="declaration-content"><dl><p>Inverse a quaternion.</p>
 
 </dl>
 </div>
 <hr><div class="row-fluid declaration"><h3>const pure nothrow Quaternion <span class="symbol-target" id="inversed">&nbsp;</span><a class="symbol-link" href="#inversed">inversed</a>();
 </h3></div>
-<div class="declaration-content"><dl><dt>Returns</dt><dd>result of inversion.</dd>
+<div class="declaration-content"><dl><dt>Returns</dt><dd>Inversed quaternion.</dd>
 </dl>
 </div>
 <hr><div class="row-fluid declaration"><h3>const pure bool <span class="symbol-target" id="opEquals">&nbsp;</span><a class="symbol-link" href="#opEquals">opEquals</a>(U)(U <i>other</i>) if (is(U : Quaternion));
@@ -310,11 +310,10 @@ check out why we can't do is(Unqual!U == mat3!T)</dd>
 </div>
 <hr><div class="row-fluid declaration"><h3>const pure nothrow U <span class="symbol-target" id="opCast">&nbsp;</span><a class="symbol-link" href="#opCast">opCast</a>(U)() if (is(typeof(U._isMatrix)) &amp;&amp; is(U._T : _T) &amp;&amp; U._R == 4 &amp;&amp; U._C == 4);
 </h3></div>
-<div class="declaration-content"><dl><p>convert to a 4x4 rotation matrix.
+<div class="declaration-content"><dl><p>Converts a to a 4x4 rotation matrix.
 </p>
 
-<dt>TODO:</dt><dd>
-check out why we can't do is(Unqual!U == mat4!T)</dd>
+<dt>Known Bugs</dt><dd>check why we can't do is(Unqual!U == mat4!T)</dd>
 </dl>
 </div>
 </div>
@@ -329,26 +328,18 @@ check out why we can't do is(Unqual!U == mat4!T)</dd>
 </h3></div>
 <div class="declaration-content"><dl><dt>Returns</dt><dd><span class="symbol-target" id="Nlerp">&nbsp;</span><a class="symbol-link" href="#Nlerp">Nlerp</a> of quaternions.
 </dd>
-<dt>See:</dt><dd>
-</dd>
+<dt>See Also</dt><dd></dd>
 <dt>http:</dt><dd>
 //keithmaggio.wordpress.com/2011/02/15/math-magician-lerp-slerp-and-nlerp/</dd>
 </dl>
 </div>
 <hr><div class="row-fluid declaration"><h3>pure nothrow Quaternion!T <span class="symbol-target" id="slerp">&nbsp;</span><a class="symbol-link" href="#slerp">slerp</a>(T)(Quaternion!T <i>a</i>, Quaternion!T <i>b</i>, T <i>t</i>);
 </h3></div>
-<div class="declaration-content"><dl><dt>Returns</dt><dd><span class="symbol-target" id="slerp">&nbsp;</span><a class="symbol-link" href="#slerp">slerp</a> of quaternions.
+<div class="declaration-content"><dl><dt>Returns</dt><dd>Slerp of quaternions. Slerp is more expensive than Nlerp.
 </dd>
-<dt>See:</dt><dd>
-</dd>
+<dt>See Also</dt><dd></dd>
 <dt>http:</dt><dd>
-//number-none.com/product/Understanding%20Slerp,%20Then%20Not%20Using%20It/
-</dd>
-<dt>Note:</dt><dd>
-<span class="symbol-target" id="slerp">&nbsp;</span><a class="symbol-link" href="#slerp">slerp</a> is more expensive than Nlerp.
-</dd>
-<dt>TODO:</dt><dd>
-see if it handles quaternions whose dot product is -1</dd>
+//number-none.com/product/Understanding%20Slerp,%20Then%20Not%20Using%20It/</dd>
 </dl>
 </div>
 

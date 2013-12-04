@@ -232,15 +232,23 @@
 <hr><div class="row-fluid declaration"><h3>struct <span class="symbol-target" id="Vector">&nbsp;</span><a class="symbol-link" href="#Vector">Vector</a>(T, size_t N);
 </h3></div>
 <div class="declaration-content"><dl><p>Generic 1D small vector.
- N is the element count, T the contained type
- Mostly intended for 3D.
 </p>
 
-<dt>TODO:</dt><dd>
- - find a way to enable swizzling assignment
-       - do we need support for slice assignment and opSliceOpAsssign?</dd>
+<dt>Parameters</dt><dd><table class="table table-condensed table-bordered"><tr><td>N</td>
+<td>number of elements</td>
+</tr>
+<tr><td>T</td>
+<td>type of elements</td>
+</tr>
+</table></dd>
 </dl>
-<div class="offset1 member-list"><hr><div class="row-fluid declaration"><h3>pure nothrow  this(U)(U <i>x</i>);
+<div class="offset1 member-list"><hr><div class="row-fluid declaration"><h3>pure nothrow  this(X : T, Y : T)(X <i>x_</i>, Y <i>y_</i>);
+</h3></div>
+<div class="declaration-content"><dl><p>Creates a vector of 2 elements.</p>
+
+</dl>
+</div>
+<hr><div class="row-fluid declaration"><h3>pure nothrow  this(U)(U <i>x</i>);
 </h3></div>
 <div class="declaration-content"><dl><p>Construct a Vector from a value.</p>
 
@@ -248,13 +256,13 @@
 </div>
 <hr><div class="row-fluid declaration"><h3>pure nothrow Vector <span class="symbol-target" id="opAssign">&nbsp;</span><a class="symbol-link" href="#opAssign">opAssign</a>(U)(U <i>x</i>) if (is(U : T));
 </h3></div>
-<div class="declaration-content"><dl><p>Assign from a compatible type.</p>
+<div class="declaration-content"><dl><p>Assign a Vector from a compatible type.</p>
 
 </dl>
 </div>
 <hr><div class="row-fluid declaration"><h3>pure nothrow Vector <span class="symbol-target" id="opAssign">&nbsp;</span><a class="symbol-link" href="#opAssign">opAssign</a>(U)(U <i>arr</i>) if (isStaticArray!U &amp;&amp; is(typeof(<i>arr</i>[0]) : T) &amp;&amp; <i>arr</i>.length == N);
 </h3></div>
-<div class="declaration-content"><dl><p>Assign with a static array type.</p>
+<div class="declaration-content"><dl><p>Assign a Vector with a static array type.</p>
 
 </dl>
 </div>
@@ -273,7 +281,7 @@
 </div>
 <hr><div class="row-fluid declaration"><h3>pure nothrow Vector <span class="symbol-target" id="opAssign">&nbsp;</span><a class="symbol-link" href="#opAssign">opAssign</a>(U)(U <i>x</i>) if (is(typeof(U._isVector)) &amp;&amp; is(U._T : T) &amp;&amp; !is(U : Vector) &amp;&amp; U._N == _N);
 </h3></div>
-<div class="declaration-content"><dl><p>Assign from other vectors (same size, compatible type).</p>
+<div class="declaration-content"><dl><p>Assign from other vectors types (same size, compatible type).</p>
 
 </dl>
 </div>
@@ -290,8 +298,14 @@
 </div>
 <hr><div class="row-fluid declaration"><h3>const pure nothrow @property auto <span class="symbol-target" id="opDispatch">&nbsp;</span><a class="symbol-link" href="#opDispatch">opDispatch</a>(string op, U = void)() if (isValidSwizzle!op);
 </h3></div>
-<div class="declaration-content"><dl><p>Implements swizzling.</p>
+<div class="declaration-content"><dl><p>Implements swizzling.
+</p>
 
+<dt>Example:</dt><dd>
+<pre class="d_code">vec4i vi = [4, 1, 83, 10];
+<span class="d_keyword">assert</span>(vi.zxxyw == [83, 4, 4, 1, 10]);
+</pre>
+</dd>
 </dl>
 </div>
 <hr><div class="row-fluid declaration"><h3>pure void <span class="symbol-target" id="opDispatch">&nbsp;</span><a class="symbol-link" href="#opDispatch">opDispatch</a>(string op, U)(U <i>x</i>) if (op.length &gt;= 2 &amp;&amp; isValidSwizzleUnique!op &amp;&amp; is(typeof(Vector!(T, op.length)(<i>x</i>))));
@@ -299,36 +313,48 @@
 <div class="declaration-content"><dl><p>Support swizzling assignment like in shader languages.
 </p>
 
-<dt>eg:</dt><dd>
+<dt>Example:</dt><dd>
+<pre class="d_code">vec3f v = [0, 1, 2];
+v.yz = v.zx;
+<span class="d_keyword">assert</span>(v == [0, 2, 0]);
+</pre>
 </dd>
-<dt>eg:</dt><dd>
-vec.yz = vec.zx;</dd>
 </dl>
 </div>
 <hr><div class="row-fluid declaration"><h3>const pure nothrow U <span class="symbol-target" id="opCast">&nbsp;</span><a class="symbol-link" href="#opCast">opCast</a>(U)() if (is(typeof(U._isVector)) &amp;&amp; U._N == _N);
 </h3></div>
-<div class="declaration-content"><dl><p>Casting to small vectors of the same size.</p>
+<div class="declaration-content"><dl><p>Casting to small vectors of the same size.
+</p>
 
+<dt>Example:</dt><dd>
+<pre class="d_code">vec4f vf;
+vec4d vd = <span class="d_keyword">cast</span>!(vec4d)vf;
+</pre>
+</dd>
 </dl>
 </div>
 <hr><div class="row-fluid declaration"><h3>const pure nothrow size_t <span class="symbol-target" id="opDollar">&nbsp;</span><a class="symbol-link" href="#opDollar">opDollar</a>();
 </h3></div>
 <div class="declaration-content"><dl><p>Implement slices operator overloading.
- Allows to go back to slice world.</p>
+ Allows to go back to slice world.
+</p>
 
+<dt>Returns</dt><dd>length.</dd>
 </dl>
 </div>
 <hr><div class="row-fluid declaration"><h3>pure nothrow T[] <span class="symbol-target" id="opSlice">&nbsp;</span><a class="symbol-link" href="#opSlice">opSlice</a>();
 </h3></div>
-<div class="declaration-content"><dl><p>vec[]
-</p>
-
-<dt>Returns</dt><dd>a slice which covers the whole Vector.</dd>
+<div class="declaration-content"><dl><dt>Returns</dt><dd>a slice which covers the whole Vector.</dd>
 </dl>
 </div>
 <hr><div class="row-fluid declaration"><h3>const pure nothrow T <span class="symbol-target" id="squaredLength">&nbsp;</span><a class="symbol-link" href="#squaredLength">squaredLength</a>();
 </h3></div>
 <div class="declaration-content"><dl><dt>Returns</dt><dd>squared length.</dd>
+</dl>
+</div>
+<hr><div class="row-fluid declaration"><h3>const pure nothrow T <span class="symbol-target" id="length">&nbsp;</span><a class="symbol-link" href="#length">length</a>();
+</h3></div>
+<div class="declaration-content"><dl><dt>Returns</dt><dd>Euclidean <span class="symbol-target" id="length">&nbsp;</span><a class="symbol-link" href="#length">length</a></dd>
 </dl>
 </div>
 <hr><div class="row-fluid declaration"><h3>const pure nothrow T <span class="symbol-target" id="distanceTo">&nbsp;</span><a class="symbol-link" href="#distanceTo">distanceTo</a>(Vector <i>other</i>);
@@ -344,15 +370,18 @@ vec.yz = vec.zx;</dd>
 </div>
 <hr><div class="row-fluid declaration"><h3>const pure nothrow Vector <span class="symbol-target" id="normalized">&nbsp;</span><a class="symbol-link" href="#normalized">normalized</a>();
 </h3></div>
-<div class="declaration-content"><dl><dt>Returns</dt><dd><span class="symbol-target" id="normalized">&nbsp;</span><a class="symbol-link" href="#normalized">normalized</a> vector.</dd>
+<div class="declaration-content"><dl><dt>Returns</dt><dd>Normalized vector.</dd>
 </dl>
 </div>
 <hr><div class="row-fluid declaration"><h3>Vector <span class="symbol-target" id="getOrthogonalVector">&nbsp;</span><a class="symbol-link" href="#getOrthogonalVector">getOrthogonalVector</a>();
 </h3></div>
 <div class="declaration-content"><dl><p>Gets an orthogonal vector from a 3-dimensional vector.
  Doesn’t normalise the output.
- By Sam Hocevar: http://lolengine.net/blog/2013/09/21/picking-orthogonal-vector-combing-coconuts</p>
+</p>
 
+<dt>Authors</dt><dd>Sam Hocevar
+</dd>
+<dt>See Also</dt><dd>Source at <a href="http://lolengine.net/blog/2013/09/21/picking-orthogonal-vector-combing-coconuts">lolengine.net/blog/2013/09/21/picking-orthogonal-vector-combing-coconuts</a>.</dd>
 </dl>
 </div>
 </div>
@@ -371,26 +400,28 @@ vec.yz = vec.zx;</dd>
 </div>
 <hr><div class="row-fluid declaration"><h3>pure nothrow T <span class="symbol-target" id="dot">&nbsp;</span><a class="symbol-link" href="#dot">dot</a>(T, size_t N)(const Vector!(T, N) <i>a</i>, const Vector!(T, N) <i>b</i>);
 </h3></div>
-<div class="declaration-content"><dl><dt>Returns</dt><dd><span class="symbol-target" id="dot">&nbsp;</span><a class="symbol-link" href="#dot">dot</a> product.</dd>
+<div class="declaration-content"><dl><dt>Returns</dt><dd>Dot product.</dd>
 </dl>
 </div>
 <hr><div class="row-fluid declaration"><h3>pure nothrow Vector!(T, 3u) <span class="symbol-target" id="cross">&nbsp;</span><a class="symbol-link" href="#cross">cross</a>(T)(const Vector!(T, 3u) <i>a</i>, const Vector!(T, 3u) <i>b</i>);
 </h3></div>
-<div class="declaration-content"><dl><p>3D <span class="symbol-target" id="cross">&nbsp;</span><a class="symbol-link" href="#cross">cross</a> product.
- Thanks to vuaru for corrections.</p>
-
+<div class="declaration-content"><dl><dt>Returns</dt><dd>3D <span class="symbol-target" id="cross">&nbsp;</span><a class="symbol-link" href="#cross">cross</a> product.
+ Thanks to vuaru for corrections.</dd>
 </dl>
 </div>
 <hr><div class="row-fluid declaration"><h3>pure nothrow Vector!(T, 3u) <span class="symbol-target" id="reflect">&nbsp;</span><a class="symbol-link" href="#reflect">reflect</a>(T)(const Vector!(T, 3u) <i>a</i>, const Vector!(T, 3u) <i>b</i>);
 </h3></div>
-<div class="declaration-content"><dl><p>3D <span class="symbol-target" id="reflect">&nbsp;</span><a class="symbol-link" href="#reflect">reflect</a>, like the GLSL function.</p>
+<div class="declaration-content"><dl><p>3D <span class="symbol-target" id="reflect">&nbsp;</span><a class="symbol-link" href="#reflect">reflect</a>, like the GLSL function.
+</p>
 
+<dt>Returns</dt><dd>a reflected by normal b.</dd>
 </dl>
 </div>
 <hr><div class="row-fluid declaration"><h3>pure nothrow T <span class="symbol-target" id="angleBetween">&nbsp;</span><a class="symbol-link" href="#angleBetween">angleBetween</a>(T, size_t N)(const Vector!(T, N) <i>a</i>, const Vector!(T, N) <i>b</i>);
 </h3></div>
 <div class="declaration-content"><dl><dt>Returns</dt><dd>angle between vectors.
- See "The Right Way to Calculate Stuff" at http://www.plunk.org/~hatch/rightway.php</dd>
+</dd>
+<dt>See Also</dt><dd>"The Right Way to Calculate Stuff" at <a href="http://www.plunk.org/~hatch/rightway.php">www.plunk.org/~hatch/rightway.php</a></dd>
 </dl>
 </div>
 
