@@ -17,7 +17,7 @@ import std.range,
   References: $(LINK http://tools.ietf.org/rfc/rfc7049.txt)
   Heavily inspired by std.json by Jeremie Pelletier.
 
-  TODO: try to fit const-correctness, not that easy
+  Bugs: Not const-correct.
  */
 
 
@@ -35,15 +35,15 @@ immutable string CBOR_MIME_TYPE = "application/cbor";
 /// Possible type of a CBORValue. Does not map 1:1 to CBOR major types.
 enum CBORType
 {
-    STRING,      /// an UTF-8 encoded string
-    BYTE_STRING, /// a string of bytes
-    INTEGER,     /// a 64-bits signed integer
-    UINTEGER,    /// a 64-bits unsigned integer
-    BIGINT,      /// an integer that doesn't fit in either
-    FLOATING,    /// a floating-point value
-    ARRAY,       /// an array of CBOR values
-    MAP,         /// a map CBOR value => CBOR value
-    SIMPLE       /// null, undefined, true, false, break, and future values
+    STRING,      /// An UTF-8 encoded string.
+    BYTE_STRING, /// A string of bytes.
+    INTEGER,     /// A 64-bits signed integer.
+    UINTEGER,    /// A 64-bits unsigned integer.
+    BIGINT,      /// An integer that doesn't fit in either.
+    FLOATING,    /// A floating-point value.
+    ARRAY,       /// An array of CBOR values.
+    MAP,         /// A map CBOR value => CBOR value.
+    SIMPLE       /// Null, undefined, true, false, break, and future values.
 }
 
 /// CBOR "simple" values
@@ -56,7 +56,7 @@ enum : ubyte
 }
 
 /// CBOR tags are prefixes that add a semantic meaning + required type to a value
-/// Currently emitted (bignums) but not parsed.
+/// Bugs: Currently emitted (bignums) but not parsed.
 enum CBORTag
 {
     DATE_TIME              = 0,
@@ -74,7 +74,7 @@ enum CBORTag
     SELF_DESCRIBE_CBOR     = 55799
 }
 
-/// Exception thrown on CBOR errors
+/// Exception thrown on CBOR errors.
 class CBORException : Exception
 {
     this(string msg)
