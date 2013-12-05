@@ -1,0 +1,9 @@
+*.exe
+*.obj
+*.o
+*.a
+*.lib
+*.so
+*.deps
+*.map
+*.html

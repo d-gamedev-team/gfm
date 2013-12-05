@@ -35,7 +35,7 @@
 	<!-- Introduce DDoc settings required by JavaScript -->
 	<script type="text/javascript">
 		var Title = 'gfm.net.uri';
-		var SourceRepository = 'http://github.com/p0nce/gfm/tree/master';
+		var SourceRepository = 'http://github.com/p0nce/gfm/tree/master/source';
 		var PackageSeparator = '.';
 	</script>
 	
@@ -231,81 +231,99 @@
 <br><br>
 <hr><div class="row-fluid declaration"><h3>class <span class="symbol-target" id="URIException">&nbsp;</span><a class="symbol-link" href="#URIException">URIException</a>: object.Exception;
 </h3></div>
-<div class="declaration-content"><dl><p>Here is an attempt at implementing RFC 3986.
-</p>
+<div class="declaration-content"><dl><p>Exception thrown when an URI doesn't parse.</p>
 
-<p>All constructed URI are valid and normalized.
-
-</p>
-<dt>TODO:</dt><dd>
-separate segments in parsed form -&gt; relative URL combining
-       . and .. normalization</dd>
 </dl>
 </div>
 <hr><div class="row-fluid declaration"><h3>class <span class="symbol-target" id="URI">&nbsp;</span><a class="symbol-link" href="#URI">URI</a>;
 </h3></div>
-<div class="declaration-content"><dl><p>Parsed <span class="symbol-target" id="URI">&nbsp;</span><a class="symbol-link" href="#URI">URI</a> wrapper</p>
+<div class="declaration-content"><dl><p>An attempt at implementing <span class="symbol-target" id="URI">&nbsp;</span><a class="symbol-link" href="#URI">URI</a> (RFC 3986).
+</p>
+
+<p>All constructed <span class="symbol-target" id="URI">&nbsp;</span><a class="symbol-link" href="#URI">URI</a> are valid and normalized.
+
+</p>
+<dt>Known Bugs</dt><dd>separate segments in parsed form -&gt; relative URL combining
+       . and .. normalization</dd>
+</dl>
+<div class="offset1 member-list"><hr><div class="row-fluid declaration"><h3> this(T)(T <i>input</i>) if (isForwardRange!T);
+</h3></div>
+<div class="declaration-content"><dl><p>Creactes an URI from an input range, throws if invalid.</p>
 
 </dl>
-<div class="offset1 member-list"><hr><div class="row-fluid declaration"><h3>const pure nothrow string <span class="symbol-target" id="scheme">&nbsp;</span><a class="symbol-link" href="#scheme">scheme</a>();
+</div>
+<hr><div class="row-fluid declaration"><h3>nothrow bool <span class="symbol-target" id="isValid">&nbsp;</span><a class="symbol-link" href="#isValid">isValid</a>(T)(T <i>input</i>);
 </h3></div>
-<div class="declaration-content"><dl><p>return <span class="symbol-target" id="scheme">&nbsp;</span><a class="symbol-link" href="#scheme">scheme</a>, guaranteed not <span class="d_keyword">null</span></p>
+<div class="declaration-content"><dl><p>Checks URI validity.
+</p>
 
+<dt>Returns</dt><dd><span class="d_keyword">true</span> if input is valid.</dd>
+</dl>
+</div>
+<hr><div class="row-fluid declaration"><h3>const pure nothrow string <span class="symbol-target" id="scheme">&nbsp;</span><a class="symbol-link" href="#scheme">scheme</a>();
+</h3></div>
+<div class="declaration-content"><dl><dt>Returns</dt><dd>URI <span class="symbol-target" id="scheme">&nbsp;</span><a class="symbol-link" href="#scheme">scheme</a>, guaranteed not <span class="d_keyword">null</span>.</dd>
 </dl>
 </div>
 <hr><div class="row-fluid declaration"><h3>const pure nothrow string <span class="symbol-target" id="hostName">&nbsp;</span><a class="symbol-link" href="#hostName">hostName</a>();
 </h3></div>
-<div class="declaration-content"><dl><p>return <span class="symbol-target" id="hostName">&nbsp;</span><a class="symbol-link" href="#hostName">hostName</a>, or <span class="d_keyword">null</span> if not available</p>
-
+<div class="declaration-content"><dl><dt>Returns</dt><dd>Host name, or <span class="d_keyword">null</span> if not available.</dd>
 </dl>
 </div>
 <hr><div class="row-fluid declaration"><h3>const pure nothrow HostType <span class="symbol-target" id="hostType">&nbsp;</span><a class="symbol-link" href="#hostType">hostType</a>();
 </h3></div>
-<div class="declaration-content"><dl><p>return host type (HostType.NONE if not available)</p>
-
+<div class="declaration-content"><dl><dt>Returns</dt><dd>Host type (HostType.NONE if not available).</dd>
 </dl>
 </div>
 <hr><div class="row-fluid declaration"><h3>const pure nothrow int <span class="symbol-target" id="port">&nbsp;</span><a class="symbol-link" href="#port">port</a>();
 </h3></div>
-<div class="declaration-content"><dl><p>Return <span class="symbol-target" id="port">&nbsp;</span><a class="symbol-link" href="#port">port</a> number.
+<div class="declaration-content"><dl><dt>Returns</dt><dd><span class="symbol-target" id="port">&nbsp;</span><a class="symbol-link" href="#port">port</a> number.
  If none is provided by the URI, return the default <span class="symbol-target" id="port">&nbsp;</span><a class="symbol-link" href="#port">port</a> for this scheme.
- if the scheme isn't recognized, return -1.</p>
-
+ If the scheme isn't recognized, return -1.</dd>
 </dl>
 </div>
 <hr><div class="row-fluid declaration"><h3>const pure nothrow string <span class="symbol-target" id="userInfo">&nbsp;</span><a class="symbol-link" href="#userInfo">userInfo</a>();
 </h3></div>
-<div class="declaration-content"><dl><p>return the user-info part of the URI, or <span class="d_keyword">null</span> if not available</p>
-
+<div class="declaration-content"><dl><dt>Returns</dt><dd>User-info part of the URI, or <span class="d_keyword">null</span> if not available.</dd>
 </dl>
 </div>
 <hr><div class="row-fluid declaration"><h3>const pure nothrow string <span class="symbol-target" id="path">&nbsp;</span><a class="symbol-link" href="#path">path</a>();
 </h3></div>
-<div class="declaration-content"><dl><p>return the <span class="symbol-target" id="path">&nbsp;</span><a class="symbol-link" href="#path">path</a> part of the URI, never <span class="d_keyword">null</span>, can be the empty string</p>
-
+<div class="declaration-content"><dl><dt>Returns</dt><dd>Path part of the URI, never <span class="d_keyword">null</span>, can be the empty string.</dd>
 </dl>
 </div>
 <hr><div class="row-fluid declaration"><h3>const pure nothrow string <span class="symbol-target" id="query">&nbsp;</span><a class="symbol-link" href="#query">query</a>();
 </h3></div>
-<div class="declaration-content"><dl><p>return the <span class="symbol-target" id="query">&nbsp;</span><a class="symbol-link" href="#query">query</a> part of the URI, or <span class="d_keyword">null</span> if not available</p>
-
+<div class="declaration-content"><dl><dt>Returns</dt><dd>Query part of the URI, or <span class="d_keyword">null</span> if not available.</dd>
 </dl>
 </div>
 <hr><div class="row-fluid declaration"><h3>const pure nothrow string <span class="symbol-target" id="fragment">&nbsp;</span><a class="symbol-link" href="#fragment">fragment</a>();
 </h3></div>
-<div class="declaration-content"><dl><p>return the <span class="symbol-target" id="fragment">&nbsp;</span><a class="symbol-link" href="#fragment">fragment</a> part of the URI, or <span class="d_keyword">null</span> if not available</p>
-
+<div class="declaration-content"><dl><dt>Returns</dt><dd>Fragment part of the URI, or <span class="d_keyword">null</span> if not available.</dd>
 </dl>
 </div>
 <hr><div class="row-fluid declaration"><h3>const pure nothrow string <span class="symbol-target" id="authority">&nbsp;</span><a class="symbol-link" href="#authority">authority</a>();
 </h3></div>
-<div class="declaration-content"><dl><p>get <span class="symbol-target" id="authority">&nbsp;</span><a class="symbol-link" href="#authority">authority</a> part of the URI</p>
-
+<div class="declaration-content"><dl><dt>Returns</dt><dd>Authority part of the URI.</dd>
 </dl>
 </div>
-<hr><div class="row-fluid declaration"><h3>Address <span class="symbol-target" id="address">&nbsp;</span><a class="symbol-link" href="#address">address</a>();
+<hr><div class="row-fluid declaration"><h3>Address <span class="symbol-target" id="resolveAddress">&nbsp;</span><a class="symbol-link" href="#resolveAddress">resolveAddress</a>();
 </h3></div>
-<div class="declaration-content"><dl><p>getting a std.socket.Address from the URI</p>
+<div class="declaration-content"><dl><p>Resolves URI host name.
+</p>
+
+<dt>Returns</dt><dd>std.socket.Address from the URI.</dd>
+</dl>
+</div>
+<hr><div class="row-fluid declaration"><h3>const string <span class="symbol-target" id="toString">&nbsp;</span><a class="symbol-link" href="#toString">toString</a>();
+</h3></div>
+<div class="declaration-content"><dl><dt>Returns</dt><dd>pretty string representation.</dd>
+</dl>
+</div>
+<hr><div class="row-fluid declaration"><h3>const pure nothrow bool <span class="symbol-target" id="opEquals">&nbsp;</span><a class="symbol-link" href="#opEquals">opEquals</a>(U)(U <i>other</i>) if (is(U : FixedPoint));
+</h3></div>
+<div class="declaration-content"><dl><p>Semantic comparison of two URIs.
+ They are equals if they have the same normalized string representation.</p>
 
 </dl>
 </div>

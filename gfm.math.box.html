@@ -35,7 +35,7 @@
 	<!-- Introduce DDoc settings required by JavaScript -->
 	<script type="text/javascript">
 		var Title = 'gfm.math.box';
-		var SourceRepository = 'http://github.com/p0nce/gfm/tree/master';
+		var SourceRepository = 'http://github.com/p0nce/gfm/tree/master/source';
 		var PackageSeparator = '.';
 	</script>
 	
@@ -231,7 +231,7 @@
 <br><br>
 <hr><div class="row-fluid declaration"><h3>struct <span class="symbol-target" id="Box">&nbsp;</span><a class="symbol-link" href="#Box">Box</a>(T, size_t N);
 </h3></div>
-<div class="declaration-content"><dl><p>N-dimensional half-open interval [a, b[</p>
+<div class="declaration-content"><dl><p>N-dimensional half-open interval [a, b[.</p>
 
 </dl>
 <div class="offset1 member-list"><hr><div class="row-fluid declaration"><h3>pure nothrow  this(bound_t <i>min_</i>, bound_t <i>max_</i>);
@@ -244,30 +244,32 @@
 </div>
 <hr><div class="row-fluid declaration"><h3>const pure nothrow bound_t <span class="symbol-target" id="size">&nbsp;</span><a class="symbol-link" href="#size">size</a>();
 </h3></div>
-<div class="declaration-content"><dl><dt>Returns</dt><dd>dimensions of the box.</dd>
+<div class="declaration-content"><dl><dt>Returns</dt><dd>Dimensions of the box.</dd>
 </dl>
 </div>
 <hr><div class="row-fluid declaration"><h3>const pure nothrow bound_t <span class="symbol-target" id="center">&nbsp;</span><a class="symbol-link" href="#center">center</a>();
 </h3></div>
-<div class="declaration-content"><dl><dt>Returns</dt><dd><span class="symbol-target" id="center">&nbsp;</span><a class="symbol-link" href="#center">center</a> of the box.</dd>
+<div class="declaration-content"><dl><dt>Returns</dt><dd>Center of the box.</dd>
 </dl>
 </div>
 <hr><div class="row-fluid declaration"><h3>const pure nothrow @property T <span class="symbol-target" id="width">&nbsp;</span><a class="symbol-link" href="#width">width</a>();
 </h3></div>
-<div class="declaration-content"><dl><p>Get the <span class="symbol-target" id="width">&nbsp;</span><a class="symbol-link" href="#width">width</a> of the box.</p>
-
+<div class="declaration-content"><dl><dt>Returns</dt><dd>Box <span class="symbol-target" id="width">&nbsp;</span><a class="symbol-link" href="#width">width</a> of the box.</dd>
 </dl>
 </div>
 <hr><div class="row-fluid declaration"><h3>const pure nothrow @property T <span class="symbol-target" id="height">&nbsp;</span><a class="symbol-link" href="#height">height</a>();
 </h3></div>
-<div class="declaration-content"><dl><p>Get the <span class="symbol-target" id="height">&nbsp;</span><a class="symbol-link" href="#height">height</a> of the box if applicable.</p>
-
+<div class="declaration-content"><dl><dt>Returns</dt><dd>Height of the box if applicable.</dd>
 </dl>
 </div>
 <hr><div class="row-fluid declaration"><h3>const pure nothrow @property T <span class="symbol-target" id="depth">&nbsp;</span><a class="symbol-link" href="#depth">depth</a>();
 </h3></div>
-<div class="declaration-content"><dl><p>Get the <span class="symbol-target" id="depth">&nbsp;</span><a class="symbol-link" href="#depth">depth</a> of the box if applicable.</p>
-
+<div class="declaration-content"><dl><dt>Returns</dt><dd>Depth of the box if applicable.</dd>
+</dl>
+</div>
+<hr><div class="row-fluid declaration"><h3>const pure nothrow T <span class="symbol-target" id="volume">&nbsp;</span><a class="symbol-link" href="#volume">volume</a>();
+</h3></div>
+<div class="declaration-content"><dl><dt>Returns</dt><dd>Signed <span class="symbol-target" id="volume">&nbsp;</span><a class="symbol-link" href="#volume">volume</a> of the box.</dd>
 </dl>
 </div>
 <hr><div class="row-fluid declaration"><h3>const pure nothrow bool <span class="symbol-target" id="contains">&nbsp;</span><a class="symbol-link" href="#contains">contains</a>(bound_t <i>point</i>);
@@ -285,8 +287,7 @@
 <div class="declaration-content"><dl><p>Euclidean squared distance from a <i>point</i>
 </p>
 
-<dt>source:</dt><dd>
-Numerical Recipes Third Edition (2007)</dd>
+<dt>See Also</dt><dd>Numerical Recipes Third Edition (2007)</dd>
 </dl>
 </div>
 <hr><div class="row-fluid declaration"><h3>const pure nothrow Box <span class="symbol-target" id="grow">&nbsp;</span><a class="symbol-link" href="#grow">grow</a>(bound_t <i>space</i>);

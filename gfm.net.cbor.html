@@ -35,7 +35,7 @@
 	<!-- Introduce DDoc settings required by JavaScript -->
 	<script type="text/javascript">
 		var Title = 'gfm.net.cbor';
-		var SourceRepository = 'http://github.com/p0nce/gfm/tree/master';
+		var SourceRepository = 'http://github.com/p0nce/gfm/tree/master/source';
 		var PackageSeparator = '.';
 	</script>
 	
@@ -241,8 +241,7 @@ Concise Binary Object Representation.
   Heavily inspired by std.json by Jeremie Pelletier.
 
 </dd>
-<dt>TODO:</dt><dd>
-try to fit const-correctness, not that easy</dd>
+<dt>Known Bugs</dt><dd>Not const-correct.</dd>
 </dl>
 </div>
 <hr><div class="row-fluid declaration"><h3>enum <span class="symbol-target" id="CBORType">&nbsp;</span><a class="symbol-link" href="#CBORType">CBORType</a>: int;
@@ -251,47 +250,47 @@ try to fit const-correctness, not that easy</dd>
 
 </dl>
 <div class="offset1 member-list"><hr><div class="row-fluid declaration"><h3><span class="symbol-target" id="STRING">&nbsp;</span><a class="symbol-link" href="#STRING">STRING</a></h3></div>
-<div class="declaration-content"><dl><p>an UTF-8 encoded string</p>
+<div class="declaration-content"><dl><p>An UTF-8 encoded string.</p>
 
 </dl>
 </div>
 <hr><div class="row-fluid declaration"><h3><span class="symbol-target" id="BYTE_STRING">&nbsp;</span><a class="symbol-link" href="#BYTE_STRING">BYTE_STRING</a></h3></div>
-<div class="declaration-content"><dl><p>a string of bytes</p>
+<div class="declaration-content"><dl><p>A string of bytes.</p>
 
 </dl>
 </div>
 <hr><div class="row-fluid declaration"><h3><span class="symbol-target" id="INTEGER">&nbsp;</span><a class="symbol-link" href="#INTEGER">INTEGER</a></h3></div>
-<div class="declaration-content"><dl><p>a 64-bits signed integer</p>
+<div class="declaration-content"><dl><p>A 64-bits signed integer.</p>
 
 </dl>
 </div>
 <hr><div class="row-fluid declaration"><h3><span class="symbol-target" id="UINTEGER">&nbsp;</span><a class="symbol-link" href="#UINTEGER">UINTEGER</a></h3></div>
-<div class="declaration-content"><dl><p>a 64-bits unsigned integer</p>
+<div class="declaration-content"><dl><p>A 64-bits unsigned integer.</p>
 
 </dl>
 </div>
 <hr><div class="row-fluid declaration"><h3><span class="symbol-target" id="BIGINT">&nbsp;</span><a class="symbol-link" href="#BIGINT">BIGINT</a></h3></div>
-<div class="declaration-content"><dl><p>an integer that doesn't fit in either</p>
+<div class="declaration-content"><dl><p>An integer that doesn't fit in either.</p>
 
 </dl>
 </div>
 <hr><div class="row-fluid declaration"><h3><span class="symbol-target" id="FLOATING">&nbsp;</span><a class="symbol-link" href="#FLOATING">FLOATING</a></h3></div>
-<div class="declaration-content"><dl><p>a floating-point value</p>
+<div class="declaration-content"><dl><p>A floating-point value.</p>
 
 </dl>
 </div>
 <hr><div class="row-fluid declaration"><h3><span class="symbol-target" id="ARRAY">&nbsp;</span><a class="symbol-link" href="#ARRAY">ARRAY</a></h3></div>
-<div class="declaration-content"><dl><p>an array of CBOR values</p>
+<div class="declaration-content"><dl><p>An array of CBOR values.</p>
 
 </dl>
 </div>
 <hr><div class="row-fluid declaration"><h3><span class="symbol-target" id="MAP">&nbsp;</span><a class="symbol-link" href="#MAP">MAP</a></h3></div>
-<div class="declaration-content"><dl><p>a map CBOR value =&gt; CBOR value</p>
+<div class="declaration-content"><dl><p>A map CBOR value =&gt; CBOR value.</p>
 
 </dl>
 </div>
 <hr><div class="row-fluid declaration"><h3><span class="symbol-target" id="SIMPLE">&nbsp;</span><a class="symbol-link" href="#SIMPLE">SIMPLE</a></h3></div>
-<div class="declaration-content"><dl><p><span class="d_keyword">null</span>, undefined, <span class="d_keyword">true</span>, <span class="d_keyword">false</span>, break, and future values</p>
+<div class="declaration-content"><dl><p>Null, undefined, <span class="d_keyword">true</span>, <span class="d_keyword">false</span>, break, and future values.</p>
 
 </dl>
 </div>
@@ -301,13 +300,14 @@ try to fit const-correctness, not that easy</dd>
 <hr><div class="row-fluid declaration"><h3>enum <span class="symbol-target" id="CBORTag">&nbsp;</span><a class="symbol-link" href="#CBORTag">CBORTag</a>: int;
 </h3></div>
 <div class="declaration-content"><dl><p>CBOR tags are prefixes that add a semantic meaning + required type to a value
- Currently emitted (bignums) but not parsed.</p>
+</p>
 
+<dt>Known Bugs</dt><dd>Currently emitted (bignums) but not parsed.</dd>
 </dl>
 </div>
 <hr><div class="row-fluid declaration"><h3>class <span class="symbol-target" id="CBORException">&nbsp;</span><a class="symbol-link" href="#CBORException">CBORException</a>: object.Exception;
 </h3></div>
-<div class="declaration-content"><dl><p>Exception thrown on CBOR errors</p>
+<div class="declaration-content"><dl><p>Exception thrown on CBOR errors.</p>
 
 </dl>
 </div>

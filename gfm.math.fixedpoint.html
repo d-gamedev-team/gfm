@@ -35,7 +35,7 @@
 	<!-- Introduce DDoc settings required by JavaScript -->
 	<script type="text/javascript">
 		var Title = 'gfm.math.fixedpoint';
-		var SourceRepository = 'http://github.com/p0nce/gfm/tree/master';
+		var SourceRepository = 'http://github.com/p0nce/gfm/tree/master/source';
 		var PackageSeparator = '.';
 	</script>
 	
@@ -231,12 +231,34 @@
 <br><br>
 <hr><div class="row-fluid declaration"><h3>struct <span class="symbol-target" id="FixedPoint">&nbsp;</span><a class="symbol-link" href="#FixedPoint">FixedPoint</a>(int M, int N);
 </h3></div>
-<div class="declaration-content"><dl><p>M.N fixed point integer. use at your own risk.
- Designed for fast execution instead of proper rounding.
- Does not manage overflow.
- If M + N &gt; 32, then wide integers are used and this will likely be slow.</p>
+<div class="declaration-content"><dl><p>M.N fixed point integer.
+    Only signed integers are supported.
+    Only supports basic arithmetic.
+    If M + N &gt; 32, then wide integers are used and this will likely be slow.
+</p>
+
+<dt>Parameters</dt><dd><table class="table table-condensed table-bordered"><tr><td>M</td>
+<td>number of bits before the mark, M &gt; 0</td>
+</tr>
+<tr><td>N</td>
+<td>number of bits before the mark, M &gt; 0</td>
+</tr>
+</table></dd>
+<dt>Known Bugs</dt><dd>No proper rounding.</dd>
+</dl>
+<div class="offset1 member-list"><hr><div class="row-fluid declaration"><h3>pure nothrow  this(U)(U <i>x</i>);
+</h3></div>
+<div class="declaration-content"><dl><p>Construct with an assignable value.</p>
 
 </dl>
+</div>
+<hr><div class="row-fluid declaration"><h3>pure nothrow FixedPoint <span class="symbol-target" id="opAssign">&nbsp;</span><a class="symbol-link" href="#opAssign">opAssign</a>(U)(U <i>x</i>) if (is(U : FixedPoint));
+</h3></div>
+<div class="declaration-content"><dl><p>Construct with an assignable value.</p>
+
+</dl>
+</div>
+</div>
 </div>
 <hr><div class="row-fluid declaration"><h3>pure nothrow FixedPoint!(M, N) <span class="symbol-target" id="abs">&nbsp;</span><a class="symbol-link" href="#abs">abs</a>(int M, int N)(FixedPoint!(M, N) <i>x</i>);
 </h3></div>

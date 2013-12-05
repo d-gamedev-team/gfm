@@ -35,7 +35,7 @@
 	<!-- Introduce DDoc settings required by JavaScript -->
 	<script type="text/javascript">
 		var Title = 'gfm.image.bitmap';
-		var SourceRepository = 'http://github.com/p0nce/gfm/tree/master';
+		var SourceRepository = 'http://github.com/p0nce/gfm/tree/master/source';
 		var PackageSeparator = '.';
 	</script>
 	
@@ -231,27 +231,48 @@
 <br><br>
 <hr><div class="row-fluid declaration"><h3>struct <span class="symbol-target" id="Bitmap">&nbsp;</span><a class="symbol-link" href="#Bitmap">Bitmap</a>(T);
 </h3></div>
-<div class="declaration-content"><dl><p>Simple planar image which has nothing to do with the .bmp format.
+<div class="declaration-content"><dl><p>Simple planar image implementing the Image concept.
     A <span class="symbol-target" id="Bitmap">&nbsp;</span><a class="symbol-link" href="#Bitmap">Bitmap</a> is mostly a triplet of (base address + dimension + stride).
     Data can be owned or not.</p>
 
 </dl>
 <div class="offset1 member-list"><hr><div class="row-fluid declaration"><h3>nothrow  this(vec2i <i>dimension</i>);
 </h3></div>
-<div class="declaration-content"><dl><p>Create with owned memory</p>
+<div class="declaration-content"><dl><p>Creates a Bitmap with owned memory.</p>
 
 </dl>
 </div>
 <hr><div class="row-fluid declaration"><h3>nothrow  this(T* <i>data</i>, vec2i <i>dimension</i>, ptrdiff_t <i>stride</i>);
 </h3></div>
-<div class="declaration-content"><dl><p>Create with existing <i>data</i> whose lifetime memory should exceed this</p>
+<div class="declaration-content"><dl><p>Creates a Bitmap from borrowed memory.</p>
+
+</dl>
+</div>
+<hr><div class="row-fluid declaration"><h3>nothrow  this(T* <i>data</i>, vec2i <i>dimension</i>);
+</h3></div>
+<div class="declaration-content"><dl><p>Creates a Bitmap from borrowed contiguous memory.</p>
 
 </dl>
 </div>
 <hr><div class="row-fluid declaration"><h3>nothrow  this(AlignedBuffer!ubyte <i>buffer</i>, vec2i <i>dimension</i>);
 </h3></div>
-<div class="declaration-content"><dl><p>Create on a reused <i>buffer</i> whose lifetime should be greater than this</p>
+<div class="declaration-content"><dl><p>Creates with a <i>buffer</i> whose lifetime should be greater than this.</p>
 
+</dl>
+</div>
+<hr><div class="row-fluid declaration"><h3>Bitmap <span class="symbol-target" id="subImage">&nbsp;</span><a class="symbol-link" href="#subImage">subImage</a>(vec2i <i>position</i>, vec2i <i>dimension</i>);
+</h3></div>
+<div class="declaration-content"><dl><dt>Returns</dt><dd>A sub-bitmap from a Bitmap.</dd>
+</dl>
+</div>
+<hr><div class="row-fluid declaration"><h3>const pure int <span class="symbol-target" id="width">&nbsp;</span><a class="symbol-link" href="#width">width</a>();
+</h3></div>
+<div class="declaration-content"><dl><dt>Returns</dt><dd>Width of image in pixels.</dd>
+</dl>
+</div>
+<hr><div class="row-fluid declaration"><h3>const pure int <span class="symbol-target" id="height">&nbsp;</span><a class="symbol-link" href="#height">height</a>();
+</h3></div>
+<div class="declaration-content"><dl><dt>Returns</dt><dd>Height of image in pixels.</dd>
 </dl>
 </div>
 <hr><div class="row-fluid declaration"><h3>void <span class="symbol-target" id="copy">&nbsp;</span><a class="symbol-link" href="#copy">copy</a>(Bitmap <i>source</i>);
