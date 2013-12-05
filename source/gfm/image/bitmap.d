@@ -10,7 +10,7 @@ import gfm.core.alignedbuffer,
 import gfm.image.image;
 
 /**
-    Simple planar image which has nothing to do with the .bmp format.
+    Simple planar image implementing the Image concept.
     A Bitmap is mostly a triplet of (base address + dimension + stride).
     Data can be owned or not.
  */
@@ -21,7 +21,7 @@ nothrow:
     {
         alias T element_t;
 
-        /// Create with owned memory
+        /// Creates a Bitmap with owned memory.
         this(vec2i dimension) nothrow
         {
             _data = alignedMalloc(dimension.x * dimension.y * T.sizeof, 64);
@@ -30,7 +30,7 @@ nothrow:
             _owned = true;
         }
 
-        /// Create with existing data whose lifetime memory should exceed this
+        /// Creates a Bitmap from borrowed memory.
         this(T* data, vec2i dimension, ptrdiff_t stride) nothrow
         {
             _data = data;
@@ -39,12 +39,13 @@ nothrow:
             _owned = false;
         }
 
+        /// Creates a Bitmap from borrowed contiguous memory.
         this(T* data, vec2i dimension) nothrow
         {
             this(data, dimension, dimension.x * T.sizeof);
         }
 
-        /// Create on a reused buffer whose lifetime should be greater than this
+        /// Creates with a buffer whose lifetime should be greater than this.
         this(AlignedBuffer!ubyte buffer, vec2i dimension) nothrow
         {
             size_t bytesNeeded = dimension.x * dimension.y * T.sizeof;
@@ -80,7 +81,7 @@ nothrow:
             return this;
         }
 
-        // return a sub-bitmap
+        /// Returns: A sub-bitmap from a Bitmap.
         Bitmap subImage(vec2i position, vec2i dimension)
         {
             assert(contains(position));
@@ -106,11 +107,13 @@ nothrow:
                 return _dimension;
             }
 
+            /// Returns: Width of image in pixels.
             int width() const pure
             {
                 return _dimension.x;
             }
 
+            /// Returns: Height of image in pixels.
             int height() const pure
             {
                 return _dimension.y;
