@@ -1,9 +1,5 @@
 module gfm.net.httpclient;
 
-/// Couldn't resist the urge to write a HTTP client
-
-// TODO: pool TCP connections
-
 import std.socketstream,
        std.stream,
        std.socket,
@@ -13,6 +9,7 @@ import std.socketstream,
 
 import gfm.net.uri;
 
+/// The exception type for HTTP errors.
 class HTTPException : Exception
 {
     public
@@ -23,6 +20,15 @@ class HTTPException : Exception
         }
     }
 }
+
+/// Results of a HTTP request.
+class HTTPResponse
+{
+    int statusCode;         /// HTTP status code received.
+    string[string] headers; /// HTTP headers received.
+    ubyte[] content;        /// Request body.
+}
+
 
 enum HTTPMethod
 {
@@ -36,17 +42,19 @@ enum HTTPMethod
     CONNECT
 }
 
-class HTTPResponse
-{
-    int statusCode;
-    string[string] headers;
-    ubyte[] content;
-}
+/**
 
+  Minimalistic HTTP client. 
+  At this point it only support simple GET requests which return the 
+  whole response body.
+
+  Bugs: We might need to pool TCP connections later on.
+ */
 class HTTPClient
 {
     public
     {
+        /// Creates a HTTP client with user-specified User-Agent.
         this(string userAgent = "gfm-http-client")
         {
             buffer.length = 4096;
@@ -67,14 +75,13 @@ class HTTPClient
             }
         }
 
-        /// From an absolute HTTP url, return content.
+        /// Perform a HTTP GET request.
         HTTPResponse GET(URI uri)
         {
-
             return request(HTTPMethod.GET, uri, defaultHeaders(uri));
         }
 
-        /// same as GET but without content
+        /// Perform a HTTP HEAD request (same as GET but without content).
         HTTPResponse HEAD(URI uri)
         {
             return request(HTTPMethod.HEAD, uri, defaultHeaders(uri));
@@ -102,7 +109,7 @@ class HTTPClient
                 {
                     request ~= format("%s: %s\r\n", header, headers[header]);
                 }
-                 request ~= "\r\n";
+                request ~= "\r\n";
 
                 auto scope ss = new SocketStream(_socket);
                 ss.writeString(request);
@@ -190,7 +197,7 @@ class HTTPClient
                 _socket.close();
                 _socket = null;
             }
-            _socket = new TcpSocket(uri.address());
+            _socket = new TcpSocket(uri.resolveAddress());
         }
 
         static checkURI(URI uri)

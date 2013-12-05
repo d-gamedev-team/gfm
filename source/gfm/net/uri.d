@@ -5,16 +5,9 @@ import std.range,
        std.ascii,
        std.socket;
 
-/**
- * Here is an attempt at implementing RFC 3986.
- *
- * All constructed URI are valid and normalized.
- *
- * TODO: separate segments in parsed form -> relative URL combining
- *       . and .. normalization
- */
 
-// throw when an URI doesn't parse
+
+/// Exception thrown when an URI doesn't parse.
 class URIException : Exception
 {
     public
@@ -26,7 +19,14 @@ class URIException : Exception
     }
 }
 
-/// Parsed URI wrapper
+/**
+ * An attempt at implementing URI (RFC 3986).
+ *
+ * All constructed URI are valid and normalized.
+ *
+ * Bugs: separate segments in parsed form -> relative URL combining
+ *       . and .. normalization
+ */
 class URI
 {
     public
@@ -34,14 +34,14 @@ class URI
         enum HostType
         {
             NONE,
-            REG_NAME, // registered name to be used with DNS
-            IPV4,
-            IPV6,
-            IPVFUTURE
+            REG_NAME, /// Host has a registered name.
+            IPV4,     /// Host has an IPv4
+            IPV6,     /// Host has an IPv6
+            IPVFUTURE /// Unknown yet scheme.
         }
 
-        // construct an URI from an input range, throw if invalid
-        // input should be an ENCODED url range
+        /// Creactes an URI from an input range, throws if invalid.
+        // Input should be an ENCODED url range.
         this(T)(T input) if (isForwardRange!T)
         {
             _scheme = null;
@@ -55,7 +55,8 @@ class URI
             parseURI(input);
         }
 
-        // test for URI validity
+        /// Checks URI validity.
+        /// Returns: true if input is valid.
         static bool isValid(T)(T input) /* pure */ nothrow
         {
             try
@@ -78,28 +79,28 @@ class URI
 
         // getters for normalized URI components
 
-        /// return scheme, guaranteed not null
+        /// Returns: URI scheme, guaranteed not null.
         string scheme() pure const nothrow
         {
             return _scheme;
         }
 
-        /// return hostName, or null if not available
+        /// Returns: Host name, or null if not available.
         string hostName() pure const nothrow
         {
             return _hostName;
         }
 
-        /// return host type (HostType.NONE if not available)
+        /// Returns: Host type (HostType.NONE if not available).
         HostType hostType() pure const nothrow
         {
             return _hostType;
         }
 
         /** 
-         * Return port number. 
+         * Returns: port number. 
          * If none is provided by the URI, return the default port for this scheme.
-         * if the scheme isn't recognized, return -1.
+         * If the scheme isn't recognized, return -1.
          */
         int port() pure const nothrow
         {
@@ -113,31 +114,31 @@ class URI
             return -1;
         }
 
-        /// return the user-info part of the URI, or null if not available
+        /// Returns: User-info part of the URI, or null if not available.
         string userInfo() pure const nothrow
         {
             return _userInfo;
         }
 
-        /// return the path part of the URI, never null, can be the empty string
+        /// Returns: Path part of the URI, never null, can be the empty string.
         string path() pure const nothrow
         {
             return _path;
         }
 
-        /// return the query part of the URI, or null if not available
+        /// Returns: Query part of the URI, or null if not available.
         string query() pure const nothrow
         {
             return _query;
         }
 
-        /// return the fragment part of the URI, or null if not available
+        /// Returns: Fragment part of the URI, or null if not available.
         string fragment() pure const nothrow
         {
             return _fragment;
         }
 
-        /// get authority part of the URI
+        /// Returns: Authority part of the URI.
         string authority() pure const nothrow
         {
             if (_hostName is null)
@@ -152,8 +153,9 @@ class URI
             return res;
         }
 
-        /// getting a std.socket.Address from the URI
-        Address address()
+        /// Resolves URI host name.
+        /// Returns: std.socket.Address from the URI.
+        Address resolveAddress()
         {
             final switch(_hostType)
             {
@@ -170,6 +172,7 @@ class URI
             }
         }
 
+        /// Returns: pretty string representation.
         override string toString() const
         {
             string res = _scheme ~ ":";
@@ -184,7 +187,8 @@ class URI
             return res;
         }
 
-        // Two URIs are equals if they have the same normalized string representation
+        /// Semantic comparison of two URIs.
+        /// They are equals if they have the same normalized string representation.
         bool opEquals(U)(U other) pure const nothrow if (is(U : FixedPoint))
         {
             return value == other.value;
