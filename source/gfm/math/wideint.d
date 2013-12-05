@@ -1,11 +1,12 @@
 /**
- * Provide a 2^N-bit integer type.
- * Guaranteed to never allocate and expected binary layout
- * Recursive implementation with very slow division.
- *
- * TODO:
- * - add literals
- * - it's not sure if the unsigned operand would take precedence in a comparison/division
+  Provide a 2^N-bit integer type.
+  Guaranteed to never allocate and expected binary layout
+  Recursive implementation with very slow division.
+ 
+  <b>Supports all operations that builtin integers support.<b>
+  
+  Bugs: it's not sure if the unsigned operand would take precedence in a comparison/division.
+  TODO: add literals.  
  */
 module gfm.math.wideint;
 
@@ -35,6 +36,7 @@ deprecated("softucent was renamed to uint128") alias uint128 softucent;
 alias wideint!256 int256;
 alias uwideint!256 uint256;
 
+/// Use this template to get an arbitrary sized integer type.
 private template integer(bool signed, int bits)
 {
     static assert((bits & (bits - 1)) == 0); // bits must be a power of 2
@@ -74,7 +76,7 @@ private template integer(bool signed, int bits)
     }
 }
 
-/// recursive 2^n integer implementation
+/// Recursive 2^n integer implementation.
 struct wideIntImpl(bool signed, int bits)
 {
     static assert(bits >= 128);
@@ -105,19 +107,22 @@ struct wideIntImpl(bool signed, int bits)
              _signed = signed;
     }
 
+    /// Construct from a value.
     this(T)(T x) pure nothrow
     {
         opAssign!T(x);
     }
 
-    ref self opAssign(T)(T n) pure nothrow if (isIntegral!T && isUnsigned!T) // conversion from smaller unsigned types
+    /// Assign with a smaller unsigned type.
+    ref self opAssign(T)(T n) pure nothrow if (isIntegral!T && isUnsigned!T)
     {
         hi = 0;
         lo = n;
         return this;
     }
 
-    ref self opAssign(T)(T n) pure nothrow if (isIntegral!T && isSigned!T) // conversion from smaller signed types
+    /// Assign with a smaller signed type (sign is extended).
+    ref self opAssign(T)(T n) pure nothrow if (isIntegral!T && isSigned!T)
     {
         // shorter int always gets sign-extended,
         // regardless of the larger int being signed or not
@@ -128,14 +133,16 @@ struct wideIntImpl(bool signed, int bits)
         return this;
     }
 
-    ref self opAssign(T)(T n) pure nothrow if (is(typeof(T._isWideIntImpl)) && T._bits == bits) // same size wideIntImpl
+    /// Assign with a wide integer of the same size (sign is lost).
+    ref self opAssign(T)(T n) pure nothrow if (is(typeof(T._isWideIntImpl)) && T._bits == bits) 
     {
         hi = n.hi;
         lo = n.lo;
         return this;
     }
 
-    ref self opAssign(T)(T n) pure nothrow if (is(typeof(T._isWideIntImpl)) && T._bits < bits) // smaller size wideIntImpl
+    /// Assign with a smaller wide integer (sign is extended accordingly).
+    ref self opAssign(T)(T n) pure nothrow if (is(typeof(T._isWideIntImpl)) && T._bits < bits) 
     {
         static if (T._signed)
         {
@@ -155,17 +162,19 @@ struct wideIntImpl(bool signed, int bits)
         }
     }
 
+    /// Cast to a smaller integer type (truncation).
     T opCast(T)() pure const nothrow if (isIntegral!T)
     {
         return cast(T)lo;
     }
 
+    /// Cast to bool.
     T opCast(T)() pure const nothrow if (is(T == bool))
     {
         return this != 0;
     }
 
-    // cast to other sizes
+    /// Cast to wide integer of any size.
     T opCast(T)() pure const nothrow if (is(typeof(T._isWideIntImpl)))
     {
         static if (T._bits < bits)
@@ -174,6 +183,7 @@ struct wideIntImpl(bool signed, int bits)
             return T(this);
     }
 
+    /// Converts to a hexadecimal string.
     string toString() pure const nothrow
     {
         string outbuff = "0x";

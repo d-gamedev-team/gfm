@@ -6,7 +6,7 @@ import std.math,
 import gfm.math.vector, 
        gfm.math.funcs;
 
-/// N-dimensional half-open interval [a, b[
+/// N-dimensional half-open interval [a, b[.
 align(1) struct Box(T, size_t N)
 {
     static assert(N > 0);
@@ -60,39 +60,40 @@ align(1) struct Box(T, size_t N)
 
         @property
         {
-            /// Returns: dimensions of the box.
+            /// Returns: Dimensions of the box.
             bound_t size() pure const nothrow
             {
                 return max - min;
             }
 
-            /// Returns: center of the box.
+            /// Returns: Center of the box.
             bound_t center() pure const nothrow
             {
                 return (min + max) / 2;
             }
 
-            /// Get the width of the box.
+            /// Returns: Box width of the box.
             static if (N >= 1)
             T width() pure const nothrow @property
             {
                 return max.x - min.x;
             }
 
-            /// Get the height of the box if applicable.
+            /// Returns: Height of the box if applicable.
             static if (N >= 2)
             T height() pure const nothrow @property
             {
                 return max.y - min.y;
             }
 
-            /// Get the depth of the box if applicable.
+            /// Returns: Depth of the box if applicable.
             static if (N >= 3)
             T depth() pure const nothrow @property
             {
                 return max.z - min.z;
             }
 
+            /// Returns: Signed volume of the box.
             T volume() pure const nothrow
             {
                 T res = 1;
@@ -126,7 +127,7 @@ align(1) struct Box(T, size_t N)
         }
 
         /// Euclidean squared distance from a point
-        /// source: Numerical Recipes Third Edition (2007)
+        /// See_also: Numerical Recipes Third Edition (2007)
         double squaredDistance(bound_t point) pure const nothrow
         {
             double distanceSquared = 0;

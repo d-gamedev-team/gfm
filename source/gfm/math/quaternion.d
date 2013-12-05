@@ -214,7 +214,7 @@ Quaternion!T lerp(T)(Quaternion!T a, Quaternion!T b, float t) pure nothrow
 
 
 /// Returns: Nlerp of quaternions.
-/// See_also: http://keithmaggio.wordpress.com/2011/02/15/math-magician-lerp-slerp-and-nlerp/
+/// See_also: $(WEB keithmaggio.wordpress.com/2011/02/15/math-magician-lerp-slerp-and-nlerp/, Math Magician – Lerp, Slerp, and Nlerp)
 Quaternion!T Nlerp(T)(Quaternion!T a, Quaternion!T b, float t) pure nothrow
 {
     assert(t >= 0 && t <= 1); // else probably doesn't make sense 
@@ -225,7 +225,7 @@ Quaternion!T Nlerp(T)(Quaternion!T a, Quaternion!T b, float t) pure nothrow
 }
 
 /// Returns: Slerp of quaternions. Slerp is more expensive than Nlerp.
-/// See_also: http://number-none.com/product/Understanding%20Slerp,%20Then%20Not%20Using%20It/
+/// See_also: "Understanding Slerp, Then Not Using It"
 Quaternion!T slerp(T)(Quaternion!T a, Quaternion!T b, T t) pure nothrow
 {
     assert(t >= 0 && t <= 1); // else probably doesn't make sense 

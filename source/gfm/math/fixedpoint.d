@@ -5,10 +5,18 @@ import std.traits;
 import gfm.math.wideint,
        gfm.math.funcs;
 
-/// M.N fixed point integer. use at your own risk.
-/// Designed for fast execution instead of proper rounding.
-/// Does not manage overflow.
-/// If M + N > 32, then wide integers are used and this will likely be slow.
+/**
+    M.N fixed point integer.
+    Only signed integers are supported.
+    Only supports basic arithmetic.
+    If M + N > 32, then wide integers are used and this will likely be slow.
+
+    Params: 
+        M = number of bits before the mark, M > 0
+        N = number of bits before the mark, M > 0
+ 
+    Bugs: No proper rounding.
+ */
 struct FixedPoint(int M, int N)
 {
     static assert(M > 0);       // M == 0 is unsupported
@@ -18,12 +26,13 @@ struct FixedPoint(int M, int N)
     {
         alias TypeNeeded!(N + M) value_t;
 
-        // construct with value
+        /// Construct with an assignable value.
         this(U)(U x) pure nothrow
         {
             opAssign!U(x);
         }
 
+        /// Construct with an assignable value.
         ref FixedPoint opAssign(U)(U x) pure nothrow if (is(U: FixedPoint))
         {
             value = x.value;

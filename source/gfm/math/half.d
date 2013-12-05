@@ -3,11 +3,18 @@ module gfm.math.half;
 import std.traits,
        std.string;
 
-// Half floats
-// Implements conversion from ftp://www.fox-toolkit.org/pub/fasthalffloatconversion.pdf
-// by Jeroen van der Zijp
+/** 
 
-// WARNING: rounding is not IEEE compliant
+  16-bits floating point type (Half).
+  Implements conversion from ftp://www.fox-toolkit.org/pub/fasthalffloatconversion.pdf 
+  by Jeroen van der Zijp.
+
+  Supports builtin operations that float support, but computations are performed in 32-bits
+  float and converted back.
+
+  Bugs: rounding is not IEEE compliant.
+
+ */ 
 struct half
 {
     public
@@ -26,22 +33,26 @@ struct half
             opAssign!half(h);
         }
 
+        /// Converts to a pretty string.
         string toString() const
         {
             return format("%s", value);
         }
 
+        /// Converts to a float.
         float toFloat() pure const nothrow
         {
             return halfToFloat(value);
         }
 
+        /// Assign with float.
         ref half opAssign(T)(T other) pure nothrow if (is(T: float))
         {
             value = floatToHalf(other);
             return this;
         }
 
+        /// Assign with another half.
         ref half opAssign(T)(T other) pure nothrow if (is(Unqual!T == half))
         {
             value = other.value;
