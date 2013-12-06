@@ -16,6 +16,8 @@ final class SDLImage
 {
     public
     {
+        /// Loads the SDL_image library.
+        /// SDL must be already initialized.
         this(SDL2 sdl2, int flags = IMG_INIT_JPG | IMG_INIT_PNG | IMG_INIT_TIF | IMG_INIT_WEBP)
         {
             _sdl2 = sdl2; // force loading of SDL first
@@ -51,10 +53,10 @@ final class SDLImage
 
         ~this()
         {
-            close();            
-        }        
+            close();
+        }
 
-        /// Releases the SDL resource.
+        /// Releases the SDL resource. 
         void close()
         {
             if (_SDLImageInitialized)
@@ -66,8 +68,9 @@ final class SDLImage
             DerelictSDL2Image.unload();
         }
 
-        // load an image
-        // throw SDL2ImageException on error
+        /// Load an image.
+        /// Throws: SDL2ImageException on error.
+        /// Returns: A SDL surface with loaded content.
         SDL2Surface load(string path)
         {
             immutable(char)* pathz = toStringz(path);
