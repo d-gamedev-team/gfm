@@ -19,6 +19,7 @@ final class SDL2Renderer
     public
     {
         /// Creates a SDL renderer which targets a window.
+        /// See_also: $(LINK http://wiki.libsdl.org/SDL_CreateRenderer)
         this(SDL2Window window, int flags)
         {
             _sdl2 = window._sdl2;
@@ -28,6 +29,7 @@ final class SDL2Renderer
         }
 
         /// Create a software renderer which targets a surface.
+        /// See_also: $(LINK http://wiki.libsdl.org/SDL_CreateSoftwareRenderer)
         this(SDL2Surface surface)
         {
             _sdl2 = surface._sdl2;
@@ -37,6 +39,7 @@ final class SDL2Renderer
         }
 
         /// Releases the SDL ressource.
+        /// See_also: $(LINK http://wiki.libsdl.org/SDL_DestroyRenderer)
         void close()
         {
             if (_renderer !is null)
@@ -51,22 +54,31 @@ final class SDL2Renderer
             close();
         }
 
+        /// Clear the current rendering target with the drawing color.
+        /// See_also: $(LINK http://wiki.libsdl.org/SDL_RenderClear)
         void clear()
         {
-            SDL_RenderClear(_renderer);
+            if (0 != SDL_RenderClear(_renderer))
+                _sdl2.throwSDL2Exception("SDL_RenderClear");
         }
 
+        /// Update the screen with rendering performed.
+        /// See_also: $(LINK http://wiki.libsdl.org/SDL_RenderPresent)
         void present()
         {
             SDL_RenderPresent(_renderer);
         }
 
+        /// Sets the color used for drawing operations.
+        /// See_also: $(LINK http://wiki.libsdl.org/SDL_SetRenderDrawColor)
         void setColor(ubyte r, ubyte g, ubyte b, ubyte a)
         {
             if (0 != SDL_SetRenderDrawColor(_renderer, r, g, b, a))
-                _sdl2.throwSDL2Exception("SDL_RenderSetViewport");
+                _sdl2.throwSDL2Exception("SDL_SetRenderDrawColor");
         }
 
+        /// Sets the window drawing area.
+        /// See_also: $(LINK http://wiki.libsdl.org/SDL_RenderSetViewport)
         void setViewport(box2i b)
         {
             SDL_Rect r = box2i_to_SDL_Rect(b);
@@ -74,6 +86,8 @@ final class SDL2Renderer
                 _sdl2.throwSDL2Exception("SDL_RenderSetViewport");
         }
 
+        /// Sets the whole window as drawing area.        
+        /// See_also: $(LINK http://wiki.libsdl.org/SDL_RenderSetViewport)
         void setViewportFull()
         {
             if (0 != SDL_RenderSetViewport(_renderer, null))
@@ -81,12 +95,15 @@ final class SDL2Renderer
         }
 
         /// Sets SDL blend mode.
+        /// See_also: $(LINK http://wiki.libsdl.org/SDL_SetRenderDrawBlendMode)
         void setBlend(int blendMode)
         {
             if (0 != SDL_SetRenderDrawBlendMode(_renderer, blendMode))
                 _sdl2.throwSDL2Exception("SDL_SetRenderDrawBlendMode");
         }
 
+        /// Draw a line.
+        /// See_also: $(LINK http://wiki.libsdl.org/SDL_RenderDrawLine)
         void drawLine(vec2i a, vec2i b)
         {
             if (0 != SDL_RenderDrawLine(_renderer, a.x, a.y, b.x, b.y))
@@ -94,24 +111,32 @@ final class SDL2Renderer
 
         }
 
+        /// Draw several lines at once.
+        /// See_also: $(LINK http://wiki.libsdl.org/SDL_RenderDrawLines)
         void drawLines(vec2i[] points)
         {
             if (0 != SDL_RenderDrawLines(_renderer, cast(SDL_Point*)(points.ptr), cast(int)(points.length)))
                 _sdl2.throwSDL2Exception("SDL_RenderDrawLines");
         }
 
+        /// Draw a point.
+        /// See_also: $(LINK http://wiki.libsdl.org/SDL_RenderDrawPoint)
         void drawPoint(vec2i point)
         {
             if (0 != SDL_RenderDrawPoint(_renderer, point.x, point.y))
                 _sdl2.throwSDL2Exception("SDL_RenderDrawPoint");
         }
 
+        /// Draw several point at once.
+        /// See_also: $(LINK http://wiki.libsdl.org/SDL_RenderDrawPoints)
         void drawPoints(vec2i[] points)
         {
             if (0 != SDL_RenderDrawPoints(_renderer, cast(SDL_Point*)(points.ptr), cast(int)(points.length)))
                 _sdl2.throwSDL2Exception("SDL_RenderDrawPoints");
         }
 
+        /// Draw a rectangle outline.
+        /// See_also: $(LINK http://wiki.libsdl.org/SDL_RenderDrawRect)
         void drawRect(box2i rect)
         {
             SDL_Rect r = box2i_to_SDL_Rect(rect);
@@ -119,6 +144,8 @@ final class SDL2Renderer
                 _sdl2.throwSDL2Exception("SDL_RenderDrawRect");
         }
 
+        /// Draw a filled rectangle.
+        /// See_also: $(LINK http://wiki.libsdl.org/SDL_RenderFillRect)
         void fillRect(box2i rect)
         {
             SDL_Rect r = box2i_to_SDL_Rect(rect);
@@ -126,6 +153,8 @@ final class SDL2Renderer
                 _sdl2.throwSDL2Exception("SDL_RenderFillRect");
         }
 
+        /// Blit a rectangle from a texture.
+        /// See_also: $(LINK http://wiki.libsdl.org/SDL_RenderCopy)
         void copy(SDL2Texture texture, box2i srcRect, box2i dstRect)
         {
             auto f = texture.format();
