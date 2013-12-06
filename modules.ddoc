@@ -6,6 +6,7 @@ MODULES =
     $(MODULE gfm.core.memory, aligned malloc/free/realloc)
     $(MODULE gfm.core.ini, INI parser/writer)
     $(MODULE gfm.core.text, string utilities)    
+    $(MODULE gfm.core.alignedbuffer, aligned buffer)
     $(MODULE gfm.core.structpool, arena allocator)
 
     $(MODULE gfm.math.vector, small vectors)
