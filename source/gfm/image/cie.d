@@ -1,63 +1,64 @@
+/**
+  This module performs various color computation and conversions.
+  See_also: $(WEB http://www.brucelindbloom.com)
+  Bugs: Invalid assumptions are made about the XYZ space. It is actually not dependent on some RGB space.
+  Warning: <b>This module is alpha-quality</b>.
+*/
 module gfm.image.cie;
 
 import gfm.math.funcs,
        gfm.math.vector,
        gfm.math.matrix;
 
-/// This module performs various color computation and conversions.
-// See_also: $(WEB http://www.brucelindbloom.com)
-// TODO: tag XYZ values with a ReferenceWhite?
-// WARNING: this is very beta
-
 // Standard illuminants (or reference whites) provide a basis for comparing colors recorded under different lighting.
 enum ReferenceWhite
 {
-    A,
-    B,
-    C,
-    D50, // 5003 K ("horizon" light), very common
-    D55,
-    D65, // 6504 K (noon light)
-    D75,
-    E,   // equal-energy radiator
-    F2,
-    F7,
-    F11
+    A,   /// A standard illuminant.
+    B,   /// B standard illuminant.
+    C,   /// C standard illuminant.
+    D50, /// 5003 K ("horizon" light), very common.
+    D55, /// D55 standard illuminant.
+    D65, /// 6504 K (noon light).
+    D75, /// D75 standard illuminant.
+    E,   /// equal-energy radiator.
+    F2,  /// F2 standard illuminant.
+    F7,  /// F7 standard illuminant.
+    F11  /// F11 standard illuminant.
 }
 
-// define various RGB spaces, which all have a reference white,
-// a power curve and primary xyY coordinates
+/// Define various RGB spaces, which all have a reference white,
+/// a power curve and primary xyY coordinates.
 enum RGBSpace
 {
-    sRGB,
-    ADOBE_RGB,
-    APPLE_RGB,
-    BEST_RGB,
-    BETA_RGB,
-    BRUCE_RGB,
-    CIE_RGB,
-    COLORMATCH_RGB,
-    DON_RGB_4,
-    ECI_RGB_V2,
-    EKTA_SPACE_PS5,
-    NTSC_RGB,
-    PAL_SECAM_RGB,
-    PROPHOTO_RGB,
-    SMPTE_C_RGB,
-    WIDE_GAMUT_RGB
+    sRGB,             ///
+    ADOBE_RGB,        ///
+    APPLE_RGB,        ///
+    BEST_RGB,         ///
+    BETA_RGB,         ///
+    BRUCE_RGB,        ///
+    CIE_RGB,          ///
+    COLORMATCH_RGB,   ///
+    DON_RGB_4,        ///
+    ECI_RGB_V2,       ///
+    EKTA_SPACE_PS5,   ///
+    NTSC_RGB,         ///
+    PAL_SECAM_RGB,    ///
+    PROPHOTO_RGB,     ///
+    SMPTE_C_RGB,      ///
+    WIDE_GAMUT_RGB    ///
 }
 
 
-// A spectral distribution is actual energy, from 360 to 780 nm, by 5 nm increments
+/// A spectral distribution of actual energy, from 360 to 780 nm, by 5 nm increments.
 alias Vector!(float, 107u) SpectralDistribution;
 
-// Holds reflectance values, can only be converted to a SpectralDistribution
-// when lit with a ReferenceWhite.
-// from 300 to 780 nm, by 5 nm increments
-// Reflectances are parameterized by a ReferenceWhite.
+/// Spectral reflectance values. Can only be converted to a SpectralDistribution
+/// when lit with a ReferenceWhite.
+/// from 300 to 780 nm, by 5 nm increments
+/// Reflectances are parameterized by a ReferenceWhite.
 alias Vector!(float, 107u) SpectralReflectance;
 
-// Converts spectral color into a XYZ space (parameterized by an illuminant)
+/// Converts spectral color into a XYZ space (parameterized by an illuminant)
 vec3f spectralToXYZColor(SpectralReflectance c, ReferenceWhite illuminant) pure nothrow
 {
     Vector!(float, 107u) c_lit = c * refWhiteToSpectralDistribution(illuminant);
@@ -66,9 +67,8 @@ vec3f spectralToXYZColor(SpectralReflectance c, ReferenceWhite illuminant) pure 
                  dot(CIE_OBS_Z2, c_lit));
 }
 
-
-// convert from companded RGB to uncompanded RGB
-// input and output in [0..1]
+/// Converts from companded RGB to uncompanded RGB.
+/// Input and output should be in the [0..1] range.
 vec3f toLinearRGB(RGBSpace space)(vec3f compandedRGB)
 {
     alias compandedRGB c;
@@ -107,8 +107,8 @@ vec3f toLinearRGB(RGBSpace space)(vec3f compandedRGB)
     }
 }
 
-// convert from uncompanded RGB to companded RGB
-// input and output in [0..1]
+/// Converts from uncompanded RGB to companded RGB.
+/// Input and output should be in the [0..1] range.
 vec3f toCompandedRGB(RGBSpace space)(vec3f compandedRGB)
 {
     alias compandedRGB c;
@@ -147,7 +147,7 @@ vec3f toCompandedRGB(RGBSpace space)(vec3f compandedRGB)
     }
 }
 
-// concert linear RGB to XYZ
+/// Converts linear RGB to XYZ.
 vec3f linearRGBToXYZ(RGBSpace space)(vec3f rgb)
 {
     // TODO: make M compile-time
@@ -155,7 +155,7 @@ vec3f linearRGBToXYZ(RGBSpace space)(vec3f rgb)
     return M * rgb;
 }
 
-// concert XYZ to linear RGB
+/// Converts XYZ to linear RGB.
 vec3f XYZToLinearRGB(RGBSpace space)(vec3f xyz)
 {
     // TODO: make M compile-time
@@ -163,8 +163,8 @@ vec3f XYZToLinearRGB(RGBSpace space)(vec3f xyz)
     return M * xyz;
 }
 
-// Converts from such a XYZ space back to spectral reflectance
-// Both spaces parametereized by the same Illuminant.
+/// Converts from such a XYZ space back to spectral reflectance.
+/// Both spaces being parameterized by the same Illuminant.
 SpectralReflectance XYZToSpectralColor(vec3f XYZ) pure nothrow
 {
     return CIE_OBS_X2 * XYZ.x + CIE_OBS_Y2 * XYZ.y + CIE_OBS_Z2 * XYZ.z;
@@ -172,8 +172,8 @@ SpectralReflectance XYZToSpectralColor(vec3f XYZ) pure nothrow
 
 private
 {
-    // defining spectrum table of CIE 1931 Standard Colorimetric Observer
-    // aka 2° observer
+    // Defining spectrum table of CIE 1931 Standard Colorimetric Observer
+    // aka 2° observer.
     enum SpectralDistribution CIE_OBS_X2 = SpectralDistribution
     ([
         0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
@@ -478,6 +478,4 @@ unittest
     vec3f rgb = toCompandedRGB!(RGBSpace.sRGB)(XYZToLinearRGB!(RGBSpace.sRGB)(XYZ));
 
     assert(white.distanceTo(rgb) < 1e-3f);
-
-
 }

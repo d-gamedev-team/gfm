@@ -1,3 +1,6 @@
+/**
+  This module introduces some Image implementations.
+*/
 module gfm.image.bitmap;
 
 import std.c.string, 

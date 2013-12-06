@@ -1,3 +1,6 @@
+/**
+  This module defines RGB <-> HSV conversions.
+*/
 module gfm.image.hsv;
 
 import std.algorithm,
