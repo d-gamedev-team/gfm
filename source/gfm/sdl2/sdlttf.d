@@ -12,7 +12,7 @@ import gfm.core.log,
        gfm.sdl2.sdl,
        gfm.sdl2.surface;
 
-/// SDL_ttf library resource
+/// SDL_ttf library wrapper.
 final class SDLTTF
 {
     public
@@ -76,7 +76,7 @@ final class SDLTTF
     }
 }
 
-/// SDL_ttf loaded font wrapper
+/// SDL_ttf loaded font wrapper.
 final class SDLFont
 {
     public
@@ -98,6 +98,7 @@ final class SDLFont
             close();
         }
 
+        /// Releases the SDL resource.
         void close()
         {
             if (_font !is null)
@@ -107,82 +108,86 @@ final class SDLFont
             }
         }
 
-        // style set/get properties
-        int style() @property
+        /// Returns: Font style.
+        int style()
         {
             return TTF_GetFontStyle(_font);
         }
 
-        int style(int newStyle) @property
+        /// Set font style.
+        int setStyle(int newStyle)
         {
             if (newStyle != TTF_GetFontStyle(_font))
                 TTF_SetFontStyle(_font, newStyle);
             return newStyle;
         }
 
-        // hinting set/get properties
-        int hinting() @property
+        /// Returns: Font hinting.
+        int hinting()
         {
             return TTF_GetFontHinting(_font);
         }
 
-        int hinting(int newHinting) @property
+        /// Set font hinting.
+        int setHinting(int newHinting)
         {
             if (newHinting != TTF_GetFontHinting(_font))
                 TTF_SetFontHinting(_font, newHinting);
             return newHinting;
         }
 
-        // outline set/get properties
-        int outline() @property
+        /// Returns: Font outline.
+        int outline()
         {
             return TTF_GetFontOutline(_font);
         }
 
-        int outline(int newOutline) @property
+        /// Set font outline.
+        int setOutline(int newOutline)
         {
             if (newOutline != TTF_GetFontOutline(_font))
                 TTF_SetFontOutline(_font, newOutline);
             return newOutline;
         }
 
-        // kerning set/get properties
-        bool kerning() @property
+        /// Returns: true if kerning is enabled.
+        bool getKerning()
         {
             return TTF_GetFontKerning(_font) != 0;
         }
 
-        bool kerning(bool enabled) @property
+        /// Enables/Disables font kerning.
+        bool setKerning(bool enabled)
         {
             TTF_SetFontKerning(_font, enabled ? 1 : 0);
             return enabled;
         }
 
-        /// the maximum height of a glyph in pixels
-        int height() @property
+        /// Returns: Maximum height of a glyph in pixels.
+        int height()
         {
             return TTF_FontAscent(_font);
         }
 
-        /// height above baseline in pixels
-        int ascent() @property
+        /// Returns: Height above baseline in pixels.
+        int ascent()
         {
             return TTF_FontAscent(_font);
         }
 
-        /// height below baseline
-        int descent() @property
+        /// Returns: Height below baseline.
+        int descent()
         {
             return TTF_FontDescent(_font);
         }
 
-        /// line skip is the recommended pixel interval between two lines
-        int lineSlip() @property
+        /// Returns: Line skip, the recommended pixel interval between two lines.
+        int lineSkip()
         {
             return TTF_FontLineSkip(_font);
         }
 
-        /// return size in pixels of text if rendered with this font
+        /// Returns: Size of text in pixels if rendered with this font.
         vec2i measureText(string text)
         {
             int w, h;
@@ -198,7 +203,7 @@ final class SDLFont
         }
 
         /// Create an 8-bit palettized surface and render the given text at fast 
-        /// quality with the given font and color
+        /// quality with the given font and color.
         SDL2Surface renderTextSolid(string text, SDL_Color color)
         {
             return checkedSurface(TTF_RenderUTF8_Solid(_font, toStringz(text), color));

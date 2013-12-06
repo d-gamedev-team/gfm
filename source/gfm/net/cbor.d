@@ -30,8 +30,6 @@ import std.range,
 
 // ALMOST UNTESTED
 
-immutable string CBOR_MIME_TYPE = "application/cbor";
-
 /// Possible type of a CBORValue. Does not map 1:1 to CBOR major types.
 enum CBORType
 {
@@ -833,6 +831,8 @@ private
     }
 }
 
+/// Recommended CBOR MIME type.
+immutable string CBOR_MIME_TYPE = "application/cbor";
 
 unittest
 {
@@ -854,3 +854,4 @@ unittest
     encodeCBORBytes(v);
   //  assert(v == a);
 }
+

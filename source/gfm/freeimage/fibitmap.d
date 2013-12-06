@@ -6,6 +6,7 @@ import derelict.freeimage.freeimage;
 
 import gfm.freeimage.freeimage;
 
+/// FreeImage bitmap wrapper.
 final class FIBitmap
 {
     public

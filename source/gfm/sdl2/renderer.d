@@ -13,77 +13,12 @@ import gfm.core.log,
        gfm.sdl2.texture,
        gfm.sdl2.surface;
 
-enum Blend
-{
-    NONE = SDL_BLENDMODE_NONE,
-    MUL = SDL_BLENDMODE_MOD,
-    ADD = SDL_BLENDMODE_ADD,
-    BLEND = SDL_BLENDMODE_BLEND
-}
-
-final class SDL2RendererInfo
-{
-    public
-    {
-        this(Log log, int index, SDL_RendererInfo info)
-        {
-            _log = log;
-            _index = index;
-            _info = info;
-        }
-
-        string name()
-        {
-            return sanitizeUTF8(_info.name, _log, "SDL2 renderer name");
-        }
-
-        bool isSoftware()
-        {
-            return (_info.flags & SDL_RENDERER_SOFTWARE) != 0;
-        }
-
-        bool isAccelerated()
-        {
-            return (_info.flags & SDL_RENDERER_ACCELERATED) != 0;
-        }
-
-        bool hasRenderToTexture()
-        {
-            return (_info.flags & SDL_RENDERER_TARGETTEXTURE) != 0;
-        }
-
-        bool isVsyncEnabled()
-        {
-            return (_info.flags & SDL_RENDERER_PRESENTVSYNC) != 0;
-        }
-
-        override string toString()
-        {
-            string res = format("renderer #%d: %s [flags:", _index, name());
-            if (isSoftware()) res ~= " software";
-            if (isAccelerated()) res ~= " accelerated";
-            if (hasRenderToTexture()) res ~= " render-to-texture";
-            if (isVsyncEnabled()) res ~= " vsync";
-            res ~= "]\n";
-            res ~= format("max. texture: %sx%s", _info.max_texture_width, _info.max_texture_height);
-            return res;
-        }
-    }
-
-    private
-    {
-        Log _log;
-        int _index;
-        SDL_RendererInfo _info;
-    }
-}
-
-
+/// SDL Renderer wrapper.
 final class SDL2Renderer
 {
     public
     {
-        // renderer for a window
+        /// Creates a SDL renderer which targets a window.
         this(SDL2Window window, int flags)
         {
             _sdl2 = window._sdl2;
@@ -92,7 +27,7 @@ final class SDL2Renderer
                 _sdl2.throwSDL2Exception("SDL_CreateRenderer");
         }
 
-        // create a software renderer for a surface
+        /// Create a software renderer which targets a surface.
         this(SDL2Surface surface)
         {
             _sdl2 = surface._sdl2;
@@ -101,6 +36,7 @@ final class SDL2Renderer
                 _sdl2.throwSDL2Exception("SDL_CreateSoftwareRenderer");
         }
 
+        /// Releases the SDL ressource.
         void close()
         {
             if (_renderer !is null)
@@ -144,9 +80,10 @@ final class SDL2Renderer
                 _sdl2.throwSDL2Exception("SDL_RenderSetViewport");
         }
 
-        void setBlend(Blend b)
+        /// Sets SDL blend mode.
+        void setBlend(int blendMode)
         {
-            if (0 != SDL_SetRenderDrawBlendMode(_renderer, b))
+            if (0 != SDL_SetRenderDrawBlendMode(_renderer, blendMode))
                 _sdl2.throwSDL2Exception("SDL_SetRenderDrawBlendMode");
         }
 
@@ -216,5 +153,69 @@ final class SDL2Renderer
             res.h = b.height;
             return res;
         }
+    }
+}
+
+/// SDL Renderer information.
+final class SDL2RendererInfo
+{
+    public
+    {
+        this(Log log, int index, SDL_RendererInfo info)
+        {
+            _log = log;
+            _index = index;
+            _info = info;
+        }
+
+        /// Returns: Renderer name.
+        string name()
+        {
+            return sanitizeUTF8(_info.name, _log, "SDL2 renderer name");
+        }
+
+        /// Returns: true if this renderer is software.
+        bool isSoftware()
+        {
+            return (_info.flags & SDL_RENDERER_SOFTWARE) != 0;
+        }
+
+        /// Returns: true if this renderer is accelerated.
+        bool isAccelerated()
+        {
+            return (_info.flags & SDL_RENDERER_ACCELERATED) != 0;
+        }
+
+        /// Returns: true if this renderer can render to a texture.
+        bool hasRenderToTexture()
+        {
+            return (_info.flags & SDL_RENDERER_TARGETTEXTURE) != 0;
+        }
+
+        /// Returns: true if this renderer support vertical synchronization.
+        bool isVsyncEnabled()
+        {
+            return (_info.flags & SDL_RENDERER_PRESENTVSYNC) != 0;
+        }
+
+        /// Returns: Pretty string describing the renderer.
+        override string toString()
+        {
+            string res = format("renderer #%d: %s [flags:", _index, name());
+            if (isSoftware()) res ~= " software";
+            if (isAccelerated()) res ~= " accelerated";
+            if (hasRenderToTexture()) res ~= " render-to-texture";
+            if (isVsyncEnabled()) res ~= " vsync";
+            res ~= "]\n";
+            res ~= format("max. texture: %sx%s", _info.max_texture_width, _info.max_texture_height);
+            return res;
+        }
+    }
+
+    private
+    {
+        Log _log;
+        int _index;
+        SDL_RendererInfo _info;
     }
 }

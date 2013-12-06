@@ -11,10 +11,12 @@ import gfm.core.queue,
 
 /// Utility class which gives time delta between frames, and 
 /// logs some framerate statistics.
+/// Useful for a variable timestep application.
 final class FrameCounter
 {
     public
     {
+        /// Creates a FrameCounter, SDL must be initialized.
         this(SDL2 sdl)
         {
             _sdl = sdl;
@@ -23,8 +25,8 @@ final class FrameCounter
             _stats = new RingBuffer!ulong(10);
         }
 
-        /// Mark the beginning of a new frame.
-        /// Returns: current time difference since last frame, in milliseconds.
+        /// Marks the beginning of a new frame.
+        /// Returns: Current time difference since last frame, in milliseconds.
         ulong tickMs()
         {
             if (_firstFrame)
@@ -45,26 +47,26 @@ final class FrameCounter
             }
         }
 
-        /// Mark the beginning of a new frame.
-        /// Returns: current time difference since last frame, in seconds.
+        /// Marks the beginning of a new frame.
+        /// Returns: Current time difference since last frame, in seconds.
         double tick()
         {
             return tickMs() * 0.001;
         }
 
-        /// Returns: elapsed time since creation, in milliseconds.
+        /// Returns: Elapsed time since creation, in milliseconds.
         ulong elapsedTimeMs() const
         {
             return _elapsedTime;
         }
 
-        /// Returns: elapsed time since creation, in seconds.
+        /// Returns: Elapsed time since creation, in seconds.
         double elapsedTime() const
         {
             return _elapsedTime * 0.001;
         }
 
-        /// Returns displayable framerate statistics.
+        /// Returns: Displayable framerate statistics.
         string getFPSString()
         {
             double avg = average(_stats[]);

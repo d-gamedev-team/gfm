@@ -3,6 +3,9 @@ module gfm.sdl2.keyboard;
 import derelict.sdl2.sdl;
 import gfm.sdl2.sdl;
 
+
+/// Holds SDL keyboard state.
+/// Bugs: This class should disappear.
 final class SDL2Keyboard
 {
     public
@@ -13,14 +16,15 @@ final class SDL2Keyboard
             clear();            
         }      
 
-        // test if a key is pressed
+        /// Returns: true if a key is pressed.
         bool isPressed(int key)
         {
             SDL_Scancode scan = SDL_GetScancodeFromKey(key);
             return (_state[scan] == PRESSED);
         }
 
-        // test if a key is pressed, and mark it as released
+        /// Mark a key as unpressed.
+        /// Returns: true if a key was pressed.
         bool testAndRelease(int key)
         {
             SDL_Scancode scan = SDL_GetScancodeFromKey(key);
@@ -35,7 +39,7 @@ final class SDL2Keyboard
             _state[] = RELEASED;
         }
 
-        /// Mark key as pressed and return previous state.
+        // Mark key as pressed and return previous state.
         bool markKeyAsPressed(SDL_Scancode scancode)
         {
             bool oldState = _state[scancode];
@@ -43,7 +47,7 @@ final class SDL2Keyboard
             return oldState;
         }
 
-        /// Mark key as released and return previous state.
+        // Mark key as released and return previous state.
         bool markKeyAsReleased(SDL_Scancode scancode)
         {
             bool oldState = _state[scancode];

@@ -10,10 +10,12 @@ import gfm.sdl2.sdl,
        gfm.sdl2.surface,
        gfm.sdl2.renderer;
 
+/// SDL Texture wrapper.
 final class SDL2Texture
 {
     public
     {
+        /// Creates a SDL Texture for a specific renderer.
         this(SDL2Renderer renderer, uint format, uint access, int width, int height)
         {
             _sdl2 = renderer._sdl2;
@@ -22,7 +24,7 @@ final class SDL2Texture
                 _sdl2.throwSDL2Exception("SDL_CreateTexture");
         }
 
-        // create texture from a surface
+        /// Creates a SDL Texture for a specific renderer, from an existing surface.
         this(SDL2Renderer renderer, SDL2Surface surface)
         {
             _handle = SDL_CreateTextureFromSurface(renderer._renderer, surface._surface);
@@ -35,6 +37,7 @@ final class SDL2Texture
             close();
         }
 
+        /// Releases the SDL resource.
         void close() 
         {
             if (_handle !is null)
@@ -82,6 +85,7 @@ final class SDL2Texture
             return res;
         }
 
+        /// Returns: Width of texture.
         int width()
         {
             int res;
@@ -91,6 +95,7 @@ final class SDL2Texture
             return res;
         }
 
+        /// Returns: Height of texture.
         int height()
         {
             int res;

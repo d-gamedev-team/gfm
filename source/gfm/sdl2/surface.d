@@ -5,17 +5,20 @@ import derelict.sdl2.sdl;
 import gfm.math.vector,
        gfm.sdl2.sdl;
 
-
+/// SDL Surface wrapper.
+/// A SDL2Surface might own the SDL_Surface* handle or not.
 final class SDL2Surface
 {
     public
     {
+        /// Whether a SDL Surface is owned by the wrapper or borrowed.
         enum Owned
         {
-            NO, YES
+            NO,  // Not owned.
+            YES  // Owned.
         }
 
-        /// Create from exisint SDL_Surface* handle.
+        /// Create from an existing SDL_Surface* handle.
         this(SDL2 sdl2, SDL_Surface* surface, Owned owned)
         {
             assert(surface !is null);
@@ -25,7 +28,7 @@ final class SDL2Surface
         }
 
         /// Create surface from RGBA data
-        /// See: SDL_CreateRGBSurfaceFrom
+        /// See_also: $WEB(wiki.libsdl.org/SDL_CreateRGBSurfaceFrom,SDL_CreateRGBSurfaceFrom)
         this(SDL2 sdl2, void* pixels, int width, int height, int depth, int pitch, 
              uint Rmask, uint Gmask, uint Bmask, uint Amask)
         {
@@ -41,6 +44,7 @@ final class SDL2Surface
             close();
         }
 
+        /// Releases the SDL resource.
         void close()
         {
             if (_surface !is null)
@@ -51,49 +55,58 @@ final class SDL2Surface
             }
         }
 
+        /// Returns: Width of the surface in pixels.
         @property int width() const
         {
             return _surface.w;
         }
 
+        /// Returns: Height of the surface in pixels.
         @property int height() const
         {
             return _surface.h;
         }
 
+        /// Returns: Pointer to surface data.
+        /// You must lock the surface before accessng it.
         ubyte* pixels()
         {
             return cast(ubyte*) _surface.pixels;
         }
 
+        /// Get the surface pitch (number of bytes between lines).
         size_t pitch()
         {
             return _surface.pitch;
         }
 
+        /// Lock the surface, allow to use pixels().
         void lock()
         {
             if (SDL_LockSurface(_surface) != 0)
                 _sdl2.throwSDL2Exception("SDL_LockSurface");
         }
 
+        /// Unlock the surface.
         void unlock()
         {
             SDL_UnlockSurface(_surface);
         }
 
+        /// Returns: SDL handle.
         SDL_Surface* handle()
         {
             return _surface;
         }
 
+        /// Returns: SDL_PixelFormat which describe the surface.
         SDL_PixelFormat* pixelFormat()
         {
             return _surface.format;
         }
 
-        // Warning: must be locked when using this method.
-        // Slow!
+        /// Get a surface pixel color.
+        /// Bugs: must be locked when using this method. Slow!
         vec4ub getRGBA(int x, int y)
         {
             // crash if out of image

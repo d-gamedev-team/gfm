@@ -10,12 +10,15 @@ import gfm.core.log,
        gfm.sdl2.sdl,
        gfm.sdl2.surface;
 
+/// SDL Window wrapper.
+/// There is two ways to receive events, either by polling a SDL2 object, 
+/// or by
 class SDL2Window
 {
     public
     {
-        // Initially invisible.
-        // Accepts same constants as the SDL2 function
+        /// Initially invisible.
+        /// Accepts the same constants as the SDL2 function.
         this(SDL2 sdl2, int x, int y, int width, int height, int flags)
         {
             _sdl2 = sdl2;
@@ -55,6 +58,7 @@ class SDL2Window
                 _glContext = new SDL2GLContext(this);
         }
 
+        /// Releases the SDL resource.
         final void close()
         {
             if (_glContext !is null)

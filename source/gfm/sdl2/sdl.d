@@ -18,7 +18,8 @@ import gfm.core.log,
        gfm.sdl2.window,
        gfm.sdl2.keyboard;
 
-/// The one exception type used in this wrapper.
+/// The one exception type thrown in this wrapper.
+/// A failing SDL function should <b>always</b> throw a SDL2Exception.
 class SDL2Exception : Exception
 {
     public
@@ -31,7 +32,7 @@ class SDL2Exception : Exception
 }
 
 /// Owns both the loader, logging, keyboard state...
-/// This object is passed around to other SDL wrapper objects primarily
+/// This object is passed around to other SDL wrapper objects
 /// to ensure library loading.
 final class SDL2
 {
@@ -82,6 +83,9 @@ final class SDL2
             _keyboard = new SDL2Keyboard(this);            
         }
 
+        /// Releases the SDL library and all ressources.
+        /// All ressources should have been released at this point,
+        /// since you won't be able to call any SDL function afterwards.
         void close()
         {
             // restore previously set logging function
@@ -104,37 +108,6 @@ final class SDL2
         ~this()
         {
             close();
-        }
-
-        string[] getVideoDrivers()
-        {
-            const int numDrivers = SDL_GetNumVideoDrivers();
-            string[] res;
-            res.length = numDrivers;
-            for(int i = 0; i < numDrivers; ++i)
-                res[i] = sanitizeUTF8(SDL_GetVideoDriver(i), _log, "SDL_GetVideoDriver");
-            return res;
-        }
-
-        string getPlatform()
-        {
-            return sanitizeUTF8(SDL_GetPlatform(), _log, "SDL_GetPlatform");
-        }
-
-        int getL1LineSize()
-        {
-            int res = SDL_GetCPUCacheLineSize();
-            if (res <= 0)
-                res = 64;
-            return res;
-        }
-
-        int getCPUCount()
-        {
-            int res = SDL_GetCPUCount();
-            if (res <= 0)
-                res = 1;
-            return res;
         }
 
         SDL2VideoDisplay[] getDisplays()
@@ -168,6 +141,7 @@ final class SDL2
             return availableDisplays;
         }
 
+        /// Returns: Resolution of the first display.
         vec2i firstDisplaySize()
         {
             auto displays = getDisplays();
@@ -176,6 +150,7 @@ final class SDL2
             return displays[0].dimension();
         }
 
+        /// Returns: Available renderers information.
         SDL2RendererInfo[] getRenderersInfo()
         {
             SDL2RendererInfo[] res;
@@ -194,53 +169,9 @@ final class SDL2
             return res;
         }
 
-        void startTextInput()
-        {
-            SDL_StartTextInput();
-        }
-
-        void stopTextInput()
-        {
-            SDL_StopTextInput();
-        }
-
-
-        // clipboard as a property
-        // set clipboard
-        @property string clipboard(string s)
-        {
-            int err = SDL_SetClipboardText(toStringz(s));
-            if (err != 0)
-                throwSDL2Exception("SDL_SetClipboardText");
-            return s;
-        }
-
-        // get clipboard
-        @property string clipboard()
-        {
-            if (SDL_HasClipboardText() == SDL_FALSE)
-                return null;
-
-            const(char)* s = SDL_GetClipboardText();
-            if (s is null)
-                throwSDL2Exception("SDL_GetClipboardText");
-
-            return sanitizeUTF8(s, _log, "SDL clipboard text");
-        }
-
-        SDL2Keyboard keyboard()
-        {
-            return _keyboard;
-        }
-
-        bool wasQuitResquested() const
-        {
-            return _quitWasRequested;
-        }
-
-        // Get next SDL event.
-        // Note: state get updated and window callbacks called.
-        // return true if returned an event
+        /// Get next SDL event.
+        /// Input state gets updated and window callbacks are called too.
+        /// Returns: true if returned an event.
         bool pollEvent(SDL_Event* event)
         {
             if (SDL_PollEvent(event) != 0)
@@ -253,8 +184,8 @@ final class SDL2
                 return false;
         }   
 
-        // Process all pending SDL events.
-        // 
+        /// Process all pending SDL events.
+        /// Input state gets updated and window callbacks are called too.
         void processEvents()
         {
             SDL_Event event;
@@ -264,6 +195,88 @@ final class SDL2
                 updateState(&event);
                 dispatchEvent(&event);
             }
+        }
+
+        /// Returns: Keyboard state.
+        /// The keyboard state is updated by processEvents() and pollEvent().
+        SDL2Keyboard keyboard()
+        {
+            return _keyboard;
+        }
+
+        /// Returns: true if an application termiantion has been requested.
+        bool wasQuitResquested() const
+        {
+            return _quitWasRequested;
+        }        
+
+        /// Start text input.
+        void startTextInput()
+        {
+            SDL_StartTextInput();
+        }
+
+        /// Stops text input.
+        void stopTextInput()
+        {
+            SDL_StopTextInput();
+        }
+
+        /// Sets clipboard content.
+        string setClipboard(string s)
+        {
+            int err = SDL_SetClipboardText(toStringz(s));
+            if (err != 0)
+                throwSDL2Exception("SDL_SetClipboardText");
+            return s;
+        }
+
+        /// Returns: Clipboard content.
+        string getClipboard()
+        {
+            if (SDL_HasClipboardText() == SDL_FALSE)
+                return null;
+
+            const(char)* s = SDL_GetClipboardText();
+            if (s is null)
+                throwSDL2Exception("SDL_GetClipboardText");
+
+            return sanitizeUTF8(s, _log, "SDL clipboard text");
+        }   
+
+        /// Returns: Available SDL video drivers.
+        string[] getVideoDrivers()
+        {
+            const int numDrivers = SDL_GetNumVideoDrivers();
+            string[] res;
+            res.length = numDrivers;
+            for(int i = 0; i < numDrivers; ++i)
+                res[i] = sanitizeUTF8(SDL_GetVideoDriver(i), _log, "SDL_GetVideoDriver");
+            return res;
+        }
+
+        /// Returns: Platform name.
+        string getPlatform()
+        {
+            return sanitizeUTF8(SDL_GetPlatform(), _log, "SDL_GetPlatform");
+        }
+
+        /// Returns: L1 cacheline size in bytes.
+        int getL1LineSize()
+        {
+            int res = SDL_GetCPUCacheLineSize();
+            if (res <= 0)
+                res = 64;
+            return res;
+        }
+
+        /// Returns: number of CPUs.
+        int getCPUCount()
+        {
+            int res = SDL_GetCPUCount();
+            if (res <= 0)
+                res = 1;
+            return res;
         }
     }
 

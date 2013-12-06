@@ -20,6 +20,7 @@ class FreeImageException : Exception
     }
 }
 
+/// FreeImage library wrapper.
 final class FreeImage
 {
     public

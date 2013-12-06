@@ -49,6 +49,12 @@ final class SDLImage
 
         }
 
+        ~this()
+        {
+            close();            
+        }        
+
+        /// Releases the SDL resource.
         void close()
         {
             if (_SDLImageInitialized)
@@ -58,11 +64,6 @@ final class SDLImage
             }
 
             DerelictSDL2Image.unload();
-        }
-
-        ~this()
-        {
-            close();            
         }
 
         // load an image
