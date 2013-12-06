@@ -1,3 +1,6 @@
+/**
+  This module provide support for aligned memory.
+ */
 module gfm.core.memory;
 
 import std.c.stdlib : malloc, free, realloc;

@@ -1,7 +1,9 @@
+/**
+  Range-based statistic computations.
+
+  If you need real statistics, consider using the $(WEB github.com/dsimcha/dstats,Dstats) library.
+ */
 module gfm.math.statistics;
-
-
-/// Range-based statistic computations.
 
 import std.range,
        std.math;

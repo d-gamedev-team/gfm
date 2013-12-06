@@ -6,9 +6,9 @@ import std.stdio,
 
 import gfm.core.text;
 
-/// A dumb and permissive INI parser, AST and writer
-/// Bugs: this parser is not robust.
-class IniFile
+/// A dumb and permissive INI reader/writer.
+/// Bugs: This parser is not robust.
+class INIFile
 {
     public
     {
@@ -18,6 +18,7 @@ class IniFile
         }
 
         /// Create from a file (eg. to load settings).
+        /// Bugs: <b>INI parsing never fails and ignores all kind of errors</b>.
         this(string filename)
         {
             string[] lines = readTextFile(filename);
@@ -185,3 +186,5 @@ private final class IniSection
         }
     }
 }
+
+deprecated("IniFile was renamed to INIFile") alias INIFile IniFile;

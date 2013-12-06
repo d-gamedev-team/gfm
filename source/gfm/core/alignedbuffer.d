@@ -3,14 +3,13 @@ module gfm.core.alignedbuffer;
 import std.c.string;
 import gfm.core.memory;
 
-
-// TODO: make this module disappear when std.allocator is out, and we have something like std::vector.
-
-// Growable array, points to a memory aligned location.
+/// Growable array, points to a memory aligned location.
+/// Bugs: make this class disappear when std.allocator is out.
 final class AlignedBuffer(T)
 {
     public
     {
+        /// Creates an empty aligned buffer.
         this() nothrow
         {
             _size = 0;
@@ -19,13 +18,14 @@ final class AlignedBuffer(T)
             _alignment = 64;
         }
 
+        /// Creates an aligned buffer with given size.
         this(size_t initialSize) nothrow
         {
             this();
             resize(initialSize);
         }
 
-        // copy
+        /// Creates an aligned buffer by copy.
         this(AlignedBuffer other)
         {
             this();
@@ -35,7 +35,18 @@ final class AlignedBuffer(T)
 
         ~this()
         {
-            release();
+            close();
+        }
+
+        deprecated("release was renamed to close") alias close release;
+        void close()
+        {
+            if (_data !is null)
+            {
+                alignedFree(_data);
+                _data = null;
+                _allocated = 0;
+            }
         }
 
         size_t length() pure const nothrow
@@ -104,16 +115,6 @@ final class AlignedBuffer(T)
         T* _data;
         size_t _allocated;
         size_t _alignment;
-
-        void release()
-        {
-            if (_data !is null)
-            {
-                alignedFree(_data);
-                _data = null;
-                _allocated = 0;
-            }
-        }
     }
 }
 

@@ -1,3 +1,10 @@
+/**
+  This module defines the notion of an Image.   
+  An Image is simply defined as a 2D array of elements, with
+  methods to set/get those elements.
+
+  The Image concept might be the basis of a generic software renderer.
+ */
 module gfm.image.image;
 
 import gfm.math.vector;
@@ -8,11 +15,11 @@ import gfm.math.vector;
 /**
  * Test if I is an Image.
  *
- * A, imùage has at least the following features:
+ * An image has the following features:
  * $(UL
- * $(LI defines element_t as the type of elements (eg. pixels))
- * $(LI has a dimension of type vec2i)
- * $(LI has getter/setter for individual elements)
+ * $(LI defines element_t as the type of elements (eg. pixels).)
+ * $(LI has a dimension of type vec2i.)
+ * $(LI has getter/setter for individual elements.)
  * )
  */
 template isImage(I)
@@ -34,21 +41,22 @@ bool contains(I)(I img, int x, int y) if (isImage!I)
     return cast(uint)x < img.dimension.x && cast(uint)x < img.dimension.y;
 }
 
-/// Draw a single pixel
+/// EdgeMode define how images are samples beyond their boundaries.
+enum EdgeMode
+{
+    BLACK,  /// Return black.
+    CLAMP,  /// Clamp to edge.
+    REPEAT, /// Repeat from the other side of the image.
+    CRASH   /// Crash.
+}
+
+
+/// Draw a single pixel.
 void drawPixel(I, P)(I img, int x, int y, P p) if (isImage!I && is(P : I.element_t))
 {
     if (!img.contains(x, y))
         return;
     img.set(x, y, p);
-}
-
-/// Edge modes define how images are samples beyond their boundaries.
-enum EdgeMode
-{
-    BLACK,
-    CLAMP,
-    REPEAT,
-    ASSERT
 }
 
 /// Returns: pixel of an Image at position (x, y). 
@@ -78,7 +86,7 @@ I.element_t getPixel(I)(I img, int x, int y, EdgeMode em)
                 break;
             }
 
-            case EdgeMode.ASSERT: 
+            case EdgeMode.CRASH: 
                 assert(false);
         }
     }
