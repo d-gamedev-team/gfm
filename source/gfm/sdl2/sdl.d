@@ -19,7 +19,7 @@ import gfm.core.log,
        gfm.sdl2.keyboard;
 
 /// The one exception type thrown in this wrapper.
-/// A failing SDL function should <b>always</b> throw a SDL2Exception.
+/// A failing SDL function should <b>always</b> throw a $(D SDL2Exception).
 class SDL2Exception : Exception
 {
     public
@@ -40,6 +40,7 @@ final class SDL2
     {
         /// Load SDL2 library, redirect logging to our logger.
         /// You can pass a null logger if you don't want logging.
+        /// Throws: $(D SDL2Exception) on error.
         this(Log log)
         {
             _log = log is null ? new NullLog() : log;
@@ -110,6 +111,8 @@ final class SDL2
             close();
         }
 
+        /// Returns: Available displays information.
+        /// Throws: $(D SDL2Exception) on error.
         SDL2VideoDisplay[] getDisplays()
         {
             int numDisplays = SDL_GetNumVideoDisplays();
@@ -142,6 +145,7 @@ final class SDL2
         }
 
         /// Returns: Resolution of the first display.
+        /// Throws: $(D SDL2Exception) on error.
         vec2i firstDisplaySize()
         {
             auto displays = getDisplays();
@@ -151,6 +155,7 @@ final class SDL2
         }
 
         /// Returns: Available renderers information.
+        /// Throws: $(D SDL2Exception) on error.
         SDL2RendererInfo[] getRenderersInfo()
         {
             SDL2RendererInfo[] res;
@@ -223,6 +228,7 @@ final class SDL2
         }
 
         /// Sets clipboard content.
+        /// Throws: $(D SDL2Exception) on error.
         string setClipboard(string s)
         {
             int err = SDL_SetClipboardText(toStringz(s));
@@ -232,6 +238,7 @@ final class SDL2
         }
 
         /// Returns: Clipboard content.
+        /// Throws: $(D SDL2Exception) on error.
         string getClipboard()
         {
             if (SDL_HasClipboardText() == SDL_FALSE)

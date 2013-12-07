@@ -94,11 +94,10 @@ class HTTPClient
             return request(HTTPMethod.HEAD, uri, defaultHeaders(uri));
         }
 
-        /**
-         * Perform a HTTP request.
-         * requestURI can be "*", an absolute URI, an absolute path, or an authority
-         * depending on the method.
-         */
+        /// Performs a HTTP request.
+        /// Requested URI can be "*", an absolute URI, an absolute path, or an authority
+        /// depending on the method.
+        /// Throws: $(D HTTPException) on error.
         HTTPResponse request(HTTPMethod method, URI uri, string[string] headers)
         {
             checkURI(uri);

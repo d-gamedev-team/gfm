@@ -18,6 +18,7 @@ final class SDLImage
     {
         /// Loads the SDL_image library.
         /// SDL must be already initialized.
+        /// Throws: $(D SDL2Exception) on error.
         this(SDL2 sdl2, int flags = IMG_INIT_JPG | IMG_INIT_PNG | IMG_INIT_TIF | IMG_INIT_WEBP)
         {
             _sdl2 = sdl2; // force loading of SDL first
@@ -69,8 +70,8 @@ final class SDLImage
         }
 
         /// Load an image.
-        /// Throws: SDL2ImageException on error.
         /// Returns: A SDL surface with loaded content.
+        /// Throws: $(D SDL2Exception) on error.
         SDL2Surface load(string path)
         {
             immutable(char)* pathz = toStringz(path);

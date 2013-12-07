@@ -252,7 +252,7 @@ struct CBORValue
     }
 
     /// Typesafe way of accessing $(D store.boolean).
-    /// Throws $(D CBORException) if $(D type) is not a bool.
+    /// Throws: $(D CBORException) if $(D type) is not a bool.
     @property bool boolean() inout
     {
         enforceEx!CBORException(type == CBORType.SIMPLE, "CBORValue is not a bool");
@@ -265,7 +265,7 @@ struct CBORValue
     }
 
     /// Typesafe way of accessing $(D store.str).
-    /// Throws $(D CBORException) if $(D type) is not $(D CBORType.STRING).
+    /// Throws: $(D CBORException) if $(D type) is not $(D CBORType.STRING).
     @property ref inout(string) str() inout
     {
         enforceEx!CBORException(type == CBORType.STRING, "CBORValue is not a string");
@@ -273,7 +273,7 @@ struct CBORValue
     }
 
     /// Typesafe way of accessing $(D store.byteStr).
-    /// Throws $(D CBORException) if $(D type) is not $(D CBORType.BYTE_STRING).
+    /// Throws: $(D CBORException) if $(D type) is not $(D CBORType.BYTE_STRING).
     @property ref inout(ubyte[]) byteStr() inout
     {
         enforceEx!CBORException(type == CBORType.BYTE_STRING, "CBORValue is not a byte string");
@@ -281,7 +281,7 @@ struct CBORValue
     }
 
     /// Typesafe way of accessing $(D store.integer).
-    /// Throws $(D CBORException) if $(D type) is not $(D CBORType.INTEGER).
+    /// Throws: $(D CBORException) if $(D type) is not $(D CBORType.INTEGER).
     @property ref inout(long) integer() inout
     {
         enforceEx!CBORException(type == CBORType.INTEGER, "CBORValue is not an integer");
@@ -289,7 +289,7 @@ struct CBORValue
     }
 
     /// Typesafe way of accessing $(D store.uinteger).
-    /// Throws $(D CBORException) if $(D type) is not $(D CBORType.UINTEGER).
+    /// Throws: $(D CBORException) if $(D type) is not $(D CBORType.UINTEGER).
     @property ref inout(ulong) uinteger() inout
     {
         enforceEx!CBORException(type == CBORType.UINTEGER, "CBORValue is not an unsigned integer");
@@ -297,7 +297,7 @@ struct CBORValue
     }
 
     /// Typesafe way of accessing $(D store.bigint).
-    /// Throws $(D CBORException) if $(D type) is not $(D CBORType.BIGINT).
+    /// Throws: $(D CBORException) if $(D type) is not $(D CBORType.BIGINT).
     @property ref inout(BigInt) bigint() inout
     {
         enforceEx!CBORException(type == CBORType.BIGINT, "CBORValue is not a big integer");
@@ -305,7 +305,7 @@ struct CBORValue
     }
 
     /// Typesafe way of accessing $(D store.floating).
-    /// Throws $(D CBORException) if $(D type) is not $(D CBORType.FLOATING).
+    /// Throws: $(D CBORException) if $(D type) is not $(D CBORType.FLOATING).
     @property ref inout(double) floating() inout
     {
         enforceEx!CBORException(type == CBORType.FLOATING, "CBORValue is not a floating point");
@@ -313,7 +313,7 @@ struct CBORValue
     }
 
     /// Typesafe way of accessing $(D store.map).
-    /// Throws $(D CBORException) if $(D type) is not $(D CBORType.MAP).
+    /// Throws: $(D CBORException) if $(D type) is not $(D CBORType.MAP).
     @property ref inout(CBORValue[2][]) map() inout
     {
         enforceEx!CBORException(type == CBORType.MAP, "CBORValue is not an object");
@@ -321,7 +321,7 @@ struct CBORValue
     }
 
     /// Typesafe way of accessing $(D store.array).
-    /// Throws $(D CBORException) if $(D type) is not $(D CBORType.ARRAY).
+    /// Throws: $(D CBORException) if $(D type) is not $(D CBORType.ARRAY).
     @property ref inout(CBORValue[]) array() inout
     {
         enforceEx!CBORException(type == CBORType.ARRAY, "CBORValue is not an array");
@@ -330,6 +330,7 @@ struct CBORValue
 }
 
 /// Decode a single CBOR object from an input range.
+/// Throws: $(D CBORException) on decoding error.
 CBORValue decodeCBOR(R)(R input) if (isInputRange!R)
 {
     ubyte firstByte = input.popByte();

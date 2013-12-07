@@ -42,7 +42,8 @@ class URI
         }
 
         /// Creactes an URI from an input range, throws if invalid.
-        // Input should be an ENCODED url range.
+        /// Input should be an ENCODED url range.
+        /// Throws: $(D URIException) if the URI is invalid.
         this(T)(T input) if (isForwardRange!T)
         {
             _scheme = null;
