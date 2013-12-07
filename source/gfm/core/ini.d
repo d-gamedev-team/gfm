@@ -64,7 +64,7 @@ class INIFile
             catch(StdioException e)
             {
                 // ignoring errors for the moment
-                assert(false);
+                // TODO: log a warning
             }
         }
 
