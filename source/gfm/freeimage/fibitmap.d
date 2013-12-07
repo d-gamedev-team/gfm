@@ -56,7 +56,7 @@ final class FIBitmap
             _bitmap = FreeImage_ConvertFromRawBits(data, width, height, pitch, bpp,
                                                    redMask, greenMask, blueMask, FALSE);
 
-            if (bitmap is null)
+            if (_bitmap is null)
                 throw new FreeImageException("Cannot make FIBitmap from raw data");
         }
 
