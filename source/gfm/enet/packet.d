@@ -8,11 +8,12 @@ class Packet
 {
     public
     {
-        // Create an ENet packet
-        // Flags:
-        // - ENET_PACKET_FLAG_RELIABLE - packet must be received by the target peer
-        // - ENET_PACKET_FLAG_UNSEQUENCED - packet will not be sequenced with other packets 
-        // - ENET_PACKET_FLAG_NO_ALLOCATE - packet will not allocate data, and user must supply it instead
+        /// Creates an ENet packet.
+        /// Flags:
+        /// - ENET_PACKET_FLAG_RELIABLE - packet must be received by the target peer
+        /// - ENET_PACKET_FLAG_UNSEQUENCED - packet will not be sequenced with other packets 
+        /// - ENET_PACKET_FLAG_NO_ALLOCATE - packet will not allocate data, and user must supply it instead
+        /// Throws: ENetException on error.
         this(ENet enet, const(void)* data, size_t dataLength, uint flags)
         {
             _enet = enet;
@@ -35,6 +36,7 @@ class Packet
             }
         }
 
+        /// Throws: ENetException on error.
         void resize(size_t dataLength)
         {
             int result = enet_packet_resize(_handle, dataLength);

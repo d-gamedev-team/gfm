@@ -16,6 +16,7 @@ class Peer
             _connected = connected;
         }
 
+        /// Throws: ENetException on error.
         void send(ubyte channelID, ENetPacket* packet)
         {
             int errCode = enet_peer_send(_handle, channelID, packet);

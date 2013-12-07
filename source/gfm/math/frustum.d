@@ -16,7 +16,7 @@ align(1) struct Plane(T) if (isFloatingPoint!T)
 {
     public
     {
-        vec3!T n; // normal (always normalized)
+        vec3!T n; /// Normal (always stored normalized).
         T d;
 
         /// Create from four coordinates.
@@ -39,6 +39,7 @@ align(1) struct Plane(T) if (isFloatingPoint!T)
             this(C, cross(B - A, C - A));
         }
 
+        /// Assign a plane with another plane.
         ref Plane opAssign(Plane other) pure nothrow
         {
             n = other.n;
@@ -79,8 +80,8 @@ align(1) struct Plane(T) if (isFloatingPoint!T)
     }
 }
 
-alias Plane!float planef;
-alias Plane!double planed;
+alias Plane!float planef;  /// 3D float plane.
+alias Plane!double planed; /// 3D double plane.
 
 unittest
 {

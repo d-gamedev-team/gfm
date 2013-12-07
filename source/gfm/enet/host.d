@@ -5,13 +5,14 @@ import derelict.enet.enet;
 import gfm.enet.enet,
        gfm.enet.peer;
 
-/// ENet host
-/// http://enet.bespin.org/group__host.html
+/// ENet host.
 /// Inherit this class to dispatch packets.
+/// See_also: $(WEB enet.bespin.org/group__host.html)
 class Host
 {
     public
     {
+        /// Throws: ENetException on error.
         this(ENet enet, ENetAddress* address, size_t peerCount, size_t channelLimit, uint incomingBandwidth, uint outgoingBandwidth)
         {
             _enet = enet;
@@ -34,6 +35,7 @@ class Host
             }
         }
 
+        /// Throws: ENetException on error.
         final Peer connect(const(ENetAddress) *address, size_t channelCount, enet_uint32 data = 0)
         {
             ENetPeer* peer = enet_host_connect(_handle, address, channelCount, data);
@@ -63,6 +65,8 @@ class Host
              enet_host_bandwidth_limit(_handle, incomingBandwidth, outgoingBandwidth);
         }
 
+
+        /// Throws: ENetException on error.
         // 0 => no timeout
         final void processEvent(bool blocking, int timeout = 0)
         {

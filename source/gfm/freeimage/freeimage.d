@@ -9,6 +9,8 @@ import derelict.freeimage.freeimage,
 import gfm.core.log,
        gfm.core.text;
 
+/// The one exception type thrown in this wrapper.
+/// A failing FreeImage function should <b>always</b> throw an FreeImageException.
 class FreeImageException : Exception
 {
     public
@@ -25,6 +27,8 @@ final class FreeImage
 {
     public
     {
+        /// Loads the FreeImage library and logs some information.
+        /// Throws: FreeImageException on error.
         this(Log log, bool useExternalPlugins = false)
         {
             _log = log is null ? new NullLog() : log;

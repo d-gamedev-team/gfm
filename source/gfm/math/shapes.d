@@ -5,13 +5,19 @@ import std.math,
 
 import gfm.math.vector;
 
-// Implement abstract shapes in any number of dimensions like
-// - line segment
-// - triangle
-// - circle/spheres
-// - ray
+/**
+  Implement abstract shapes in any number of dimensions like
 
-// 2 points
+  $(UL
+  $(LI Line segments.)
+  $(LI Triangle.)
+  $(LI Circles/spheres.)
+  $(LI Rays)
+  )
+ */
+
+/// A Segment is 2 points.
+/// In 2D, it represents the vector from a to b.
 struct Segment(T, size_t N)
 {
     public
@@ -21,7 +27,8 @@ struct Segment(T, size_t N)
     }
 }
 
-// 3 points
+/// A Segment is 3 points.
+/// Bugs: Define normal direction.
 struct Triangle(T, size_t N)
 {
     public
@@ -31,11 +38,13 @@ struct Triangle(T, size_t N)
 
         static if (N == 2u)
         {
+            /// Returns: area of the 2D triangle.
             T area() pure const nothrow
             {
                 return abs(signedArea());
             }
 
+            /// Returns: signed area.
             T signedArea() pure const nothrow
             {
                 return ((b.x * a.y - a.x * b.y)
@@ -46,7 +55,7 @@ struct Triangle(T, size_t N)
     }
 }
 
-// a point and a radius
+/// A Sphere is a point and a radius.
 struct Sphere(T, size_t N)
 {
     public nothrow
@@ -55,12 +64,15 @@ struct Sphere(T, size_t N)
         point_t center;
         T radius;
 
+        /// Creates a sphere from a point and a radius.
         this(in point_t center_, T radius_) pure nothrow
         {
             center = center_;
             radius = radius_;
         }
 
+        /// Sphere contains point test.
+        /// Returns: true if the point is inside the sphere.
         bool contains(in Sphere s) pure const nothrow
         {
             if (s.radius > radius)
@@ -70,11 +82,14 @@ struct Sphere(T, size_t N)
             return squaredDistanceTo(s.center) < innerRadius * innerRadius;
         }
 
+        /// Sphere vs point Euclidean distance squared.
         T squaredDistanceTo(point_t p) pure const nothrow
         {
             return center.squaredDistanceTo(p);
         }
 
+        /// Sphere vs sphere intersection.
+        /// Returns: true if the spheres intersect.
         bool intersects(Sphere s) pure const nothrow
         {
             T outerRadius = radius + s.radius;
@@ -83,7 +98,7 @@ struct Sphere(T, size_t N)
 
         static if (isFloatingPoint!T)
         {
-
+            /// Sphere vs point Euclidean distance.
             T distanceTo(point_t p) pure const nothrow
             {
                 return center.distanceTo(p);
@@ -91,6 +106,7 @@ struct Sphere(T, size_t N)
 
             static if(N == 2u)
             {
+                /// Returns: Circle area.
                 T area() pure const nothrow
                 {
                     return PI * (radius * radius);
@@ -100,7 +116,7 @@ struct Sphere(T, size_t N)
     }
 }
 
-// Ray: describe ray origin + direction
+/// A Ray ir a point + a direction.
 struct Ray(T, size_t N)
 {
 nothrow:
@@ -110,6 +126,7 @@ nothrow:
         point_t orig;
         point_t dir;
 
+        /// Returns: A point further along the ray direction.
         point_t progress(T t) pure const
         {
             return orig + dir * t;
@@ -117,6 +134,8 @@ nothrow:
 
         static if (N == 3u)
         {
+            /// Ray vs triangle intersection.
+            /// Bugs: Verify what triangle axis is reffered to.
             bool intersect(Triangle!(T, 3u) triangle, out T t, out T u, out T v)
             {
                 point_t edge1 = triangle.b - triangle.a;
@@ -151,22 +170,22 @@ nothrow:
     }
 }
 
-alias Segment!(float, 2u) seg2f;
-alias Segment!(float, 3u) seg3f;
-alias Segment!(double, 2u) seg2d;
-alias Segment!(double, 3u) seg3d;
+alias Segment!(float, 2u) seg2f;  /// 2D float segment.
+alias Segment!(float, 3u) seg3f;  /// 3D float segment.
+alias Segment!(double, 2u) seg2d; /// 2D double segment.
+alias Segment!(double, 3u) seg3d; /// 3D double segment.
 
-alias Triangle!(float, 2u) triangle2f;
-alias Triangle!(float, 3u) triangle3f;
-alias Triangle!(double, 2u) triangle2d;
-alias Triangle!(double, 3u) triangle3d;
+alias Triangle!(float, 2u) triangle2f;  /// 2D float triangle.
+alias Triangle!(float, 3u) triangle3f;  /// 3D float triangle.
+alias Triangle!(double, 2u) triangle2d; /// 2D double triangle.
+alias Triangle!(double, 3u) triangle3d; /// 3D double triangle.
 
-alias Sphere!(float, 2u) sphere2f;
-alias Sphere!(float, 3u) sphere3f;
-alias Sphere!(double, 2u) sphere2d;
-alias Sphere!(double, 3u) sphere3d;
+alias Sphere!(float, 2u) sphere2f;  /// 2D float sphere (ie. a circle).
+alias Sphere!(float, 3u) sphere3f;  /// 3D float sphere.
+alias Sphere!(double, 2u) sphere2d; /// 2D double sphere (ie. a circle).
+alias Sphere!(double, 3u) sphere3d; /// 3D double sphere (ie. a circle).
 
-alias Ray!(float, 2u) ray2f;
-alias Ray!(float, 3u) ray3f;
-alias Ray!(double, 2u) ray2d;
-alias Ray!(double, 3u) ray3d;
+alias Ray!(float, 2u) ray2f;  /// 2D float ray.
+alias Ray!(float, 3u) ray3f;  /// 3D float ray.
+alias Ray!(double, 2u) ray2d; /// 2D double ray.
+alias Ray!(double, 3u) ray3d; /// 3D double ray.

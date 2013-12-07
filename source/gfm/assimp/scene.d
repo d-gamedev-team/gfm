@@ -41,7 +41,7 @@ class AssimpScene
             close();
         }
 
-        /// Release the ASSIMP scene resource.
+        /// Releases the ASSIMP scene resource.
         void close()
         {
             if (_scene !is null)

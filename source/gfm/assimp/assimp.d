@@ -33,6 +33,7 @@ final class Assimp
     {
         /// Load ASSIMP library, redirect logging to our logger.
         /// You can pass a null logger if you don't want logging.
+        /// Throws: AssimpException on error.
         this(Log log)
         {
             _log = log is null ? new NullLog() : log;

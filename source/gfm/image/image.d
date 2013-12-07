@@ -35,13 +35,13 @@ template isImage(I)
     }()));
 }
 
-/// Return true if an image contains the given point.
+/// Returns: true if an image contains the given point.
 bool contains(I)(I img, int x, int y) if (isImage!I)
 {
     return cast(uint)x < img.dimension.x && cast(uint)x < img.dimension.y;
 }
 
-/// EdgeMode define how images are samples beyond their boundaries.
+/// EdgeMode defines how images are sampled beyond their boundaries.
 enum EdgeMode
 {
     BLACK,  /// Return black.
@@ -51,7 +51,7 @@ enum EdgeMode
 }
 
 
-/// Draw a single pixel.
+/// Draws a single pixel.
 void drawPixel(I, P)(I img, int x, int y, P p) if (isImage!I && is(P : I.element_t))
 {
     if (!img.contains(x, y))
@@ -103,7 +103,7 @@ void fillRect(I, P)(I img, int x, int y, int width, int height, P e) if (isImage
             img.set(x + i, y + j, e);
 }
 
-/// Fill a whole image with a single element value.
+/// Fills a whole image with a single element value.
 void fillImage(I, P)(I img, P e) if (isImage!I && is(P : I.element_t))
 {
     immutable int width = img.dimension.x;

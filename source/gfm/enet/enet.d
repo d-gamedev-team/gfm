@@ -9,6 +9,8 @@ import derelict.enet.enet,
 import gfm.core.log,
        gfm.enet.host;
 
+/// The one exception type thrown in this wrapper.
+/// A failing ENet function should <b>always</b> throw an ENetException.
 class ENetException : Exception
 {
     public
@@ -20,11 +22,13 @@ class ENetException : Exception
     }
 }
 
-// library wrapper
+/// ENet library wrapper.
 final class ENet
 {
     public
     {
+        /// Loads the ENet library and log some information.
+        /// Throws: ENetException on error.
         this(Log log)
         {
             _log = log is null ? new NullLog() : log;
@@ -59,16 +63,20 @@ final class ENet
             close();
         }
 
+        /// Releases the ENet library and all ressources.
+        /// All ressources should have been released at this point,
+        /// since you won't be able to call any ENet function afterwards.
         void close()
         {
             if (_libInitialized)
             {
                 enet_deinitialize();
+                DerelictENet.unload();
                 _libInitialized = false;
             }
         }
 
-        // Create a server
+        /// Creates an ENet server.
         Host createServer(ushort port, int peerCount)
         {
             ENetAddress address;
@@ -77,13 +85,13 @@ final class ENet
             return new Host(this, &address, peerCount, 0, 0, 0);
         }
         
-        // Create a client
+        /// Creates an ENet client.
         Host createClient(int peerCount) 
         {
             return new Host(this, null, peerCount, 0, 0, 0);
         }
 
-        // try to resolve host address
+        /// Try to resolve host address.
         bool resolveHost(string hostName, out uint host)
         {
             ENetAddress address;
