@@ -26,6 +26,7 @@ class URIException : Exception
  *
  * Bugs: separate segments in parsed form -> relative URL combining
  *       . and .. normalization
+ * Consider using $(WEB vibed.org,vibe.d) if you need something better.
  */
 class URI
 {

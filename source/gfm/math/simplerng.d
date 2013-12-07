@@ -1,19 +1,21 @@
+/**
+ Translation of SimpleRNG.
+ Removed the builtin RNG to use std.random, but kept the distribution functions.
+ John D. Cook confirmed this code as public domain.
+
+ Authors: John D. Cook.
+ See_also: $(WEB www.johndcook.com/cpp_random_number_generation.html)
+ */
 module gfm.math.simplerng;
 
 public import std.random;
 import std.math;
 
-// Translation of SimpleRNG the work of John D. Cook
-// http://www.johndcook.com/cpp_random_number_generation.html
-// Removed the builtin RNG, and kept the distribution functions
-// John D. Cook confirmed this code as public domain.
-
-// Normal (Gaussian) random sample
+/// Returns: Normal (Gaussian) random sample.
+/// See_also: Box-Muller algorithm.
 double randNormal(RNG)(ref RNG rng, double mean = 0.0, double standardDeviation = 1.0)
 {
-    assert(standardDeviation > 0);
-
-    // Use Box-Muller algorithm
+    assert(standardDeviation > 0);    
     double u1;
 
     do 
@@ -26,20 +28,19 @@ double randNormal(RNG)(ref RNG rng, double mean = 0.0, double standardDeviation 
     return mean + standardDeviation * r * sin(theta);
 }
 
-// Get exponential random sample with specified mean
+/// Returns: Exponential random sample with specified mean.
 double randExponential(RNG)(ref RNG rng, double mean = 1.0)
 {
     assert(mean > 0);
     return -mean*log(uniform(0.0, 1.0, rng));
 }
 
-// Gamma random sample
+/// Returns: Gamma random sample.
+/// See_also: "A Simple Method for Generating Gamma Variables"
+/// by George Marsaglia and Wai Wan Tsang.  ACM Transactions on Mathematical Software
+/// Vol 26, No 3, September 2000, pages 363-372.
 double randGamma(RNG)(ref RNG rng, double shape, double scale)
 {
-    // Implementation based on "A Simple Method for Generating Gamma Variables"
-    // by George Marsaglia and Wai Wan Tsang.  ACM Transactions on Mathematical Software
-    // Vol 26, No 3, September 2000, pages 363-372.
-
     double d, c, x, xsquared, v, u;
 
     if (shape >= 1.0)
@@ -70,7 +71,7 @@ double randGamma(RNG)(ref RNG rng, double shape, double scale)
     }
 }
 
-// Chi-square sample
+/// Returns: Chi-square sample.
 double randChiSquare(RNG)(ref RNG rng, double degreesOfFreedom)
 {
     // A chi squared distribution with n degrees of freedom
@@ -78,7 +79,7 @@ double randChiSquare(RNG)(ref RNG rng, double degreesOfFreedom)
     return getGamma(rng, 0.5 * degreesOfFreedom, 2.0);
 }
 
-// Inverse-gamma sample
+/// Returns: Inverse-gamma sample.
 double randInverseGamma(RNG)(ref RNG rng, double shape, double scale)
 {
     // If X is gamma(shape, scale) then
@@ -86,14 +87,14 @@ double randInverseGamma(RNG)(ref RNG rng, double shape, double scale)
     return 1.0 / getGamma(rng, shape, 1.0 / scale);
 }
 
-// Weibull sample
+/// Returns: Weibull sample.
 double randWeibull(RNG)(ref RNG rng, double shape, double scale)
 {
     assert(shape > 0 && scale > 0);
     return scale * pow(-log(uniform(0.0, 1.0, rng)), 1.0 / shape);
 }
 
-// Cauchy sample
+/// Returns: Cauchy sample.
 double randCauchy(RNG)(ref RNG rng, double median, double scale)
 {
     assert(scale > 0);
@@ -103,33 +104,33 @@ double randCauchy(RNG)(ref RNG rng, double median, double scale)
     return median + scale*tan(PI*(p - 0.5));
 }
 
-// Student-t sample
+/// Returns: Student-t sample.
+/// See_also: Seminumerical Algorithms by Knuth.
 double randStudentT(RNG)(ref RNG rng, double degreesOfFreedom)
 {
     assert(degreesOfFreedom > 0);
 
-    // See Seminumerical Algorithms by Knuth
+    
     double y1 = getNormal(rng);
     double y2 = getChiSquare(rng, degreesOfFreedom);
     return y1 / sqrt(y2 / degreesOfFreedom);
 }
 
-// The Laplace distribution is also known as the double exponential distribution.
+/// Returns: Laplace distribution random sample (also known as the double exponential distribution).
 double randLaplace(RNG)(ref RNG rng, double mean, double scale)
 {
-    // The Laplace distribution is also known as the double exponential distribution.
     double u = uniform(0.0, 1.0, rng);
     return (u < 0.5) ? (mean + scale*log(2.0*u))
                         : (mean - scale*log(2*(1-u)));
 }
 
-// Log-normal sample
+/// Returns: Log-normal sample.
 double randLogNormal(RNG)(ref RNG rng, double mu, double sigma)
 {
     return exp(getNormal(rng, mu, sigma));
 }
 
-// Beta sample
+/// Returns: Beta sample.
 double randBeta(RNG)(ref RNG rng, double a, double b)
 {
     assert(a > 0 && b > 0);
@@ -144,7 +145,7 @@ double randBeta(RNG)(ref RNG rng, double a, double b)
     return u / (u + v);
 }
 
-// Poisson sample
+/// Returns: Poisson sample.
 int randPoisson(RNG)(ref RNG rng, double lambda)
 {
     return (lambda < 30.0) ? poissonSmall(rng, lambda) : poissonLarge(rng, lambda);

@@ -10,6 +10,8 @@ import derelict.assimp3.assimp,
 import gfm.core.log,
        gfm.core.text;
 
+/// The one exception type thrown in this wrapper.
+/// A failing ASSIMP function should <b>always</b> throw an AssimpException.
 class AssimpException : Exception
 {
     public
@@ -21,10 +23,16 @@ class AssimpException : Exception
     }
 }
 
+/// Create one to use the ASSIMP libary.
+/// Owns both the loader and logging redirection.
+/// This object is passed around to other ASSIMP wrapper objects
+/// to ensure library loading.
 final class Assimp
 {
     public
     {
+        /// Load ASSIMP library, redirect logging to our logger.
+        /// You can pass a null logger if you don't want logging.
         this(Log log)
         {
             _log = log is null ? new NullLog() : log;
@@ -60,6 +68,9 @@ final class Assimp
             close();
         }
 
+        /// Releases the ASSIMP library and all ressources.
+        /// All ressources should have been released at this point,
+        /// since you won't be able to call any ASSIMP function afterwards.
         void close()
         {
             if (_libInitialized)
@@ -70,6 +81,7 @@ final class Assimp
             }
         }
 
+        /// Returns: ASSIMP version string as returned by the dynamic library.
         string getVersion()
         {
             string compileFlags()
@@ -91,6 +103,7 @@ final class Assimp
             return format("v%s.%s_r%s (%s)", aiGetVersionMajor(), aiGetVersionMinor(), aiGetVersionRevision(), compileFlags());
         }
 
+        /// Returns: A string with legal copyright and licensing information about Assimp. 
         string getLegalString()
         {
             const(char)* legalZ = aiGetLegalString();

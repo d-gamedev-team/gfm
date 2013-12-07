@@ -3,7 +3,7 @@
   Guaranteed to never allocate and expected binary layout
   Recursive implementation with very slow division.
  
-  <b>Supports all operations that builtin integers support.<b>
+  <b>Supports all operations that builtin integers support.</b>
   
   Bugs: it's not sure if the unsigned operand would take precedence in a comparison/division.
   TODO: add literals.  
@@ -13,12 +13,17 @@ module gfm.math.wideint;
 import std.traits,
        std.ascii;
 
-
+/// Wide signed integer.
+/// Params:
+///    bits = number of bits, must be a power of 2.
 template wideint(int bits)
 {
     alias integer!(true, bits) wideint;
 }
 
+/// Wide unsigned integer.
+/// Params:
+///    bits = number of bits, must be a power of 2.
 template uwideint(int bits)
 {
     alias integer!(false, bits) uwideint;

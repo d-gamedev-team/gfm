@@ -1,3 +1,10 @@
+/**
+
+Introduces a simple but under-powered HTTP client.
+
+Consider using $(WEB vibed.org,vibe.d) if you need something better.
+
+ */
 module gfm.net.httpclient;
 
 import std.socketstream,

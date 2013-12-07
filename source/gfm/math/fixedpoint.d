@@ -13,7 +13,7 @@ import gfm.math.wideint,
 
     Params: 
         M = number of bits before the mark, M > 0
-        N = number of bits before the mark, M > 0
+        N = number of bits after the mark, N > 0
  
     Bugs: No proper rounding.
  */

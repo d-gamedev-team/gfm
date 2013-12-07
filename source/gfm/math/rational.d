@@ -1,24 +1,23 @@
 module gfm.math.rational;
 
-/**
-  
-  Rational numbers, always in reduced form.
-
-  TODO: remove this module once std.rational is here.
-
- */
-
 import std.traits,
        std.string;
 
 deprecated("Fraction was renamed to Rational.") alias Rational Fraction;
 
+/**
+  
+  A rational number, always in reduced form. Supports basic arithmetic.
+
+  Bugs: Remove this module once std.rational is here.
+
+ */
 align(1) struct Rational
 {
     public
     {
-        long num;
-        long denom;
+        long num;   /// Numerator.
+        long denom; /// Denominator.
 
         /// Construct a Rational from an integer.
         this(long n) pure nothrow
@@ -46,6 +45,7 @@ align(1) struct Rational
             return format("%s/%s", num, denom);
         }
 
+        /// Assign with another Rational.
         ref Rational opAssign(T)(T other) pure nothrow if (is(Unqual!T == Rational))
         {
             num = other.num;
@@ -53,6 +53,7 @@ align(1) struct Rational
             return this;
         }
 
+        /// Assign with an integer.
         ref Rational opAssign(T)(T n) pure nothrow if (isIntegral!T)
         {
             num = n;
@@ -160,7 +161,7 @@ align(1) struct Rational
                 return 0;
         }
 
-        /// Returns: inverse of this fraction.
+        /// Returns: Inverse of this rational number.
         Rational inverse() pure const nothrow
         {
             return Rational(denom, num);

@@ -1,3 +1,12 @@
+/**
+  CBOR stands for "Concise Binary Object Representation".
+  Implementation of RFC 7049, heavily inspired by std.json by Jeremie Pelletier.
+
+  See_also: $(LINK http://tools.ietf.org/rfc/rfc7049.txt)
+  
+
+  Bugs: Not const-correct. Also this module is difficult to use, <b>you should use msgpack-d instead</b>.
+ */
 module gfm.net.cbor;
 
 import std.range,
@@ -10,17 +19,6 @@ import std.range,
        std.bigint;
 
 
-/**
-  CBOR: Concise Binary Object Representation.
-  Implementation of RFC 7049.
-
-  References: $(LINK http://tools.ietf.org/rfc/rfc7049.txt)
-  Heavily inspired by std.json by Jeremie Pelletier.
-
-  Bugs: Not const-correct.
- */
-
-
 /*--------------------------- The Angry Implementer Rant ---------------------------------
   WHY OH WHY can CBOR represents integers on up to 65 bits? Yes you are reading correctly.
   When reading a negative integer, values range from -1 to -2^64.
@@ -28,9 +26,21 @@ import std.range,
   Seriously, use msgpack-d.
   ----------------------------------------------------------------------------------------*/
 
-// ALMOST UNTESTED
+/// The only exception type that should be thrown from this module.
+class CBORException : Exception
+{
+    this(string msg)
+    {
+        super(msg);
+    }
 
-/// Possible type of a CBORValue. Does not map 1:1 to CBOR major types.
+    this(string msg, string file, size_t line)
+    {
+        super(msg, file, line);
+    }
+}
+
+/// Possible type of a CBORValue. Does <b>not</b> map to CBOR major types.
 enum CBORType
 {
     STRING,      /// An UTF-8 encoded string.
@@ -44,7 +54,7 @@ enum CBORType
     SIMPLE       /// Null, undefined, true, false, break, and future values.
 }
 
-/// CBOR "simple" values
+// CBOR "simple" values
 enum : ubyte
 {
     CBOR_FALSE = 20,
@@ -72,19 +82,6 @@ enum CBORTag
     SELF_DESCRIBE_CBOR     = 55799
 }
 
-/// Exception thrown on CBOR errors.
-class CBORException : Exception
-{
-    this(string msg)
-    {
-        super(msg);
-    }
-
-    this(string msg, string file, size_t line)
-    {
-        super(msg, file, line);
-    }
-}
 
 /**
  

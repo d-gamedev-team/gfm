@@ -1,15 +1,13 @@
+/// Polynomials solver, courtesy of $(WEB patapom.com,Patapom).
 module gfm.math.solver;
-
-// Polynomials solver, courtesy of Patapom
-// http://patapom.com
 
 import std.traits,
        std.math;
 
 /**
  * Find the root of a linear polynomial a + b x = 0
- * Return number of roots.
-  */
+ * Returns: Number of roots.
+ */
 size_t solveLinear(T)(T a, T b, out T root) pure nothrow if (isFloatingPoint!T)
 {
     if (b == 0)
@@ -26,13 +24,15 @@ size_t solveLinear(T)(T a, T b, out T root) pure nothrow if (isFloatingPoint!T)
 
 /**
  * Finds the root roots of a quadratic polynomial a + b x + c x^2 = 0
- * Returns number of roots. roots slice should have room for up to 2 roots.
+ * Params:
+ *     outRoots = array of root results, should have room for at least 2 elements.
+ * Returns: Number of roots in outRoots.
  */
-size_t solveQuadratic(T)(T a, T b, T c, T[] roots) pure nothrow if (isFloatingPoint!T)
+size_t solveQuadratic(T)(T a, T b, T c, T[] outRoots) pure nothrow if (isFloatingPoint!T)
 {
-    assert(roots.length >= 2);
+    assert(outRoots.length >= 2);
     if (c == 0)
-        return solveLinear(a, b, roots[0]);
+        return solveLinear(a, b, outRoots[0]);
 
     T delta = b * b - 4 * a * c;
     if (delta < 0.0 )
@@ -41,23 +41,24 @@ size_t solveQuadratic(T)(T a, T b, T c, T[] roots) pure nothrow if (isFloatingPo
     delta = sqrt(delta);
     T oneOver2a = 0.5 / a;
 
-    roots[0] = oneOver2a * (-b - delta);
-    roots[1] = oneOver2a * (-b + delta);
+    outRoots[0] = oneOver2a * (-b - delta);
+    outRoots[1] = oneOver2a * (-b + delta);
     return 2;
 }
 
 
 /**
  * Finds the roots of a cubic polynomial  a + b x + c x^2 + d x^3 = 0
- * Code from http://www.codeguru.com/forum/archive/index.php/t-265551.html
- * (pretty much the same as http://mathworld.wolfram.com/CubicFormula.html)
- * Returns number of roots. roots slice should have room for up to 3 elements.
+ * Params:
+ *     outRoots = array of root results, should have room for at least 2 elements.
+ * Returns: Number of roots in outRoots.
+ * See_also: $(WEB www.codeguru.com/forum/archive/index.php/t-265551.html)
  */
-size_t solveCubic(T)(T a, T b, T c, T d, T[] roots) pure nothrow if (isFloatingPoint!T)
+size_t solveCubic(T)(T a, T b, T c, T d, T[] outRoots) pure nothrow if (isFloatingPoint!T)
 {
-    assert(roots.length >= 3);
+    assert(outRoots.length >= 3);
     if (d == 0)
-        return solveQuadratic(a, b, c, roots);
+        return solveQuadratic(a, b, c, outRoots);
 
     // adjust coefficients
     T a1 = c / d,
@@ -81,9 +82,9 @@ size_t solveCubic(T)(T a, T b, T c, T d, T[] roots) pure nothrow if (isFloatingP
         T theta = acos(P);
         T sqrtQ = sqrt(Q);
 
-        roots[0] = -2 * sqrtQ * cos(theta / 3) - a1 / 3;
-        roots[1] = -2 * sqrtQ * cos((theta + 2 * PI) / 3) - a1 / 3;
-        roots[2] = -2 * sqrtQ * cos((theta + 4 * PI) / 3) - a1 / 3;
+        outRoots[0] = -2 * sqrtQ * cos(theta / 3) - a1 / 3;
+        outRoots[1] = -2 * sqrtQ * cos((theta + 2 * PI) / 3) - a1 / 3;
+        outRoots[2] = -2 * sqrtQ * cos((theta + 4 * PI) / 3) - a1 / 3;
         return 3;
     }
     else
@@ -92,19 +93,19 @@ size_t solveCubic(T)(T a, T b, T c, T d, T[] roots) pure nothrow if (isFloatingP
         T e = (sqrt(-d) + abs(R)) ^^ cast(T)(1.0 / 3.0);
         if (R > 0)
             e = -e;
-        roots[0] = e + Q / e - a1 / 3.0;
+        outRoots[0] = e + Q / e - a1 / 3.0;
         return 1;
     }
 }
 
-
+/+
 /**
  * Returns the roots of a quartic polynomial  a + b x + c x^2 + d x^3 + e x^4 = 0
- * Code from http://mathworld.wolfram.com/QuarticEquation.html
+ *
  * Returns number of roots. roots slice should have room for up to 4 elements.
- * BUG: doesn't pass unit-test!
+ * Bugs: doesn't pass unit-test!
+ * See_also: $(WEB mathworld.wolfram.com/QuarticEquation.html)
  */
-/+
 size_t solveQuartic(T)(T a, T b, T c, T d, T e, T[] roots) pure nothrow if (isFloatingPoint!T)
 {
     assert(roots.length >= 4);
