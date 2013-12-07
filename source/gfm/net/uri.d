@@ -20,13 +20,19 @@ class URIException : Exception
 }
 
 /**
- * An attempt at implementing URI (RFC 3986).
- *
- * All constructed URI are valid and normalized.
- *
- * Bugs: separate segments in parsed form -> relative URL combining
- *       . and .. normalization
- * Consider using $(WEB vibed.org,vibe.d) if you need something better.
+ 
+   An attempt at implementing URI (RFC 3986).
+ 
+  All constructed URI are valid and normalized.
+  Bugs: 
+  $(UL 
+    $(LI Separate segments in parsed form.)
+    $(LI Relative URL combining.)
+    $(LI . and .. normalization.)
+  )
+
+  Alternative:
+    Consider using $(WEB vibed.org,vibe.d) if you need something better.
  */
 class URI
 {
@@ -174,7 +180,7 @@ class URI
             }
         }
 
-        /// Returns: pretty string representation.
+        /// Returns: Pretty string representation.
         override string toString() const
         {
             string res = _scheme ~ ":";

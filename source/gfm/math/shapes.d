@@ -1,13 +1,5 @@
-module gfm.math.shapes;
-
-import std.math, 
-       std.traits;
-
-import gfm.math.vector;
-
 /**
-  Implement abstract shapes in any number of dimensions like
-
+  This module implements abstract shapes in any number of dimensions like:
   $(UL
   $(LI Line segments.)
   $(LI Triangle.)
@@ -15,9 +7,17 @@ import gfm.math.vector;
   $(LI Rays)
   )
  */
+module gfm.math.shapes;
+
+import std.math, 
+       std.traits;
+
+import gfm.math.vector;
+
+
 
 /// A Segment is 2 points.
-/// In 2D, it represents the vector from a to b.
+/// When considered like a vector, it represents the arrow from a to b.
 struct Segment(T, size_t N)
 {
     public
@@ -27,7 +27,12 @@ struct Segment(T, size_t N)
     }
 }
 
-/// A Segment is 3 points.
+alias Segment!(float, 2u) seg2f;  /// 2D float segment.
+alias Segment!(float, 3u) seg3f;  /// 3D float segment.
+alias Segment!(double, 2u) seg2d; /// 2D double segment.
+alias Segment!(double, 3u) seg3d; /// 3D double segment.
+
+/// A Triangle is 3 points.
 /// Bugs: Define normal direction.
 struct Triangle(T, size_t N)
 {
@@ -36,26 +41,28 @@ struct Triangle(T, size_t N)
         alias Vector!(T, N) point_t;
         point_t a, b, c;
 
-        static if (N == 2u)
+        /// Returns: Area of a 2D triangle.
+        T area() pure const nothrow if (N == 2u)
         {
-            /// Returns: area of the 2D triangle.
-            T area() pure const nothrow
-            {
-                return abs(signedArea());
-            }
+            return abs(signedArea());
+        }
 
-            /// Returns: signed area.
-            T signedArea() pure const nothrow
-            {
-                return ((b.x * a.y - a.x * b.y)
-                      + (c.x * b.y - b.x * c.y)
-                      + (a.x * c.y - c.x * a.y)) / 2;
-            }
+        /// Returns: Signed area of a 2D triangle.
+        T signedArea() pure const nothrow if (N == 2u)
+        {
+            return ((b.x * a.y - a.x * b.y)
+                  + (c.x * b.y - b.x * c.y)
+                  + (a.x * c.y - c.x * a.y)) / 2;
         }
     }
 }
 
-/// A Sphere is a point and a radius.
+alias Triangle!(float, 2u) triangle2f;  /// 2D float triangle.
+alias Triangle!(float, 3u) triangle3f;  /// 3D float triangle.
+alias Triangle!(double, 2u) triangle2d; /// 2D double triangle.
+alias Triangle!(double, 3u) triangle3d; /// 3D double triangle.
+
+/// A Sphere is a point + a radius.
 struct Sphere(T, size_t N)
 {
     public nothrow
@@ -116,6 +123,12 @@ struct Sphere(T, size_t N)
     }
 }
 
+alias Sphere!(float, 2u) sphere2f;  /// 2D float sphere (ie. a circle).
+alias Sphere!(float, 3u) sphere3f;  /// 3D float sphere.
+alias Sphere!(double, 2u) sphere2d; /// 2D double sphere (ie. a circle).
+alias Sphere!(double, 3u) sphere3d; /// 3D double sphere (ie. a circle).
+
+
 /// A Ray ir a point + a direction.
 struct Ray(T, size_t N)
 {
@@ -169,21 +182,6 @@ nothrow:
         }
     }
 }
-
-alias Segment!(float, 2u) seg2f;  /// 2D float segment.
-alias Segment!(float, 3u) seg3f;  /// 3D float segment.
-alias Segment!(double, 2u) seg2d; /// 2D double segment.
-alias Segment!(double, 3u) seg3d; /// 3D double segment.
-
-alias Triangle!(float, 2u) triangle2f;  /// 2D float triangle.
-alias Triangle!(float, 3u) triangle3f;  /// 3D float triangle.
-alias Triangle!(double, 2u) triangle2d; /// 2D double triangle.
-alias Triangle!(double, 3u) triangle3d; /// 3D double triangle.
-
-alias Sphere!(float, 2u) sphere2f;  /// 2D float sphere (ie. a circle).
-alias Sphere!(float, 3u) sphere3f;  /// 3D float sphere.
-alias Sphere!(double, 2u) sphere2d; /// 2D double sphere (ie. a circle).
-alias Sphere!(double, 3u) sphere3d; /// 3D double sphere (ie. a circle).
 
 alias Ray!(float, 2u) ray2f;  /// 2D float ray.
 alias Ray!(float, 3u) ray3f;  /// 3D float ray.

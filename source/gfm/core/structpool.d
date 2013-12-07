@@ -1,13 +1,14 @@
 module gfm.core.structpool;
 
-/// Manage memory allocation for same-sized non-contiguous structs
+/// Manage memory allocation for same-sized non-contiguous structs.
 /// Non-growable.
 /// For POD types only.
-/// Bugs: this class sucks. It will be removed once std.allocator is ready.
+/// Bugs: This class sucks. It will be removed once std.allocator is ready.
 deprecated("StructPool is useless, it will be removed.") class StructPool(T)
 {
     public
     {
+        /// Creates a new pool with given capacity.
         this(size_t capacity)
         {
             _slots.length = capacity;
@@ -29,11 +30,13 @@ deprecated("StructPool is useless, it will be removed.") class StructPool(T)
             _count = 0;
         }
 
+        /// Allocates one slot.
         T* alloc()
         {
             return cast(T*)allocSlot();
         }
 
+        /// Releases one slot.
         void release(T* t)
         {
             releaseSlot(cast(Slot*)t);
@@ -41,26 +44,31 @@ deprecated("StructPool is useless, it will be removed.") class StructPool(T)
 
         pure @property const
         {
+            /// Returns: true if the pool has no items.
             bool empty()
             {
                 return (_count == 0);
             }
 
+            /// Returns: true if the pool is full.
             bool full()
             {
                 return _firstFree == null;
             }
 
+            /// Returns: Maximum number of items.
             size_t capacity()
             {
                 return _slots.length;
             }
 
+            /// Returns: Current number of items.
             size_t count()
             {
                 return _count;
             }
 
+            /// Returns: Fullness in [0..1];
             float usage()
             {
                 return count() / cast(float)(capacity());
