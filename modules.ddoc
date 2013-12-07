@@ -23,6 +23,7 @@ MODULES =
     $(MODULE gfm.math.frustum, frustum/plane)
     $(MODULE gfm.math.funcs, misc. real functions)
     $(MODULE gfm.math.simplexnoise, simplex noise)
+    $(MODULE gfm.math.solver, simplex noise)
 
     $(MODULE gfm.net.uri, URI parsing)
     $(MODULE gfm.net.httpclient, very basic HTTP client)
@@ -57,3 +58,6 @@ MODULES =
 
     $(MODULE gfm.freeimage.freeimage, FreeImage library wrapper)
     $(MODULE gfm.freeimage.fibitmap, FIBITMAP wrapper)
+
+    $(MODULE gfm.assimp.assimp, ASSIMP library wrapper)
+    $(MODULE gfm.assimp.scene, ASSIMP scene wrapper)
