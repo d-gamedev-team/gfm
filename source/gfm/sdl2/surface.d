@@ -29,6 +29,7 @@ final class SDL2Surface
 
         /// Create surface from RGBA data
         /// See_also: $WEB(wiki.libsdl.org/SDL_CreateRGBSurfaceFrom,SDL_CreateRGBSurfaceFrom)
+        /// Throws: $(D SDL2Exception) on error.
         this(SDL2 sdl2, void* pixels, int width, int height, int depth, int pitch, 
              uint Rmask, uint Gmask, uint Bmask, uint Amask)
         {
@@ -81,6 +82,7 @@ final class SDL2Surface
         }
 
         /// Lock the surface, allow to use pixels().
+        /// Throws: $(D SDL2Exception) on error.
         void lock()
         {
             if (SDL_LockSurface(_surface) != 0)
