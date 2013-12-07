@@ -6,11 +6,14 @@ import derelict.assimp3.assimp;
 
 import gfm.assimp.assimp;
 
+/// ASSIMP scene wrapper.
 class AssimpScene
 {
     public
     {
-        /// Import mesh from a file
+        /// Import mesh from a file.
+        /// The ASSIMP library must have been loaded.
+        /// Throws: AssimpException on error.
         this(Assimp assimp, string path, uint postProcessFlags = 0)
         {
             _assimp = assimp;
@@ -19,7 +22,9 @@ class AssimpScene
                 assimp.throwAssimpException("aiImportFile");
         }
 
-        /// Import mesh from a memory area
+        /// Import mesh from a memory area.
+        /// The ASSIMP library must have been loaded.
+        /// Throws: AssimpException on error.
         this(Assimp assimp, ubyte[] data, uint postProcessFlags = 0)
         {
             _assimp = assimp;
@@ -36,6 +41,7 @@ class AssimpScene
             close();
         }
 
+        /// Release the ASSIMP scene resource.
         void close()
         {
             if (_scene !is null)
@@ -45,7 +51,8 @@ class AssimpScene
             }
         }
 
-        /// To separate loading from post-processing
+        /// Apply post-processing separately, to separate loading from post-processing.
+        /// Throws: AssimpException on error.
         void applyPostProcessing(uint postProcessFlags)
         {
             const(aiScene)* newScene = aiApplyPostProcessing(_scene, postProcessFlags);
@@ -54,7 +61,7 @@ class AssimpScene
             _scene = newScene;
         }
 
-        /// Get ASSIMP scene handle
+        /// Returns: Wrapped ASSIMP scene handle.
         const(aiScene)* scene()
         {
             return _scene;
