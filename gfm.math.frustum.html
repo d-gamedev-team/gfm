@@ -248,7 +248,13 @@
 <dt>http:</dt><dd>
 //www.flipcode.com/archives/Plane_Class.shtml</dd>
 </dl>
-<div class="offset1 member-list"><hr><div class="row-fluid declaration"><h3>pure nothrow  this(vec4!T <i>abcd</i>);
+<div class="offset1 member-list"><hr><div class="row-fluid declaration"><h3>vec3!T <span class="symbol-target" id="n">&nbsp;</span><a class="symbol-link" href="#n">n</a>;
+</h3></div>
+<div class="declaration-content"><dl><p>Normal (always stored normalized).</p>
+
+</dl>
+</div>
+<hr><div class="row-fluid declaration"><h3>pure nothrow  this(vec4!T <i>abcd</i>);
 </h3></div>
 <div class="declaration-content"><dl><p>Create from four coordinates.</p>
 
@@ -263,6 +269,12 @@
 <hr><div class="row-fluid declaration"><h3>pure nothrow  this(vec3!T <i>A</i>, vec3!T <i>B</i>, vec3!T <i>C</i>);
 </h3></div>
 <div class="declaration-content"><dl><p>Create from 3 non-aligned points.</p>
+
+</dl>
+</div>
+<hr><div class="row-fluid declaration"><h3>pure nothrow Plane <span class="symbol-target" id="opAssign">&nbsp;</span><a class="symbol-link" href="#opAssign">opAssign</a>(Plane <i>other</i>);
+</h3></div>
+<div class="declaration-content"><dl><p>Assign a plane with another plane.</p>
 
 </dl>
 </div>
@@ -292,6 +304,18 @@
 </dl>
 </div>
 </div>
+</div>
+<hr><div class="row-fluid declaration"><h3>alias <span class="symbol-target" id="planef">&nbsp;</span><a class="symbol-link" href="#planef">planef</a> = Plane!float.Plane;
+</h3></div>
+<div class="declaration-content"><dl><p>3D float plane.</p>
+
+</dl>
+</div>
+<hr><div class="row-fluid declaration"><h3>alias <span class="symbol-target" id="planed">&nbsp;</span><a class="symbol-link" href="#planed">planed</a> = Plane!double.Plane;
+</h3></div>
+<div class="declaration-content"><dl><p>3D double plane.</p>
+
+</dl>
 </div>
 <hr><div class="row-fluid declaration"><h3>struct <span class="symbol-target" id="Frustum">&nbsp;</span><a class="symbol-link" href="#Frustum">Frustum</a>(T) if (isFloatingPoint!T);
 </h3></div>

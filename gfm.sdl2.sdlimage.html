@@ -245,8 +245,10 @@
 <div class="offset1 member-list"><hr><div class="row-fluid declaration"><h3> this(SDL2 <i>sdl2</i>, int <i>flags</i> = IMG_INIT_JPG | IMG_INIT_PNG | IMG_INIT_TIF | IMG_INIT_WEBP);
 </h3></div>
 <div class="declaration-content"><dl><p>Loads the SDL_image library.
- SDL must be already initialized.</p>
+ SDL must be already initialized.
+</p>
 
+<dt>Throws</dt><dd><span class="inlinecode">SDL2Exception</span> on error.</dd>
 </dl>
 </div>
 <hr><div class="row-fluid declaration"><h3>void <span class="symbol-target" id="close">&nbsp;</span><a class="symbol-link" href="#close">close</a>();
@@ -260,9 +262,9 @@
 <div class="declaration-content"><dl><p>Load an image.
 </p>
 
-<dt>Throws</dt><dd>SDL2ImageException on error.
+<dt>Returns</dt><dd>A SDL surface with loaded content.
 </dd>
-<dt>Returns</dt><dd>A SDL surface with loaded content.</dd>
+<dt>Throws</dt><dd><span class="inlinecode">SDL2Exception</span> on error.</dd>
 </dl>
 </div>
 </div>

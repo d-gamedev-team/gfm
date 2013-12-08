@@ -240,7 +240,7 @@
 <hr><div class="row-fluid declaration"><h3>class <span class="symbol-target" id="SDL2Exception">&nbsp;</span><a class="symbol-link" href="#SDL2Exception">SDL2Exception</a>: object.Exception;
 </h3></div>
 <div class="declaration-content"><dl><p>The one exception type thrown in this wrapper.
- A failing SDL function should <b>always</b> throw a <span class="symbol-target" id="SDL2Exception">&nbsp;</span><a class="symbol-link" href="#SDL2Exception">SDL2Exception</a>.</p>
+ A failing SDL function should <b>always</b> throw a <span class="inlinecode"><span class="symbol-target" id="SDL2Exception">&nbsp;</span><a class="symbol-link" href="#SDL2Exception">SDL2Exception</a></span>.</p>
 
 </dl>
 </div>
@@ -254,8 +254,10 @@
 <div class="offset1 member-list"><hr><div class="row-fluid declaration"><h3> this(Log <i>log</i>);
 </h3></div>
 <div class="declaration-content"><dl><p>Load SDL2 library, redirect logging to our logger.
- You can pass a <span class="d_keyword">null</span> logger if you don't want logging.</p>
+ You can pass a <span class="d_keyword">null</span> logger if you don't want logging.
+</p>
 
+<dt>Throws</dt><dd><span class="inlinecode">SDL2Exception</span> on error.</dd>
 </dl>
 </div>
 <hr><div class="row-fluid declaration"><h3>void <span class="symbol-target" id="close">&nbsp;</span><a class="symbol-link" href="#close">close</a>();
@@ -266,14 +268,25 @@
 
 </dl>
 </div>
+<hr><div class="row-fluid declaration"><h3>SDL2VideoDisplay[] <span class="symbol-target" id="getDisplays">&nbsp;</span><a class="symbol-link" href="#getDisplays">getDisplays</a>();
+</h3></div>
+<div class="declaration-content"><dl><dt>Returns</dt><dd>Available displays information.
+</dd>
+<dt>Throws</dt><dd><span class="inlinecode">SDL2Exception</span> on error.</dd>
+</dl>
+</div>
 <hr><div class="row-fluid declaration"><h3>vec2i <span class="symbol-target" id="firstDisplaySize">&nbsp;</span><a class="symbol-link" href="#firstDisplaySize">firstDisplaySize</a>();
 </h3></div>
-<div class="declaration-content"><dl><dt>Returns</dt><dd>Resolution of the first display.</dd>
+<div class="declaration-content"><dl><dt>Returns</dt><dd>Resolution of the first display.
+</dd>
+<dt>Throws</dt><dd><span class="inlinecode">SDL2Exception</span> on error.</dd>
 </dl>
 </div>
 <hr><div class="row-fluid declaration"><h3>SDL2RendererInfo[] <span class="symbol-target" id="getRenderersInfo">&nbsp;</span><a class="symbol-link" href="#getRenderersInfo">getRenderersInfo</a>();
 </h3></div>
-<div class="declaration-content"><dl><dt>Returns</dt><dd>Available renderers information.</dd>
+<div class="declaration-content"><dl><dt>Returns</dt><dd>Available renderers information.
+</dd>
+<dt>Throws</dt><dd><span class="inlinecode">SDL2Exception</span> on error.</dd>
 </dl>
 </div>
 <hr><div class="row-fluid declaration"><h3>bool <span class="symbol-target" id="pollEvent">&nbsp;</span><a class="symbol-link" href="#pollEvent">pollEvent</a>(SDL_Event* <i>event</i>);
@@ -317,13 +330,17 @@
 </div>
 <hr><div class="row-fluid declaration"><h3>string <span class="symbol-target" id="setClipboard">&nbsp;</span><a class="symbol-link" href="#setClipboard">setClipboard</a>(string <i>s</i>);
 </h3></div>
-<div class="declaration-content"><dl><p>Sets clipboard content.</p>
+<div class="declaration-content"><dl><p>Sets clipboard content.
+</p>
 
+<dt>Throws</dt><dd><span class="inlinecode">SDL2Exception</span> on error.</dd>
 </dl>
 </div>
 <hr><div class="row-fluid declaration"><h3>string <span class="symbol-target" id="getClipboard">&nbsp;</span><a class="symbol-link" href="#getClipboard">getClipboard</a>();
 </h3></div>
-<div class="declaration-content"><dl><dt>Returns</dt><dd>Clipboard content.</dd>
+<div class="declaration-content"><dl><dt>Returns</dt><dd>Clipboard content.
+</dd>
+<dt>Throws</dt><dd><span class="inlinecode">SDL2Exception</span> on error.</dd>
 </dl>
 </div>
 <hr><div class="row-fluid declaration"><h3>string[] <span class="symbol-target" id="getVideoDrivers">&nbsp;</span><a class="symbol-link" href="#getVideoDrivers">getVideoDrivers</a>();

@@ -256,13 +256,12 @@
 </div>
 <hr><div class="row-fluid declaration"><h3>bool <span class="symbol-target" id="contains">&nbsp;</span><a class="symbol-link" href="#contains">contains</a>(I)(I <i>img</i>, int <i>x</i>, int <i>y</i>) if (isImage!I);
 </h3></div>
-<div class="declaration-content"><dl><p>Return <span class="d_keyword">true</span> if an image <span class="symbol-target" id="contains">&nbsp;</span><a class="symbol-link" href="#contains">contains</a> the given point.</p>
-
+<div class="declaration-content"><dl><dt>Returns</dt><dd><span class="d_keyword">true</span> if an image <span class="symbol-target" id="contains">&nbsp;</span><a class="symbol-link" href="#contains">contains</a> the given point.</dd>
 </dl>
 </div>
 <hr><div class="row-fluid declaration"><h3>enum <span class="symbol-target" id="EdgeMode">&nbsp;</span><a class="symbol-link" href="#EdgeMode">EdgeMode</a>: int;
 </h3></div>
-<div class="declaration-content"><dl><p><span class="symbol-target" id="EdgeMode">&nbsp;</span><a class="symbol-link" href="#EdgeMode">EdgeMode</a> define how images are samples beyond their boundaries.</p>
+<div class="declaration-content"><dl><p><span class="symbol-target" id="EdgeMode">&nbsp;</span><a class="symbol-link" href="#EdgeMode">EdgeMode</a> defines how images are sampled beyond their boundaries.</p>
 
 </dl>
 <div class="offset1 member-list"><hr><div class="row-fluid declaration"><h3><span class="symbol-target" id="BLACK">&nbsp;</span><a class="symbol-link" href="#BLACK">BLACK</a></h3></div>
@@ -290,7 +289,7 @@
 </div>
 <hr><div class="row-fluid declaration"><h3>void <span class="symbol-target" id="drawPixel">&nbsp;</span><a class="symbol-link" href="#drawPixel">drawPixel</a>(I, P)(I <i>img</i>, int <i>x</i>, int <i>y</i>, P <i>p</i>) if (isImage!I &amp;&amp; is(P : I.element_t));
 </h3></div>
-<div class="declaration-content"><dl><p>Draw a single pixel.</p>
+<div class="declaration-content"><dl><p>Draws a single pixel.</p>
 
 </dl>
 </div>
@@ -308,7 +307,7 @@
 </div>
 <hr><div class="row-fluid declaration"><h3>void <span class="symbol-target" id="fillImage">&nbsp;</span><a class="symbol-link" href="#fillImage">fillImage</a>(I, P)(I <i>img</i>, P <i>e</i>) if (isImage!I &amp;&amp; is(P : I.element_t));
 </h3></div>
-<div class="declaration-content"><dl><p>Fill a whole image with a single element value.</p>
+<div class="declaration-content"><dl><p>Fills a whole image with a single element value.</p>
 
 </dl>
 </div>
