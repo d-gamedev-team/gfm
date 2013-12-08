@@ -12,12 +12,16 @@ import gfm.core.log,
        gfm.opengl.opengl;
 
 
-// Represent an OpenGL program uniform. Owned by a GLProgram.
-// Both uniform locations and values are cached, to minimize OpenGL calls.
+/// Represents an OpenGL program uniform. Owned by a GLProgram.
+/// Both uniform locations and values are cached, to minimize OpenGL calls.
 final class GLUniform
 {
     public
     {
+        /// Creates a GLUniform.
+        /// This is done automatically after linking a GLProgram.
+        /// See_also: GLProgram.
+        /// Throws: $(D OpenGLException) on error.
         this(OpenGL gl, GLuint program, GLenum type, string name, GLsizei size)
         {
             _gl = gl;
@@ -48,8 +52,8 @@ final class GLUniform
             }
         }
 
-        // create fake disabled uniform variables, designed to cope with variables that are detected useless
-        // by the OpenGL driver, or those which do not exist
+        /// Creates a fake disabled uniform variable, designed to cope with variables 
+        /// that have been optimized out by the OpenGL driver, or those which do not exist.
         this(OpenGL gl, string name)
         {
             _gl = gl;
@@ -57,20 +61,23 @@ final class GLUniform
             _gl._log.warnf("creating fake uniform '%s' which either does not exist in the shader program, or was discarded by the driver as unused", name);
         }
 
-
-        /// set one uniform variable
-        /// T should be the exact type needed, checked at runtime
+        /// Sets a uniform variable value.
+        /// T should be the exact type needed, checked at runtime.
+        /// Throws: $(D OpenGLException) on error.
         void set(T)(T newValue)
         {
             set!T(&newValue, 1u);
         }
 
-        /// set multiple uniform variables
+        /// Sets multiple uniform variables.
+        /// Throws: $(D OpenGLException) on error.
         void set(T)(T[] newValues)
         {
             set!T(newValues.ptr, newValues.length);
         }
 
+        /// Sets multiple uniform variables.
+        /// Throws: $(D OpenGLException) on error.
         void set(T)(T* newValues, size_t count)
         {
             if (_disabled)
@@ -97,12 +104,14 @@ final class GLUniform
             _firstSet = false;
         }
     
+        /// Updates the uniform value.
         void use()
         {
             _shouldUpdateImmediately = true;
             update();
         }       
 
+        /// Unuses this uniform..
         void unuse()
         {
             _shouldUpdateImmediately = false;
