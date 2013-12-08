@@ -20,8 +20,8 @@ class GLTexture
 {
     public
     {
-        /// Creates a texture.
-        /// OpenGL must have been loaded.
+        /// Creates a texture. You should create a child class instead of calling
+        /// this constructor directly.
         /// Throws: $(D OpenGLException) on error.
         this(OpenGL gl, GLuint target)
         {
@@ -348,6 +348,8 @@ final class GLTexture2DArray : GLTexture
             _gl.runtimeCheck();
         }
 
+        /// Sets partial texture content.
+        /// Throws: $(D OpenGLException) on error.
         void setSubImage(int level, int xoffset, int yoffset, int zoffset, int width, int height, int depth, GLenum format, GLenum type, void* data)
         {
             glTexSubImage3D(_target, level, xoffset, yoffset, zoffset, width, height, depth, format, type, data);

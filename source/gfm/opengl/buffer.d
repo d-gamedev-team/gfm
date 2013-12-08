@@ -9,7 +9,7 @@ final class GLBuffer
 {
     public
     {
-        /// Creates an empty program.
+        /// Creates an empty buffer.
         /// Throws: $(D OpenGLException) on error.
         this(OpenGL gl, GLuint target, GLuint storage, GLuint usage)
         {
@@ -30,7 +30,7 @@ final class GLBuffer
             close();
         }
 
-        /// Releases the OpenGL renderbuffer resource.
+        /// Releases the OpenGL buffer resource.
         void close()
         {
             if (_initialized)
@@ -46,7 +46,7 @@ final class GLBuffer
             return _size;
         }
 
-        /// Returns: Copy bytes to the byffer.
+        /// Returns: Copy bytes to the buffer.
         /// Throws: $(D OpenGLException) on error.
         void setData(size_t size, void * data)
         {
@@ -67,7 +67,7 @@ final class GLBuffer
             _firstLoad = false;
         }
 
-        /// Copies bytes to a sub-part of the buffer. This can't resize the buffer.
+        /// Copies bytes to a sub-part of the buffer. You can't adress data beyond the buffer's size.
         /// Throws: $(D OpenGLException) on error.
         void setSubData(size_t offset, size_t size, void* data)
         {
@@ -86,7 +86,7 @@ final class GLBuffer
         }
 
         /// Gets the whole buffer content in a newly allocated array.
-        /// For debugging purposes.
+        /// <b>This is intended for debugging purposes.</b>
         /// Throws: $(D OpenGLException) on error.
         ubyte[] getBytes()
         {

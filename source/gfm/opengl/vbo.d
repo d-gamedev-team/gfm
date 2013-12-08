@@ -14,10 +14,10 @@ import gfm.core.log,
        gfm.opengl.opengl;
 
 /** 
- * A vertex specification describes exactly the format of a vertex.
+ * A vertex specification describes the format of a vertex. It's like an OpenGL VAO, except more manual.
  * Can only be built manually for now.
  *
- * TODO: extract from a struct at compile-time.
+ * TODO: Extract vertex specification from a struct at compile-time.
  */
 class VertexSpecification
 {
@@ -39,7 +39,7 @@ class VertexSpecification
 
         /// Use this vertex specification.
         /// Params: 
-        ///    useOlderAttribFunctions = Whether we use older pointer attribute functions, 
+        ///    useOlderAttribFunctions = Whether to use older pointer attribute functions, 
         ///                              which can be more portable.
         /// Throws: $(D OpenGLException) on error.
         void use(bool useOlderAttribFunctions = false)

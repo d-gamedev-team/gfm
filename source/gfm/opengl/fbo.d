@@ -121,21 +121,21 @@ final class GLFBO
             _gl.runtimeCheck();
         }
 
-       /// Gets a color attachment.
+       /// Returns: A FBO color attachment.
        /// Params:
-       ///     i = index of color attachment.
+       ///     i = Index of color attachment.
        GLFBOAttachment color(int i)
        {
            return _colors[i];
        }
 
-       /// Gets the depth attachment.
+       /// Returns: FBO depth attachment.
        GLFBOAttachment depth()
        {
            return _depth;
        }
 
-       /// Gets the stencil attachment.
+       /// Returns: FBO stencil attachment.
        GLFBOAttachment stencil()
        {
            return _stencil;

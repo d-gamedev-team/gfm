@@ -59,7 +59,7 @@ final class GLProgram
          * set to 0. If such a macro isn't used in any preprocessor directive 
          * of your source, this shader stage is considered unused.</p>
          *
-         * <p>For conformance reasons, any #version on the first line will stay at the top.</p>
+         * <p>For conformance reasons, any #version directive on the first line will stay at the top.</p>
          * 
          * Warning: <b>THIS FUNCTION REWRITES YOUR SHADER A BIT.</b>
          * Expect slightly wrong lines in GLSL compiler's error messages.
@@ -88,13 +88,13 @@ final class GLProgram
          *
          * Limitations:
          * $(UL
-         *   $(LI all your #preprocessor directives should not have whitespaces before the #.)
-         *   $(LI source elements should be individual lines!)
+         *   $(LI All of #preprocessor directives should not have whitespaces before the #.)
+         *   $(LI sourceLines elements should be individual lines!)
          * )
          *
          * Throws: $(D OpenGLException) on error.
          */
-        this(OpenGL gl, string[] source)
+        this(OpenGL gl, string[] sourceLines)
         {
             _gl = gl;
             bool present[5];
@@ -125,7 +125,7 @@ final class GLProgram
             int versionLine = -1;
 
             // scan source for #version and usage of shader macros in preprocessor lines
-            foreach(int lineIndex, string line; source)
+            foreach(int lineIndex, string line; sourceLines)
             {
                 // if the line is a preprocessor directive
                 if (match(line, directiveRegexp))
@@ -165,7 +165,7 @@ final class GLProgram
 
                     // add #version line
                     if (versionLine != -1)
-                        newSource ~= source[versionLine];
+                        newSource ~= sourceLines[versionLine];
 
                     // add each #define with the right value
                     foreach (int j, string define2; defines)
@@ -173,7 +173,7 @@ final class GLProgram
                             newSource ~= format("#define %s %d\n", define2, i == j ? 1 : 0);
 
                     // add all lines except the #version one
-                    foreach (int l, string line; source)
+                    foreach (int l, string line; sourceLines)
                         if (l != versionLine)
                             newSource ~= line;
 
@@ -205,18 +205,18 @@ final class GLProgram
             }
         }
 
-        /// Attack OpenGL shaders to this program.
+        /// Attaches OpenGL shaders to this program.
         /// Throws: $(D OpenGLException) on error.
-        void attach(GLShader[] shaders...)
+        void attach(GLShader[] compiledShaders...)
         {
-            foreach(shader; shaders)
+            foreach(shader; compiledShaders)
             {
                 glAttachShader(_program, shader._shader);
                 _gl.runtimeCheck();
             }
         }
 
-        /// Link this OpenGL program.
+        /// Links this OpenGL program.
         /// Throws: $(D OpenGLException) on error.
         void link()
         {
@@ -289,7 +289,7 @@ final class GLProgram
 
         }
 
-        /// Enables this program for next draw calls.
+        /// Uses this program for following draw calls.
         /// Throws: $(D OpenGLException) on error.
         void use()
         {
@@ -302,7 +302,7 @@ final class GLProgram
                 uniform.use();
         }
 
-        /// Disables this program.
+        /// Unuses this program.
         /// Throws: $(D OpenGLException) on error.
         void unuse()
         {
@@ -312,6 +312,7 @@ final class GLProgram
             _gl.runtimeCheck();
         }
 
+        /// Gets the linking report.
         /// Returns: Log output of the GLSL linker.
         /// Throws: $(D OpenGLException) on error.
         string getLinkLog()
@@ -327,7 +328,7 @@ final class GLProgram
 
         /// Gets an uniform by name.
         /// Returns: A GLUniform with this name. This GLUniform might be created on demand if 
-        ///          the name hasn't been found.
+        ///          the name hasn't been found. So it might be a "fake" uniform.
         /// See_also: GLUniform.
         GLUniform uniform(string name)
         {

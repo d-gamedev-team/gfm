@@ -13,7 +13,6 @@ final class VAO
     public
     {
         /// Creates a VAO.
-        /// OpenGL must have been loaded.
         /// Throws: $(D OpenGLException) on error.
         this(OpenGL gl, GLuint target, GLuint storage, GLuint usage)
         {

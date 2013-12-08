@@ -149,7 +149,6 @@ final class OpenGL
 
         /// Returns: OpenGL version string, can be "major_number.minor_number" or 
         ///          "major_number.minor_number.release_number".
-        /// See_also: $(WEB www.opengl.org/sdk/docs/man/xhtml/glGetString.xml)
         string getVersionString()
         {
             return getString(GL_VERSION);
@@ -157,7 +156,6 @@ final class OpenGL
 
         /// Returns: The company responsible for this OpenGL implementation, so
         ///          that you can plant a giant toxic mushroom below their office.
-        /// See_also: $(WEB www.opengl.org/sdk/docs/man/xhtml/glGetString.xml)
         string getVendorString()
         {
             return getString(GL_VENDOR);
@@ -165,7 +163,6 @@ final class OpenGL
 
         /// Returns: Name of the renderer. This name is typically specific 
         ///          to a particular configuration of a hardware platform.
-        /// See_also: $(WEB www.opengl.org/sdk/docs/man/xhtml/glGetString.xml)
         string getRendererString()
         {
             return getString(GL_RENDERER);
@@ -173,14 +170,12 @@ final class OpenGL
 
         /// Returns: GLSL version string, can be "major_number.minor_number" or 
         ///          "major_number.minor_number.release_number".
-        /// See_also: $(WEB www.opengl.org/sdk/docs/man/xhtml/glGetString.xml)
         string getGLSLVersionString()
         {
             return getString(GL_SHADING_LANGUAGE_VERSION);
         }
 
-        /// Returns: A huge space-separated list of OpenGL extension.
-        /// See_also: $(WEB www.opengl.org/sdk/docs/man/xhtml/glGetString.xml)
+        /// Returns: A huge space-separated list of OpenGL extensions.
         string getExtensionsString()
         {
             return getString(GL_EXTENSIONS);
@@ -189,8 +184,8 @@ final class OpenGL
         /// Calls $(D glGetIntegerv) and gives back the requested integer.
         /// Returns: true if $(D glGetIntegerv) succeeded.
         /// See_also: $(WEB www.opengl.org/sdk/docs/man4/xhtml/glGet.xml).
-        /// Note: It is generally a bad idea to call glGet since it might break
-        ///       pipelining.
+        /// Note: It is generally a bad idea to call $(D glGetSomething) since it might stall
+        ///       the OpenGL pipeline.
         bool getInteger(GLenum pname, out int result) nothrow
         {
             GLint param;

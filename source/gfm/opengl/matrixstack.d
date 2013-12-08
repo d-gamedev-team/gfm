@@ -4,17 +4,18 @@ import gfm.core.memory,
        gfm.math.vector,
        gfm.math.matrix;
 
-/// A matrix stack designed to replace fixed-pipeline own matrix stacks.
-/// Create one for GL_PROJECTION and one for GL_MODELVIEW, and there you go.
-/// For performance reasons, no runtime check for emptyness/fullness, only asserts
+import gfm.opengl.opengl;
+
+/// A matrix stack designed to replace fixed-pipeline matrix stacks.
+/// This stacks always expose both the top element and its inverse.
 final class MatrixStack(size_t R, T) if (R == 3 || R == 4)
 {
     public
     {
-        alias Matrix!(T, R, R) matrix_t; /// Matrix type in the stack.
+        alias Matrix!(T, R, R) matrix_t; /// Type of matrices in the stack. Can be 3x3 or 4x4.
 
         /// Creates a matrix stack.
-        /// The stack is initialized with an identity matrix.
+        /// The stack is initialized with one element, an identity matrix.
         this(size_t depth = 32) nothrow
         {
             assert(depth > 0);
@@ -52,7 +53,9 @@ final class MatrixStack(size_t R, T) if (R == 3 || R == 4)
         /// Replacement for $(D glPushMatrix).
         void push() pure nothrow
         {
-            assert(_top + 1 < _depth);
+            if(_top + 1 >= _depth)
+                throw new OpenGLException("Matrix stack is full");
+
             _matrices[_top + 1] = _matrices[_top];
             _invMatrices[_top + 1] = _invMatrices[_top];
             ++_top;
@@ -61,7 +64,9 @@ final class MatrixStack(size_t R, T) if (R == 3 || R == 4)
         /// Replacement for $(D glPopMatrix).
         void pop() pure nothrow
         {
-            assert(_top > 0);
+            if (top <= 0)
+                throw new OpenGLException("Matrix stack is empty");
+
             --_top;
         }
 
@@ -114,7 +119,7 @@ final class MatrixStack(size_t R, T) if (R == 3 || R == 4)
         static if (R == 4)
         {
             /// Replacement for $(D glRotate).
-            /// Warning: Angle is given in radians.
+            /// Warning: Angle is given in radians, unlike the original API.
             void rotate(T angle, Vector!(T, 3u) axis) pure nothrow
             {
                 matrix_t rot = matrix_t.rotation(angle, axis);
@@ -122,7 +127,7 @@ final class MatrixStack(size_t R, T) if (R == 3 || R == 4)
             }
 
             /// Replacement for $(D gluPerspective).
-            /// Warning: FOV is given in radians.
+            /// Warning: FOV is given in radians, unlike the original API.
             void perspective(T FOVInRadians, T aspect, T zNear, T zFar) pure nothrow
             {
                 mult(matrix_t.perspective(FOVInRadians, aspect, zNear, zFar));

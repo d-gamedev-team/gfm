@@ -13,10 +13,10 @@ final class GLRenderBuffer
 {
     public
     {
-        /// Creates an OpenGL renderbuffer.
-        /// OpenGL must have been loaded.
-        /// If asking for a multisampled render buffer fails, a non multisampled buffer will be created instead.
-        /// Throws: $(D OpenGLException) on error.
+        /// <p>Creates an OpenGL renderbuffer.</p>
+        /// <p>If asking for a multisampled render buffer fails, 
+        /// a non multisampled buffer will be created instead.</p>
+        /// Throws: $(D OpenGLException) if creation failed.
         this(OpenGL gl, GLenum internalFormat, int width, int height, int samples = 0)
         {
             _gl = gl;

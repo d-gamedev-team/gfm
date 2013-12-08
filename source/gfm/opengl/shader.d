@@ -15,7 +15,7 @@ final class GLShader
 {
     public
     {
-        /// Creates a shader without source code.
+        /// Creates a shader devoid of source code.
         /// Throws: $(D OpenGLException) on error.
         this(OpenGL gl, GLenum shaderType)
         {
@@ -50,7 +50,7 @@ final class GLShader
             }
         }
 
-        /// Load source lines.
+        /// Load source code for this shader.
         /// Throws: $(D OpenGLException) on error.
         void load(string[] lines)
         {
@@ -75,7 +75,7 @@ final class GLShader
         }
 
         /// Compile this OpenGL shader.
-        /// Throws: $(D OpenGLException) on error.
+        /// Throws: $(D OpenGLException) on compilation error.
         void compile()
         {
             glCompileShader(_shader);
@@ -91,6 +91,7 @@ final class GLShader
                 throw new OpenGLException("shader did not compile");
         }
 
+        /// Gets the compiling report. 
         /// Returns: Log output of the GLSL compiler.
         /// Throws: $(D OpenGLException) on error.
         string getInfoLog()
