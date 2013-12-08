@@ -41,18 +41,21 @@ struct Triangle(T, size_t N)
         alias Vector!(T, N) point_t;
         point_t a, b, c;
 
-        /// Returns: Area of a 2D triangle.
-        T area() pure const nothrow if (N == 2u)
+        static if (N == 2u)
         {
-            return abs(signedArea());
-        }
+            /// Returns: Area of a 2D triangle.
+            T area() pure const nothrow 
+            {
+                return abs(signedArea());
+            }
 
-        /// Returns: Signed area of a 2D triangle.
-        T signedArea() pure const nothrow if (N == 2u)
-        {
-            return ((b.x * a.y - a.x * b.y)
-                  + (c.x * b.y - b.x * c.y)
-                  + (a.x * c.y - c.x * a.y)) / 2;
+            /// Returns: Signed area of a 2D triangle.
+            T signedArea() pure const nothrow
+            {
+                return ((b.x * a.y - a.x * b.y)
+                      + (c.x * b.y - b.x * c.y)
+                      + (a.x * c.y - c.x * a.y)) / 2;
+            }
         }
     }
 }
