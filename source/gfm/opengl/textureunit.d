@@ -5,12 +5,14 @@ import derelict.opengl3.gl3;
 import gfm.core.log,  
        gfm.opengl.opengl;
 
-// Cache state of OpenGL texture units
-// Use deprecated image units!
+/// Cache state of OpenGL texture units.
+/// Use deprecated image units!
 final class TextureUnits
 {
     public
     {
+        /// Creates a TextureUnits object.
+        /// This is automatically done by loading OpenGL.
         this(OpenGL gl)
         {
             _gl = gl;
@@ -25,7 +27,8 @@ final class TextureUnits
                 _textureUnits[i] = new TextureUnit(gl, i);
         }
 
-        // set "active texture" which is actually active texture unit
+        /// Sets the "active texture" which is more precisely active texture unit.
+        /// Throws: $(D OpenGLException) on error.
         void setActiveTexture(int texture)
         {
             if (_textureUnits.length == 1)
@@ -37,15 +40,18 @@ final class TextureUnits
             if (_activeTexture != texture)
             {
                 glActiveTexture(GL_TEXTURE0 + texture);
+                _gl.runtimeCheck();
                 _activeTexture = texture;
             }
         }
 
+        /// Gets texture unit i.
         TextureUnit unit(int i)
         {
             return _textureUnits[i];
         }
 
+        /// Gets the active texture unit.
         TextureUnit current()
         {
             if (_activeTexture == -1)
@@ -58,24 +64,18 @@ final class TextureUnits
     private
     {
         OpenGL _gl;
-        int _activeTexture;         // index of currently active texture unit
+        int _activeTexture;          // index of currently active texture unit
         TextureUnit[] _textureUnits; // all texture units
     }
 }
 
-// Cache state of OpenGL of a single OpenGL texture unit
+/// Cache state of a single OpenGL texture unit.
 final class TextureUnit
 {
     public
     {
-        this(OpenGL gl, int index)
-        {
-            _gl = gl;
-            _index = index;
-
-            _currentBinding[] = -1; // default is unknown
-        }
-
+        /// Binds this texture unit lazily.
+        /// Throws: $(D OpenGLException) on error.
         void bind(GLenum target, GLuint texture)
         {
             size_t index = targetToIndex(cast(Target)target);
@@ -90,6 +90,14 @@ final class TextureUnit
 
     private
     {
+        this(OpenGL gl, int index)
+        {
+            _gl = gl;
+            _index = index;
+
+            _currentBinding[] = -1; // default is unknown
+        }
+
         enum Target : GLenum
         {
             TEXTURE_1D = GL_TEXTURE_1D, 

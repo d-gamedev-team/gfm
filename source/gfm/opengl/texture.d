@@ -21,6 +21,7 @@ class GLTexture
     public
     {
         /// Creates a texture.
+        /// OpenGL must have been loaded.
         /// Throws: $(D OpenGLException) on error.
         this(OpenGL gl, GLuint target)
         {
@@ -242,11 +243,15 @@ final class GLTexture1D : GLTexture
 {
     public
     {
+        /// Creates a 1D texture.
+        /// Throws: $(D OpenGLException) on error.
         this(OpenGL gl)
         {
             super(gl, GL_TEXTURE_1D);
         }
 
+        /// Sets texture content.
+        /// Throws: $(D OpenGLException) on error.
         void setImage(int level, GLint internalFormat, int width, int border, GLenum format, GLenum type, void* data)
         {
             glTexImage1D(_target, level, internalFormat, width, border, format, type, data);
@@ -261,11 +266,15 @@ final class GLTexture2D : GLTexture
 {
     public
     {
+        /// Creates a 2D texture.
+        /// Throws: $(D OpenGLException) on error.
         this(OpenGL gl)
         {
             super(gl, GL_TEXTURE_2D);
         }
 
+        /// Sets texture content.
+        /// Throws: $(D OpenGLException) on error.
         void setImage(int level, GLint internalFormat, int width, int height, int border, GLenum format, GLenum type, void* data)
         {
             glTexImage2D(_target, level, internalFormat, width, height, border, format, type, data);
@@ -280,11 +289,15 @@ final class GLTexture3D : GLTexture
 {
     public
     {
+        /// Creates a 3D texture.
+        /// Throws: $(D OpenGLException) on error.
         this(OpenGL gl)
         {
             super(gl, GL_TEXTURE_3D);
         }
 
+        /// Sets texture content.
+        /// Throws: $(D OpenGLException) on error.
         void setImage(int level, GLint internalFormat, int width, int height, int depth, int border, GLenum format, GLenum type, void* data)
         {
             glTexImage3D(_target, level, internalFormat, width, height, depth, border, format, type, data);
@@ -298,11 +311,15 @@ final class GLTexture1DArray : GLTexture
 {
     public
     {
+        /// Creates a 1D texture array.
+        /// Throws: $(D OpenGLException) on error.
         this(OpenGL gl)
         {
             super(gl, GL_TEXTURE_1D_ARRAY);
         }
 
+        /// Sets texture content.
+        /// Throws: $(D OpenGLException) on error.
         void setImage(int level, GLint internalFormat, int width, int height, int border, GLenum format, GLenum type, void* data)
         {
             glTexImage2D(_target, level, internalFormat, width, height, border, format, type, null);
@@ -316,11 +333,15 @@ final class GLTexture2DArray : GLTexture
 {
     public
     {
+        /// Creates a 2D texture array.
+        /// Throws: $(D OpenGLException) on error.
         this(OpenGL gl)
         {
             super(gl, GL_TEXTURE_2D_ARRAY);
         }
 
+        /// Sets texture content.
+        /// Throws: $(D OpenGLException) on error.
         void setImage(int level, GLint internalFormat, int width, int height, int depth, int border, GLenum format, GLenum type, void* data)
         {
             glTexImage3D(_target, level, internalFormat, width, height, depth, border, format, type, data);
@@ -340,11 +361,15 @@ final class GLTextureRectangle : GLTexture
 {
     public
     {
+        /// Creates a texture rectangle.
+        /// Throws: $(D OpenGLException) on error.        
         this(OpenGL gl)
         {
             super(gl, GL_TEXTURE_RECTANGLE);
         }
 
+        /// Sets texture content.
+        /// Throws: $(D OpenGLException) on error.
         void setImage(int level, GLint internalFormat, int width, int height, int border, GLenum format, GLenum type, void* data)
         {
             glTexImage2D(_target, level, internalFormat, width, height, border, format, type, null);
@@ -358,11 +383,15 @@ final class GLTexture2DMultisample : GLTexture
 {
     public
     {
+        /// Creates a 2D multisampled texture.
+        /// Throws: $(D OpenGLException) on error.
         this(OpenGL gl)
         {
             super(gl, GL_TEXTURE_2D_MULTISAMPLE);
         }
 
+        /// Sets texture content.
+        /// Throws: $(D OpenGLException) on error.
         void setImage(int level, int samples, GLint internalFormat, int width, int height, bool fixedsamplelocations)
         {
             glTexImage2DMultisample(_target, samples, internalFormat, width, height, fixedsamplelocations ? GL_TRUE : GL_FALSE);
@@ -376,11 +405,15 @@ final class GLTexture2DMultisampleArray : GLTexture
 {
     public
     {
+        /// Creates a 2D multisampled texture array.
+        /// Throws: $(D OpenGLException) on error.
         this(OpenGL gl)
         {
             super(gl, GL_TEXTURE_2D_MULTISAMPLE_ARRAY);
         }
 
+        /// Sets texture content.
+        /// Throws: $(D OpenGLException) on error.
         void setImage(int level, int samples, GLint internalFormat, int width, int height, int depth, bool fixedsamplelocations)
         {
             glTexImage3DMultisample(_target, samples, internalFormat, width, height, depth, fixedsamplelocations ? GL_TRUE : GL_FALSE);

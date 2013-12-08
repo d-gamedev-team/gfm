@@ -14,14 +14,16 @@ import gfm.core.log,
        gfm.opengl.opengl;
 
 /** 
- * A vertex element describe exactly the format of a vertex.
- * Can ony be built manually for now.
- * TODO: extract from a struct at compile-time
+ * A vertex specification describes exactly the format of a vertex.
+ * Can only be built manually for now.
+ *
+ * TODO: extract from a struct at compile-time.
  */
 class VertexSpecification
 {
     public
     {
+        /// Creates a vertex specification.
         this(OpenGL gl)
         {
             _gl = gl;
@@ -35,7 +37,11 @@ class VertexSpecification
             assert(_state == State.UNUSED);
         }
 
-        // using older pointer functions can be more portable
+        /// Use this vertex specification.
+        /// Params: 
+        ///    useOlderAttribFunctions = Whether we use older pointer attribute functions, 
+        ///                              which can be more portable.
+        /// Throws: $(D OpenGLException) on error.
         void use(bool useOlderAttribFunctions = false)
         {
             assert(_state == State.UNUSED);
@@ -44,6 +50,8 @@ class VertexSpecification
             _state = useOlderAttribFunctions ? State.USED_OLDER_FUNCTIONS : State.USED_NEWER_FUNCTION;
         }
 
+        /// Unuse this vertex specification.
+        /// Throws: $(D OpenGLException) on error.
         void unuse()
         {
             assert(_state == State.USED_OLDER_FUNCTIONS || _state == State.USED_NEWER_FUNCTION);
@@ -52,6 +60,7 @@ class VertexSpecification
             _state = State.UNUSED;
         }
 
+        /// Adds an item to the vertex specification.
         void add(VertexElement.Role role, GLenum glType, int n)
         {
             assert(n > 0 && n <= 4);
@@ -61,6 +70,8 @@ class VertexSpecification
             _currentOffset += n * glTypeSize(glType);
         }
 
+        /// Adds padding space to the vertex specification.
+        /// This is useful for alignment.
         void addDummyBytes(int nBytes)
         {
             assert(_state == State.UNUSED);
@@ -83,11 +94,16 @@ class VertexSpecification
     }
 }
 
+/// Describes a single attribute in a vertex entry.
 struct VertexElement
 {
+    /// Role of this vertex attribute.
     enum Role
     {
-        POSITION, COLOR, TEX_COORD, NORMAL
+        POSITION,  /// This attribute is a position.
+        COLOR,     /// This attribute is a color.
+        TEX_COORD, /// This attribute is a texture coordinate.
+        NORMAL     /// This attribute is a normal.
     }
 
     Role role;
@@ -97,6 +113,8 @@ struct VertexElement
 
     package
     {
+        /// Use this attribute.
+        /// Throws: $(D OpenGLException) on error.
         void use(OpenGL gl, GLuint index, bool useOlderAttribFunctions, GLsizei sizeOfVertex)
         {
             if (useOlderAttribFunctions)
@@ -133,6 +151,8 @@ struct VertexElement
             gl.runtimeCheck();
         }
 
+        /// Unuse this attribute.
+        /// Throws: $(D OpenGLException) on error.
         void unuse(OpenGL gl, GLuint index, bool useOlderAttribFunctions)
         {
             if(useOlderAttribFunctions)

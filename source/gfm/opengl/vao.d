@@ -7,17 +7,19 @@ import derelict.opengl3.gl3;
 import gfm.core.log,
        gfm.opengl.opengl;
 
-/** 
- * Vertex Array Object wrapper.
- */
+/// OpenGL Vertex Array Object wrapper.
 final class VAO
 {
     public
     {
+        /// Creates a VAO.
+        /// OpenGL must have been loaded.
+        /// Throws: $(D OpenGLException) on error.
         this(OpenGL gl, GLuint target, GLuint storage, GLuint usage)
         {
             _gl = gl;
             glGenVertexArrays(1, &_handle);
+            gl.runtimeCheck();
             _initialized = true;
         }
 
@@ -26,6 +28,7 @@ final class VAO
             close();
         }
 
+        /// Releases the OpenGL VAO resource.
         void close()
         {
             if (_initialized)
@@ -35,18 +38,23 @@ final class VAO
             }
         }
 
+        /// Uses this VAO.
+        /// Throws: $(D OpenGLException) on error.
         void bind()
         {
             glBindVertexArray(_handle);
             _gl.runtimeCheck();
         }
 
+        /// Unuses this VAO.
+        /// Throws: $(D OpenGLException) on error.
         void unbind() 
         {
             glBindVertexArray(0);
             _gl.runtimeCheck();
         }
 
+        /// Returns: Wrapped OpenGL resource handle.
         GLuint handle() pure const nothrow
         {
             return _handle;
