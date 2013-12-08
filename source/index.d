@@ -6,7 +6,7 @@ $(LINK2 https://github.com/p0nce/gfm, GFM) is a feature-rich library to ease the
 <h3>Overview:</h3>
 
 $(UL
-    $(LI gfm.core sub-package:
+    <p>$(LI gfm.core sub-package:
         $(UL
             $(LI $(D log.d): logging interface + implementations (HTML file, colored console output...).)
             $(LI $(D queue.d): a dead simple queue/fifo/stack/ring-buffer, with a range interface.)
@@ -15,14 +15,14 @@ $(UL
             $(LI $(D alignedbuffer.d): aligned array-like container.)
             $(LI $(D text.d): string utilities.)
          )
-    )
-    $(LI gfm.math sub-package:
+    )</p>
+    <p>$(LI gfm.math sub-package:
         $(UL
             $(LI $(D vector.d): small vectors for 2D and 3D.)
             $(LI $(D matrix.d): small matrices for 2D and 3D.)
             $(LI $(D quaternion.d): quaternions.)
             $(LI $(D half.d): 16-bit floating point type.)
-            $(LI $(D wideint.d):* 2^N bits integers (recursive implementation, covers cent/ucent).)
+            $(LI $(D wideint.d): 2^N bits integers (recursive implementation, covers cent/ucent).)
             $(LI $(D box.d): half-open intervals (for eg. AABB).)
             $(LI $(D fixedpoint.d): fixed-point numbers.)
             $(LI $(D fraction.d): rational numbers.)
@@ -34,8 +34,8 @@ $(UL
             $(LI $(D funcs.d): useful math functions.)
             $(LI $(D simplexnoise.d): Simplex noise implementation.)
          )
-    )
-    $(LI gfm.opengl sub-package:
+    )</p>
+    <p>$(LI gfm.opengl sub-package:
         $(UL
             $(LI OpenGL wrapper based on package derelict-gl3.)
             $(LI makes easier to use the OpenGL API correctly.)
@@ -46,45 +46,45 @@ $(UL
             $(LI FBO support with GL_EXT_framebuffer_object fallback.)
             $(LI built-in OpenGL debug output forwarding.)
          )
-    )
+    )</p>
 
-    $(LI gfm.net sub-package:
+    <p>$(LI gfm.net sub-package:
         $(UL
             $(LI $(D uri.d): URI parsing (RFC 3986).)
             $(LI $(D httpclient.d): HTTP client (RFC 2616).)
             $(LI $(D cbor.d): CBOR serialization/deserialization (RFC 7049).)
          )
-    )
-    $(LI gfm.sdl2 sub-package:
+    )</p>
+    <p>$(LI gfm.sdl2 sub-package:
         $(UL
             $(LI SDL 2.0 wrapper based on package derelict-sdl2.)
             $(LI including SDL_image and SDL_ttf wrappers.)
             $(LI built-in SDL logging forwarding.)
             $(LI framerate statistics.)
          )
-    )
+    )</p>
 
-    $(LI gfm.image sub-package:
+    <p>$(LI gfm.image sub-package:
         $(UL
             $(LI $(D image.d): generic abstract image and software rendering routines.)
             $(LI $(D bitmap.d): planar and tile-based concrete images.)
             $(LI $(D cie.d): physical color computations.)
             $(LI $(D hsv.d): RGB <-> HSV conversions.)
          )
-    )
+    )</p>
 
-    $(LI gfm.freeimage sub-package:
+    <p>$(LI gfm.freeimage sub-package:
         $(UL
             $(LI FreeImage wrapper based on package derelict-fi.)
             $(LI FIBITMAP wrapper.)
          )
-    )
-
-    $(LI gfm.assimp sub-package:
+    )</p>
+    
+    <p>$(LI gfm.assimp sub-package:
         $(UL
             $(LI Assimp wrapper based on package derelict-assimp3.)
             $(LI scene wrapper.)
          )
-    )
+    )</p>
 
 ) 
