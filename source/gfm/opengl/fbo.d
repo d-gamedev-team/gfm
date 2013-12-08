@@ -9,17 +9,21 @@ import gfm.core.log,
        gfm.opengl.texture, 
        gfm.opengl.renderbuffer;
 
-// OpenGL FrameBuffer Object wrapper
+/// OpenGL FrameBuffer Object wrapper.
 final class GLFBO
 {
     public
     {
+        /// FBO usage.
         enum Usage
         {
-            DRAW,
-            READ
+            DRAW, /// This FBO will be used for drawing.
+            READ  /// This FBO will be used for reading.
         }
 
+        /// Creates one FBO, with specified usage. OpenGL must have been loaded.
+        /// $(D EXT_framebuffer_object) is used as a fallback if $(D ARB_framebuffer_object) is missing.
+        /// Throws: $(D OpenGLException) on error.
         this(OpenGL gl, Usage usage = Usage.DRAW)
         {
             if (glGenFramebuffers !is null)
@@ -68,6 +72,7 @@ final class GLFBO
             close();
         }
 
+        /// Releases the OpenGL FBO resource.
         void close()
         {
             if (_initialized)
@@ -87,6 +92,8 @@ final class GLFBO
             }
         }
 
+        /// Binds this FBO.
+        /// Throws: $(D OpenGLException) on error.
         void use()
         {
             if (_useEXTFallback)
@@ -101,6 +108,8 @@ final class GLFBO
                 _colors[i].updateAttachment();
         }
 
+        /// Unbinds this FBO.
+        /// Throws: $(D OpenGLException) on error.
         void unuse()
         {
             _isBound = false;
@@ -112,17 +121,21 @@ final class GLFBO
             _gl.runtimeCheck();
         }
 
-       // get color attachment
+       /// Gets a color attachment.
+       /// Params:
+       ///     i = index of color attachment.
        GLFBOAttachment color(int i)
        {
            return _colors[i];
        }
 
+       /// Gets the depth attachment.
        GLFBOAttachment depth()
        {
            return _depth;
        }
 
+       /// Gets the stencil attachment.
        GLFBOAttachment stencil()
        {
            return _stencil;
@@ -183,58 +196,77 @@ final class GLFBO
     }
 }
 
+/// Defines one FBO attachment.
 class GLFBOAttachment
 {
     public
     {
+        /// Attaches a 1D texture to the FBO.
+        /// Throws: $(D OpenGLException) on error.
         void attach(GLTexture1D tex, int level = 0)
         {
             _newCall = Call(this, Call.Type.TEXTURE_1D, tex, null, level, 0);
             updateAttachment();
         }
 
+        /// Attaches a 2D texture to the FBO.
+        /// Throws: $(D OpenGLException) on error.
         void attach(GLTexture2D tex, int level = 0)
         {
             _newCall = Call(this, Call.Type.TEXTURE_2D, tex, null, level, 0);
             updateAttachment();
         }
 
+        /// Attaches a 3D texture to the FBO.
+        /// Throws: $(D OpenGLException) on error.
         void attach(GLTexture3D tex, int layer, int level)
         {
             _newCall = Call(this, Call.Type.TEXTURE_3D, tex, null, level, layer);            
             updateAttachment();
         }
 
+        /// Attaches a 1D texture array to the FBO.
+        /// Throws: $(D OpenGLException) on error.
         void attach(GLTexture1DArray tex, int layer)
         {
             _newCall = Call(this, Call.Type.TEXTURE_3D, tex, null, 0, layer);
             updateAttachment();
         }
 
+        /// Attaches a 2D texture array to the FBO.
+        /// Throws: $(D OpenGLException) on error.
         void attach(GLTexture2DArray tex, int layer)
         {
             _newCall = Call(this, Call.Type.TEXTURE_3D, tex, null, 0, layer);
             updateAttachment();
         }
 
+        /// Attaches a rectangle texture to the FBO.
+        /// Throws: $(D OpenGLException) on error.
         void attach(GLTextureRectangle tex)
         {
             _newCall = Call(this, Call.Type.TEXTURE_2D, tex, null, 0, 0);
             updateAttachment();
         }
 
+        /// Attaches a multisampled 2D texture to the FBO.
+        /// Throws: $(D OpenGLException) on error.
         void attach(GLTexture2DMultisample tex)
         {
             _newCall = Call(this, Call.Type.TEXTURE_2D, tex, null, 0, 0);
             updateAttachment();
         }
 
+        /// Attaches a multisampled 2D texture array to the FBO.
+        /// Throws: $(D OpenGLException) on error.
         void attach(GLTexture2DMultisampleArray tex, int layer)
         {
             _newCall = Call(this, Call.Type.TEXTURE_3D, tex, null, 0, layer);
             updateAttachment();
         }
 
+        /// Attaches a renderbuffer to the FBO.
+        /// Throws: $(D OpenGLException) on error.
         void attach(GLRenderBuffer buffer)
         {
             _newCall = Call(this, Call.Type.RENDERBUFFER, null, buffer, 0, 0);

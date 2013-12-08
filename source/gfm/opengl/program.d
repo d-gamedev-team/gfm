@@ -21,6 +21,7 @@ final class GLProgram
     public
     {
         /// Creates an empty program.
+        /// Throws: $(D OpenGLException) on error.
         this(OpenGL gl)
         {
             _gl = gl;
@@ -31,6 +32,7 @@ final class GLProgram
         }
 
         /// Creates a program from a set of compiled shaders.
+        /// Throws: $(D OpenGLException) on error.
         this(OpenGL gl, GLShader[] shaders...)
         {
             this(gl);

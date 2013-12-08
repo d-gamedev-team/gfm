@@ -4,10 +4,13 @@ import derelict.opengl3.gl3;
 
 import gfm.opengl.opengl;
 
+/// OpenGL Buffer wrapper.
 final class GLBuffer
 {
     public
     {
+        /// Creates an empty program.
+        /// Throws: $(D OpenGLException) on error.
         this(OpenGL gl, GLuint target, GLuint storage, GLuint usage)
         {
             _gl = gl;
@@ -17,6 +20,7 @@ final class GLBuffer
             _firstLoad = true;
 
             glGenBuffers(1, &_buffer);
+            gl.runtimeCheck();
             _initialized = true;
             _size = 0;
         }
@@ -26,6 +30,7 @@ final class GLBuffer
             close();
         }
 
+        /// Releases the OpenGL renderbuffer resource.
         void close()
         {
             if (_initialized)
@@ -35,12 +40,14 @@ final class GLBuffer
             }
         }
 
-        /// Return size in bytes.
+        /// Returns: Size of buffer in bytes.
         size_t size() pure const nothrow
         {
             return _size;
         }
 
+        /// Returns: Copy bytes to the byffer.
+        /// Throws: $(D OpenGLException) on error.
         void setData(size_t size, void * data)
         {
             bind();
@@ -60,6 +67,8 @@ final class GLBuffer
             _firstLoad = false;
         }
 
+        /// Copies bytes to a sub-part of the buffer. This can't resize the buffer.
+        /// Throws: $(D OpenGLException) on error.
         void setSubData(size_t offset, size_t size, void* data)
         {
             bind();
@@ -67,7 +76,8 @@ final class GLBuffer
             _gl.runtimeCheck();
         }
 
-        /// Get a sub-part of a buffer.
+        /// Gets a sub-part of a buffer.
+        /// Throws: $(D OpenGLException) on error.
         void getSubData(size_t offset, size_t size, void* data)
         {
             bind();
@@ -75,8 +85,9 @@ final class GLBuffer
             _gl.runtimeCheck();
         }
 
-        /// Get a whole-buffer in a newly allocated array.
-        /// Debugging-purpose.
+        /// Gets the whole buffer content in a newly allocated array.
+        /// For debugging purposes.
+        /// Throws: $(D OpenGLException) on error.
         ubyte[] getBytes()
         {
             auto buffer = new ubyte[_size];
@@ -84,17 +95,22 @@ final class GLBuffer
             return buffer;
         }
 
+        /// Binds this buffer.
+        /// Throws: $(D OpenGLException) on error.
         void bind()
         {
             glBindBuffer(_target, _buffer);
             _gl.runtimeCheck();
         }
 
+        /// Unbinds this buffer.
+        /// Throws: $(D OpenGLException) on error.
         void unbind()
         {
             glBindBuffer(_target, 0);
         }
 
+        /// Returns: Wrapped OpenGL resource handle.
         GLuint handle() pure const nothrow
         {
             return _buffer;
