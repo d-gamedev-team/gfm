@@ -239,13 +239,105 @@
 <br><br>
 <hr><div class="row-fluid declaration"><h3>class <span class="symbol-target" id="VertexSpecification">&nbsp;</span><a class="symbol-link" href="#VertexSpecification">VertexSpecification</a>;
 </h3></div>
-<div class="declaration-content"><dl><p>A vertex element describe exactly the format of a vertex.
- Can ony be built manually for now.
+<div class="declaration-content"><dl><p>A vertex specification describes the format of a vertex. It's like an OpenGL VAO, except more manual.
+ Can only be built manually for now.
 </p>
 
 <dt>TODO:</dt><dd>
-extract from a struct at compile-time</dd>
+Extract vertex specification from a struct at compile-time.</dd>
 </dl>
+<div class="offset1 member-list"><hr><div class="row-fluid declaration"><h3> this(OpenGL <i>gl</i>);
+</h3></div>
+<div class="declaration-content"><dl><p>Creates a vertex specification.</p>
+
+</dl>
+</div>
+<hr><div class="row-fluid declaration"><h3>void <span class="symbol-target" id="use">&nbsp;</span><a class="symbol-link" href="#use">use</a>(bool <i>useOlderAttribFunctions</i> = false);
+</h3></div>
+<div class="declaration-content"><dl><p>Use this vertex specification.
+</p>
+
+<dt>Parameters</dt><dd><table class="table table-condensed table-bordered"><tr><td>bool <i>useOlderAttribFunctions</i></td>
+<td>Whether to <span class="symbol-target" id="use">&nbsp;</span><a class="symbol-link" href="#use">use</a> older pointer attribute functions, 
+                              which can be more portable.</td>
+</tr>
+</table></dd>
+<dt>Throws</dt><dd><span class="inlinecode">OpenGLException</span> on error.</dd>
+</dl>
+</div>
+<hr><div class="row-fluid declaration"><h3>void <span class="symbol-target" id="unuse">&nbsp;</span><a class="symbol-link" href="#unuse">unuse</a>();
+</h3></div>
+<div class="declaration-content"><dl><p>Unuse this vertex specification.
+</p>
+
+<dt>Throws</dt><dd><span class="inlinecode">OpenGLException</span> on error.</dd>
+</dl>
+</div>
+<hr><div class="row-fluid declaration"><h3>void <span class="symbol-target" id="add">&nbsp;</span><a class="symbol-link" href="#add">add</a>(VertexElement.Role <i>role</i>, GLenum <i>glType</i>, int <i>n</i>);
+</h3></div>
+<div class="declaration-content"><dl><p>Adds an item to the vertex specification.</p>
+
+</dl>
+</div>
+<hr><div class="row-fluid declaration"><h3>void <span class="symbol-target" id="addDummyBytes">&nbsp;</span><a class="symbol-link" href="#addDummyBytes">addDummyBytes</a>(int <i>nBytes</i>);
+</h3></div>
+<div class="declaration-content"><dl><p>Adds padding space to the vertex specification.
+ This is useful for alignment.</p>
+
+</dl>
+</div>
+</div>
+</div>
+<hr><div class="row-fluid declaration"><h3>struct <span class="symbol-target" id="VertexElement">&nbsp;</span><a class="symbol-link" href="#VertexElement">VertexElement</a>;
+</h3></div>
+<div class="declaration-content"><dl><p>Describes a single attribute in a vertex entry.</p>
+
+</dl>
+<div class="offset1 member-list"><hr><div class="row-fluid declaration"><h3>enum <span class="symbol-target" id="Role">&nbsp;</span><a class="symbol-link" href="#Role">Role</a>: int;
+</h3></div>
+<div class="declaration-content"><dl><p><span class="symbol-target" id="Role">&nbsp;</span><a class="symbol-link" href="#Role">Role</a> of this vertex attribute.</p>
+
+</dl>
+<div class="offset1 member-list"><hr><div class="row-fluid declaration"><h3><span class="symbol-target" id="POSITION">&nbsp;</span><a class="symbol-link" href="#POSITION">POSITION</a></h3></div>
+<div class="declaration-content"><dl><p>This attribute is a position.</p>
+
+</dl>
+</div>
+<hr><div class="row-fluid declaration"><h3><span class="symbol-target" id="COLOR">&nbsp;</span><a class="symbol-link" href="#COLOR">COLOR</a></h3></div>
+<div class="declaration-content"><dl><p>This attribute is a color.</p>
+
+</dl>
+</div>
+<hr><div class="row-fluid declaration"><h3><span class="symbol-target" id="TEX_COORD">&nbsp;</span><a class="symbol-link" href="#TEX_COORD">TEX_COORD</a></h3></div>
+<div class="declaration-content"><dl><p>This attribute is a texture coordinate.</p>
+
+</dl>
+</div>
+<hr><div class="row-fluid declaration"><h3><span class="symbol-target" id="NORMAL">&nbsp;</span><a class="symbol-link" href="#NORMAL">NORMAL</a></h3></div>
+<div class="declaration-content"><dl><p>This attribute is a normal.</p>
+
+</dl>
+</div>
+</div>
+
+</div>
+<hr><div class="row-fluid declaration"><h3>package void <span class="symbol-target" id="use">&nbsp;</span><a class="symbol-link" href="#use">use</a>(OpenGL <i>gl</i>, GLuint <i>index</i>, bool <i>useOlderAttribFunctions</i>, GLsizei <i>sizeOfVertex</i>);
+</h3></div>
+<div class="declaration-content"><dl><p>Use this attribute.
+</p>
+
+<dt>Throws</dt><dd><span class="inlinecode">OpenGLException</span> on error.</dd>
+</dl>
+</div>
+<hr><div class="row-fluid declaration"><h3>package void <span class="symbol-target" id="unuse">&nbsp;</span><a class="symbol-link" href="#unuse">unuse</a>(OpenGL <i>gl</i>, GLuint <i>index</i>, bool <i>useOlderAttribFunctions</i>);
+</h3></div>
+<div class="declaration-content"><dl><p>Unuse this attribute.
+</p>
+
+<dt>Throws</dt><dd><span class="inlinecode">OpenGLException</span> on error.</dd>
+</dl>
+</div>
+</div>
 </div>
 
 
