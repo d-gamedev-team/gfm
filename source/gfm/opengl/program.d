@@ -15,13 +15,12 @@ import gfm.core.log,
        gfm.opengl.shader, 
        gfm.opengl.uniform;
 
+/// OpenGL Program wrapper.
 final class GLProgram
 {
     public
     {
-        /**
-         * Create an empty program.
-         */
+        /// Creates an empty program.
         this(OpenGL gl)
         {
             _gl = gl;
@@ -31,9 +30,7 @@ final class GLProgram
             _initialized = true;
         }
 
-        /**
-         * Create a program from a set of compiled shaders.
-         */
+        /// Creates a program from a set of compiled shaders.
         this(OpenGL gl, GLShader[] shaders...)
         {
             this(gl);
@@ -43,28 +40,30 @@ final class GLProgram
 
         /**
          * Compiles N times the same GLSL source and link to a program.
+         * 
+         * <p>
          * The same input is compiled 1 to 5 times, each time prepended
-         * with #defines specific to a shader type.
-         * 
-         * - VERTEX_SHADER
-         * - FRAGMENT_SHADER
-         * - GEOMETRY_SHADER
-         * - TESS_CONTROL_SHADER
-         * - TESS_EVALUATION_SHADER
+         * with a $(D #define) specific to a shader type.
+         * </p>
+         * $(UL
+         *    $(LI $(D VERTEX_SHADER))
+         *    $(LI $(D FRAGMENT_SHADER))
+         *    $(LI $(D GEOMETRY_SHADER))
+         *    $(LI $(D TESS_CONTROL_SHADER))
+         *    $(LI $(D TESS_EVALUATION_SHADER))
+         * )
+         * <p>
+         * Each of these macros are alternatively set to 1 while the others are
+         * set to 0. If such a macro isn't used in any preprocessor directive 
+         * of your source, this shader stage is considered unused.</p>
          *
-         * Each of these defines is alternatively set to 1 while the others are
-         * set to zero.
-         *            
-         * If such a macro isn't used in any preprocessor directives of your source,
-         * the shader is considered unused.
-         *
-         * For conformance reasons, any #version on the first line will stay at the top.
+         * <p>For conformance reasons, any #version on the first line will stay at the top.</p>
          * 
-         * THIS FUNCTION REWRITES YOUR SHADER A BIT.
+         * Warning: <b>THIS FUNCTION REWRITES YOUR SHADER A BIT.</b>
          * Expect slightly wrong lines in GLSL compiler's error messages.
          *
-         * Example of such a source:
-         * 
+         * Example of a combined shader source:
+         * ---
          *      #version 110
          *      uniform vec4 color;
          *
@@ -83,10 +82,15 @@ final class GLProgram
          *      }
          *      
          *      #endif
+         * ---
          *
-         * LIMITATIONS: all your #preprocessor directives should not have whitespaces 
-         *              before the #
-         *              source elements should be individual lines!
+         * Limitations:
+         * $(UL
+         *   $(LI all your #preprocessor directives should not have whitespaces before the #.)
+         *   $(LI source elements should be individual lines!)
+         * )
+         *
+         * Throws: $(D OpenGLException) on error.
          */
         this(OpenGL gl, string[] source)
         {
@@ -177,7 +181,7 @@ final class GLProgram
             this(gl, shaders);
         }
 
-        // idem, except with lines
+        /// Ditto, except with lines in a single string.
         this(OpenGL gl, string wholeSource)
         {
             // split on end-of-lines
@@ -189,6 +193,7 @@ final class GLProgram
             close();
         }
 
+        /// Releases the OpenGL program resource.
         void close()
         {
             if (_initialized)
@@ -198,6 +203,8 @@ final class GLProgram
             }
         }
 
+        /// Attack OpenGL shaders to this program.
+        /// Throws: $(D OpenGLException) on error.
         void attach(GLShader[] shaders...)
         {
             foreach(shader; shaders)
@@ -207,6 +214,8 @@ final class GLProgram
             }
         }
 
+        /// Link this OpenGL program.
+        /// Throws: $(D OpenGLException) on error.
         void link()
         {
             glLinkProgram(_program);
@@ -278,6 +287,8 @@ final class GLProgram
 
         }
 
+        /// Enables this program for next draw calls.
+        /// Throws: $(D OpenGLException) on error.
         void use()
         {
             glUseProgram(_program);
@@ -289,13 +300,18 @@ final class GLProgram
                 uniform.use();
         }
 
+        /// Disables this program.
+        /// Throws: $(D OpenGLException) on error.
         void unuse()
         {
             foreach(uniform; _activeUniforms)
                 uniform.unuse();
             glUseProgram(0);
+            _gl.runtimeCheck();
         }
 
+        /// Returns: Log output of the GLSL linker.
+        /// Throws: $(D OpenGLException) on error.
         string getLinkLog()
         {
             GLint logLength;
@@ -307,6 +323,10 @@ final class GLProgram
             return sanitizeUTF8(log.ptr, _gl._log, "shader link log");
         }
 
+        /// Gets an uniform by name.
+        /// Returns: A GLUniform with this name. This GLUniform might be created on demand if 
+        ///          the name hasn't been found.
+        /// See_also: GLUniform.
         GLUniform uniform(string name)
         {
             GLUniform* u = name in _activeUniforms;
@@ -322,6 +342,9 @@ final class GLProgram
             return *u;
         }
 
+        /// Gets an attribute by name.
+        /// Returns: A $(D GLAttribute) retrieved by name.
+        /// Throws: $(D OpenGLException) on error.
         GLAttribute attrib(string name)
         {
             GLAttribute* a = name in _activeAttributes;
@@ -330,6 +353,7 @@ final class GLProgram
             return *a;
         }
 
+        /// Returns: Wrapped OpenGL resource handle.
         GLuint handle() pure const nothrow
         {
             return _program;
@@ -347,7 +371,8 @@ final class GLProgram
 }
 
 
-// Represent an OpenGL program attribute. Owned by a GLProgram.
+/// Represent an OpenGL program attribute. Owned by a GLProgram.
+/// See_also: GLProgram.
 final class GLAttribute
 {
     public

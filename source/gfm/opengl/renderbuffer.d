@@ -8,10 +8,15 @@ import gfm.core.log,
        gfm.math.funcs,
        gfm.opengl.opengl;
 
+/// OpenGL Renderbuffer wrapper.
 final class GLRenderBuffer
 {
     public
     {
+        /// Creates an OpenGL renderbuffer.
+        /// OpenGL must have been loaded.
+        /// If asking for a multisampled render buffer fails, a non multisampled buffer will be created instead.
+        /// Throws: $(D OpenGLException) on error.
         this(OpenGL gl, GLenum internalFormat, int width, int height, int samples = 0)
         {
             _gl = gl;
@@ -67,6 +72,7 @@ final class GLRenderBuffer
             close();
         }
 
+        /// Releases the OpenGL renderbuffer resource.
         void close()
         {
             if (_initialized)
@@ -76,16 +82,26 @@ final class GLRenderBuffer
             }
         }
 
+        /// Binds this renderbuffer.
+        /// Throws: $(D OpenGLException) on error.
         void use()
         {
             glBindRenderbuffer(GL_RENDERBUFFER, _handle);
             _gl.runtimeCheck();
         }
 
+        /// Unbinds this renderbuffer.
+        /// Throws: $(D OpenGLException) on error.
         void unuse()
         {
             glBindRenderbuffer(GL_RENDERBUFFER, 0);
             _gl.runtimeCheck();
+        }
+
+        /// Returns: Wrapped OpenGL resource handle.
+        GLuint handle() pure const nothrow
+        {
+            return _handle;
         }
     }
 

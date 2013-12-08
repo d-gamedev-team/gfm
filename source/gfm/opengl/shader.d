@@ -10,10 +10,13 @@ import gfm.core.log,
        gfm.opengl.opengl;
 
 
+/// OpenGL Shader wrapper.
 final class GLShader
 {
     public
     {
+        /// Creates a shader without source code.
+        /// Throws: $(D OpenGLException) on error.
         this(OpenGL gl, GLenum shaderType)
         {
             _gl = gl;
@@ -23,7 +26,8 @@ final class GLShader
             _initialized = true;
         }
 
-        // one step load/compile
+        /// Creates a shader with source code and compiles it.
+        /// Throws: $(D OpenGLException) on error.
         this(OpenGL gl, GLenum shaderType, string[] lines)
         {
             this(gl, shaderType);
@@ -36,6 +40,7 @@ final class GLShader
             close();
         }
 
+        /// Releases the OpenGL shader resource.
         void close()
         {
             if (_initialized)
@@ -45,6 +50,8 @@ final class GLShader
             }
         }
 
+        /// Load source lines.
+        /// Throws: $(D OpenGLException) on error.
         void load(string[] lines)
         {
             size_t lineCount = lines.length;
@@ -67,6 +74,8 @@ final class GLShader
             _gl.runtimeCheck();
         }
 
+        /// Compile this OpenGL shader.
+        /// Throws: $(D OpenGLException) on error.
         void compile()
         {
             glCompileShader(_shader);
@@ -82,6 +91,8 @@ final class GLShader
                 throw new OpenGLException("shader did not compile");
         }
 
+        /// Returns: Log output of the GLSL compiler.
+        /// Throws: $(D OpenGLException) on error.
         string getInfoLog()
         {
             GLint logLength;

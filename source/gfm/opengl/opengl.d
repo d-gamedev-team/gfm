@@ -13,6 +13,8 @@ import gfm.core.log,
        gfm.core.text,
        gfm.opengl.textureunit;
 
+/// The one exception type thrown in this wrapper.
+/// A failing OpenGL function should <b>always</b> throw an $(D OpenGLException).
 class OpenGLException : Exception
 {
     public
@@ -24,11 +26,16 @@ class OpenGLException : Exception
     }
 }
 
-// wrapper class to ensure library loading
+/// This object is passed around to other OpenGL wrapper objects
+/// to ensure library loading.
+/// Create one to use OpenGL.
 final class OpenGL
 {
     public
     {
+        /// Load OpenGL library, redirect debug output to our logger.
+        /// You can pass a null logger if you don't want logging.
+        /// Throws: $(D OpenGLException) on error.
         this(Log log)
         {
             _log = log is null ? new NullLog() : log;
@@ -50,7 +57,9 @@ final class OpenGL
             close();
         }
 
-        // once an OpenGL context exist, reload to get the context you want
+        /// Reload OpenGL function pointers.
+        /// Once a first OpenGL context has been created, 
+        /// you should call reload() to get the context you want.
         void reload()
         {
             DerelictGL3.reload();
@@ -76,27 +85,17 @@ final class OpenGL
             }
         }
 
-        void pipeOpenGLDebugOutput()
-        {
-            if (KHR_debug())
-            {
-                glDebugMessageCallback(&loggingCallbackOpenGL, cast(void*)this);
-
-                // enable all messages
-                glDebugMessageControl(GL_DONT_CARE, GL_DONT_CARE, GL_DONT_CARE, 0, null, GL_TRUE);
-
-                glEnable(GL_DEBUG_OUTPUT);
-                //glEnable(GL_DEBUG_OUTPUT_SYNCHRONOUS);
-            }
-        }
-
+        /// Releases the OpenGL dynamic library.
+        /// All ressources should have been released at this point,
+        /// since you won't be able to call any OpenGL function afterwards.
         void close()
         {
             DerelictGL.unload();
             DerelictGL3.unload();
         }
 
-        // for debug purpose, disabled on release build
+        /// Check for pending OpenGL errors, log a message if there is.
+        /// Only for debug purpose since this check will be disabled in a release build.
         void debugCheck()
         {
             debug
@@ -111,7 +110,8 @@ final class OpenGL
             }
         }
 
-        /// throw OpenGLException in case of OpenGL error
+        /// Checks pending OpenGL errors.
+        /// Throws: $(D OpenGLException) if at least one OpenGL error was pending.
         void runtimeCheck()
         {
             GLint r = glGetError();
@@ -123,7 +123,8 @@ final class OpenGL
             }
         }
 
-        /// return false in case of OpenGL error
+        /// Checks pending OpenGL errors.
+        /// Returns: true if at least one OpenGL error was pending. OpenGL error status is cleared.
         bool runtimeCheckNothrow() nothrow
         {
             GLint r = glGetError();
@@ -135,6 +136,8 @@ final class OpenGL
             return true;
         }
 
+        /// Returns: OpenGL string returned by $(D glGetString).
+        /// See_also: $(WEB www.opengl.org/sdk/docs/man/xhtml/glGetString.xml)
         string getString(GLenum name)
         {
             const(char)* sZ = glGetString(name);
@@ -144,31 +147,50 @@ final class OpenGL
                 return sanitizeUTF8(sZ, _log, "OpenGL");
         }
 
+        /// Returns: OpenGL version string, can be "major_number.minor_number" or 
+        ///          "major_number.minor_number.release_number".
+        /// See_also: $(WEB www.opengl.org/sdk/docs/man/xhtml/glGetString.xml)
         string getVersionString()
         {
             return getString(GL_VERSION);
         }
 
+        /// Returns: The company responsible for this OpenGL implementation, so
+        ///          that you can plant a giant toxic mushroom below their office.
+        /// See_also: $(WEB www.opengl.org/sdk/docs/man/xhtml/glGetString.xml)
         string getVendorString()
         {
             return getString(GL_VENDOR);
         }
 
+        /// Returns: Name of the renderer. This name is typically specific 
+        ///          to a particular configuration of a hardware platform.
+        /// See_also: $(WEB www.opengl.org/sdk/docs/man/xhtml/glGetString.xml)
         string getRendererString()
         {
             return getString(GL_RENDERER);
         }
 
+        /// Returns: GLSL version string, can be "major_number.minor_number" or 
+        ///          "major_number.minor_number.release_number".
+        /// See_also: $(WEB www.opengl.org/sdk/docs/man/xhtml/glGetString.xml)
         string getGLSLVersionString()
         {
             return getString(GL_SHADING_LANGUAGE_VERSION);
         }
 
+        /// Returns: A huge space-separated list of OpenGL extension.
+        /// See_also: $(WEB www.opengl.org/sdk/docs/man/xhtml/glGetString.xml)
         string getExtensionsString()
         {
             return getString(GL_EXTENSIONS);
         }
 
+        /// Calls $(D glGetIntegerv) and gives back the requested integer.
+        /// Returns: true if $(D glGetIntegerv) succeeded.
+        /// See_also: $(WEB www.opengl.org/sdk/docs/man4/xhtml/glGet.xml).
+        /// Note: It is generally a bad idea to call glGet since it might break
+        ///       pipelining.
         bool getInteger(GLenum pname, out int result) nothrow
         {
             GLint param;
@@ -183,6 +205,9 @@ final class OpenGL
                 return false;
         }
 
+        /// Returns: The requested integer returned by $(D glGetIntegerv) 
+        ///          or defaultValue if an error occured.
+        /// See_also: $(WEB www.opengl.org/sdk/docs/man4/xhtml/glGet.xml).        
         int getInteger(GLenum pname, GLint defaultValue, bool logging)
         {
             int result;
@@ -199,6 +224,9 @@ final class OpenGL
             }
         }
 
+        /// Returns: The requested float returned by $(D glGetFloatv).
+        /// See_also: $(WEB www.opengl.org/sdk/docs/man4/xhtml/glGet.xml). 
+        /// Throws: $(D OpenGLException) if at least one OpenGL error was pending.
         float getFloat(GLenum pname)
         {
             GLfloat res;
@@ -207,6 +235,9 @@ final class OpenGL
             return res;
         }
 
+        /// Returns: The requested float returned by $(D glGetFloatv) 
+        ///          or defaultValue if an error occured.
+        /// See_also: $(WEB www.opengl.org/sdk/docs/man4/xhtml/glGet.xml).   
         float getFloat(GLenum pname, GLfloat defaultValue, bool logging)
         {
             try
@@ -246,41 +277,51 @@ final class OpenGL
 
     public
     {
+        /// Returns: Maximum texture size. 
+        ///          This value should be at least 512 for a conforming OpenGL implementation.
         int maxTextureSize() pure const nothrow
         {
             return _maxTextureSize;
         }
 
+        /// Returns: Number of texture units.
         int maxTextureUnits() pure const nothrow
         {
             return _maxTextureUnits;
         }
 
+        /// Returns: Number of texture image units usable in a fragment shader.
         int maxFragmentTextureImageUnits() pure const nothrow
         {
             return _maxFragmentTextureImageUnits;
         }
 
+        /// Returns: Number of texture image units usable in a vertex shader.
         int maxVertexImageUnits() pure const nothrow
         {
             return _maxVertexTextureImageUnits;
         }
 
+        /// Returns: Number of combined texture image units.
         int maxCombinedImageUnits() pure const nothrow
         {
             return _maxCombinedTextureImageUnits;
         }
 
+        /// Returns: Maximum number of color attachments. This is the number of targets a fragment shader can output to.
+        /// You can rely on this number being at least 4 if MRT is supported.
         int maxColorAttachments() pure const nothrow
         {
             return _maxColorAttachments;
         }
 
+        /// Returns: Texture units abstraction.
         TextureUnits textureUnits() pure nothrow
         {
             return _textureUnits;
         }
 
+        /// Returns: Maximum value of anisotropic filter.
         float maxTextureMaxAnisotropy() pure const nothrow
         {
             return _maxTextureMaxAnisotropy;
@@ -324,7 +365,7 @@ final class OpenGL
                 _maxTextureMaxAnisotropy = 1.0f;
         }
 
-        /// flush out OpenGL errors
+        // flush out OpenGL errors
         void flushGLErrors() nothrow
         {            
             int timeout = 0;
@@ -336,6 +377,19 @@ final class OpenGL
             }
         }
 
+        void pipeOpenGLDebugOutput()
+        {
+            if (KHR_debug())
+            {
+                glDebugMessageCallback(&loggingCallbackOpenGL, cast(void*)this);
+
+                // enable all messages
+                glDebugMessageControl(GL_DONT_CARE, GL_DONT_CARE, GL_DONT_CARE, 0, null, GL_TRUE);
+
+                glEnable(GL_DEBUG_OUTPUT);
+                //glEnable(GL_DEBUG_OUTPUT_SYNCHRONOUS);
+            }
+        }
     }
 }
 
