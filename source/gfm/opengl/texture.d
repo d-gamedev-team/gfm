@@ -1,3 +1,4 @@
+/// This module defines one texture type for each sort of OpenGL texture.
 module gfm.opengl.texture;
 
 import std.string;
@@ -8,14 +9,19 @@ import gfm.core.log,
        gfm.opengl.opengl, 
        gfm.opengl.textureunit;
 
-// define one texture type for each sort of texture
-// TODO: - support partial updates
-//       - support glStorage throught pseudo-code given in the spec 
-
+/// OpenGL Texture wrapper.
+///
+/// TODO:
+/// $(UL
+///     $(LI Support partial updates.)
+///     $(LI Support glStorage through pseudo-code given in OpenGL specification.)
+///  )
 class GLTexture
 {
     public
     {
+        /// Creates a texture.
+        /// Throws: $(D OpenGLException) on error.
         this(OpenGL gl, GLuint target)
         {
             _gl = gl;
@@ -31,6 +37,7 @@ class GLTexture
             close();
         }
 
+         /// Releases the OpenGL texture resource.
         final void close()
         {
             if (_initialized)
@@ -40,19 +47,25 @@ class GLTexture
             }
         }
 
+        /// Use this texture, binding it to a texture unit.
+        /// Params:
+        ///     textureUnit = Index of the texture unit to use.
         final void use(int textureUnit = 0)
         {
             _gl.textureUnits().setActiveTexture(textureUnit);
             bind();
         }
 
+        /// Unuse this texture.
         final void unuse()
         {
           // do nothing: texture unit binding is as needed
         }
-
-        // warning: can stall the pipeline
-        // there is no good reason to call it unless for debugging
+        
+        /// Returns: Requested texture parameter.
+        /// Throws: $(D OpenGLException) on error.
+        /// Warning: Calling $(D glGetTexParameteriv) is generally not recommended
+        ///          since it could stall the OpenGL pipeline.
         final int getParam(GLenum paramName)
         {
             int res;
@@ -62,8 +75,10 @@ class GLTexture
             return res;
         }
 
-        // warning: can stall the pipeline
-        // there is no good reason to call it unless for debugging
+        /// Returns: Requested texture level parameter.
+        /// Throws: $(D OpenGLException) on error.
+        /// Warning: Calling $(D glGetTexLevelParameteriv) is generally not recommended
+        ///          since it could stall the OpenGL pipeline.
         final int getLevelParam(GLenum paramName, int level)
         {
             int res;
@@ -73,72 +88,102 @@ class GLTexture
             return res;
         }
 
-        // texture parameters
-
+        /// Sets the texture base level.
+        /// Throws: $(D OpenGLException) on error.
         final void setBaseLevel(int level)
         {
             bind();
             glTexParameteri(_target, GL_TEXTURE_BASE_LEVEL, level);
+            _gl.runtimeCheck();
         }
 
+        /// Sets the texture maximum level.
+        /// Throws: $(D OpenGLException) on error.
         final void setMaxLevel(int level)
         {
             bind();
             glTexParameteri(_target, GL_TEXTURE_MAX_LEVEL, level);
+            _gl.runtimeCheck();
         }
 
-        // texture "sampler" parameters which are now in Sampler Objects too
-        // but are also here legacy cards
+        // Texture "sampler" parameters which are now in Sampler Objects too
+        // but are also here for legacy cards.
 
+        /// Sets the texture minimum LOD.
+        /// Throws: $(D OpenGLException) on error.
         final void setMinLOD(float lod)
         {
             bind();
             glTexParameterf(_target, GL_TEXTURE_MIN_LOD, lod);
+            _gl.runtimeCheck();
         }
 
+        /// Sets the texture maximum LOD.
+        /// Throws: $(D OpenGLException) on error.
         final void setMaxLOD(float lod)
         {
             bind();
             glTexParameterf(_target, GL_TEXTURE_MAX_LOD, lod);
+            _gl.runtimeCheck();
         }
 
+        /// Sets the texture LOD bias.
+        /// Throws: $(D OpenGLException) on error.
         final void setLODBias(float lodBias)
         {
             bind();
             glTexParameterf(_target, GL_TEXTURE_LOD_BIAS, lodBias);
+            _gl.runtimeCheck();
         }
 
+        /// Sets the wrap mode for 1st texture coordinate.
+        /// Throws: $(D OpenGLException) on error.
         final void setWrapS(GLenum wrapS)
         {
             bind();
             glTexParameteri(_target, GL_TEXTURE_WRAP_S, wrapS);
+            _gl.runtimeCheck();
         }
 
+        /// Sets the wrap mode for 2nd texture coordinate.
+        /// Throws: $(D OpenGLException) on error.
         final void setWrapT(GLenum wrapT)
         {
             bind();
             glTexParameteri(_target, GL_TEXTURE_WRAP_T, wrapT);
+            _gl.runtimeCheck();
         }
 
+        /// Sets the wrap mode for 3rd texture coordinate.
+        /// Throws: $(D OpenGLException) on error.
         final void setWrapR(GLenum wrapR)
         {
             bind();
             glTexParameteri(_target, GL_TEXTURE_WRAP_R, wrapR);
+            _gl.runtimeCheck();
         }
 
+        /// Sets the texture minification filter mode.
+        /// Throws: $(D OpenGLException) on error.
         final void setMinFilter(GLenum minFilter)
         {
             bind();
             glTexParameteri(_target, GL_TEXTURE_MIN_FILTER, minFilter);
+            _gl.runtimeCheck();
         }
 
+        /// Sets the texture magnification filter mode.
+        /// Throws: $(D OpenGLException) on error.
         final void setMagFilter(GLenum magFilter)
         {
             bind();
             glTexParameteri(_target, GL_TEXTURE_MAG_FILTER, magFilter);
+            _gl.runtimeCheck();
         }
 
-        // anisotropy level
+        /// Sets the texture anisotropic filter level.
+        /// If texture anisotropy isn't supported, fail silently.
+        /// Throws: $(D OpenGLException) on error.
         final void setMaxAnisotropy(float f)
         {
             assert(f >= 1.0f);
@@ -151,17 +196,22 @@ class GLTexture
                 f = maxAniso;
 
             glTexParameterf(_target, GL_TEXTURE_MAX_ANISOTROPY_EXT, f);
+            _gl.runtimeCheck();
         }
 
+        /// Returns: Wrapped OpenGL resource handle.
         GLuint handle() pure const nothrow
         {
           return _handle;
         }
 
+        /// Regenerates the mipmapped levels.
+        /// Throws: $(D OpenGLException) on error.
         void generateMipmap()
         {
             bind();
             glGenerateMipmap(_target);
+            _gl.runtimeCheck();
         }
     }
 
@@ -187,6 +237,7 @@ class GLTexture
     }
 }
 
+/// Wrapper for 1D texture.
 final class GLTexture1D : GLTexture
 {
     public
@@ -205,6 +256,7 @@ final class GLTexture1D : GLTexture
 
 }
 
+/// Wrapper for 2D texture.
 final class GLTexture2D : GLTexture
 {
     public
@@ -223,6 +275,7 @@ final class GLTexture2D : GLTexture
 
 }
 
+/// Wrapper for 3D texture.
 final class GLTexture3D : GLTexture
 {
     public
@@ -240,6 +293,7 @@ final class GLTexture3D : GLTexture
     }
 }
 
+/// Wrapper for 1D texture array.
 final class GLTexture1DArray : GLTexture
 {
     public
@@ -257,6 +311,7 @@ final class GLTexture1DArray : GLTexture
     }
 }
 
+/// Wrapper for 2D texture array.
 final class GLTexture2DArray : GLTexture
 {
     public
@@ -280,6 +335,7 @@ final class GLTexture2DArray : GLTexture
     }
 }
 
+/// Wrapper for texture rectangle.
 final class GLTextureRectangle : GLTexture
 {
     public
@@ -297,6 +353,7 @@ final class GLTextureRectangle : GLTexture
     }
 }
 
+/// Wrapper for 2D multisampled texture.
 final class GLTexture2DMultisample : GLTexture
 {
     public
@@ -314,6 +371,7 @@ final class GLTexture2DMultisample : GLTexture
     }
 }
 
+/// Wrapper for 2D multisampled texture array.
 final class GLTexture2DMultisampleArray : GLTexture
 {
     public
