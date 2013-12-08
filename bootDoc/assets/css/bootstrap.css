@@ -161,13 +161,15 @@ body {
 }
 
 a {
-  color: #0088cc;
+  color: #830;
   text-decoration: none;
+  text-shadow: 0px 0px 20px #ccf;
 }
 
 a:hover {
-  color: #005580;
-  text-decoration: underline;
+  color: #c80;
+  text-decoration: none;
+  text-shadow: 0px 0px 20px #ffc;
 }
 
 .row {
