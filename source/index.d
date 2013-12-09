@@ -88,3 +88,38 @@ $(UL
     )</p>
 
 ) 
+
+
+<h3>Dealing with resources in D.</h3>
+
+<p>
+Resource management in D needs more care than it seems at first ; more so than in C++ and as much as in C#.
+</p>
+
+<p>
+The crux of the matter is that <b>you cannot rely on a class destructor being called by the 
+GC or even class destruction order</b>.</p>
+
+<p>A notable consequence is that <b>when a class instance destructor is 
+called, its members might have been destroyed already (unlike in C++).</b></p>
+
+<p>
+You can verify this fact here: $(WEB dlang.org/class.html#destructors).
+</p>
+
+<p>
+To simplify, the <i>resource-ness</i> of a class leaks on anything that owns it. 
+This is an unavoidable fact of a GC with cycles and you have to deal with it, ie. 
+you have to call close() methods manually before it's too late.
+</p>
+
+<h4>How to deal with it:</h4>
+
+$(UL
+  $(LI Call close() manually on resource classes.)
+  $(LI A class with a close() method should have it called automatically by its destructor.)
+  $(LI Use such friendly resource classes with $(D scoped!), $(D RefCounted), $(D scope(exit)), 
+    $(D Unique!), or any other deterministic destruction mechanisms.)
+  $(LI For maximum usefulness, a close() method should support being called several times.)
+)
+
