@@ -1,4 +1,4 @@
-module gfm.opengl.all;
+module gfm.opengl;
 
 // OpenGL OO wrapper
 

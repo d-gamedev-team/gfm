@@ -1,4 +1,4 @@
-module gfm.sdl2.all;
+module gfm.sdl2;
 
 // SDL2 wrapper
 

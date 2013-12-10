@@ -1,4 +1,4 @@
-module gfm.assimp.all;
+module gfm.assimp;
 
 // Assimp OO wrapper
 

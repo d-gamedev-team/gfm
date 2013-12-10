@@ -1,4 +1,4 @@
-module gfm.net.all;
+module gfm.net;
 
 public import gfm.net.uri,
               gfm.net.httpclient,

@@ -1,4 +1,4 @@
-module gfm.image.all;
+module gfm.image;
 
 public import gfm.image.image,
               gfm.image.bitmap,

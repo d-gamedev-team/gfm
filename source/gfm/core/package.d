@@ -1,4 +1,4 @@
-module gfm.core.all;
+module gfm.core;
 
 public import gfm.core.log,
               gfm.core.memory,

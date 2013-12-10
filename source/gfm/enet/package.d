@@ -1,4 +1,4 @@
-module gfm.enet.all;
+module gfm.enet;
 
 // ENet OO wrapper
 

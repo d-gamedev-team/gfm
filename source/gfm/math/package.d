@@ -1,4 +1,4 @@
-module gfm.math.all;
+module gfm.math;
 
 public import gfm.math.funcs,
               gfm.math.half,

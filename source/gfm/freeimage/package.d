@@ -1,4 +1,4 @@
-module gfm.freeimage.all;
+module gfm.freeimage;
 
 // FreeImage OO wrapper
 
