@@ -270,8 +270,7 @@ final class FIBitmap
             return new FIBitmap(_lib, FreeImage_TmoDrago03(_bitmap, gamma, exposure));
         }
 
-        /// Filps the image vertically.
-        // transformation
+        /// Rescales the image.
         FIBitmap rescale(int dstWidth, int dstHeight, FREE_IMAGE_FILTER filter)
         {
             return new FIBitmap(_lib, FreeImage_Rescale(_bitmap, dstWidth, dstHeight, filter));
