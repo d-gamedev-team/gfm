@@ -7,7 +7,7 @@ import gfm.core.memory,
 import gfm.opengl.opengl;
 
 /// A matrix stack designed to replace fixed-pipeline matrix stacks.
-/// This stacks always expose both the top element and its inverse.
+/// This stack always expose both the top element and its inverse.
 final class MatrixStack(size_t R, T) if (R == 3 || R == 4)
 {
     public
