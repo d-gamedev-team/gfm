@@ -38,7 +38,7 @@ template isImage(I)
 /// Returns: true if an image contains the given point.
 bool contains(I)(I img, int x, int y) if (isImage!I)
 {
-    return cast(uint)x < img.dimension.x && cast(uint)x < img.dimension.y;
+    return cast(uint)x < img.dimension.x && cast(uint)y < img.dimension.y;
 }
 
 /// EdgeMode defines how images are sampled beyond their boundaries.
