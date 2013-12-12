@@ -94,6 +94,14 @@ I.element_t getPixel(I)(I img, int x, int y, EdgeMode em)
     return img.get(x, y);
 }
 
+/// Draws a rectangle outline in an Image.
+void drawRect(I, P)(I img, int x, int y, int width, int height, P e) if (isImage!I && is(P : I.element_t))
+{
+    drawHorizontalLine(img, x, x + width, y, e);
+    drawHorizontalLine(img, x, x + width, y + height - 1, e);
+    drawVerticalLine(img, x, y, y + height, e);
+    drawVerticalLine(img, x + width - 1, y, y + height, e);
+}
 
 /// Fills an uniform rectangle area in an Image.
 void fillRect(I, P)(I img, int x, int y, int width, int height, P e) if (isImage!I && is(P : I.element_t))
