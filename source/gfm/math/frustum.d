@@ -10,8 +10,7 @@ import gfm.math.vector,
 
 
 /// 3D plane.
-/// From the flipcode article by Nate Miller.
-/// See: http://www.flipcode.com/archives/Plane_Class.shtml
+/// See_also: Flipcode article by Nate Miller $(WEB www.flipcode.com/archives/Plane_Class.shtml).
 align(1) struct Plane(T) if (isFloatingPoint!T)
 {
     public
@@ -98,9 +97,8 @@ unittest
 
 
 /// 3D frustum.
-/// Implemented from the flipcode article by Dion Picco.
-/// http://www.flipcode.com/archives/Frustum_Culling.shtml
-/// TODO: verify proper signedness of half-spaces
+/// See_also: Flipcode article by Dion Picco $(WEB www.flipcode.com/archives/Frustum_Culling.shtml).
+/// Bugs: verify proper signedness of half-spaces
 align(1) struct Frustum(T) if (isFloatingPoint!T)
 {
     public
