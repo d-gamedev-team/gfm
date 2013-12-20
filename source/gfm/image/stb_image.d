@@ -40,12 +40,6 @@ enum : int
 
 // define faster low-level operations (typically SIMD support)
 
-// implementation:
-alias uint8 = ubyte;
-alias uint16 = ushort;
-alias int16 = short;
-alias uint32 = uint;
-alias int32 = int;
 
 uint stbi_lrot(uint x, uint y)
 {
@@ -60,23 +54,23 @@ uint stbi_lrot(uint x, uint y)
 // contains all the IO context, plus some basic image information
 struct stbi
 {
-   uint32 img_x, img_y;
+   uint img_x, img_y;
    int img_n, img_out_n;
    
    int buflen;
-   uint8 buffer_start[128];
+   ubyte buffer_start[128];
 
-   uint8 *img_buffer;
-   uint8 *img_buffer_end;
-   uint8 *img_buffer_original;
+   ubyte *img_buffer;
+   ubyte *img_buffer_end;
+   ubyte *img_buffer_original;
 }
 
 
 // initialize a memory-decode context
-void start_mem(stbi *s, const(uint8)*buffer, int len)
+void start_mem(stbi *s, const(ubyte)*buffer, int len)
 {
-   s.img_buffer = s.img_buffer_original = cast(uint8 *) buffer;
-   s.img_buffer_end = cast(uint8 *) buffer+len;
+   s.img_buffer = s.img_buffer_original = cast(ubyte *) buffer;
+   s.img_buffer_end = cast(ubyte *) buffer+len;
 }
 
 static void stbi_rewind(stbi *s)
@@ -143,9 +137,9 @@ static int at_eof(stbi *s)
    return s.img_buffer >= s.img_buffer_end;   
 }
 
-static uint8 get8u(stbi *s)
+static ubyte get8u(stbi *s)
 {
-   return cast(uint8) get8(s);
+   return cast(ubyte) get8(s);
 }
 
 static void skip(stbi *s, int n)
@@ -169,9 +163,9 @@ static int get16(stbi *s)
    return (z << 8) + get8(s);
 }
 
-static uint32 get32(stbi *s)
+static uint get32(stbi *s)
 {
-   uint32 z = get16(s);
+   uint z = get16(s);
    return (z << 16) + get16(s);
 }
 
@@ -181,9 +175,9 @@ static int get16le(stbi *s)
    return z + (get8(s) << 8);
 }
 
-static uint32 get32le(stbi *s)
+static uint get32le(stbi *s)
 {
-   uint32 z = get16le(s);
+   uint z = get16le(s);
    return z + (get16le(s) << 16);
 }
 
@@ -198,9 +192,9 @@ static uint32 get32le(stbi *s)
 //  assume data buffer is malloced, so malloc a new one and free that one
 //  only failure mode is malloc failing
 
-static uint8 compute_y(int r, int g, int b)
+static ubyte compute_y(int r, int g, int b)
 {
-   return cast(uint8) (((r*77) + (g*150) +  (29*b)) >> 8);
+   return cast(ubyte) (((r*77) + (g*150) +  (29*b)) >> 8);
 }
 
 ubyte *convert_format(ubyte *data, int img_n, int req_comp, uint x, uint y)
@@ -313,11 +307,11 @@ enum FAST_BITS = 9;  // larger handles more cases; smaller stomps less cache
 
 struct huffman
 {
-   uint8[1 << FAST_BITS] fast;
+   ubyte[1 << FAST_BITS] fast;
    // weirdly, repacking this into AoS is a 10% speed loss, instead of a win
-   uint16[256] code;
-   uint8[256] values;
-   uint8[257] size;
+   ushort[256] code;
+   ubyte[256] values;
+   ubyte[257] size;
    uint[18] maxcode;
    int[17] delta;   // old 'firstsymbol' - old 'firstcode'
 }
@@ -327,7 +321,7 @@ struct jpeg
    stbi *s;
    huffman[4] huff_dc;
    huffman[4] huff_ac;
-   uint8[64][4] dequant;
+   ubyte[64][4] dequant;
 
 // sizes for components, interleaved MCUs
    int img_h_max, img_v_max;
@@ -351,7 +345,7 @@ struct jpeg
    
    img_comp_[4] img_comp;
 
-   uint32         code_buffer; // jpeg entropy-coded buffer
+   uint         code_buffer; // jpeg entropy-coded buffer
    int            code_bits;   // number of valid bits
    char           marker;      // marker seen while filling entropy buffer
    int            nomore;      // flag if we saw a marker so must stop
@@ -422,7 +416,7 @@ static void grow_buffer_unsafe(jpeg *j)
 }
 
 // (1 << n) - 1
-static uint32 bmask[17]=[0,1,3,7,15,31,63,127,255,511,1023,2047,4095,8191,16383,32767,65535];
+static uint bmask[17]=[0,1,3,7,15,31,63,127,255,511,1023,2047,4095,8191,16383,32767,65535];
 
 // decode a jpeg huffman value from the bitstream
 static int decode(jpeg *j, huffman *h)
@@ -498,7 +492,7 @@ static int extend_receive(jpeg *j, int n)
 
 // given a value that's at position X in the zigzag stream,
 // where does it appear in the 8x8 matrix coded as row-major?
-static uint8 dezigzag[64+15] =
+static ubyte dezigzag[64+15] =
 [
     0,  1,  8, 16,  9,  2,  3, 10,
    17, 24, 32, 25, 18, 11,  4,  5,
@@ -551,14 +545,14 @@ static int decode_block(jpeg *j, short data[64], huffman *hdc, huffman *hac, int
 }
 
 // take a -128..127 value and clamp it and convert to 0..255
-static uint8 clamp(int x)
+static ubyte clamp(int x)
 {
    // trick to use a single test to catch both cases
    if (cast(uint) x > 255) {
       if (x < 0) return 0;
       if (x > 255) return 255;
    }
-   return cast(uint8) x;
+   return cast(ubyte) x;
 }
 
 int f2f(double x)
@@ -616,13 +610,13 @@ void IDCT_1D(int s0, int s1, int s2, int s3, int s4, int s5, int s6, int s7,
 alias stbi_dequantize_t = ubyte;
 
 // .344 seconds on 3*anemones.jpg
-static void idct_block(uint8 *out_, int out_stride, short data[64], stbi_dequantize_t *dequantize)
+static void idct_block(ubyte *out_, int out_stride, short data[64], stbi_dequantize_t *dequantize)
 {
    int i;
    int[64] val;
    int*v = val.ptr;
    stbi_dequantize_t *dq = dequantize;
-   uint8 *o;
+   ubyte *o;
    short *d = data.ptr;
 
    // columns
@@ -689,9 +683,9 @@ enum MARKER_none = 0xff;
 // if there's a pending marker from the entropy stream, return that
 // otherwise, fetch from the stream and get a marker. if there's no
 // marker, return 0xff, which is never a valid marker value
-static uint8 get_marker(jpeg *j)
+static ubyte get_marker(jpeg *j)
 {
-   uint8 x;
+   ubyte x;
    if (j.marker != MARKER_none) { x = j.marker; j.marker = MARKER_none; return x; }
    x = get8u(j.s);
    if (x != 0xff) return MARKER_none;
@@ -818,7 +812,7 @@ static int process_marker(jpeg *z, int m)
       case 0xC4: // DHT - define huffman table
          L = get16(z.s)-2;
          while (L > 0) {
-            uint8 *v;
+            ubyte *v;
             int[16] sizes;
             int i;
             int m_ = 0;
@@ -957,7 +951,7 @@ static int process_frame_header(jpeg *z, int scan)
          throw new STBImageException("Out of memory");
       }
       // align blocks for installable-idct using mmx/sse
-      z.img_comp[i].data = cast(uint8*) (( cast(size_t) z.img_comp[i].raw_data + 15) & ~15);
+      z.img_comp[i].data = cast(ubyte*) (( cast(size_t) z.img_comp[i].raw_data + 15) & ~15);
       z.img_comp[i].linebuf = null;
    }
 
@@ -1025,19 +1019,19 @@ static int decode_jpeg_image(jpeg *j)
 
 // static jfif-centered resampling (across block boundaries)
 
-alias resample_row_func = ubyte* function(uint8 *out_, uint8 *in0, uint8 *in1, int w, int hs);
+alias resample_row_func = ubyte* function(ubyte *out_, ubyte *in0, ubyte *in1, int w, int hs);
 
 ubyte div4(int x)
 {
     return cast(ubyte)(x >> 2);
 }
 
-static uint8 *resample_row_1(uint8 *out_, uint8 *in_near, uint8 *in_far, int w, int hs)
+static ubyte *resample_row_1(ubyte *out_, ubyte *in_near, ubyte *in_far, int w, int hs)
 { 
    return in_near;
 }
 
-static uint8* resample_row_v_2(uint8 *out_, uint8 *in_near, uint8 *in_far, int w, int hs)
+static ubyte* resample_row_v_2(ubyte *out_, ubyte *in_near, ubyte *in_far, int w, int hs)
 {
    // need to generate two samples vertically for every one in input
    int i;
@@ -1046,11 +1040,11 @@ static uint8* resample_row_v_2(uint8 *out_, uint8 *in_near, uint8 *in_far, int w
    return out_;
 }
 
-static uint8*  resample_row_h_2(uint8 *out_, uint8 *in_near, uint8 *in_far, int w, int hs)
+static ubyte*  resample_row_h_2(ubyte *out_, ubyte *in_near, ubyte *in_far, int w, int hs)
 {
    // need to generate two samples horizontally for every one in input
    int i;
-   uint8 *input = in_near;
+   ubyte *input = in_near;
 
    if (w == 1) {
       // if only one sample, can't do any interpolation
@@ -1077,7 +1071,7 @@ ubyte div16(int x)
 }
 
 
-static uint8 *resample_row_hv_2(uint8 *out_, uint8 *in_near, uint8 *in_far, int w, int hs)
+static ubyte *resample_row_hv_2(ubyte *out_, ubyte *in_near, ubyte *in_far, int w, int hs)
 {
    // need to generate 2x2 samples for every one in input
    int i,t0,t1;
@@ -1099,7 +1093,7 @@ static uint8 *resample_row_hv_2(uint8 *out_, uint8 *in_near, uint8 *in_far, int 
    return out_;
 }
 
-static uint8 *resample_row_generic(uint8 *out_, uint8 *in_near, uint8 *in_far, int w, int hs)
+static ubyte *resample_row_generic(ubyte *out_, ubyte *in_near, ubyte *in_far, int w, int hs)
 {
    // resample with nearest-neighbor
    int i,j;
@@ -1117,7 +1111,7 @@ int float2fixed(double x)
 
 // 0.38 seconds on 3*anemones.jpg   (0.25 with processor = Pro)
 // VC6 without processor=Pro is generating multiple LEAs per multiply!
-static void YCbCr_to_RGB_row(uint8 *out_, const uint8 *y, const uint8 *pcb, const uint8 *pcr, int count, int step)
+static void YCbCr_to_RGB_row(ubyte *out_, const ubyte *y, const ubyte *pcb, const ubyte *pcr, int count, int step)
 {
    int i;
    for (i=0; i < count; ++i) {
@@ -1134,9 +1128,9 @@ static void YCbCr_to_RGB_row(uint8 *out_, const uint8 *y, const uint8 *pcb, cons
       if (cast(uint) r > 255) { if (r < 0) r = 0; else r = 255; }
       if (cast(uint) g > 255) { if (g < 0) g = 0; else g = 255; }
       if (cast(uint) b > 255) { if (b < 0) b = 0; else b = 255; }
-      out_[0] = cast(uint8)r;
-      out_[1] = cast(uint8)g;
-      out_[2] = cast(uint8)b;
+      out_[0] = cast(ubyte)r;
+      out_[1] = cast(ubyte)g;
+      out_[2] = cast(ubyte)b;
       out_[3] = 255;
       out_ += step;
    }
@@ -1161,15 +1155,15 @@ static void cleanup_jpeg(jpeg *j)
 struct stbi_resample
 {
    resample_row_func resample;
-   uint8* line0;
-   uint8* line1;
+   ubyte* line0;
+   ubyte* line1;
    int hs,vs;   // expansion factor in each axis
    int w_lores; // horizontal pixels pre-expansion 
    int ystep;   // how far through vertical expansion we are
    int ypos;    // which pre-expansion row we're on
 } ;
 
-static uint8 *load_jpeg_image(jpeg *z, int *out_x, int *out_y, int *comp, int req_comp)
+static ubyte *load_jpeg_image(jpeg *z, int *out_x, int *out_y, int *comp, int req_comp)
 {
    int n, decode_n;
    // validate req_comp
@@ -1192,8 +1186,8 @@ static uint8 *load_jpeg_image(jpeg *z, int *out_x, int *out_y, int *comp, int re
    {
       int k;
       uint i,j;
-      uint8 *output;
-      uint8 *coutput[4];
+      ubyte *output;
+      ubyte *coutput[4];
 
       stbi_resample res_comp[4];
 
@@ -1202,7 +1196,7 @@ static uint8 *load_jpeg_image(jpeg *z, int *out_x, int *out_y, int *comp, int re
 
          // allocate line buffer big enough for upsampling off the edges
          // with upsample factor of 4
-         z.img_comp[k].linebuf = cast(uint8 *) malloc(z.s.img_x + 3);
+         z.img_comp[k].linebuf = cast(ubyte *) malloc(z.s.img_x + 3);
          if (!z.img_comp[k].linebuf) 
          { 
              cleanup_jpeg(z); 
@@ -1224,12 +1218,12 @@ static uint8 *load_jpeg_image(jpeg *z, int *out_x, int *out_y, int *comp, int re
       }
 
       // can't error after this so, this is safe
-      output = cast(uint8 *) malloc(n * z.s.img_x * z.s.img_y + 1);
+      output = cast(ubyte *) malloc(n * z.s.img_x * z.s.img_y + 1);
       if (!output) { cleanup_jpeg(z); throw new STBImageException("Out of memory"); }
 
       // now go ahead and resample
       for (j=0; j < z.s.img_y; ++j) {
-         uint8 *out_ = output + n * z.s.img_x * j;
+         ubyte *out_ = output + n * z.s.img_x * j;
          for (k=0; k < decode_n; ++k) {
             stbi_resample *r = &res_comp[k];
             int y_bot = r.ystep >= (r.vs >> 1);
@@ -1245,7 +1239,7 @@ static uint8 *load_jpeg_image(jpeg *z, int *out_x, int *out_y, int *comp, int re
             }
          }
          if (n >= 3) {
-            uint8 *y = coutput[0];
+            ubyte *y = coutput[0];
             if (z.s.img_n == 3) {
                YCbCr_to_RGB_row(out_, y, coutput[1], coutput[2], z.s.img_x, n);
             } else
@@ -1255,7 +1249,7 @@ static uint8 *load_jpeg_image(jpeg *z, int *out_x, int *out_y, int *comp, int re
                   out_ += n;
                }
          } else {
-            uint8 *y = coutput[0];
+            ubyte *y = coutput[0];
             if (n == 1)
                for (i=0; i < z.s.img_x; ++i) out_[i] = y[i];
             else
@@ -1321,12 +1315,12 @@ enum ZFAST_MASK = ((1 << ZFAST_BITS) - 1);
 // (jpegs packs from left, zlib from right, so can't share code)
 struct zhuffman
 {
-   uint16[1 << ZFAST_BITS] fast;
-   uint16[16] firstcode;
+   ushort[1 << ZFAST_BITS] fast;
+   ushort[16] firstcode;
    int[17] maxcode;
-   uint16[16] firstsymbol;
-   uint8[288] size;
-   uint16[288] value;
+   ushort[16] firstsymbol;
+   ubyte[288] size;
+   ushort[288] value;
 } ;
 
 static int bitreverse16(int n)
@@ -1346,7 +1340,7 @@ static int bit_reverse(int v, int bits)
    return bitreverse16(v) >> (16-bits);
 }
 
-static int zbuild_huffman(zhuffman *z, uint8 *sizelist, int num)
+static int zbuild_huffman(zhuffman *z, ubyte *sizelist, int num)
 {
    int i,k=0;
    int code;
@@ -1364,8 +1358,8 @@ static int zbuild_huffman(zhuffman *z, uint8 *sizelist, int num)
    code = 0;
    for (i=1; i < 16; ++i) {
       next_code[i] = code;
-      z.firstcode[i] = cast(uint16) code;
-      z.firstsymbol[i] = cast(uint16) k;
+      z.firstcode[i] = cast(ushort) code;
+      z.firstsymbol[i] = cast(ushort) k;
       code = (code + sizes[i]);
       if (sizes[i])
          if (code-1 >= (1 << i)) 
@@ -1379,12 +1373,12 @@ static int zbuild_huffman(zhuffman *z, uint8 *sizelist, int num)
       int s = sizelist[i];
       if (s) {
          int c = next_code[s] - z.firstcode[s] + z.firstsymbol[s];
-         z.size[c] = cast(uint8)s;
-         z.value[c] = cast(uint16)i;
+         z.size[c] = cast(ubyte)s;
+         z.value[c] = cast(ushort)i;
          if (s <= ZFAST_BITS) {
             int k_ = bit_reverse(next_code[s],s);
             while (k_ < (1 << ZFAST_BITS)) {
-               z.fast[k_] = cast(uint16) c;
+               z.fast[k_] = cast(ushort) c;
                k_ += (1 << s);
             }
          }
@@ -1402,10 +1396,10 @@ static int zbuild_huffman(zhuffman *z, uint8 *sizelist, int num)
 
 struct zbuf
 {
-   uint8 *zbuffer;
-   uint8 *zbuffer_end;
+   ubyte *zbuffer;
+   ubyte *zbuffer_end;
    int num_bits;
-   uint32 code_buffer;
+   uint code_buffer;
 
    char *zout;
    char *zout_start;
@@ -1510,7 +1504,7 @@ static int parse_huffman_block(zbuf *a)
          if (a.zout >= a.zout_end) if (!expand(a, 1)) return 0;
          *a.zout++ = cast(char) z;
       } else {
-         uint8 *p;
+         ubyte *p;
          int len,dist;
          if (z == 256) return 1;
          z -= 257;
@@ -1522,7 +1516,7 @@ static int parse_huffman_block(zbuf *a)
          if (dist_extra[z]) dist += zreceive(a, dist_extra[z]);
          if (a.zout - a.zout_start < dist) throw new STBImageException("Bad dist, corrupt PNG");
          if (a.zout + len > a.zout_end) if (!expand(a, len)) return 0;
-         p = cast(uint8 *) (a.zout - dist);
+         p = cast(ubyte *) (a.zout - dist);
          while (len--)
             *a.zout++ = *p++;
       }
@@ -1531,10 +1525,10 @@ static int parse_huffman_block(zbuf *a)
 
 static int compute_huffman_codes(zbuf *a)
 {
-   static uint8 length_dezigzag[19] = [ 16,17,18,0,8,7,9,6,10,5,11,4,12,3,13,2,14,1,15 ];
+   static ubyte length_dezigzag[19] = [ 16,17,18,0,8,7,9,6,10,5,11,4,12,3,13,2,14,1,15 ];
    zhuffman z_codelength;
-   uint8 lencodes[286+32+137];//padding for maximum single op
-   uint8 codelength_sizes[19];
+   ubyte lencodes[286+32+137];//padding for maximum single op
+   ubyte codelength_sizes[19];
    int i,n;
 
    int hlit  = zreceive(a,5) + 257;
@@ -1544,7 +1538,7 @@ static int compute_huffman_codes(zbuf *a)
    memset(codelength_sizes.ptr, 0, codelength_sizes.sizeof);
    for (i=0; i < hclen; ++i) {
       int s = zreceive(a,3);
-      codelength_sizes[length_dezigzag[i]] = cast(uint8) s;
+      codelength_sizes[length_dezigzag[i]] = cast(ubyte) s;
    }
    if (!zbuild_huffman(&z_codelength, codelength_sizes.ptr, 19)) return 0;
 
@@ -1553,7 +1547,7 @@ static int compute_huffman_codes(zbuf *a)
       int c = zhuffman_decode(a, &z_codelength);
       assert(c >= 0 && c < 19);
       if (c < 16)
-         lencodes[n++] = cast(uint8) c;
+         lencodes[n++] = cast(ubyte) c;
       else if (c == 16) {
          c = zreceive(a,2)+3;
          memset(lencodes.ptr+n, lencodes[n-1], c);
@@ -1577,21 +1571,21 @@ static int compute_huffman_codes(zbuf *a)
 
 static int parse_uncompressed_block(zbuf *a)
 {
-   uint8 header[4];
+   ubyte header[4];
    int len,nlen,k;
    if (a.num_bits & 7)
       zreceive(a, a.num_bits & 7); // discard
    // drain the bit-packed data into header
    k = 0;
    while (a.num_bits > 0) {
-      header[k++] = cast(uint8) (a.code_buffer & 255); // wtf this warns?
+      header[k++] = cast(ubyte) (a.code_buffer & 255); // wtf this warns?
       a.code_buffer >>= 8;
       a.num_bits -= 8;
    }
    assert(a.num_bits == 0);
    // now fill header the normal way
    while (k < 4)
-      header[k++] = cast(uint8) zget8(a);
+      header[k++] = cast(ubyte) zget8(a);
    len  = header[1] * 256 + header[0];
    nlen = header[3] * 256 + header[2];
    if (nlen != (len ^ 0xffff)) throw new STBImageException("Zlib corrupt, corrupt PNG");
@@ -1618,8 +1612,8 @@ static int parse_zlib_header(zbuf *a)
 }
 
 // @TODO: should statically initialize these for optimal thread safety
-__gshared static uint8[288] default_length;
-__gshared static uint8[32] default_distance;
+__gshared static ubyte[288] default_length;
+__gshared static ubyte[32] default_distance;
 
 static void init_defaults()
 {
@@ -1679,8 +1673,8 @@ char *stbi_zlib_decode_malloc_guesssize(const char *buffer, int len, int initial
    zbuf a;
    char *p = cast(char *) malloc(initial_size);
    if (p == null) return null;
-   a.zbuffer = cast(uint8 *) buffer;
-   a.zbuffer_end = cast(uint8 *) buffer + len;
+   a.zbuffer = cast(ubyte *) buffer;
+   a.zbuffer_end = cast(ubyte *) buffer + len;
    if (do_zlib(&a, p, initial_size, 1, 1)) {
       if (outlen) *outlen = cast(int) (a.zout - a.zout_start);
       return a.zout_start;
@@ -1700,8 +1694,8 @@ char *stbi_zlib_decode_malloc_guesssize_headerflag(const char *buffer, int len, 
    zbuf a;
    char *p = cast(char *) malloc(initial_size);
    if (p == null) return null;
-   a.zbuffer = cast(uint8 *) buffer;
-   a.zbuffer_end = cast(uint8 *) buffer + len;
+   a.zbuffer = cast(ubyte *) buffer;
+   a.zbuffer_end = cast(ubyte *) buffer + len;
    if (do_zlib(&a, p, initial_size, 1, parse_header)) {
       if (outlen) *outlen = cast(int) (a.zout - a.zout_start);
       return a.zout_start;
@@ -1714,8 +1708,8 @@ char *stbi_zlib_decode_malloc_guesssize_headerflag(const char *buffer, int len, 
 int stbi_zlib_decode_buffer(char *obuffer, int olen, const(char) *ibuffer, int ilen)
 {
    zbuf a;
-   a.zbuffer = cast(uint8 *) ibuffer;
-   a.zbuffer_end = cast(uint8 *) ibuffer + ilen;
+   a.zbuffer = cast(ubyte *) ibuffer;
+   a.zbuffer_end = cast(ubyte *) ibuffer + ilen;
    if (do_zlib(&a, obuffer, olen, 0, 1))
       return cast(int) (a.zout - a.zout_start);
    else
@@ -1727,8 +1721,8 @@ char *stbi_zlib_decode_noheader_malloc(const(char) *buffer, int len, int *outlen
    zbuf a;
    char *p = cast(char *) malloc(16384);
    if (p == null) return null;
-   a.zbuffer = cast(uint8 *) buffer;
-   a.zbuffer_end = cast(uint8 *) buffer+len;
+   a.zbuffer = cast(ubyte *) buffer;
+   a.zbuffer_end = cast(ubyte *) buffer+len;
    if (do_zlib(&a, p, 16384, 1, 0)) {
       if (outlen) *outlen = cast(int) (a.zout - a.zout_start);
       return a.zout_start;
@@ -1741,8 +1735,8 @@ char *stbi_zlib_decode_noheader_malloc(const(char) *buffer, int len, int *outlen
 int stbi_zlib_decode_noheader_buffer(char *obuffer, int olen, const char *ibuffer, int ilen)
 {
    zbuf a;
-   a.zbuffer = cast(uint8 *) ibuffer;
-   a.zbuffer_end = cast(uint8 *) ibuffer + ilen;
+   a.zbuffer = cast(ubyte *) ibuffer;
+   a.zbuffer_end = cast(ubyte *) ibuffer + ilen;
    if (do_zlib(&a, obuffer, olen, 0, 0))
       return cast(int) (a.zout - a.zout_start);
    else
@@ -1762,8 +1756,8 @@ int stbi_zlib_decode_noheader_buffer(char *obuffer, int olen, const char *ibuffe
 
 struct chunk
 {
-   uint32 length;
-   uint32 type;
+   uint length;
+   uint type;
 }
 
 uint PNG_TYPE(ubyte a, ubyte b, ubyte c, ubyte d)
@@ -1781,7 +1775,7 @@ static chunk get_chunk_header(stbi *s)
 
 static int check_png_header(stbi *s)
 {
-   static uint8 png_sig[8] = [ 137,80,78,71,13,10,26,10 ];
+   static ubyte png_sig[8] = [ 137,80,78,71,13,10,26,10 ];
    int i;
    for (i=0; i < 8; ++i)
       if (get8u(s) != png_sig[i]) throw new STBImageException("Bad PNG sig, not a PNG");
@@ -1791,9 +1785,9 @@ static int check_png_header(stbi *s)
 struct png
 {
    stbi *s;
-   uint8 *idata;
-   uint8 *expanded;
-   uint8 *out_;
+   ubyte *idata;
+   ubyte *expanded;
+   ubyte *out_;
 }
 
 
@@ -1803,7 +1797,7 @@ enum : int
    F_avg_first, F_paeth_first
 }
 
-static uint8[5] first_row_filter =
+static ubyte[5] first_row_filter =
 [
    F_none, F_sub, F_none, F_avg_first, F_paeth_first
 ];
@@ -1820,15 +1814,15 @@ static int paeth(int a, int b, int c)
 }
 
 // create the png data from post-deflated data
-static int create_png_image_raw(png *a, uint8 *raw, uint32 raw_len, int out_n, uint32 x, uint32 y)
+static int create_png_image_raw(png *a, ubyte *raw, uint raw_len, int out_n, uint x, uint y)
 {
    stbi *s = a.s;
-   uint32 i,j,stride = x*out_n;
+   uint i,j,stride = x*out_n;
    int k;
    int img_n = s.img_n; // copy it into a local for later
    assert(out_n == s.img_n || out_n == s.img_n+1);
    if (stbi_png_partial) y = 1;
-   a.out_ = cast(uint8 *) malloc(x * y * out_n);
+   a.out_ = cast(ubyte *) malloc(x * y * out_n);
    if (!a.out_) throw new STBImageException("Out of memory");
    if (!stbi_png_partial) {
       if (s.img_x == x && s.img_y == y) {
@@ -1838,8 +1832,8 @@ static int create_png_image_raw(png *a, uint8 *raw, uint32 raw_len, int out_n, u
       }
    }
    for (j=0; j < y; ++j) {
-      uint8 *cur = a.out_ + stride*j;
-      uint8 *prior = cur - stride;
+      ubyte *cur = a.out_ + stride*j;
+      ubyte *prior = cur - stride;
       int filter = *raw++;
       if (filter > 4) throw new STBImageException("Invalid filter, corrupt PNG");
       // if first row, use special filter that doesn't sample previous row
@@ -1851,7 +1845,7 @@ static int create_png_image_raw(png *a, uint8 *raw, uint32 raw_len, int out_n, u
             case F_sub        : cur[k] = raw[k]; break;
             case F_up         : cur[k] = cast(ubyte)(raw[k] + prior[k]); break;
             case F_avg        : cur[k] = cast(ubyte)(raw[k] + (prior[k]>>1)); break;
-            case F_paeth      : cur[k] = cast(uint8) (raw[k] + paeth(0,prior[k],0)); break;
+            case F_paeth      : cur[k] = cast(ubyte) (raw[k] + paeth(0,prior[k],0)); break;
             case F_avg_first  : cur[k] = raw[k]; break;
             case F_paeth_first: cur[k] = raw[k]; break;
             default: break;
@@ -1872,9 +1866,9 @@ static int create_png_image_raw(png *a, uint8 *raw, uint32 raw_len, int out_n, u
                   case F_sub:   cur[k] = cast(ubyte)(raw[k] + cur[k-img_n]); break;
                   case F_up:    cur[k] = cast(ubyte)(raw[k] + prior[k]); break;
                   case F_avg:   cur[k] = cast(ubyte)(raw[k] + ((prior[k] + cur[k-img_n])>>1)); break;
-                  case F_paeth:  cur[k] = cast(uint8) (raw[k] + paeth(cur[k-img_n],prior[k],prior[k-img_n])); break;
+                  case F_paeth:  cur[k] = cast(ubyte) (raw[k] + paeth(cur[k-img_n],prior[k],prior[k-img_n])); break;
                   case F_avg_first:    cur[k] = cast(ubyte)(raw[k] + (cur[k-img_n] >> 1)); break;
-                  case F_paeth_first:  cur[k] = cast(uint8) (raw[k] + paeth(cur[k-img_n],0,0)); break;
+                  case F_paeth_first:  cur[k] = cast(ubyte) (raw[k] + paeth(cur[k-img_n],0,0)); break;
                   default: break;
                }
             }
@@ -1889,9 +1883,9 @@ static int create_png_image_raw(png *a, uint8 *raw, uint32 raw_len, int out_n, u
                   case F_sub:   cur[k] = cast(ubyte)(raw[k] + cur[k-out_n]); break;
                   case F_up:    cur[k] = cast(ubyte)(raw[k] + prior[k]); break;
                   case F_avg:   cur[k] = cast(ubyte)(raw[k] + ((prior[k] + cur[k-out_n])>>1)); break;
-                  case F_paeth:  cur[k] = cast(uint8) (raw[k] + paeth(cur[k-out_n],prior[k],prior[k-out_n])); break;
+                  case F_paeth:  cur[k] = cast(ubyte) (raw[k] + paeth(cur[k-out_n],prior[k],prior[k-out_n])); break;
                   case F_avg_first:    cur[k] = cast(ubyte)(raw[k] + (cur[k-out_n] >> 1)); break;
-                  case F_paeth_first:  cur[k] = cast(uint8) (raw[k] + paeth(cur[k-out_n],0,0)); break;
+                  case F_paeth_first:  cur[k] = cast(ubyte) (raw[k] + paeth(cur[k-out_n],0,0)); break;
                   default: break;
                }
             }
@@ -1900,9 +1894,9 @@ static int create_png_image_raw(png *a, uint8 *raw, uint32 raw_len, int out_n, u
    return 1;
 }
 
-static int create_png_image(png *a, uint8 *raw, uint32 raw_len, int out_n, int interlaced)
+static int create_png_image(png *a, ubyte *raw, uint raw_len, int out_n, int interlaced)
 {
-   uint8 *final_;
+   ubyte *final_;
    int p;
    int save;
    if (!interlaced)
@@ -1911,7 +1905,7 @@ static int create_png_image(png *a, uint8 *raw, uint32 raw_len, int out_n, int i
    stbi_png_partial = 0;
 
    // de-interlacing
-   final_ = cast(uint8 *) malloc(a.s.img_x * a.s.img_y * out_n);
+   final_ = cast(ubyte *) malloc(a.s.img_x * a.s.img_y * out_n);
    for (p=0; p < 7; ++p) {
       int xorig[] = [ 0,4,0,2,0,1,0 ];
       int yorig[] = [ 0,0,4,0,2,0,1 ];
@@ -1941,11 +1935,11 @@ static int create_png_image(png *a, uint8 *raw, uint32 raw_len, int out_n, int i
    return 1;
 }
 
-static int compute_transparency(png *z, uint8 tc[3], int out_n)
+static int compute_transparency(png *z, ubyte tc[3], int out_n)
 {
    stbi *s = z.s;
-   uint32 i, pixel_count = s.img_x * s.img_y;
-   uint8 *p = z.out_;
+   uint i, pixel_count = s.img_x * s.img_y;
+   ubyte *p = z.out_;
 
    // compute color-based transparency, assuming we've
    // already got 255 as the alpha value in the output
@@ -1966,14 +1960,14 @@ static int compute_transparency(png *z, uint8 tc[3], int out_n)
    return 1;
 }
 
-static int expand_palette(png *a, uint8 *palette, int len, int pal_img_n)
+static int expand_palette(png *a, ubyte *palette, int len, int pal_img_n)
 {
-   uint32 i, pixel_count = a.s.img_x * a.s.img_y;
-   uint8 *p;
-   uint8 *temp_out;
-   uint8 *orig = a.out_;
+   uint i, pixel_count = a.s.img_x * a.s.img_y;
+   ubyte *p;
+   ubyte *temp_out;
+   ubyte *orig = a.out_;
 
-   p = cast(uint8 *) malloc(pixel_count * pal_img_n);
+   p = cast(ubyte *) malloc(pixel_count * pal_img_n);
    if (p == null) 
       throw new STBImageException("Out of memory");
 
@@ -2019,12 +2013,12 @@ void stbi_convert_iphone_png_to_rgb(int flag_true_if_should_convert)
 static void stbi_de_iphone(png *z)
 {
    stbi *s = z.s;
-   uint32 i, pixel_count = s.img_x * s.img_y;
-   uint8 *p = z.out_;
+   uint i, pixel_count = s.img_x * s.img_y;
+   ubyte *p = z.out_;
 
    if (s.img_out_n == 3) {  // convert bgr to rgb
       for (i=0; i < pixel_count; ++i) {
-         uint8 t = p[0];
+         ubyte t = p[0];
          p[0] = p[2];
          p[2] = t;
          p += 3;
@@ -2034,8 +2028,8 @@ static void stbi_de_iphone(png *z)
       if (stbi_unpremultiply_on_load) {
          // convert bgr to rgb and unpremultiply
          for (i=0; i < pixel_count; ++i) {
-            uint8 a = p[3];
-            uint8 t = p[0];
+            ubyte a = p[3];
+            ubyte t = p[0];
             if (a) {
                p[0] = cast(ubyte)(p[2] * 255 / a);
                p[1] = cast(ubyte)(p[1] * 255 / a);
@@ -2049,7 +2043,7 @@ static void stbi_de_iphone(png *z)
       } else {
          // convert bgr to rgb
          for (i=0; i < pixel_count; ++i) {
-            uint8 t = p[0];
+            ubyte t = p[0];
             p[0] = p[2];
             p[2] = t;
             p += 4;
@@ -2060,11 +2054,11 @@ static void stbi_de_iphone(png *z)
 
 static int parse_png_file(png *z, int scan, int req_comp)
 {
-   uint8[1024] palette;
-   uint8 pal_img_n=0;
-   uint8 has_trans=0;
-   uint8 tc[3];
-   uint32 ioff=0, idata_limit=0, i, pal_len=0;
+   ubyte[1024] palette;
+   ubyte pal_img_n=0;
+   ubyte has_trans=0;
+   ubyte tc[3];
+   uint ioff=0, idata_limit=0, i, pal_len=0;
    int first=1,k,interlace=0, iphone=0;
    stbi *s = z.s;
 
@@ -2137,10 +2131,10 @@ static int parse_png_file(png *z, int scan, int req_comp)
                   palette[i*4+3] = get8u(s);
             } else {
                if (!(s.img_n & 1)) throw new STBImageException("tRNS with alpha, corrupt PNG");
-               if (c.length != cast(uint32) s.img_n*2) throw new STBImageException("bad tRNS len, corrupt PNG");
+               if (c.length != cast(uint) s.img_n*2) throw new STBImageException("bad tRNS len, corrupt PNG");
                has_trans = 1;
                for (k=0; k < s.img_n; ++k)
-                  tc[k] = cast(uint8) get16(s); // non 8-bit images will be larger
+                  tc[k] = cast(ubyte) get16(s); // non 8-bit images will be larger
             }
             break;
          }
@@ -2150,11 +2144,11 @@ static int parse_png_file(png *z, int scan, int req_comp)
             if (pal_img_n && !pal_len) throw new STBImageException("no PLTE, corrupt PNG");
             if (scan == SCAN_header) { s.img_n = pal_img_n; return 1; }
             if (ioff + c.length > idata_limit) {
-               uint8 *p;
+               ubyte *p;
                if (idata_limit == 0) idata_limit = c.length > 4096 ? c.length : 4096;
                while (ioff + c.length > idata_limit)
                   idata_limit *= 2;
-               p = cast(uint8 *) realloc(z.idata, idata_limit); if (p == null) throw new STBImageException("outofmem, cOut of memory");
+               p = cast(ubyte *) realloc(z.idata, idata_limit); if (p == null) throw new STBImageException("outofmem, cOut of memory");
                z.idata = p;
             }
             if (!getn(s, cast(char*)z.idata+ioff,c.length)) throw new STBImageException("outofdata, corrupt PNG");
@@ -2163,11 +2157,11 @@ static int parse_png_file(png *z, int scan, int req_comp)
          }
 
          case PNG_TYPE('I','E','N','D'): {
-            uint32 raw_len;
+            uint raw_len;
             if (first) throw new STBImageException("first not IHDR, corrupt PNG");
             if (scan != SCAN_load) return 1;
             if (z.idata == null) throw new STBImageException("no IDAT, corrupt PNG");
-            z.expanded = cast(uint8 *) stbi_zlib_decode_malloc_guesssize_headerflag(cast(char *) z.idata, ioff, 16384, cast(int *) &raw_len, !iphone);
+            z.expanded = cast(ubyte *) stbi_zlib_decode_malloc_guesssize_headerflag(cast(char *) z.idata, ioff, 16384, cast(int *) &raw_len, !iphone);
             if (z.expanded == null) return 0; // zlib should set error
             free(z.idata); z.idata = null;
             if ((req_comp == s.img_n+1 && req_comp != 3 && !pal_img_n) || has_trans)
@@ -2485,17 +2479,17 @@ static char *bmp_load(stbi *s, int *x, int *y, int *comp, int req_comp)
                out_[z+0] = get8u(s);
                z += 3;
                a = (easy == 2 ? get8(s) : 255);
-               if (target == 4) out_[z++] = cast(uint8) a;
+               if (target == 4) out_[z++] = cast(ubyte) a;
             }
          } else {
             for (i=0; i < cast(int) s.img_x; ++i) {
-               uint32 v = (bpp == 16 ? get16le(s) : get32le(s));
+               uint v = (bpp == 16 ? get16le(s) : get32le(s));
                int a;
-               out_[z++] = cast(uint8) shiftsigned(v & mr, rshift, rcount);
-               out_[z++] = cast(uint8) shiftsigned(v & mg, gshift, gcount);
-               out_[z++] = cast(uint8) shiftsigned(v & mb, bshift, bcount);
+               out_[z++] = cast(ubyte) shiftsigned(v & mr, rshift, rcount);
+               out_[z++] = cast(ubyte) shiftsigned(v & mg, gshift, gcount);
+               out_[z++] = cast(ubyte) shiftsigned(v & mb, bshift, bcount);
                a = (ma ? shiftsigned(v & ma, ashift, acount) : 255);
-               if (target == 4) out_[z++] = cast(uint8) a; 
+               if (target == 4) out_[z++] = cast(ubyte) a; 
             }
          }
          skip(s, pad);
@@ -2939,7 +2933,7 @@ static char *psd_load(stbi *s, int *x, int *y, int *comp, int req_comp)
 
       // Read the RLE data by channel.
       for (channel = 0; channel < 4; channel++) {
-         uint8 *p;
+         ubyte *p;
          
          p = cast(ubyte*)out_+channel;
          if (channel >= channelCount) {
@@ -2962,7 +2956,7 @@ static char *psd_load(stbi *s, int *x, int *y, int *comp, int req_comp)
                      len--;
                   }
                } else if (len > 128) {
-                  uint8   val;
+                  ubyte   val;
                   // Next -len+1 bytes in the dest are replicated from next source byte.
                   // (Interpret len as a negative 8-bit int.)
                   len ^= 0x0FF;
@@ -2985,7 +2979,7 @@ static char *psd_load(stbi *s, int *x, int *y, int *comp, int req_comp)
       
       // Read the data by channel.
       for (channel = 0; channel < 4; channel++) {
-         uint8 *p;
+         ubyte *p;
          
          p = cast(ubyte*)out_ + channel;
          if (channel > channelCount) {
@@ -3137,7 +3131,7 @@ static char *pic_load2(stbi *s,int width,int height,int *comp, char *result)
                      if (at_eof(s))   throw new STBImageException("bad file, file too short (pure read count)");
 
                      if (count > left)
-                        count = cast(uint8) left;
+                        count = cast(ubyte) left;
 
                      if (!pic_readval(s,packet.channel,value.ptr))  return null;
 
@@ -3238,9 +3232,9 @@ static char *stbi_pic_load(stbi *s, int *x, int *y, int *comp, int req_comp)
 // GIF loader -- public domain by Jean-Marc Lienher -- simplified/shrunk by stb
 struct stbi_gif_lzw 
 {
-   int16 prefix;
-   uint8 first;
-   uint8 suffix;
+   short prefix;
+   ubyte first;
+   ubyte suffix;
 }
 
 struct stbi_gif
@@ -3248,10 +3242,10 @@ struct stbi_gif
    int w,h;
    char *out_;                 // output buffer (always 4 components)
    int flags, bgindex, ratio, transparent, eflags;
-   uint8  pal[256][4];
-   uint8 lpal[256][4];
+   ubyte  pal[256][4];
+   ubyte lpal[256][4];
    stbi_gif_lzw codes[4096];
-   uint8 *color_table;
+   ubyte *color_table;
    int parse, step;
    int lflags;
    int start_x, start_y;
@@ -3277,7 +3271,7 @@ static int stbi_gif_test(stbi *s)
    return r;
 }
 
-static void stbi_gif_parse_colortable(stbi *s, uint8 pal[256][4], int num_entries, int transp)
+static void stbi_gif_parse_colortable(stbi *s, ubyte pal[256][4], int num_entries, int transp)
 {
    int i;
    for (i=0; i < num_entries; ++i) {
@@ -3290,7 +3284,7 @@ static void stbi_gif_parse_colortable(stbi *s, uint8 pal[256][4], int num_entrie
 
 static int stbi_gif_header(stbi *s, stbi_gif *g, int *comp, int is_info)
 {
-   uint8 version_;
+   ubyte version_;
    if (get8(s) != 'G' || get8(s) != 'I' || get8(s) != 'F' || get8(s) != '8')
       throw new STBImageException("not GIF, corrupt GIF");
 
@@ -3327,10 +3321,10 @@ static int stbi_gif_info_raw(stbi *s, int *x, int *y, int *comp)
    return 1;
 }
 
-static void stbi_out_gif_code(stbi_gif *g, uint16 code)
+static void stbi_out_gif_code(stbi_gif *g, ushort code)
 {
-   uint8 *p;
-   uint8 *c;
+   ubyte *p;
+   ubyte *c;
 
    // recurse to decode the prefixes, since the linked-list is backwards,
    // and working backwards through an interleaved image would be nasty
@@ -3362,12 +3356,12 @@ static void stbi_out_gif_code(stbi_gif *g, uint16 code)
    }
 }
 
-static uint8 *stbi_process_gif_raster(stbi *s, stbi_gif *g)
+static ubyte *stbi_process_gif_raster(stbi *s, stbi_gif *g)
 {
-   uint8 lzw_cs;
-   int32 len, code;
-   uint32 first;
-   int32 codesize, codemask, avail, oldcode, bits, valid_bits, clear;
+   ubyte lzw_cs;
+   int len, code;
+   uint first;
+   int codesize, codemask, avail, oldcode, bits, valid_bits, clear;
    stbi_gif_lzw *p;
 
    lzw_cs = get8u(s);
@@ -3379,8 +3373,8 @@ static uint8 *stbi_process_gif_raster(stbi *s, stbi_gif *g)
    valid_bits = 0;
    for (code = 0; code < clear; code++) {
       g.codes[code].prefix = -1;
-      g.codes[code].first = cast(uint8) code;
-      g.codes[code].suffix = cast(uint8) code;
+      g.codes[code].first = cast(ubyte) code;
+      g.codes[code].suffix = cast(ubyte) code;
    }
 
    // support no starting clear code
@@ -3396,10 +3390,10 @@ static uint8 *stbi_process_gif_raster(stbi *s, stbi_gif *g)
                return cast(ubyte*)g.out_;
          }
          --len;
-         bits |= cast(int32) get8(s) << valid_bits;
+         bits |= cast(int) get8(s) << valid_bits;
          valid_bits += 8;
       } else {
-         int32 code_ = bits & codemask;
+         int code_ = bits & codemask;
          bits >>= codesize;
          valid_bits -= codesize;
          // @OPTIMIZE: is there some way we can accelerate the non-clear path?
@@ -3420,13 +3414,13 @@ static uint8 *stbi_process_gif_raster(stbi *s, stbi_gif *g)
             if (oldcode >= 0) {
                p = &g.codes[avail++];
                if (avail > 4096)        throw new STBImageException("too many codes, corrupt GIF");
-               p.prefix = cast(int16) oldcode;
+               p.prefix = cast(short) oldcode;
                p.first = g.codes[oldcode].first;
                p.suffix = (code_ == avail) ? p.first : g.codes[code_].first;
             } else if (code_ == avail)
                throw new STBImageException("illegal code in raster, corrupt GIF");
 
-            stbi_out_gif_code(g, cast(uint16) code);
+            stbi_out_gif_code(g, cast(ushort) code);
 
             if ((avail & codemask) == 0 && avail <= 0x0FFF) {
                codesize++;
@@ -3444,10 +3438,10 @@ static uint8 *stbi_process_gif_raster(stbi *s, stbi_gif *g)
 static void stbi_fill_gif_background(stbi_gif *g)
 {
    int i;
-   uint8 *c = g.pal[g.bgindex].ptr;
+   ubyte *c = g.pal[g.bgindex].ptr;
    // @OPTIMIZE: write a dword at a time
    for (i = 0; i < g.w * g.h * 4; i += 4) {
-      uint8 *p  = cast(ubyte*)&g.out_[i];
+      ubyte *p  = cast(ubyte*)&g.out_[i];
       p[0] = c[2];
       p[1] = c[1];
       p[2] = c[0];
@@ -3456,10 +3450,10 @@ static void stbi_fill_gif_background(stbi_gif *g)
 }
 
 // this function is designed to support animated gifs, although stb_image doesn't support it
-static uint8 *stbi_gif_load_next(stbi *s, stbi_gif *g, int *comp, int req_comp)
+static ubyte *stbi_gif_load_next(stbi *s, stbi_gif *g, int *comp, int req_comp)
 {
    int i;
-   uint8 *old_out = null;
+   ubyte *old_out = null;
 
    if (g.out_ == null) {
       if (!stbi_gif_header(s, g, comp,0))     return null; // failure_reason set by stbi_gif_header
@@ -3480,8 +3474,8 @@ static uint8 *stbi_gif_load_next(stbi *s, stbi_gif *g, int *comp, int req_comp)
       switch (get8(s)) {
          case 0x2C: /* Image Descriptor */
          {
-            int32 x, y, w, h;
-            uint8 *o;
+            int x, y, w, h;
+            ubyte *o;
 
             x = get16le(s);
             y = get16le(s);
@@ -3510,13 +3504,13 @@ static uint8 *stbi_gif_load_next(stbi *s, stbi_gif *g, int *comp, int req_comp)
 
             if (g.lflags & 0x80) {
                stbi_gif_parse_colortable(s,g.lpal, 2 << (g.lflags & 7), g.eflags & 0x01 ? g.transparent : -1);
-               g.color_table = cast(uint8 *) g.lpal;       
+               g.color_table = cast(ubyte *) g.lpal;       
             } else if (g.flags & 0x80) {
                for (i=0; i < 256; ++i)  // @OPTIMIZE: reset only the previous transparent
                   g.pal[i][3] = 255; 
                if (g.transparent >= 0 && (g.eflags & 0x01))
                   g.pal[g.transparent][3] = 0;
-               g.color_table = cast(uint8 *) g.pal;
+               g.color_table = cast(ubyte *) g.pal;
             } else
                throw new STBImageException("missing color table, corrupt GIF");
    
@@ -3548,7 +3542,7 @@ static uint8 *stbi_gif_load_next(stbi *s, stbi_gif *g, int *comp, int req_comp)
          }
 
          case 0x3B: // gif stream termination code
-            return cast(uint8 *) 1;
+            return cast(ubyte *) 1;
 
          default:
             throw new STBImageException("unknown code, corrupt GIF");
@@ -3558,7 +3552,7 @@ static uint8 *stbi_gif_load_next(stbi *s, stbi_gif *g, int *comp, int req_comp)
 
 static char *stbi_gif_load(stbi *s, int *x, int *y, int *comp, int req_comp)
 {
-   uint8 *u = null;
+   ubyte *u = null;
    stbi_gif g={0};
 
    u = stbi_gif_load_next(s, &g, comp, req_comp);
