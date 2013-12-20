@@ -61,17 +61,18 @@ struct stbi
    int buflen;
    ubyte buffer_start[128];
 
-   ubyte *img_buffer;
-   ubyte *img_buffer_end;
-   ubyte *img_buffer_original;
+   const(ubyte) *img_buffer;
+   const(ubyte) *img_buffer_end;
+   const(ubyte) *img_buffer_original;
 }
 
 
 // initialize a memory-decode context
 void start_mem(stbi *s, const(ubyte)*buffer, int len)
 {
-   s.img_buffer = s.img_buffer_original = cast(ubyte *) buffer;
-   s.img_buffer_end = cast(ubyte *) buffer+len;
+   s.img_buffer = buffer;
+   s.img_buffer_original = buffer;
+   s.img_buffer_end = buffer+len;
 }
 
 void stbi_rewind(stbi *s)
@@ -83,7 +84,7 @@ void stbi_rewind(stbi *s)
 }
 
 
-char *stbi_load_main(stbi *s, int *x, int *y, int *comp, int req_comp)
+ubyte *stbi_load_main(stbi *s, int *x, int *y, int *comp, int req_comp)
 {
    if (stbi_jpeg_test(s)) return stbi_jpeg_load(s,x,y,comp,req_comp);
    if (stbi_png_test(s))  return stbi_png_load(s,x,y,comp,req_comp);
@@ -104,7 +105,7 @@ ubyte* stbi_load_from_memory(ubyte[] buffer, out int width, out int height, out 
 {
    stbi s;
    start_mem(&s, buffer.ptr, buffer.length);
-   return cast(ubyte*) stbi_load_main(&s, &width, &height, &components, requestedComponents);
+   return stbi_load_main(&s, &width, &height, &components, requestedComponents);
 }
 
 /// Frees an image loaded by stb_image.
@@ -149,7 +150,7 @@ void skip(stbi *s, int n)
    s.img_buffer += n;
 }
 
-int getn(stbi *s, char *buffer, int n)
+int getn(stbi *s, ubyte *buffer, int n)
 {
    if (s.img_buffer+n <= s.img_buffer_end) {
       memcpy(buffer, s.img_buffer, n);
@@ -206,7 +207,7 @@ ubyte *convert_format(ubyte *data, int img_n, int req_comp, uint x, uint y)
     if (req_comp == img_n) return data;
     assert(req_comp >= 1 && req_comp <= 4);
 
-    good = cast(ubyte *) malloc(req_comp * x * y);
+    good = cast(ubyte*) malloc(req_comp * x * y);
     if (good == null) {
         free(data);
         throw new STBImageException("Out of memory");
@@ -347,7 +348,7 @@ struct jpeg
 
    uint         code_buffer; // jpeg entropy-coded buffer
    int            code_bits;   // number of valid bits
-   char           marker;      // marker seen while filling entropy buffer
+   ubyte          marker;      // marker seen while filling entropy buffer
    int            nomore;      // flag if we saw a marker so must stop
 
    int scan_n;
@@ -405,7 +406,7 @@ void grow_buffer_unsafe(jpeg *j)
       if (b == 0xff) {
          int c = get8(j.s);
          if (c != 0) {
-            j.marker = cast(char) c;
+            j.marker = cast(ubyte) c;
             j.nomore = 1;
             return;
          }
@@ -1196,7 +1197,7 @@ ubyte *load_jpeg_image(jpeg *z, int *out_x, int *out_y, int *comp, int req_comp)
 
          // allocate line buffer big enough for upsampling off the edges
          // with upsample factor of 4
-         z.img_comp[k].linebuf = cast(ubyte *) malloc(z.s.img_x + 3);
+         z.img_comp[k].linebuf = cast(ubyte*) malloc(z.s.img_x + 3);
          if (!z.img_comp[k].linebuf) 
          { 
              cleanup_jpeg(z); 
@@ -1218,7 +1219,7 @@ ubyte *load_jpeg_image(jpeg *z, int *out_x, int *out_y, int *comp, int req_comp)
       }
 
       // can't error after this so, this is safe
-      output = cast(ubyte *) malloc(n * z.s.img_x * z.s.img_y + 1);
+      output = cast(ubyte*) malloc(n * z.s.img_x * z.s.img_y + 1);
       if (!output) { cleanup_jpeg(z); throw new STBImageException("Out of memory"); }
 
       // now go ahead and resample
@@ -1264,11 +1265,11 @@ ubyte *load_jpeg_image(jpeg *z, int *out_x, int *out_y, int *comp, int req_comp)
    }
 }
 
-char *stbi_jpeg_load(stbi *s, int *x, int *y, int *comp, int req_comp)
+ubyte* stbi_jpeg_load(stbi *s, int *x, int *y, int *comp, int req_comp)
 {
    jpeg j;
    j.s = s;
-   return cast(char*)load_jpeg_image(&j, x,y,comp,req_comp);
+   return load_jpeg_image(&j, x,y,comp,req_comp);
 }
 
 int stbi_jpeg_test(stbi *s)
@@ -1396,14 +1397,14 @@ int zbuild_huffman(zhuffman *z, ubyte *sizelist, int num)
 
 struct zbuf
 {
-   ubyte *zbuffer;
-   ubyte *zbuffer_end;
+   const(ubyte) *zbuffer;
+   const(ubyte) *zbuffer_end;
    int num_bits;
    uint code_buffer;
 
-   char *zout;
-   char *zout_start;
-   char *zout_end;
+   ubyte *zout;
+   ubyte *zout_start;
+   ubyte *zout_end;
    int   z_expandable;
 
    zhuffman z_length, z_distance;
@@ -1463,7 +1464,7 @@ int zhuffman_decode(zbuf *a, zhuffman *z)
 
 int expand(zbuf *z, int n)  // need to make room for n bytes
 {
-   char *q;
+   ubyte *q;
    int cur, limit;
    if (!z.z_expandable) 
       throw new STBImageException("Output buffer limit, corrupt PNG");
@@ -1471,7 +1472,7 @@ int expand(zbuf *z, int n)  // need to make room for n bytes
    limit = cast(int) (z.zout_end - z.zout_start);
    while (cur + n > limit)
       limit *= 2;
-   q = cast(char *) realloc(z.zout_start, limit);
+   q = cast(ubyte*) realloc(z.zout_start, limit);
    if (q == null) 
       throw new STBImageException("Out of memory");
    z.zout_start = q;
@@ -1502,7 +1503,7 @@ int parse_huffman_block(zbuf *a)
          if (z < 0) 
              throw new STBImageException("Bad Huffman code, corrupt PNG");             
          if (a.zout >= a.zout_end) if (!expand(a, 1)) return 0;
-         *a.zout++ = cast(char) z;
+         *a.zout++ = cast(ubyte) z;
       } else {
          ubyte *p;
          int len,dist;
@@ -1516,7 +1517,7 @@ int parse_huffman_block(zbuf *a)
          if (dist_extra[z]) dist += zreceive(a, dist_extra[z]);
          if (a.zout - a.zout_start < dist) throw new STBImageException("Bad dist, corrupt PNG");
          if (a.zout + len > a.zout_end) if (!expand(a, len)) return 0;
-         p = cast(ubyte *) (a.zout - dist);
+         p = a.zout - dist;
          while (len--)
             *a.zout++ = *p++;
       }
@@ -1612,8 +1613,8 @@ int parse_zlib_header(zbuf *a)
 }
 
 // @TODO: should statically initialize these for optimal thread safety
-__gshared static ubyte[288] default_length;
-__gshared static ubyte[32] default_distance;
+__gshared ubyte[288] default_length;
+__gshared ubyte[32] default_distance;
 
 void init_defaults()
 {
@@ -1626,7 +1627,7 @@ void init_defaults()
    for (i=0; i <=  31; ++i)     default_distance[i] = 5;
 }
 
-int stbi_png_partial; // a quick hack to only allow decoding some of a PNG... I should implement real streaming support instead
+__gshared int stbi_png_partial; // a quick hack to only allow decoding some of a PNG... I should implement real streaming support instead
 int parse_zlib(zbuf *a, int parse_header)
 {
    int final_, type;
@@ -1658,7 +1659,7 @@ int parse_zlib(zbuf *a, int parse_header)
    return 1;
 }
 
-int do_zlib(zbuf *a, char *obuf, int olen, int exp, int parse_header)
+int do_zlib(zbuf *a, ubyte *obuf, int olen, int exp, int parse_header)
 {
    a.zout_start = obuf;
    a.zout       = obuf;
@@ -1668,13 +1669,13 @@ int do_zlib(zbuf *a, char *obuf, int olen, int exp, int parse_header)
    return parse_zlib(a, parse_header);
 }
 
-char *stbi_zlib_decode_malloc_guesssize(const char *buffer, int len, int initial_size, int *outlen)
+ubyte *stbi_zlib_decode_malloc_guesssize(const(ubyte) *buffer, int len, int initial_size, int *outlen)
 {
    zbuf a;
-   char *p = cast(char *) malloc(initial_size);
+   ubyte *p = cast(ubyte*) malloc(initial_size);
    if (p == null) return null;
-   a.zbuffer = cast(ubyte *) buffer;
-   a.zbuffer_end = cast(ubyte *) buffer + len;
+   a.zbuffer = buffer;
+   a.zbuffer_end = buffer + len;
    if (do_zlib(&a, p, initial_size, 1, 1)) {
       if (outlen) *outlen = cast(int) (a.zout - a.zout_start);
       return a.zout_start;
@@ -1684,18 +1685,18 @@ char *stbi_zlib_decode_malloc_guesssize(const char *buffer, int len, int initial
    }
 }
 
-char *stbi_zlib_decode_malloc(const(char) *buffer, int len, int *outlen)
+ubyte *stbi_zlib_decode_malloc(const(ubyte) *buffer, int len, int *outlen)
 {
    return stbi_zlib_decode_malloc_guesssize(buffer, len, 16384, outlen);
 }
 
-char *stbi_zlib_decode_malloc_guesssize_headerflag(const char *buffer, int len, int initial_size, int *outlen, int parse_header)
+ubyte *stbi_zlib_decode_malloc_guesssize_headerflag(const(ubyte) *buffer, int len, int initial_size, int *outlen, int parse_header)
 {
    zbuf a;
-   char *p = cast(char *) malloc(initial_size);
+   ubyte *p = cast(ubyte*) malloc(initial_size);
    if (p == null) return null;
-   a.zbuffer = cast(ubyte *) buffer;
-   a.zbuffer_end = cast(ubyte *) buffer + len;
+   a.zbuffer = buffer;
+   a.zbuffer_end = buffer + len;
    if (do_zlib(&a, p, initial_size, 1, parse_header)) {
       if (outlen) *outlen = cast(int) (a.zout - a.zout_start);
       return a.zout_start;
@@ -1705,24 +1706,24 @@ char *stbi_zlib_decode_malloc_guesssize_headerflag(const char *buffer, int len, 
    }
 }
 
-int stbi_zlib_decode_buffer(char *obuffer, int olen, const(char) *ibuffer, int ilen)
+int stbi_zlib_decode_buffer(ubyte* obuffer, int olen, const(ubyte)* ibuffer, int ilen)
 {
    zbuf a;
-   a.zbuffer = cast(ubyte *) ibuffer;
-   a.zbuffer_end = cast(ubyte *) ibuffer + ilen;
+   a.zbuffer = ibuffer;
+   a.zbuffer_end = ibuffer + ilen;
    if (do_zlib(&a, obuffer, olen, 0, 1))
       return cast(int) (a.zout - a.zout_start);
    else
       return -1;
 }
 
-char *stbi_zlib_decode_noheader_malloc(const(char) *buffer, int len, int *outlen)
+ubyte *stbi_zlib_decode_noheader_malloc(const(ubyte) *buffer, int len, int *outlen)
 {
    zbuf a;
-   char *p = cast(char *) malloc(16384);
+   ubyte *p = cast(ubyte*) malloc(16384);
    if (p == null) return null;
-   a.zbuffer = cast(ubyte *) buffer;
-   a.zbuffer_end = cast(ubyte *) buffer+len;
+   a.zbuffer = buffer;
+   a.zbuffer_end = buffer+len;
    if (do_zlib(&a, p, 16384, 1, 0)) {
       if (outlen) *outlen = cast(int) (a.zout - a.zout_start);
       return a.zout_start;
@@ -1732,11 +1733,11 @@ char *stbi_zlib_decode_noheader_malloc(const(char) *buffer, int len, int *outlen
    }
 }
 
-int stbi_zlib_decode_noheader_buffer(char *obuffer, int olen, const char *ibuffer, int ilen)
+int stbi_zlib_decode_noheader_buffer(ubyte *obuffer, int olen, const(ubyte) *ibuffer, int ilen)
 {
    zbuf a;
-   a.zbuffer = cast(ubyte *) ibuffer;
-   a.zbuffer_end = cast(ubyte *) ibuffer + ilen;
+   a.zbuffer = ibuffer;
+   a.zbuffer_end = ibuffer + ilen;
    if (do_zlib(&a, obuffer, olen, 0, 0))
       return cast(int) (a.zout - a.zout_start);
    else
@@ -1822,7 +1823,7 @@ static int create_png_image_raw(png *a, ubyte *raw, uint raw_len, int out_n, uin
    int img_n = s.img_n; // copy it into a local for later
    assert(out_n == s.img_n || out_n == s.img_n+1);
    if (stbi_png_partial) y = 1;
-   a.out_ = cast(ubyte *) malloc(x * y * out_n);
+   a.out_ = cast(ubyte*) malloc(x * y * out_n);
    if (!a.out_) throw new STBImageException("Out of memory");
    if (!stbi_png_partial) {
       if (s.img_x == x && s.img_y == y) {
@@ -1905,7 +1906,7 @@ int create_png_image(png *a, ubyte *raw, uint raw_len, int out_n, int interlaced
    stbi_png_partial = 0;
 
    // de-interlacing
-   final_ = cast(ubyte *) malloc(a.s.img_x * a.s.img_y * out_n);
+   final_ = cast(ubyte*) malloc(a.s.img_x * a.s.img_y * out_n);
    for (p=0; p < 7; ++p) {
       int xorig[] = [ 0,4,0,2,0,1,0 ];
       int yorig[] = [ 0,0,4,0,2,0,1 ];
@@ -1967,7 +1968,7 @@ int expand_palette(png *a, ubyte *palette, int len, int pal_img_n)
    ubyte *temp_out;
    ubyte *orig = a.out_;
 
-   p = cast(ubyte *) malloc(pixel_count * pal_img_n);
+   p = cast(ubyte*) malloc(pixel_count * pal_img_n);
    if (p == null) 
       throw new STBImageException("Out of memory");
 
@@ -2148,10 +2149,10 @@ int parse_png_file(png *z, int scan, int req_comp)
                if (idata_limit == 0) idata_limit = c.length > 4096 ? c.length : 4096;
                while (ioff + c.length > idata_limit)
                   idata_limit *= 2;
-               p = cast(ubyte *) realloc(z.idata, idata_limit); if (p == null) throw new STBImageException("outofmem, cOut of memory");
+               p = cast(ubyte*) realloc(z.idata, idata_limit); if (p == null) throw new STBImageException("outofmem, cOut of memory");
                z.idata = p;
             }
-            if (!getn(s, cast(char*)z.idata+ioff,c.length)) throw new STBImageException("outofdata, corrupt PNG");
+            if (!getn(s, z.idata+ioff,c.length)) throw new STBImageException("outofdata, corrupt PNG");
             ioff += c.length;
             break;
          }
@@ -2161,7 +2162,7 @@ int parse_png_file(png *z, int scan, int req_comp)
             if (first) throw new STBImageException("first not IHDR, corrupt PNG");
             if (scan != SCAN_load) return 1;
             if (z.idata == null) throw new STBImageException("no IDAT, corrupt PNG");
-            z.expanded = cast(ubyte *) stbi_zlib_decode_malloc_guesssize_headerflag(cast(char *) z.idata, ioff, 16384, cast(int *) &raw_len, !iphone);
+            z.expanded = stbi_zlib_decode_malloc_guesssize_headerflag(z.idata, ioff, 16384, cast(int *) &raw_len, !iphone);
             if (z.expanded == null) return 0; // zlib should set error
             free(z.idata); z.idata = null;
             if ((req_comp == s.img_n+1 && req_comp != 3 && !pal_img_n) || has_trans)
@@ -2200,16 +2201,16 @@ int parse_png_file(png *z, int scan, int req_comp)
    }
 }
 
-char *do_png(png *p, int *x, int *y, int *n, int req_comp)
+ubyte *do_png(png *p, int *x, int *y, int *n, int req_comp)
 {
-   char *result=null;
+   ubyte *result=null;
    if (req_comp < 0 || req_comp > 4) 
       throw new STBImageException("Internal error: bad req_comp");
    if (parse_png_file(p, SCAN_load, req_comp)) {
-      result = cast(char*)p.out_;
+      result = p.out_;
       p.out_ = null;
       if (req_comp && req_comp != p.s.img_out_n) {
-         result = cast(char*)convert_format(cast(ubyte*)result, p.s.img_out_n, req_comp, p.s.img_x, p.s.img_y);
+         result = convert_format(result, p.s.img_out_n, req_comp, p.s.img_x, p.s.img_y);
          p.s.img_out_n = req_comp;
          if (result == null) return result;
       }
@@ -2224,7 +2225,7 @@ char *do_png(png *p, int *x, int *y, int *n, int req_comp)
    return result;
 }
 
-char *stbi_png_load(stbi *s, int *x, int *y, int *comp, int req_comp)
+ubyte *stbi_png_load(stbi *s, int *x, int *y, int *comp, int req_comp)
 {
    png p;
    p.s = s;
@@ -2322,11 +2323,11 @@ int shiftsigned(int v, int shift, int bits)
    return result;
 }
 
-char *bmp_load(stbi *s, int *x, int *y, int *comp, int req_comp)
+ubyte *bmp_load(stbi *s, int *x, int *y, int *comp, int req_comp)
 {
-   char *out_;
+   ubyte *out_;
    uint mr=0,mg=0,mb=0,ma=0, fake_a=0;
-   char pal[256][4];
+   ubyte pal[256][4];
    int psize=0,i,j,compress=0,width;
    int bpp, flip_vertically, pad, target, offset, hsz;
    if (get8(s) != 'B' || get8(s) != 'M') throw new STBImageException("not BMP, Corrupt BMP");
@@ -2410,7 +2411,7 @@ char *bmp_load(stbi *s, int *x, int *y, int *comp, int req_comp)
       target = req_comp;
    else
       target = s.img_n; // if they want monochrome, we'll post-convert
-   out_ = cast(char *) malloc(target * s.img_x * s.img_y);
+   out_ = cast(ubyte*) malloc(target * s.img_x * s.img_y);
    if (!out_) throw new STBImageException("Out of memory");
    if (bpp < 16) {
       int z=0;
@@ -2496,10 +2497,10 @@ char *bmp_load(stbi *s, int *x, int *y, int *comp, int req_comp)
       }
    }
    if (flip_vertically) {
-      char t;
+      ubyte t;
       for (j=0; j < cast(int) s.img_y>>1; ++j) {
-         char *p1 = out_ +      j     *s.img_x*target;
-         char *p2 = out_ + (s.img_y-1-j)*s.img_x*target;
+         ubyte *p1 = out_ +      j     *s.img_x*target;
+         ubyte *p2 = out_ + (s.img_y-1-j)*s.img_x*target;
          for (i=0; i < cast(int) s.img_x*target; ++i) {
             t = p1[i], p1[i] = p2[i], p2[i] = t;
          }
@@ -2507,7 +2508,7 @@ char *bmp_load(stbi *s, int *x, int *y, int *comp, int req_comp)
    }
 
    if (req_comp && req_comp != target) {
-      out_ = cast(char*) convert_format(cast(ubyte*)out_, target, req_comp, s.img_x, s.img_y);
+      out_ = convert_format(out_, target, req_comp, s.img_x, s.img_y);
       if (out_ == null) return out_; // convert_format frees input on failure
    }
 
@@ -2517,7 +2518,7 @@ char *bmp_load(stbi *s, int *x, int *y, int *comp, int req_comp)
    return out_;
 }
 
-char *stbi_bmp_load(stbi *s, int *x, int *y, int *comp, int req_comp)
+ubyte *stbi_bmp_load(stbi *s, int *x, int *y, int *comp, int req_comp)
 {
    return bmp_load(s, x,y,comp,req_comp);
 }
@@ -2595,7 +2596,7 @@ int stbi_tga_test(stbi *s)
    return res;
 }
 
-char *tga_load(stbi *s, int *x, int *y, int *comp, int req_comp)
+ubyte *tga_load(stbi *s, int *x, int *y, int *comp, int req_comp)
 {
    //   read in the TGA header stuff
    int tga_offset = get8u(s);
@@ -2612,11 +2613,11 @@ char *tga_load(stbi *s, int *x, int *y, int *comp, int req_comp)
    int tga_bits_per_pixel = get8u(s);
    int tga_inverted = get8u(s);
    //   image data
-   char *tga_data;
-   char *tga_palette = null;
+   ubyte *tga_data;
+   ubyte *tga_palette = null;
    int i, j;
-   char[4] raw_data;
-   char[4] trans_data;
+   ubyte[4] raw_data;
+   ubyte[4] trans_data;
    int RLE_count = 0;
    int RLE_repeating = 0;
    int read_next_pixel = 1;
@@ -2660,7 +2661,7 @@ char *tga_load(stbi *s, int *x, int *y, int *comp, int req_comp)
       //   force a new number of components
       *comp = tga_bits_per_pixel/8;
    }
-   tga_data = cast(char*)malloc( tga_width * tga_height * req_comp );
+   tga_data = cast(ubyte*)malloc( tga_width * tga_height * req_comp );
    if (!tga_data) throw new STBImageException("Out of memory");
 
    //   skip to the data's starting position (offset usually = 0)
@@ -2671,7 +2672,7 @@ char *tga_load(stbi *s, int *x, int *y, int *comp, int req_comp)
       //   any data to skip? (offset usually = 0)
       skip(s, tga_palette_start );
       //   load the palette
-      tga_palette = cast(char*)malloc( tga_palette_len * tga_palette_bits / 8 );
+      tga_palette = cast(ubyte*)malloc( tga_palette_len * tga_palette_bits / 8 );
       if (!tga_palette) throw new STBImageException("Out of memory");
       if (!getn(s, tga_palette, tga_palette_len * tga_palette_bits / 8 )) {
          free(tga_data);
@@ -2804,7 +2805,7 @@ char *tga_load(stbi *s, int *x, int *y, int *comp, int req_comp)
          int index2 = (tga_height - 1 - j) * tga_width * req_comp;
          for (i = tga_width * req_comp; i > 0; --i)
          {
-            char temp = tga_data[index1];
+            ubyte temp = tga_data[index1];
             tga_data[index1] = tga_data[index2];
             tga_data[index2] = temp;
             ++index1;
@@ -2825,7 +2826,7 @@ char *tga_load(stbi *s, int *x, int *y, int *comp, int req_comp)
    return tga_data;
 }
 
-char *stbi_tga_load(stbi *s, int *x, int *y, int *comp, int req_comp)
+ubyte *stbi_tga_load(stbi *s, int *x, int *y, int *comp, int req_comp)
 {
    return tga_load(s,x,y,comp,req_comp);
 }
@@ -2847,13 +2848,13 @@ int stbi_psd_test(stbi *s)
    return r;
 }
 
-char *psd_load(stbi *s, int *x, int *y, int *comp, int req_comp)
+ubyte *psd_load(stbi *s, int *x, int *y, int *comp, int req_comp)
 {
    int   pixelCount;
    int channelCount, compression;
    int channel, i, count, len;
    int w,h;
-   char *out_;
+   ubyte *out_;
 
    // Check identifier
    if (get32(s) != 0x38425053)   // "8BPS"
@@ -2910,7 +2911,7 @@ char *psd_load(stbi *s, int *x, int *y, int *comp, int req_comp)
       throw new STBImageException("bad compression, PSD has an unknown compression format");
 
    // Create the destination image.
-   out_ = cast(char *) malloc(4 * w*h);
+   out_ = cast(ubyte*) malloc(4 * w*h);
    if (!out_) throw new STBImageException("Out of memory");
    pixelCount = w*h;
 
@@ -2935,7 +2936,7 @@ char *psd_load(stbi *s, int *x, int *y, int *comp, int req_comp)
       for (channel = 0; channel < 4; channel++) {
          ubyte *p;
          
-         p = cast(ubyte*)out_+channel;
+         p = out_+channel;
          if (channel >= channelCount) {
             // Fill this channel with default data.
             for (i = 0; i < pixelCount; i++) *p = (channel == 3 ? 255 : 0), p += 4;
@@ -2981,7 +2982,7 @@ char *psd_load(stbi *s, int *x, int *y, int *comp, int req_comp)
       for (channel = 0; channel < 4; channel++) {
          ubyte *p;
          
-         p = cast(ubyte*)out_ + channel;
+         p = out_ + channel;
          if (channel > channelCount) {
             // Fill this channel with default data.
             for (i = 0; i < pixelCount; i++) *p = channel == 3 ? 255 : 0, p += 4;
@@ -2994,7 +2995,7 @@ char *psd_load(stbi *s, int *x, int *y, int *comp, int req_comp)
    }
 
    if (req_comp && req_comp != 4) {
-      out_ = cast(char*) convert_format(cast(ubyte*)out_, 4, req_comp, w, h);
+      out_ = convert_format(out_, 4, req_comp, w, h);
       if (out_ == null) return out_; // convert_format frees input on failure
    }
 
@@ -3005,7 +3006,7 @@ char *psd_load(stbi *s, int *x, int *y, int *comp, int req_comp)
    return out_;
 }
 
-char *stbi_psd_load(stbi *s, int *x, int *y, int *comp, int req_comp)
+ubyte *stbi_psd_load(stbi *s, int *x, int *y, int *comp, int req_comp)
 {
    return psd_load(s,x,y,comp,req_comp);
 }
@@ -3017,11 +3018,11 @@ char *stbi_psd_load(stbi *s, int *x, int *y, int *comp, int req_comp)
 // See http://softimage.wiki.softimage.com/index.php/INFO:_PIC_file_format
 // See http://ozviz.wasp.uwa.edu.au/~pbourke/dataformats/softimagepic/
 
-int pic_is4(stbi *s,const char *str)
+int pic_is4(stbi *s, const(char) *str)
 {
    int i;
    for (i=0; i<4; ++i)
-      if (get8(s) != cast(char)str[i])
+      if (get8(s) != cast(ubyte)str[i])
          return 0;
 
    return 1;
@@ -3045,10 +3046,10 @@ int pic_test(stbi *s)
 
 struct pic_packet_t
 {
-   char size,type,channel;
+   ubyte size,type,channel;
 }
 
-char *pic_readval(stbi *s, int channel, char *dest)
+ubyte *pic_readval(stbi *s, int channel, ubyte *dest)
 {
    int mask=0x80, i;
 
@@ -3062,7 +3063,7 @@ char *pic_readval(stbi *s, int channel, char *dest)
    return dest;
 }
 
-void pic_copyval(int channel,char *dest,const char *src)
+void pic_copyval(int channel,ubyte *dest,const ubyte *src)
 {
    int mask=0x80,i;
 
@@ -3071,7 +3072,7 @@ void pic_copyval(int channel,char *dest,const char *src)
          dest[i]=src[i];
 }
 
-char *pic_load2(stbi *s,int width,int height,int *comp, char *result)
+ubyte *pic_load2(stbi *s,int width,int height,int *comp, ubyte *result)
 {
    int act_comp=0,num_packets=0,y,chained;
    pic_packet_t packets[10];
@@ -3104,7 +3105,7 @@ char *pic_load2(stbi *s,int width,int height,int *comp, char *result)
 
       for(packet_idx=0; packet_idx < num_packets; ++packet_idx) {
          pic_packet_t *packet = &packets[packet_idx];
-         char *dest = result+y*width*4;
+         ubyte *dest = result+y*width*4;
 
          switch (packet.type) {
             default:
@@ -3124,8 +3125,8 @@ char *pic_load2(stbi *s,int width,int height,int *comp, char *result)
                   int left=width, i;
 
                   while (left>0) {
-                     char count;
-                     char[4] value;
+                     ubyte count;
+                     ubyte[4] value;
 
                      count=get8u(s);
                      if (at_eof(s))   throw new STBImageException("bad file, file too short (pure read count)");
@@ -3149,7 +3150,7 @@ char *pic_load2(stbi *s,int width,int height,int *comp, char *result)
                   if (at_eof(s))  throw new STBImageException("bad file, file too short (mixed read count)");
 
                   if (count >= 128) { // Repeated
-                     char value[4];
+                     ubyte value[4];
                      int i_;
 
                      if (count==128)
@@ -3183,9 +3184,9 @@ char *pic_load2(stbi *s,int width,int height,int *comp, char *result)
    return result;
 }
 
-char *pic_load(stbi *s,int *px,int *py,int *comp,int req_comp)
+ubyte *pic_load(stbi *s,int *px,int *py,int *comp,int req_comp)
 {
-   char *result;
+   ubyte *result;
    int i, x,y;
 
    for (i=0; i<92; ++i)
@@ -3201,7 +3202,7 @@ char *pic_load(stbi *s,int *px,int *py,int *comp,int req_comp)
    get16(s); //skip `pad'
 
    // intermediate buffer is RGBA
-   result = cast(char *) malloc(x*y*4);
+   result = cast(ubyte*) malloc(x*y*4);
    memset(result, 0xff, x*y*4);
 
    if (!pic_load2(s,x,y,comp, result)) {
@@ -3211,7 +3212,7 @@ char *pic_load(stbi *s,int *px,int *py,int *comp,int req_comp)
    *px = x;
    *py = y;
    if (req_comp == 0) req_comp = *comp;
-   result=cast(char*)convert_format(cast(ubyte*)result,4,req_comp,x,y);
+   result=convert_format(result,4,req_comp,x,y);
 
    return result;
 }
@@ -3223,7 +3224,7 @@ int stbi_pic_test(stbi *s)
    return r;
 }
 
-char *stbi_pic_load(stbi *s, int *x, int *y, int *comp, int req_comp)
+ubyte *stbi_pic_load(stbi *s, int *x, int *y, int *comp, int req_comp)
 {
    return pic_load(s,x,y,comp,req_comp);
 }
@@ -3240,7 +3241,7 @@ struct stbi_gif_lzw
 struct stbi_gif
 {
    int w,h;
-   char *out_;                 // output buffer (always 4 components)
+   ubyte *out_;                 // output buffer (always 4 components)
    int flags, bgindex, ratio, transparent, eflags;
    ubyte  pal[256][4];
    ubyte lpal[256][4];
@@ -3333,7 +3334,7 @@ void stbi_out_gif_code(stbi_gif *g, ushort code)
 
    if (g.cur_y >= g.max_y) return;
   
-   p = cast(ubyte*)(&g.out_[g.cur_x + g.cur_y]);
+   p = (&g.out_[g.cur_x + g.cur_y]);
    c = &g.color_table[g.codes[code].suffix * 4];
 
    if (c[3] >= 128) {
@@ -3387,7 +3388,7 @@ ubyte *stbi_process_gif_raster(stbi *s, stbi_gif *g)
          if (len == 0) {
             len = get8(s); // start new block
             if (len == 0) 
-               return cast(ubyte*)g.out_;
+               return g.out_;
          }
          --len;
          bits |= cast(int) get8(s) << valid_bits;
@@ -3407,7 +3408,7 @@ ubyte *stbi_process_gif_raster(stbi *s, stbi_gif *g)
             skip(s, len);
             while ((len = get8(s)) > 0)
                skip(s,len);
-            return cast(ubyte*)g.out_;
+            return g.out_;
          } else if (code_ <= avail) {
             if (first) throw new STBImageException("no clear code, corrupt GIF");
 
@@ -3441,7 +3442,7 @@ void stbi_fill_gif_background(stbi_gif *g)
    ubyte *c = g.pal[g.bgindex].ptr;
    // @OPTIMIZE: write a dword at a time
    for (i = 0; i < g.w * g.h * 4; i += 4) {
-      ubyte *p  = cast(ubyte*)&g.out_[i];
+      ubyte *p  = &g.out_[i];
       p[0] = c[2];
       p[1] = c[1];
       p[2] = c[0];
@@ -3457,14 +3458,14 @@ ubyte *stbi_gif_load_next(stbi *s, stbi_gif *g, int *comp, int req_comp)
 
    if (g.out_ == null) {
       if (!stbi_gif_header(s, g, comp,0))     return null; // failure_reason set by stbi_gif_header
-      g.out_ = cast(char *) malloc(4 * g.w * g.h);
+      g.out_ = cast(ubyte*) malloc(4 * g.w * g.h);
       if (g.out_ == null)                      throw new STBImageException("Out of memory");
       stbi_fill_gif_background(g);
    } else {
       // animated-gif-only path
       if (((g.eflags & 0x1C) >> 2) == 3) {
-         old_out = cast(ubyte*)g.out_;
-         g.out_ = cast(char *) malloc(4 * g.w * g.h);
+         old_out = g.out_;
+         g.out_ = cast(ubyte*) malloc(4 * g.w * g.h);
          if (g.out_ == null)                   throw new STBImageException("Out of memory");
          memcpy(g.out_, old_out, g.w*g.h*4);
       }
@@ -3504,13 +3505,13 @@ ubyte *stbi_gif_load_next(stbi *s, stbi_gif *g, int *comp, int req_comp)
 
             if (g.lflags & 0x80) {
                stbi_gif_parse_colortable(s,g.lpal, 2 << (g.lflags & 7), g.eflags & 0x01 ? g.transparent : -1);
-               g.color_table = cast(ubyte *) g.lpal;       
+               g.color_table = &g.lpal[0][0];       
             } else if (g.flags & 0x80) {
                for (i=0; i < 256; ++i)  // @OPTIMIZE: reset only the previous transparent
                   g.pal[i][3] = 255; 
                if (g.transparent >= 0 && (g.eflags & 0x01))
                   g.pal[g.transparent][3] = 0;
-               g.color_table = cast(ubyte *) g.pal;
+               g.color_table = &g.pal[0][0];
             } else
                throw new STBImageException("missing color table, corrupt GIF");
    
@@ -3542,7 +3543,7 @@ ubyte *stbi_gif_load_next(stbi *s, stbi_gif *g, int *comp, int req_comp)
          }
 
          case 0x3B: // gif stream termination code
-            return cast(ubyte *) 1;
+            return cast(ubyte*) 1;
 
          default:
             throw new STBImageException("unknown code, corrupt GIF");
@@ -3550,7 +3551,7 @@ ubyte *stbi_gif_load_next(stbi *s, stbi_gif *g, int *comp, int req_comp)
    }
 }
 
-char *stbi_gif_load(stbi *s, int *x, int *y, int *comp, int req_comp)
+ubyte *stbi_gif_load(stbi *s, int *x, int *y, int *comp, int req_comp)
 {
    ubyte *u = null;
    stbi_gif g={0};
@@ -3562,7 +3563,7 @@ char *stbi_gif_load(stbi *s, int *x, int *y, int *comp, int req_comp)
       *y = g.h;
    }
 
-   return cast(char*)u;
+   return u;
 }
 
 int stbi_gif_info(stbi *s, int *x, int *y, int *comp)
