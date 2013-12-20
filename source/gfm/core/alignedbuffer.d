@@ -38,7 +38,6 @@ final class AlignedBuffer(T)
             close();
         }
 
-        deprecated("release was renamed to close") alias close release;
         void close()
         {
             if (_data !is null)

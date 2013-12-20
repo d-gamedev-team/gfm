@@ -33,12 +33,6 @@ S lerp(S, T)(S a, S b, T t) pure nothrow
     return t * b + (1 - t) * a;
 }
 
-/// old name of lerp was mix, but all in all it's a bad name
-deprecated("mix was renamed to lerp") S mix(S, T)(S a, S b, T t) pure nothrow
-{
-    return t * b + (1 - t) * a;
-}
-
 /// Clamp x in [min, max], akin to GLSL's clamp.
 T clamp(T)(T x, T min, T max) pure nothrow
 {
@@ -66,19 +60,6 @@ long lfloor(real x) nothrow // may be pure but floor isn't pure
 T fract(T)(real x) nothrow
 {
     return x - lfloor(x);
-}
-
-/// Square
-deprecated("square is deprecated, use the ^^ operator instead") T square(T)(T s) pure nothrow
-{
-    return s * s;
-}
-deprecated alias square sqr;
-
-/// Cube
-deprecated("cube is deprecated, use the ^^ operator instead") T cube(T)(T s) pure nothrow
-{
-    return s * s * s;
 }
 
 /// Safe asin: input clamped to [-1, 1]
@@ -113,20 +94,6 @@ T smoothStep(T)(T a, T b, T t) pure nothrow
         T x = (t - a) / (b - a);
         return x * x * (3 - 2 * x);
     }
-}
-
-/// Fast conversion from [0 - 1] range to [0..255]
-///  Credits: Sam Hocevar.
-deprecated("ubyteFromFloat has nothing to do here, it will be removed") ubyte ubyteFromFloat(float x) nothrow
-{
-    union IntFloat32
-    {
-        float f;
-        uint i;
-    }
-    IntFloat32 u = void;
-    u.f = 32768.0f + x * (255.0f / 256.0f);
-    return cast(ubyte)(u.i);
 }
 
 /// Returns: true of i is a power of 2.

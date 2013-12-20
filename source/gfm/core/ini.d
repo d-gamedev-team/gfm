@@ -187,4 +187,3 @@ private final class IniSection
     }
 }
 
-deprecated("IniFile was renamed to INIFile") alias INIFile IniFile;

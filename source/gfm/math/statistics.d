@@ -44,9 +44,6 @@ double maxElement(R)(R r) if (isInputRange!R)
     return minmax!(">", R)(r);
 }
 
-deprecated("minimum was renamed to minElement") alias minElement minimum;
-deprecated("maximum was renamed to maxElement") alias maxElement maximum;
-
 /// Variance of a range.
 double variance(R)(R r) if (isForwardRange!R)
 {

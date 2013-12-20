@@ -19,9 +19,6 @@ align(1) struct Box(T, size_t N)
         bound_t min; // not enforced, the box can have negative volume
         bound_t max;
 
-        deprecated("Box.a was renamed to Box.min") alias min a;
-        deprecated("Box.b was renamed to Box.max") alias max b;
-
         /// Construct a box which extends between 2 points.
         /// min is inside the box.
         /// max is just outside.

@@ -3,8 +3,6 @@ module gfm.math.rational;
 import std.traits,
        std.string;
 
-deprecated("Fraction was renamed to Rational.") alias Rational Fraction;
-
 /**
   
   A rational number, always in reduced form. Supports basic arithmetic.
