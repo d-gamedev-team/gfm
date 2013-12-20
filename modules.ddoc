@@ -7,7 +7,6 @@ MODULES =
     $(MODULE gfm.core.ini, INI parser/writer)
     $(MODULE gfm.core.text, string utilities)    
     $(MODULE gfm.core.alignedbuffer, aligned buffer)
-    $(MODULE gfm.core.structpool, arena allocator)
 
     $(MODULE gfm.math.vector, small vectors)
     $(MODULE gfm.math.matrix, small matrices)
@@ -55,6 +54,7 @@ MODULES =
     $(MODULE gfm.image.bitmap, memory images / tiled images)
     $(MODULE gfm.image.hsv, HSV conversions)
     $(MODULE gfm.image.cie, physical color computations)
+    $(MODULE gfm.image.stb_image, stb_image port)
 
     $(MODULE gfm.freeimage.freeimage, FreeImage library wrapper)
     $(MODULE gfm.freeimage.fibitmap, FIBITMAP wrapper)

@@ -66,7 +66,6 @@
     <li class="sidebar-list-entry tree-leaf"><a href="gfm.core.ini.html" title="gfm.core.ini"><i class="icon-th"></i>gfm.core.ini</a></li>
     <li class="sidebar-list-entry tree-leaf"><a href="gfm.core.text.html" title="gfm.core.text"><i class="icon-th"></i>gfm.core.text</a></li>    
     <li class="sidebar-list-entry tree-leaf"><a href="gfm.core.alignedbuffer.html" title="gfm.core.alignedbuffer"><i class="icon-th"></i>gfm.core.alignedbuffer</a></li>
-    <li class="sidebar-list-entry tree-leaf"><a href="gfm.core.structpool.html" title="gfm.core.structpool"><i class="icon-th"></i>gfm.core.structpool</a></li>
 
     <li class="sidebar-list-entry tree-leaf"><a href="gfm.math.vector.html" title="gfm.math.vector"><i class="icon-th"></i>gfm.math.vector</a></li>
     <li class="sidebar-list-entry tree-leaf"><a href="gfm.math.matrix.html" title="gfm.math.matrix"><i class="icon-th"></i>gfm.math.matrix</a></li>
@@ -114,6 +113,7 @@
     <li class="sidebar-list-entry tree-leaf"><a href="gfm.image.bitmap.html" title="gfm.image.bitmap"><i class="icon-th"></i>gfm.image.bitmap</a></li>
     <li class="sidebar-list-entry tree-leaf"><a href="gfm.image.hsv.html" title="gfm.image.hsv"><i class="icon-th"></i>gfm.image.hsv</a></li>
     <li class="sidebar-list-entry tree-leaf"><a href="gfm.image.cie.html" title="gfm.image.cie"><i class="icon-th"></i>gfm.image.cie</a></li>
+    <li class="sidebar-list-entry tree-leaf"><a href="gfm.image.stb_image.html" title="gfm.image.stb_image"><i class="icon-th"></i>gfm.image.stb_image</a></li>
 
     <li class="sidebar-list-entry tree-leaf"><a href="gfm.freeimage.freeimage.html" title="gfm.freeimage.freeimage"><i class="icon-th"></i>gfm.freeimage.freeimage</a></li>
     <li class="sidebar-list-entry tree-leaf"><a href="gfm.freeimage.fibitmap.html" title="gfm.freeimage.fibitmap"><i class="icon-th"></i>gfm.freeimage.fibitmap</a></li>
@@ -162,7 +162,6 @@
     <li class="sidebar-list-entry tree-leaf"><a href="gfm.core.ini.html" title="gfm.core.ini"><i class="icon-th"></i>gfm.core.ini</a></li>
     <li class="sidebar-list-entry tree-leaf"><a href="gfm.core.text.html" title="gfm.core.text"><i class="icon-th"></i>gfm.core.text</a></li>    
     <li class="sidebar-list-entry tree-leaf"><a href="gfm.core.alignedbuffer.html" title="gfm.core.alignedbuffer"><i class="icon-th"></i>gfm.core.alignedbuffer</a></li>
-    <li class="sidebar-list-entry tree-leaf"><a href="gfm.core.structpool.html" title="gfm.core.structpool"><i class="icon-th"></i>gfm.core.structpool</a></li>
 
     <li class="sidebar-list-entry tree-leaf"><a href="gfm.math.vector.html" title="gfm.math.vector"><i class="icon-th"></i>gfm.math.vector</a></li>
     <li class="sidebar-list-entry tree-leaf"><a href="gfm.math.matrix.html" title="gfm.math.matrix"><i class="icon-th"></i>gfm.math.matrix</a></li>
@@ -210,6 +209,7 @@
     <li class="sidebar-list-entry tree-leaf"><a href="gfm.image.bitmap.html" title="gfm.image.bitmap"><i class="icon-th"></i>gfm.image.bitmap</a></li>
     <li class="sidebar-list-entry tree-leaf"><a href="gfm.image.hsv.html" title="gfm.image.hsv"><i class="icon-th"></i>gfm.image.hsv</a></li>
     <li class="sidebar-list-entry tree-leaf"><a href="gfm.image.cie.html" title="gfm.image.cie"><i class="icon-th"></i>gfm.image.cie</a></li>
+    <li class="sidebar-list-entry tree-leaf"><a href="gfm.image.stb_image.html" title="gfm.image.stb_image"><i class="icon-th"></i>gfm.image.stb_image</a></li>
 
     <li class="sidebar-list-entry tree-leaf"><a href="gfm.freeimage.freeimage.html" title="gfm.freeimage.freeimage"><i class="icon-th"></i>gfm.freeimage.freeimage</a></li>
     <li class="sidebar-list-entry tree-leaf"><a href="gfm.freeimage.fibitmap.html" title="gfm.freeimage.fibitmap"><i class="icon-th"></i>gfm.freeimage.fibitmap</a></li>
@@ -265,12 +265,6 @@
 
 </dl>
 </div>
-<hr><div class="row-fluid declaration"><h3>pure nothrow S <span class="symbol-target" id="mix">&nbsp;</span><a class="symbol-link" href="#mix">mix</a>(S, T)(S <i>a</i>, S <i>b</i>, T <i>t</i>);
-</h3></div>
-<div class="declaration-content"><dl><p>old name of lerp was <span class="symbol-target" id="mix">&nbsp;</span><a class="symbol-link" href="#mix">mix</a>, but all in all it's a bad name</p>
-
-</dl>
-</div>
 <hr><div class="row-fluid declaration"><h3>pure nothrow T <span class="symbol-target" id="clamp">&nbsp;</span><a class="symbol-link" href="#clamp">clamp</a>(T)(T <i>x</i>, T <i>min</i>, T <i>max</i>);
 </h3></div>
 <div class="declaration-content"><dl><p>Clamp x in [min, max], akin to GLSL's <span class="symbol-target" id="clamp">&nbsp;</span><a class="symbol-link" href="#clamp">clamp</a>.</p>
@@ -292,18 +286,6 @@
 <hr><div class="row-fluid declaration"><h3>nothrow T <span class="symbol-target" id="fract">&nbsp;</span><a class="symbol-link" href="#fract">fract</a>(T)(real <i>x</i>);
 </h3></div>
 <div class="declaration-content"><dl><dt>Returns</dt><dd>Fractional part of x.</dd>
-</dl>
-</div>
-<hr><div class="row-fluid declaration"><h3>pure nothrow T <span class="symbol-target" id="square">&nbsp;</span><a class="symbol-link" href="#square">square</a>(T)(T <i>s</i>);
-</h3></div>
-<div class="declaration-content"><dl><p>Square</p>
-
-</dl>
-</div>
-<hr><div class="row-fluid declaration"><h3>pure nothrow T <span class="symbol-target" id="cube">&nbsp;</span><a class="symbol-link" href="#cube">cube</a>(T)(T <i>s</i>);
-</h3></div>
-<div class="declaration-content"><dl><p>Cube</p>
-
 </dl>
 </div>
 <hr><div class="row-fluid declaration"><h3>pure nothrow T <span class="symbol-target" id="safeAsin">&nbsp;</span><a class="symbol-link" href="#safeAsin">safeAsin</a>(T)(T <i>x</i>);
@@ -334,15 +316,6 @@
 </dd>
 <dt>http:</dt><dd>
 //en.wikipedia.org/wiki/Smoothstep</dd>
-</dl>
-</div>
-<hr><div class="row-fluid declaration"><h3>deprecated nothrow ubyte <span class="symbol-target" id="ubyteFromFloat">&nbsp;</span><a class="symbol-link" href="#ubyteFromFloat">ubyteFromFloat</a>(float <i>x</i>);
-</h3></div>
-<div class="declaration-content"><dl><p>Fast conversion from [0 - 1] range to [0..255]
-</p>
-
-<dt>Credits:</dt><dd>
-Sam Hocevar.</dd>
 </dl>
 </div>
 <hr><div class="row-fluid declaration"><h3>nothrow bool <span class="symbol-target" id="isPowerOf2">&nbsp;</span><a class="symbol-link" href="#isPowerOf2">isPowerOf2</a>(T)(T <i>i</i>) if (isIntegral!T);

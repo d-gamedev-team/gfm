@@ -66,7 +66,6 @@
     <li class="sidebar-list-entry tree-leaf"><a href="gfm.core.ini.html" title="gfm.core.ini"><i class="icon-th"></i>gfm.core.ini</a></li>
     <li class="sidebar-list-entry tree-leaf"><a href="gfm.core.text.html" title="gfm.core.text"><i class="icon-th"></i>gfm.core.text</a></li>    
     <li class="sidebar-list-entry tree-leaf"><a href="gfm.core.alignedbuffer.html" title="gfm.core.alignedbuffer"><i class="icon-th"></i>gfm.core.alignedbuffer</a></li>
-    <li class="sidebar-list-entry tree-leaf"><a href="gfm.core.structpool.html" title="gfm.core.structpool"><i class="icon-th"></i>gfm.core.structpool</a></li>
 
     <li class="sidebar-list-entry tree-leaf"><a href="gfm.math.vector.html" title="gfm.math.vector"><i class="icon-th"></i>gfm.math.vector</a></li>
     <li class="sidebar-list-entry tree-leaf"><a href="gfm.math.matrix.html" title="gfm.math.matrix"><i class="icon-th"></i>gfm.math.matrix</a></li>
@@ -114,6 +113,7 @@
     <li class="sidebar-list-entry tree-leaf"><a href="gfm.image.bitmap.html" title="gfm.image.bitmap"><i class="icon-th"></i>gfm.image.bitmap</a></li>
     <li class="sidebar-list-entry tree-leaf"><a href="gfm.image.hsv.html" title="gfm.image.hsv"><i class="icon-th"></i>gfm.image.hsv</a></li>
     <li class="sidebar-list-entry tree-leaf"><a href="gfm.image.cie.html" title="gfm.image.cie"><i class="icon-th"></i>gfm.image.cie</a></li>
+    <li class="sidebar-list-entry tree-leaf"><a href="gfm.image.stb_image.html" title="gfm.image.stb_image"><i class="icon-th"></i>gfm.image.stb_image</a></li>
 
     <li class="sidebar-list-entry tree-leaf"><a href="gfm.freeimage.freeimage.html" title="gfm.freeimage.freeimage"><i class="icon-th"></i>gfm.freeimage.freeimage</a></li>
     <li class="sidebar-list-entry tree-leaf"><a href="gfm.freeimage.fibitmap.html" title="gfm.freeimage.fibitmap"><i class="icon-th"></i>gfm.freeimage.fibitmap</a></li>
@@ -162,7 +162,6 @@
     <li class="sidebar-list-entry tree-leaf"><a href="gfm.core.ini.html" title="gfm.core.ini"><i class="icon-th"></i>gfm.core.ini</a></li>
     <li class="sidebar-list-entry tree-leaf"><a href="gfm.core.text.html" title="gfm.core.text"><i class="icon-th"></i>gfm.core.text</a></li>    
     <li class="sidebar-list-entry tree-leaf"><a href="gfm.core.alignedbuffer.html" title="gfm.core.alignedbuffer"><i class="icon-th"></i>gfm.core.alignedbuffer</a></li>
-    <li class="sidebar-list-entry tree-leaf"><a href="gfm.core.structpool.html" title="gfm.core.structpool"><i class="icon-th"></i>gfm.core.structpool</a></li>
 
     <li class="sidebar-list-entry tree-leaf"><a href="gfm.math.vector.html" title="gfm.math.vector"><i class="icon-th"></i>gfm.math.vector</a></li>
     <li class="sidebar-list-entry tree-leaf"><a href="gfm.math.matrix.html" title="gfm.math.matrix"><i class="icon-th"></i>gfm.math.matrix</a></li>
@@ -210,6 +209,7 @@
     <li class="sidebar-list-entry tree-leaf"><a href="gfm.image.bitmap.html" title="gfm.image.bitmap"><i class="icon-th"></i>gfm.image.bitmap</a></li>
     <li class="sidebar-list-entry tree-leaf"><a href="gfm.image.hsv.html" title="gfm.image.hsv"><i class="icon-th"></i>gfm.image.hsv</a></li>
     <li class="sidebar-list-entry tree-leaf"><a href="gfm.image.cie.html" title="gfm.image.cie"><i class="icon-th"></i>gfm.image.cie</a></li>
+    <li class="sidebar-list-entry tree-leaf"><a href="gfm.image.stb_image.html" title="gfm.image.stb_image"><i class="icon-th"></i>gfm.image.stb_image</a></li>
 
     <li class="sidebar-list-entry tree-leaf"><a href="gfm.freeimage.freeimage.html" title="gfm.freeimage.freeimage"><i class="icon-th"></i>gfm.freeimage.freeimage</a></li>
     <li class="sidebar-list-entry tree-leaf"><a href="gfm.freeimage.fibitmap.html" title="gfm.freeimage.fibitmap"><i class="icon-th"></i>gfm.freeimage.fibitmap</a></li>
@@ -292,10 +292,18 @@
 </div>
 <hr><div class="row-fluid declaration"><h3>const pure nothrow double <span class="symbol-target" id="squaredDistance">&nbsp;</span><a class="symbol-link" href="#squaredDistance">squaredDistance</a>(bound_t <i>point</i>);
 </h3></div>
-<div class="declaration-content"><dl><p>Euclidean squared distance from a <i>point</i>
+<div class="declaration-content"><dl><p>Euclidean squared distance from a <i>point</i>.
 </p>
 
 <dt>See Also</dt><dd>Numerical Recipes Third Edition (2007)</dd>
+</dl>
+</div>
+<hr><div class="row-fluid declaration"><h3>double <span class="symbol-target" id="distance">&nbsp;</span><a class="symbol-link" href="#distance">distance</a>(bound_t <i>point</i>);
+</h3></div>
+<div class="declaration-content"><dl><p>Euclidean <span class="symbol-target" id="distance">&nbsp;</span><a class="symbol-link" href="#distance">distance</a> from a <i>point</i>.
+</p>
+
+<dt>See Also</dt><dd>squaredDistance.</dd>
 </dl>
 </div>
 <hr><div class="row-fluid declaration"><h3>const pure nothrow Box <span class="symbol-target" id="grow">&nbsp;</span><a class="symbol-link" href="#grow">grow</a>(bound_t <i>space</i>);
@@ -310,7 +318,81 @@
 
 </dl>
 </div>
+<hr><div class="row-fluid declaration"><h3>const pure nothrow Box <span class="symbol-target" id="grow">&nbsp;</span><a class="symbol-link" href="#grow">grow</a>(T <i>space</i>);
+</h3></div>
+<div class="declaration-content"><dl><p>Extends the area of this Box.</p>
+
+</dl>
 </div>
+<hr><div class="row-fluid declaration"><h3>const pure nothrow Box <span class="symbol-target" id="shrink">&nbsp;</span><a class="symbol-link" href="#shrink">shrink</a>(T <i>space</i>);
+</h3></div>
+<div class="declaration-content"><dl><p>Shrink the area of this Box.</p>
+
+</dl>
+</div>
+<hr><div class="row-fluid declaration"><h3>const pure nothrow bool <span class="symbol-target" id="isSorted">&nbsp;</span><a class="symbol-link" href="#isSorted">isSorted</a>();
+</h3></div>
+<div class="declaration-content"><dl><dt>Returns</dt><dd><span class="d_keyword">true</span> if each dimension of the box is &gt;= 0.</dd>
+</dl>
+</div>
+<hr><div class="row-fluid declaration"><h3>nothrow Box <span class="symbol-target" id="opAssign">&nbsp;</span><a class="symbol-link" href="#opAssign">opAssign</a>(U)(U <i>x</i>) if (is(typeof(<i>x</i>.isBox)));
+</h3></div>
+<div class="declaration-content"><dl><p>Assign with another box.</p>
+
+</dl>
+</div>
+<hr><div class="row-fluid declaration"><h3>const pure nothrow bool <span class="symbol-target" id="opEquals">&nbsp;</span><a class="symbol-link" href="#opEquals">opEquals</a>(U)(U <i>other</i>) if (is(U : Box));
+</h3></div>
+<div class="declaration-content"><dl><dt>Returns</dt><dd><span class="d_keyword">true</span> if comparing equal boxes.</dd>
+</dl>
+</div>
+</div>
+</div>
+<hr><div class="row-fluid declaration"><h3>template <span class="symbol-target" id="box2">&nbsp;</span><a class="symbol-link" href="#box2">box2</a>(T)</h3></div>
+<div class="declaration-content"><dl><p>Instanciate to use a 2D box.</p>
+
+</dl>
+</div>
+<hr><div class="row-fluid declaration"><h3>template <span class="symbol-target" id="box3">&nbsp;</span><a class="symbol-link" href="#box3">box3</a>(T)</h3></div>
+<div class="declaration-content"><dl><p>Instanciate to use a 3D box.</p>
+
+</dl>
+</div>
+<hr><div class="row-fluid declaration"><h3>alias <span class="symbol-target" id="box2i">&nbsp;</span><a class="symbol-link" href="#box2i">box2i</a> = Box!(int, 2u).Box;
+</h3></div>
+<div class="declaration-content"><dl><p>2D box with integer coordinates.</p>
+
+</dl>
+</div>
+<hr><div class="row-fluid declaration"><h3>alias <span class="symbol-target" id="box3i">&nbsp;</span><a class="symbol-link" href="#box3i">box3i</a> = Box!(int, 3u).Box;
+</h3></div>
+<div class="declaration-content"><dl><p>3D box with integer coordinates.</p>
+
+</dl>
+</div>
+<hr><div class="row-fluid declaration"><h3>alias <span class="symbol-target" id="box2f">&nbsp;</span><a class="symbol-link" href="#box2f">box2f</a> = Box!(float, 2u).Box;
+</h3></div>
+<div class="declaration-content"><dl><p>2D box with float coordinates.</p>
+
+</dl>
+</div>
+<hr><div class="row-fluid declaration"><h3>alias <span class="symbol-target" id="box3f">&nbsp;</span><a class="symbol-link" href="#box3f">box3f</a> = Box!(float, 3u).Box;
+</h3></div>
+<div class="declaration-content"><dl><p>3D box with float coordinates.</p>
+
+</dl>
+</div>
+<hr><div class="row-fluid declaration"><h3>alias <span class="symbol-target" id="box2d">&nbsp;</span><a class="symbol-link" href="#box2d">box2d</a> = Box!(double, 2u).Box;
+</h3></div>
+<div class="declaration-content"><dl><p>2D box with double coordinates.</p>
+
+</dl>
+</div>
+<hr><div class="row-fluid declaration"><h3>alias <span class="symbol-target" id="box3d">&nbsp;</span><a class="symbol-link" href="#box3d">box3d</a> = Box!(double, 3u).Box;
+</h3></div>
+<div class="declaration-content"><dl><p>3D box with double coordinates.</p>
+
+</dl>
 </div>
 
 

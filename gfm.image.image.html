@@ -66,7 +66,6 @@
     <li class="sidebar-list-entry tree-leaf"><a href="gfm.core.ini.html" title="gfm.core.ini"><i class="icon-th"></i>gfm.core.ini</a></li>
     <li class="sidebar-list-entry tree-leaf"><a href="gfm.core.text.html" title="gfm.core.text"><i class="icon-th"></i>gfm.core.text</a></li>    
     <li class="sidebar-list-entry tree-leaf"><a href="gfm.core.alignedbuffer.html" title="gfm.core.alignedbuffer"><i class="icon-th"></i>gfm.core.alignedbuffer</a></li>
-    <li class="sidebar-list-entry tree-leaf"><a href="gfm.core.structpool.html" title="gfm.core.structpool"><i class="icon-th"></i>gfm.core.structpool</a></li>
 
     <li class="sidebar-list-entry tree-leaf"><a href="gfm.math.vector.html" title="gfm.math.vector"><i class="icon-th"></i>gfm.math.vector</a></li>
     <li class="sidebar-list-entry tree-leaf"><a href="gfm.math.matrix.html" title="gfm.math.matrix"><i class="icon-th"></i>gfm.math.matrix</a></li>
@@ -114,6 +113,7 @@
     <li class="sidebar-list-entry tree-leaf"><a href="gfm.image.bitmap.html" title="gfm.image.bitmap"><i class="icon-th"></i>gfm.image.bitmap</a></li>
     <li class="sidebar-list-entry tree-leaf"><a href="gfm.image.hsv.html" title="gfm.image.hsv"><i class="icon-th"></i>gfm.image.hsv</a></li>
     <li class="sidebar-list-entry tree-leaf"><a href="gfm.image.cie.html" title="gfm.image.cie"><i class="icon-th"></i>gfm.image.cie</a></li>
+    <li class="sidebar-list-entry tree-leaf"><a href="gfm.image.stb_image.html" title="gfm.image.stb_image"><i class="icon-th"></i>gfm.image.stb_image</a></li>
 
     <li class="sidebar-list-entry tree-leaf"><a href="gfm.freeimage.freeimage.html" title="gfm.freeimage.freeimage"><i class="icon-th"></i>gfm.freeimage.freeimage</a></li>
     <li class="sidebar-list-entry tree-leaf"><a href="gfm.freeimage.fibitmap.html" title="gfm.freeimage.fibitmap"><i class="icon-th"></i>gfm.freeimage.fibitmap</a></li>
@@ -162,7 +162,6 @@
     <li class="sidebar-list-entry tree-leaf"><a href="gfm.core.ini.html" title="gfm.core.ini"><i class="icon-th"></i>gfm.core.ini</a></li>
     <li class="sidebar-list-entry tree-leaf"><a href="gfm.core.text.html" title="gfm.core.text"><i class="icon-th"></i>gfm.core.text</a></li>    
     <li class="sidebar-list-entry tree-leaf"><a href="gfm.core.alignedbuffer.html" title="gfm.core.alignedbuffer"><i class="icon-th"></i>gfm.core.alignedbuffer</a></li>
-    <li class="sidebar-list-entry tree-leaf"><a href="gfm.core.structpool.html" title="gfm.core.structpool"><i class="icon-th"></i>gfm.core.structpool</a></li>
 
     <li class="sidebar-list-entry tree-leaf"><a href="gfm.math.vector.html" title="gfm.math.vector"><i class="icon-th"></i>gfm.math.vector</a></li>
     <li class="sidebar-list-entry tree-leaf"><a href="gfm.math.matrix.html" title="gfm.math.matrix"><i class="icon-th"></i>gfm.math.matrix</a></li>
@@ -210,6 +209,7 @@
     <li class="sidebar-list-entry tree-leaf"><a href="gfm.image.bitmap.html" title="gfm.image.bitmap"><i class="icon-th"></i>gfm.image.bitmap</a></li>
     <li class="sidebar-list-entry tree-leaf"><a href="gfm.image.hsv.html" title="gfm.image.hsv"><i class="icon-th"></i>gfm.image.hsv</a></li>
     <li class="sidebar-list-entry tree-leaf"><a href="gfm.image.cie.html" title="gfm.image.cie"><i class="icon-th"></i>gfm.image.cie</a></li>
+    <li class="sidebar-list-entry tree-leaf"><a href="gfm.image.stb_image.html" title="gfm.image.stb_image"><i class="icon-th"></i>gfm.image.stb_image</a></li>
 
     <li class="sidebar-list-entry tree-leaf"><a href="gfm.freeimage.freeimage.html" title="gfm.freeimage.freeimage"><i class="icon-th"></i>gfm.freeimage.freeimage</a></li>
     <li class="sidebar-list-entry tree-leaf"><a href="gfm.freeimage.fibitmap.html" title="gfm.freeimage.fibitmap"><i class="icon-th"></i>gfm.freeimage.fibitmap</a></li>
@@ -297,6 +297,12 @@
 </h3></div>
 <div class="declaration-content"><dl><dt>Returns</dt><dd>pixel of an Image at position (x, y). 
  At boundaries, what happens depends on em.</dd>
+</dl>
+</div>
+<hr><div class="row-fluid declaration"><h3>void <span class="symbol-target" id="drawRect">&nbsp;</span><a class="symbol-link" href="#drawRect">drawRect</a>(I, P)(I <i>img</i>, int <i>x</i>, int <i>y</i>, int <i>width</i>, int <i>height</i>, P <i>e</i>) if (isImage!I &amp;&amp; is(P : I.element_t));
+</h3></div>
+<div class="declaration-content"><dl><p>Draws a rectangle outline in an Image.</p>
+
 </dl>
 </div>
 <hr><div class="row-fluid declaration"><h3>void <span class="symbol-target" id="fillRect">&nbsp;</span><a class="symbol-link" href="#fillRect">fillRect</a>(I, P)(I <i>img</i>, int <i>x</i>, int <i>y</i>, int <i>width</i>, int <i>height</i>, P <i>e</i>) if (isImage!I &amp;&amp; is(P : I.element_t));
