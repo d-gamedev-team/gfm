@@ -5,6 +5,5 @@ public import gfm.core.log,
               gfm.core.alignedbuffer,
               gfm.core.queue,
               gfm.core.lockedqueue,
-              gfm.core.structpool,
               gfm.core.text,
               gfm.core.ini;
