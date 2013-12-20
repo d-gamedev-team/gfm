@@ -1,11 +1,19 @@
 
 /// D translation of stb_image-1.33 (http://nothings.org/stb_image.c)
 /// Removed:
-/// - loading with callbacks
-/// - HDR support
-/// - STDIO support
+/// $(UL
+///   $(LI Loading with callbacks.)
+///   $(LI HDR support.)
+///   $(LI STDIO support.)
+/// )
 /// Added:
-/// - exceptions
+/// $(UL
+///   $(LI Exceptions.)
+///  )
+/// TODO:
+/// $(UL
+///   $(LI Support a range as input.)
+///  )
 
 module gfm.image.stb_image;
 
@@ -14,7 +22,7 @@ import core.stdc.string;
 
 enum STBI_VERSION = 1;
 
-/// The exception type thrown in this module.
+/// The exception type thrown when loading an image failed.
 class STBImageException : Exception
 {
     public
@@ -35,11 +43,6 @@ enum : int
    STBI_rgb_alpha  = 4
 };
 
-//////////////////////////////////////////////////////////////////////////////
-//
-// PRIMARY API - works on images of any type
-//
-
 // define faster low-level operations (typically SIMD support)
 
 
@@ -47,10 +50,6 @@ uint stbi_lrot(uint x, uint y)
 {
     return (x << y) | (x >> (32 - y));
 }
-
-///////////////////////////////////////////////
-//
-//  stbi struct and start_xxx functions
 
 // stbi structure is our basic context used by all images, so it
 // contains all the IO context, plus some basic image information
@@ -83,10 +82,6 @@ void stbi_rewind(stbi *s)
    s.img_buffer = s.img_buffer_original;
 }
 
-void stbi_image_free(void *retval_from_stbi_load)
-{
-   free(retval_from_stbi_load);
-}
 
 char *stbi_load_main(stbi *s, int *x, int *y, int *comp, int req_comp)
 {
@@ -104,16 +99,21 @@ char *stbi_load_main(stbi *s, int *x, int *y, int *comp, int req_comp)
    throw new STBImageException("Image not of any known type, or corrupt");
 }
 
-char *stbi_load_from_memory(const(ubyte) *buffer, int len, int *x, int *y, int *comp, int req_comp)
+/// Loads an image from memory.
+ubyte* stbi_load_from_memory(ubyte[] buffer, out int width, out int height, out int components, int requestedComponents)
 {
    stbi s;
-   start_mem(&s,buffer,len);
-   return stbi_load_main(&s,x,y,comp,req_comp);
+   start_mem(&s, buffer.ptr, buffer.length);
+   return cast(ubyte*) stbi_load_main(&s, &width, &height, &components, requestedComponents);
+}
+
+/// Frees an image loaded by stb_image.
+void stbi_image_free(void *retval_from_stbi_load)
+{
+    free(retval_from_stbi_load);
 }
 
 
-
-//////////////////////////////////////////////////////////////////////////////
 //
 // Common code used by all image loaders
 //
@@ -183,7 +183,6 @@ uint get32le(stbi *s)
    return z + (get16le(s) << 16);
 }
 
-//////////////////////////////////////////////////////////////////////////////
 //
 //  generic converter from built-in img_n to req_comp
 //    individual types do this automatically as much as possible (e.g. jpeg
@@ -277,7 +276,6 @@ ubyte *convert_format(ubyte *data, int img_n, int req_comp, uint x, uint y)
     return good;
 }
 
-//////////////////////////////////////////////////////////////////////////////
 //
 //  "baseline" JPEG/JFIF decoder (not actually fully baseline implementation)
 //
@@ -2519,7 +2517,7 @@ char *bmp_load(stbi *s, int *x, int *y, int *comp, int req_comp)
    return out_;
 }
 
-char *stbi_bmp_load(stbi *s,int *x, int *y, int *comp, int req_comp)
+char *stbi_bmp_load(stbi *s, int *x, int *y, int *comp, int req_comp)
 {
    return bmp_load(s, x,y,comp,req_comp);
 }
