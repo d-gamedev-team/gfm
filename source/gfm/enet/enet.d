@@ -63,8 +63,8 @@ final class ENet
             close();
         }
 
-        /// Releases the ENet library and all ressources.
-        /// All ressources should have been released at this point,
+        /// Releases the ENet library and all resources.
+        /// All resources should have been released at this point,
         /// since you won't be able to call any ENet function afterwards.
         void close()
         {

@@ -86,7 +86,7 @@ final class OpenGL
         }
 
         /// Releases the OpenGL dynamic library.
-        /// All ressources should have been released at this point,
+        /// All resources should have been released at this point,
         /// since you won't be able to call any OpenGL function afterwards.
         void close()
         {

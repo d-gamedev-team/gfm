@@ -84,8 +84,8 @@ final class SDL2
             _keyboard = new SDL2Keyboard(this);            
         }
 
-        /// Releases the SDL library and all ressources.
-        /// All ressources should have been released at this point,
+        /// Releases the SDL library and all resources.
+        /// All resources should have been released at this point,
         /// since you won't be able to call any SDL function afterwards.
         void close()
         {

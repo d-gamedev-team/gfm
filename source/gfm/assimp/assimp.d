@@ -69,8 +69,8 @@ final class Assimp
             close();
         }
 
-        /// Releases the ASSIMP library and all ressources.
-        /// All ressources should have been released at this point,
+        /// Releases the ASSIMP library and all resources.
+        /// All resources should have been released at this point,
         /// since you won't be able to call any ASSIMP function afterwards.
         void close()
         {
