@@ -4,6 +4,8 @@
 /// - loading with callbacks
 /// - HDR support
 /// - STDIO support
+/// Added:
+/// - exceptions
 
 module gfm.image.stb_image;
 
@@ -73,7 +75,7 @@ void start_mem(stbi *s, const(ubyte)*buffer, int len)
    s.img_buffer_end = cast(ubyte *) buffer+len;
 }
 
-static void stbi_rewind(stbi *s)
+void stbi_rewind(stbi *s)
 {
    // conceptually rewind SHOULD rewind to the beginning of the stream,
    // but we just rewind to the beginning of the initial buffer, because
@@ -86,7 +88,7 @@ void stbi_image_free(void *retval_from_stbi_load)
    free(retval_from_stbi_load);
 }
 
-static char *stbi_load_main(stbi *s, int *x, int *y, int *comp, int req_comp)
+char *stbi_load_main(stbi *s, int *x, int *y, int *comp, int req_comp)
 {
    if (stbi_jpeg_test(s)) return stbi_jpeg_load(s,x,y,comp,req_comp);
    if (stbi_png_test(s))  return stbi_png_load(s,x,y,comp,req_comp);
@@ -124,7 +126,7 @@ enum : int
 };
 
 
-static int get8(stbi *s)
+int get8(stbi *s)
 {
    if (s.img_buffer < s.img_buffer_end)
       return *s.img_buffer++;
@@ -132,22 +134,22 @@ static int get8(stbi *s)
    return 0;
 }
 
-static int at_eof(stbi *s)
+int at_eof(stbi *s)
 {
    return s.img_buffer >= s.img_buffer_end;   
 }
 
-static ubyte get8u(stbi *s)
+ubyte get8u(stbi *s)
 {
    return cast(ubyte) get8(s);
 }
 
-static void skip(stbi *s, int n)
+void skip(stbi *s, int n)
 {
    s.img_buffer += n;
 }
 
-static int getn(stbi *s, char *buffer, int n)
+int getn(stbi *s, char *buffer, int n)
 {
    if (s.img_buffer+n <= s.img_buffer_end) {
       memcpy(buffer, s.img_buffer, n);
@@ -157,25 +159,25 @@ static int getn(stbi *s, char *buffer, int n)
       return 0;
 }
 
-static int get16(stbi *s)
+int get16(stbi *s)
 {
    int z = get8(s);
    return (z << 8) + get8(s);
 }
 
-static uint get32(stbi *s)
+uint get32(stbi *s)
 {
    uint z = get16(s);
    return (z << 16) + get16(s);
 }
 
-static int get16le(stbi *s)
+int get16le(stbi *s)
 {
    int z = get8(s);
    return z + (get8(s) << 8);
 }
 
-static uint get32le(stbi *s)
+uint get32le(stbi *s)
 {
    uint z = get16le(s);
    return z + (get16le(s) << 16);
@@ -192,7 +194,7 @@ static uint get32le(stbi *s)
 //  assume data buffer is malloced, so malloc a new one and free that one
 //  only failure mode is malloc failing
 
-static ubyte compute_y(int r, int g, int b)
+ubyte compute_y(int r, int g, int b)
 {
    return cast(ubyte) (((r*77) + (g*150) +  (29*b)) >> 8);
 }
@@ -356,7 +358,7 @@ struct jpeg
 }
 
 
-static int build_huffman(huffman *h, int *count)
+int build_huffman(huffman *h, int *count)
 {
    int i,j,k=0,code;
    // build size list for each symbol (from JPEG spec)
@@ -398,7 +400,7 @@ static int build_huffman(huffman *h, int *count)
    return 1;
 }
 
-static void grow_buffer_unsafe(jpeg *j)
+void grow_buffer_unsafe(jpeg *j)
 {
    do {
       int b = j.nomore ? 0 : get8(j.s);
@@ -416,10 +418,10 @@ static void grow_buffer_unsafe(jpeg *j)
 }
 
 // (1 << n) - 1
-static uint bmask[17]=[0,1,3,7,15,31,63,127,255,511,1023,2047,4095,8191,16383,32767,65535];
+static immutable uint bmask[17]=[0,1,3,7,15,31,63,127,255,511,1023,2047,4095,8191,16383,32767,65535];
 
 // decode a jpeg huffman value from the bitstream
-static int decode(jpeg *j, huffman *h)
+int decode(jpeg *j, huffman *h)
 {
    uint temp;
    int c,k;
@@ -470,7 +472,7 @@ static int decode(jpeg *j, huffman *h)
 
 // combined JPEG 'receive' and JPEG 'extend', since baseline
 // always extends everything it receives.
-static int extend_receive(jpeg *j, int n)
+int extend_receive(jpeg *j, int n)
 {
    uint m = 1 << (n-1);
    uint k;
@@ -492,7 +494,7 @@ static int extend_receive(jpeg *j, int n)
 
 // given a value that's at position X in the zigzag stream,
 // where does it appear in the 8x8 matrix coded as row-major?
-static ubyte dezigzag[64+15] =
+static immutable ubyte dezigzag[64+15] =
 [
     0,  1,  8, 16,  9,  2,  3, 10,
    17, 24, 32, 25, 18, 11,  4,  5,
@@ -508,7 +510,7 @@ static ubyte dezigzag[64+15] =
 ];
 
 // decode one 64-entry block--
-static int decode_block(jpeg *j, short data[64], huffman *hdc, huffman *hac, int b)
+int decode_block(jpeg *j, short data[64], huffman *hdc, huffman *hac, int b)
 {
    int diff,dc,k;
    int t = decode(j, hdc);
@@ -545,7 +547,7 @@ static int decode_block(jpeg *j, short data[64], huffman *hdc, huffman *hac, int
 }
 
 // take a -128..127 value and clamp it and convert to 0..255
-static ubyte clamp(int x)
+ubyte clamp(int x)
 {
    // trick to use a single test to catch both cases
    if (cast(uint) x > 255) {
@@ -610,7 +612,7 @@ void IDCT_1D(int s0, int s1, int s2, int s3, int s4, int s5, int s6, int s7,
 alias stbi_dequantize_t = ubyte;
 
 // .344 seconds on 3*anemones.jpg
-static void idct_block(ubyte *out_, int out_stride, short data[64], stbi_dequantize_t *dequantize)
+void idct_block(ubyte *out_, int out_stride, short data[64], stbi_dequantize_t *dequantize)
 {
    int i;
    int[64] val;
@@ -683,7 +685,7 @@ enum MARKER_none = 0xff;
 // if there's a pending marker from the entropy stream, return that
 // otherwise, fetch from the stream and get a marker. if there's no
 // marker, return 0xff, which is never a valid marker value
-static ubyte get_marker(jpeg *j)
+ubyte get_marker(jpeg *j)
 {
    ubyte x;
    if (j.marker != MARKER_none) { x = j.marker; j.marker = MARKER_none; return x; }
@@ -703,7 +705,7 @@ bool RESTART(int x)
 
 // after a restart interval, reset the entropy decoder and
 // the dc prediction
-static void reset(jpeg *j)
+void reset(jpeg *j)
 {
    j.code_bits = 0;
    j.code_buffer = 0;
@@ -715,7 +717,7 @@ static void reset(jpeg *j)
    // since we don't even allow 1<<30 pixels
 }
 
-static int parse_entropy_coded_data(jpeg *z)
+int parse_entropy_coded_data(jpeg *z)
 {
    reset(z);
    if (z.scan_n == 1) {
@@ -776,7 +778,7 @@ static int parse_entropy_coded_data(jpeg *z)
    return 1;
 }
 
-static int process_marker(jpeg *z, int m)
+int process_marker(jpeg *z, int m)
 {
    int L;
    switch (m) {
@@ -851,7 +853,7 @@ static int process_marker(jpeg *z, int m)
 }
 
 // after we see SOS
-static int process_scan_header(jpeg *z)
+int process_scan_header(jpeg *z)
 {
    int i;
    int Ls = get16(z.s);
@@ -886,7 +888,7 @@ static int process_scan_header(jpeg *z)
    return 1;
 }
 
-static int process_frame_header(jpeg *z, int scan)
+int process_frame_header(jpeg *z, int scan)
 {
    stbi *s = z.s;
    int Lf,p,i,q, h_max=1,v_max=1,c;
@@ -965,7 +967,7 @@ bool EOI(int x) { return x == 0xd9; }
 bool SOF(int x) { return x == 0xc0 || x == 0xc1; }
 bool SOS(int x) { return x == 0xda; }
 
-static int decode_jpeg_header(jpeg *z, int scan)
+int decode_jpeg_header(jpeg *z, int scan)
 {
    int m;
    z.marker = MARKER_none; // initialize cached marker to empty
@@ -986,7 +988,7 @@ static int decode_jpeg_header(jpeg *z, int scan)
    return 1;
 }
 
-static int decode_jpeg_image(jpeg *j)
+int decode_jpeg_image(jpeg *j)
 {
    int m;
    j.restart_interval = 0;
@@ -1026,12 +1028,12 @@ ubyte div4(int x)
     return cast(ubyte)(x >> 2);
 }
 
-static ubyte *resample_row_1(ubyte *out_, ubyte *in_near, ubyte *in_far, int w, int hs)
+ubyte *resample_row_1(ubyte *out_, ubyte *in_near, ubyte *in_far, int w, int hs)
 { 
    return in_near;
 }
 
-static ubyte* resample_row_v_2(ubyte *out_, ubyte *in_near, ubyte *in_far, int w, int hs)
+ubyte* resample_row_v_2(ubyte *out_, ubyte *in_near, ubyte *in_far, int w, int hs)
 {
    // need to generate two samples vertically for every one in input
    int i;
@@ -1040,7 +1042,7 @@ static ubyte* resample_row_v_2(ubyte *out_, ubyte *in_near, ubyte *in_far, int w
    return out_;
 }
 
-static ubyte*  resample_row_h_2(ubyte *out_, ubyte *in_near, ubyte *in_far, int w, int hs)
+ubyte*  resample_row_h_2(ubyte *out_, ubyte *in_near, ubyte *in_far, int w, int hs)
 {
    // need to generate two samples horizontally for every one in input
    int i;
@@ -1071,7 +1073,7 @@ ubyte div16(int x)
 }
 
 
-static ubyte *resample_row_hv_2(ubyte *out_, ubyte *in_near, ubyte *in_far, int w, int hs)
+ubyte *resample_row_hv_2(ubyte *out_, ubyte *in_near, ubyte *in_far, int w, int hs)
 {
    // need to generate 2x2 samples for every one in input
    int i,t0,t1;
@@ -1093,7 +1095,7 @@ static ubyte *resample_row_hv_2(ubyte *out_, ubyte *in_near, ubyte *in_far, int 
    return out_;
 }
 
-static ubyte *resample_row_generic(ubyte *out_, ubyte *in_near, ubyte *in_far, int w, int hs)
+ubyte *resample_row_generic(ubyte *out_, ubyte *in_near, ubyte *in_far, int w, int hs)
 {
    // resample with nearest-neighbor
    int i,j;
@@ -1111,7 +1113,7 @@ int float2fixed(double x)
 
 // 0.38 seconds on 3*anemones.jpg   (0.25 with processor = Pro)
 // VC6 without processor=Pro is generating multiple LEAs per multiply!
-static void YCbCr_to_RGB_row(ubyte *out_, const ubyte *y, const ubyte *pcb, const ubyte *pcr, int count, int step)
+void YCbCr_to_RGB_row(ubyte *out_, const ubyte *y, const ubyte *pcb, const ubyte *pcr, int count, int step)
 {
    int i;
    for (i=0; i < count; ++i) {
@@ -1137,7 +1139,7 @@ static void YCbCr_to_RGB_row(ubyte *out_, const ubyte *y, const ubyte *pcb, cons
 }
 
 // clean up the temporary component buffers
-static void cleanup_jpeg(jpeg *j)
+void cleanup_jpeg(jpeg *j)
 {
    int i;
    for (i=0; i < j.s.img_n; ++i) {
@@ -1163,7 +1165,7 @@ struct stbi_resample
    int ypos;    // which pre-expansion row we're on
 } ;
 
-static ubyte *load_jpeg_image(jpeg *z, int *out_x, int *out_y, int *comp, int req_comp)
+ubyte *load_jpeg_image(jpeg *z, int *out_x, int *out_y, int *comp, int req_comp)
 {
    int n, decode_n;
    // validate req_comp
@@ -1264,14 +1266,14 @@ static ubyte *load_jpeg_image(jpeg *z, int *out_x, int *out_y, int *comp, int re
    }
 }
 
-static char *stbi_jpeg_load(stbi *s, int *x, int *y, int *comp, int req_comp)
+char *stbi_jpeg_load(stbi *s, int *x, int *y, int *comp, int req_comp)
 {
    jpeg j;
    j.s = s;
    return cast(char*)load_jpeg_image(&j, x,y,comp,req_comp);
 }
 
-static int stbi_jpeg_test(stbi *s)
+int stbi_jpeg_test(stbi *s)
 {
    int r;
    jpeg j;
@@ -1281,7 +1283,7 @@ static int stbi_jpeg_test(stbi *s)
    return r;
 }
 
-static int stbi_jpeg_info_raw(jpeg *j, int *x, int *y, int *comp)
+int stbi_jpeg_info_raw(jpeg *j, int *x, int *y, int *comp)
 {
    if (!decode_jpeg_header(j, SCAN_header)) {
       stbi_rewind( j.s );
@@ -1293,7 +1295,7 @@ static int stbi_jpeg_info_raw(jpeg *j, int *x, int *y, int *comp)
    return 1;
 }
 
-static int stbi_jpeg_info(stbi *s, int *x, int *y, int *comp)
+int stbi_jpeg_info(stbi *s, int *x, int *y, int *comp)
 {
    jpeg j;
    j.s = s;
@@ -1323,7 +1325,7 @@ struct zhuffman
    ushort[288] value;
 } ;
 
-static int bitreverse16(int n)
+int bitreverse16(int n)
 {
   n = ((n & 0xAAAA) >>  1) | ((n & 0x5555) << 1);
   n = ((n & 0xCCCC) >>  2) | ((n & 0x3333) << 2);
@@ -1332,7 +1334,7 @@ static int bitreverse16(int n)
   return n;
 }
 
-static int bit_reverse(int v, int bits)
+int bit_reverse(int v, int bits)
 {
    assert(bits <= 16);
    // to bit reverse n bits, reverse 16 and shift
@@ -1340,7 +1342,7 @@ static int bit_reverse(int v, int bits)
    return bitreverse16(v) >> (16-bits);
 }
 
-static int zbuild_huffman(zhuffman *z, ubyte *sizelist, int num)
+int zbuild_huffman(zhuffman *z, ubyte *sizelist, int num)
 {
    int i,k=0;
    int code;
@@ -1409,13 +1411,13 @@ struct zbuf
    zhuffman z_length, z_distance;
 } ;
 
-static int zget8(zbuf *z)
+int zget8(zbuf *z)
 {
    if (z.zbuffer >= z.zbuffer_end) return 0;
    return *z.zbuffer++;
 }
 
-static void fill_bits(zbuf *z)
+void fill_bits(zbuf *z)
 {
    do {
       assert(z.code_buffer < (1U << z.num_bits));
@@ -1424,7 +1426,7 @@ static void fill_bits(zbuf *z)
    } while (z.num_bits <= 24);
 }
 
-static uint zreceive(zbuf *z, int n)
+uint zreceive(zbuf *z, int n)
 {
    uint k;
    if (z.num_bits < n) fill_bits(z);
@@ -1434,7 +1436,7 @@ static uint zreceive(zbuf *z, int n)
    return k;   
 }
 
-static int zhuffman_decode(zbuf *a, zhuffman *z)
+int zhuffman_decode(zbuf *a, zhuffman *z)
 {
    int b,s,k;
    if (a.num_bits < 16) fill_bits(a);
@@ -1461,7 +1463,7 @@ static int zhuffman_decode(zbuf *a, zhuffman *z)
    return z.value[b];
 }
 
-static int expand(zbuf *z, int n)  // need to make room for n bytes
+int expand(zbuf *z, int n)  // need to make room for n bytes
 {
    char *q;
    int cur, limit;
@@ -1480,21 +1482,21 @@ static int expand(zbuf *z, int n)  // need to make room for n bytes
    return 1;
 }
 
-static int length_base[31] = [
+static immutable int length_base[31] = [
    3,4,5,6,7,8,9,10,11,13,
    15,17,19,23,27,31,35,43,51,59,
    67,83,99,115,131,163,195,227,258,0,0 ];
 
-static int length_extra[31]= 
+static immutable int length_extra[31]= 
 [ 0,0,0,0,0,0,0,0,1,1,1,1,2,2,2,2,3,3,3,3,4,4,4,4,5,5,5,5,0,0,0 ];
 
-static int dist_base[32] = [ 1,2,3,4,5,7,9,13,17,25,33,49,65,97,129,193,
+static immutable int dist_base[32] = [ 1,2,3,4,5,7,9,13,17,25,33,49,65,97,129,193,
 257,385,513,769,1025,1537,2049,3073,4097,6145,8193,12289,16385,24577,0,0];
 
-static int dist_extra[32] =
+static immutable int dist_extra[32] =
 [ 0,0,0,0,1,1,2,2,3,3,4,4,5,5,6,6,7,7,8,8,9,9,10,10,11,11,12,12,13,13];
 
-static int parse_huffman_block(zbuf *a)
+int parse_huffman_block(zbuf *a)
 {
    for(;;) {
       int z = zhuffman_decode(a, &a.z_length);
@@ -1523,9 +1525,9 @@ static int parse_huffman_block(zbuf *a)
    }
 }
 
-static int compute_huffman_codes(zbuf *a)
+int compute_huffman_codes(zbuf *a)
 {
-   static ubyte length_dezigzag[19] = [ 16,17,18,0,8,7,9,6,10,5,11,4,12,3,13,2,14,1,15 ];
+   static immutable ubyte length_dezigzag[19] = [ 16,17,18,0,8,7,9,6,10,5,11,4,12,3,13,2,14,1,15 ];
    zhuffman z_codelength;
    ubyte lencodes[286+32+137];//padding for maximum single op
    ubyte codelength_sizes[19];
@@ -1569,7 +1571,7 @@ static int compute_huffman_codes(zbuf *a)
    return 1;
 }
 
-static int parse_uncompressed_block(zbuf *a)
+int parse_uncompressed_block(zbuf *a)
 {
    ubyte header[4];
    int len,nlen,k;
@@ -1598,7 +1600,7 @@ static int parse_uncompressed_block(zbuf *a)
    return 1;
 }
 
-static int parse_zlib_header(zbuf *a)
+int parse_zlib_header(zbuf *a)
 {
    int cmf   = zget8(a);
    int cm    = cmf & 15;
@@ -1615,7 +1617,7 @@ static int parse_zlib_header(zbuf *a)
 __gshared static ubyte[288] default_length;
 __gshared static ubyte[32] default_distance;
 
-static void init_defaults()
+void init_defaults()
 {
    int i;   // use <= to match clearly with spec
    for (i=0; i <= 143; ++i)     default_length[i]   = 8;
@@ -1627,7 +1629,7 @@ static void init_defaults()
 }
 
 int stbi_png_partial; // a quick hack to only allow decoding some of a PNG... I should implement real streaming support instead
-static int parse_zlib(zbuf *a, int parse_header)
+int parse_zlib(zbuf *a, int parse_header)
 {
    int final_, type;
    if (parse_header)
@@ -1658,7 +1660,7 @@ static int parse_zlib(zbuf *a, int parse_header)
    return 1;
 }
 
-static int do_zlib(zbuf *a, char *obuf, int olen, int exp, int parse_header)
+int do_zlib(zbuf *a, char *obuf, int olen, int exp, int parse_header)
 {
    a.zout_start = obuf;
    a.zout       = obuf;
@@ -1765,7 +1767,7 @@ uint PNG_TYPE(ubyte a, ubyte b, ubyte c, ubyte d)
    return (a << 24) + (b << 16) + (c << 8) + d;
 }
 
-static chunk get_chunk_header(stbi *s)
+chunk get_chunk_header(stbi *s)
 {
    chunk c;
    c.length = get32(s);
@@ -1775,7 +1777,7 @@ static chunk get_chunk_header(stbi *s)
 
 static int check_png_header(stbi *s)
 {
-   static ubyte png_sig[8] = [ 137,80,78,71,13,10,26,10 ];
+   static immutable ubyte[8] png_sig = [ 137,80,78,71,13,10,26,10 ];
    int i;
    for (i=0; i < 8; ++i)
       if (get8u(s) != png_sig[i]) throw new STBImageException("Bad PNG sig, not a PNG");
@@ -1797,7 +1799,7 @@ enum : int
    F_avg_first, F_paeth_first
 }
 
-static ubyte[5] first_row_filter =
+static immutable ubyte[5] first_row_filter =
 [
    F_none, F_sub, F_none, F_avg_first, F_paeth_first
 ];
@@ -1894,7 +1896,7 @@ static int create_png_image_raw(png *a, ubyte *raw, uint raw_len, int out_n, uin
    return 1;
 }
 
-static int create_png_image(png *a, ubyte *raw, uint raw_len, int out_n, int interlaced)
+int create_png_image(png *a, ubyte *raw, uint raw_len, int out_n, int interlaced)
 {
    ubyte *final_;
    int p;
@@ -1960,7 +1962,7 @@ static int compute_transparency(png *z, ubyte tc[3], int out_n)
    return 1;
 }
 
-static int expand_palette(png *a, ubyte *palette, int len, int pal_img_n)
+int expand_palette(png *a, ubyte *palette, int len, int pal_img_n)
 {
    uint i, pixel_count = a.s.img_x * a.s.img_y;
    ubyte *p;
@@ -1998,8 +2000,8 @@ static int expand_palette(png *a, ubyte *palette, int len, int pal_img_n)
    return 1;
 }
 
-static int stbi_unpremultiply_on_load = 0;
-static int stbi_de_iphone_flag = 0;
+__gshared int stbi_unpremultiply_on_load = 0;
+__gshared int stbi_de_iphone_flag = 0;
 
 void stbi_set_unpremultiply_on_load(int flag_true_if_should_unpremultiply)
 {
@@ -2010,7 +2012,7 @@ void stbi_convert_iphone_png_to_rgb(int flag_true_if_should_convert)
    stbi_de_iphone_flag = flag_true_if_should_convert;
 }
 
-static void stbi_de_iphone(png *z)
+void stbi_de_iphone(png *z)
 {
    stbi *s = z.s;
    uint i, pixel_count = s.img_x * s.img_y;
@@ -2052,7 +2054,7 @@ static void stbi_de_iphone(png *z)
    }
 }
 
-static int parse_png_file(png *z, int scan, int req_comp)
+int parse_png_file(png *z, int scan, int req_comp)
 {
    ubyte[1024] palette;
    ubyte pal_img_n=0;
@@ -2200,7 +2202,7 @@ static int parse_png_file(png *z, int scan, int req_comp)
    }
 }
 
-static char *do_png(png *p, int *x, int *y, int *n, int req_comp)
+char *do_png(png *p, int *x, int *y, int *n, int req_comp)
 {
    char *result=null;
    if (req_comp < 0 || req_comp > 4) 
@@ -2224,14 +2226,14 @@ static char *do_png(png *p, int *x, int *y, int *n, int req_comp)
    return result;
 }
 
-static char *stbi_png_load(stbi *s, int *x, int *y, int *comp, int req_comp)
+char *stbi_png_load(stbi *s, int *x, int *y, int *comp, int req_comp)
 {
    png p;
    p.s = s;
    return do_png(&p, x,y,comp,req_comp);
 }
 
-static int stbi_png_test(stbi *s)
+int stbi_png_test(stbi *s)
 {
    int r;
    r = check_png_header(s);
@@ -2239,7 +2241,7 @@ static int stbi_png_test(stbi *s)
    return r;
 }
 
-static int stbi_png_info_raw(png *p, int *x, int *y, int *comp)
+int stbi_png_info_raw(png *p, int *x, int *y, int *comp)
 {
    if (!parse_png_file(p, SCAN_header, 0)) {
       stbi_rewind( p.s );
@@ -2251,7 +2253,7 @@ static int stbi_png_info_raw(png *p, int *x, int *y, int *comp)
    return 1;
 }
 
-static int      stbi_png_info(stbi *s, int *x, int *y, int *comp)
+int      stbi_png_info(stbi *s, int *x, int *y, int *comp)
 {
    png p;
    p.s = s;
@@ -2260,7 +2262,7 @@ static int      stbi_png_info(stbi *s, int *x, int *y, int *comp)
 
 // Microsoft/Windows BMP image
 
-static int bmp_test(stbi *s)
+int bmp_test(stbi *s)
 {
    int sz;
    if (get8(s) != 'B') return 0;
@@ -2274,7 +2276,7 @@ static int bmp_test(stbi *s)
    return 0;
 }
 
-static int stbi_bmp_test(stbi *s)
+int stbi_bmp_test(stbi *s)
 {
    int r = bmp_test(s);
    stbi_rewind(s);
@@ -2283,7 +2285,7 @@ static int stbi_bmp_test(stbi *s)
 
 
 // returns 0..31 for the highest set bit
-static int high_bit(uint z)
+int high_bit(uint z)
 {
    int n=0;
    if (z == 0) return -1;
@@ -2295,7 +2297,7 @@ static int high_bit(uint z)
    return n;
 }
 
-static int bitcount(uint a)
+int bitcount(uint a)
 {
    a = (a & 0x55555555) + ((a >>  1) & 0x55555555); // max 2
    a = (a & 0x33333333) + ((a >>  2) & 0x33333333); // max 4
@@ -2305,7 +2307,7 @@ static int bitcount(uint a)
    return a & 0xff;
 }
 
-static int shiftsigned(int v, int shift, int bits)
+int shiftsigned(int v, int shift, int bits)
 {
    int result;
    int z=0;
@@ -2322,7 +2324,7 @@ static int shiftsigned(int v, int shift, int bits)
    return result;
 }
 
-static char *bmp_load(stbi *s, int *x, int *y, int *comp, int req_comp)
+char *bmp_load(stbi *s, int *x, int *y, int *comp, int req_comp)
 {
    char *out_;
    uint mr=0,mg=0,mb=0,ma=0, fake_a=0;
@@ -2517,7 +2519,7 @@ static char *bmp_load(stbi *s, int *x, int *y, int *comp, int req_comp)
    return out_;
 }
 
-static char *stbi_bmp_load(stbi *s,int *x, int *y, int *comp, int req_comp)
+char *stbi_bmp_load(stbi *s,int *x, int *y, int *comp, int req_comp)
 {
    return bmp_load(s, x,y,comp,req_comp);
 }
@@ -2526,7 +2528,7 @@ static char *stbi_bmp_load(stbi *s,int *x, int *y, int *comp, int req_comp)
 // Targa Truevision - TGA
 // by Jonathan Dummer
 
-static int tga_info(stbi *s, int *x, int *y, int *comp)
+int tga_info(stbi *s, int *x, int *y, int *comp)
 {
     int tga_w, tga_h, tga_comp;
     int sz;
@@ -2568,7 +2570,7 @@ int stbi_tga_info(stbi *s, int *x, int *y, int *comp)
     return tga_info(s, x, y, comp);
 }
 
-static int tga_test(stbi *s)
+int tga_test(stbi *s)
 {
    int sz;
    get8u(s);      //   discard Offset
@@ -2588,14 +2590,14 @@ static int tga_test(stbi *s)
    return 1;      //   seems to have passed everything
 }
 
-static int stbi_tga_test(stbi *s)
+int stbi_tga_test(stbi *s)
 {
    int res = tga_test(s);
    stbi_rewind(s);
    return res;
 }
 
-static char *tga_load(stbi *s, int *x, int *y, int *comp, int req_comp)
+char *tga_load(stbi *s, int *x, int *y, int *comp, int req_comp)
 {
    //   read in the TGA header stuff
    int tga_offset = get8u(s);
@@ -2825,7 +2827,7 @@ static char *tga_load(stbi *s, int *x, int *y, int *comp, int req_comp)
    return tga_data;
 }
 
-static char *stbi_tga_load(stbi *s, int *x, int *y, int *comp, int req_comp)
+char *stbi_tga_load(stbi *s, int *x, int *y, int *comp, int req_comp)
 {
    return tga_load(s,x,y,comp,req_comp);
 }
@@ -2834,20 +2836,20 @@ static char *stbi_tga_load(stbi *s, int *x, int *y, int *comp, int req_comp)
 // *************************************************************************************************
 // Photoshop PSD loader -- PD by Thatcher Ulrich, integration by Nicolas Schulz, tweaked by STB
 
-static int psd_test(stbi *s)
+int psd_test(stbi *s)
 {
    if (get32(s) != 0x38425053) return 0;   // "8BPS"
    else return 1;
 }
 
-static int stbi_psd_test(stbi *s)
+int stbi_psd_test(stbi *s)
 {
    int r = psd_test(s);
    stbi_rewind(s);
    return r;
 }
 
-static char *psd_load(stbi *s, int *x, int *y, int *comp, int req_comp)
+char *psd_load(stbi *s, int *x, int *y, int *comp, int req_comp)
 {
    int   pixelCount;
    int channelCount, compression;
@@ -3005,7 +3007,7 @@ static char *psd_load(stbi *s, int *x, int *y, int *comp, int req_comp)
    return out_;
 }
 
-static char *stbi_psd_load(stbi *s, int *x, int *y, int *comp, int req_comp)
+char *stbi_psd_load(stbi *s, int *x, int *y, int *comp, int req_comp)
 {
    return psd_load(s,x,y,comp,req_comp);
 }
@@ -3017,7 +3019,7 @@ static char *stbi_psd_load(stbi *s, int *x, int *y, int *comp, int req_comp)
 // See http://softimage.wiki.softimage.com/index.php/INFO:_PIC_file_format
 // See http://ozviz.wasp.uwa.edu.au/~pbourke/dataformats/softimagepic/
 
-static int pic_is4(stbi *s,const char *str)
+int pic_is4(stbi *s,const char *str)
 {
    int i;
    for (i=0; i<4; ++i)
@@ -3027,7 +3029,7 @@ static int pic_is4(stbi *s,const char *str)
    return 1;
 }
 
-static int pic_test(stbi *s)
+int pic_test(stbi *s)
 {
    int i;
 
@@ -3048,7 +3050,7 @@ struct pic_packet_t
    char size,type,channel;
 }
 
-static char *pic_readval(stbi *s, int channel, char *dest)
+char *pic_readval(stbi *s, int channel, char *dest)
 {
    int mask=0x80, i;
 
@@ -3062,7 +3064,7 @@ static char *pic_readval(stbi *s, int channel, char *dest)
    return dest;
 }
 
-static void pic_copyval(int channel,char *dest,const char *src)
+void pic_copyval(int channel,char *dest,const char *src)
 {
    int mask=0x80,i;
 
@@ -3071,7 +3073,7 @@ static void pic_copyval(int channel,char *dest,const char *src)
          dest[i]=src[i];
 }
 
-static char *pic_load2(stbi *s,int width,int height,int *comp, char *result)
+char *pic_load2(stbi *s,int width,int height,int *comp, char *result)
 {
    int act_comp=0,num_packets=0,y,chained;
    pic_packet_t packets[10];
@@ -3183,7 +3185,7 @@ static char *pic_load2(stbi *s,int width,int height,int *comp, char *result)
    return result;
 }
 
-static char *pic_load(stbi *s,int *px,int *py,int *comp,int req_comp)
+char *pic_load(stbi *s,int *px,int *py,int *comp,int req_comp)
 {
    char *result;
    int i, x,y;
@@ -3216,14 +3218,14 @@ static char *pic_load(stbi *s,int *px,int *py,int *comp,int req_comp)
    return result;
 }
 
-static int stbi_pic_test(stbi *s)
+int stbi_pic_test(stbi *s)
 {
    int r = pic_test(s);
    stbi_rewind(s);
    return r;
 }
 
-static char *stbi_pic_load(stbi *s, int *x, int *y, int *comp, int req_comp)
+char *stbi_pic_load(stbi *s, int *x, int *y, int *comp, int req_comp)
 {
    return pic_load(s,x,y,comp,req_comp);
 }
@@ -3254,7 +3256,7 @@ struct stbi_gif
    int line_size;
 }
 
-static int gif_test(stbi *s)
+int gif_test(stbi *s)
 {
    int sz;
    if (get8(s) != 'G' || get8(s) != 'I' || get8(s) != 'F' || get8(s) != '8') return 0;
@@ -3264,14 +3266,14 @@ static int gif_test(stbi *s)
    return 1;
 }
 
-static int stbi_gif_test(stbi *s)
+int stbi_gif_test(stbi *s)
 {
    int r = gif_test(s);
    stbi_rewind(s);
    return r;
 }
 
-static void stbi_gif_parse_colortable(stbi *s, ubyte pal[256][4], int num_entries, int transp)
+void stbi_gif_parse_colortable(stbi *s, ubyte pal[256][4], int num_entries, int transp)
 {
    int i;
    for (i=0; i < num_entries; ++i) {
@@ -3282,7 +3284,7 @@ static void stbi_gif_parse_colortable(stbi *s, ubyte pal[256][4], int num_entrie
    }   
 }
 
-static int stbi_gif_header(stbi *s, stbi_gif *g, int *comp, int is_info)
+int stbi_gif_header(stbi *s, stbi_gif *g, int *comp, int is_info)
 {
    ubyte version_;
    if (get8(s) != 'G' || get8(s) != 'I' || get8(s) != 'F' || get8(s) != '8')
@@ -3309,7 +3311,7 @@ static int stbi_gif_header(stbi *s, stbi_gif *g, int *comp, int is_info)
    return 1;
 }
 
-static int stbi_gif_info_raw(stbi *s, int *x, int *y, int *comp)
+int stbi_gif_info_raw(stbi *s, int *x, int *y, int *comp)
 {
    stbi_gif g;   
    if (!stbi_gif_header(s, &g, comp, 1)) {
@@ -3321,7 +3323,7 @@ static int stbi_gif_info_raw(stbi *s, int *x, int *y, int *comp)
    return 1;
 }
 
-static void stbi_out_gif_code(stbi_gif *g, ushort code)
+void stbi_out_gif_code(stbi_gif *g, ushort code)
 {
    ubyte *p;
    ubyte *c;
@@ -3356,7 +3358,7 @@ static void stbi_out_gif_code(stbi_gif *g, ushort code)
    }
 }
 
-static ubyte *stbi_process_gif_raster(stbi *s, stbi_gif *g)
+ubyte *stbi_process_gif_raster(stbi *s, stbi_gif *g)
 {
    ubyte lzw_cs;
    int len, code;
@@ -3435,7 +3437,7 @@ static ubyte *stbi_process_gif_raster(stbi *s, stbi_gif *g)
    }
 }
 
-static void stbi_fill_gif_background(stbi_gif *g)
+void stbi_fill_gif_background(stbi_gif *g)
 {
    int i;
    ubyte *c = g.pal[g.bgindex].ptr;
@@ -3450,7 +3452,7 @@ static void stbi_fill_gif_background(stbi_gif *g)
 }
 
 // this function is designed to support animated gifs, although stb_image doesn't support it
-static ubyte *stbi_gif_load_next(stbi *s, stbi_gif *g, int *comp, int req_comp)
+ubyte *stbi_gif_load_next(stbi *s, stbi_gif *g, int *comp, int req_comp)
 {
    int i;
    ubyte *old_out = null;
@@ -3550,7 +3552,7 @@ static ubyte *stbi_gif_load_next(stbi *s, stbi_gif *g, int *comp, int req_comp)
    }
 }
 
-static char *stbi_gif_load(stbi *s, int *x, int *y, int *comp, int req_comp)
+char *stbi_gif_load(stbi *s, int *x, int *y, int *comp, int req_comp)
 {
    ubyte *u = null;
    stbi_gif g={0};
@@ -3565,12 +3567,12 @@ static char *stbi_gif_load(stbi *s, int *x, int *y, int *comp, int req_comp)
    return cast(char*)u;
 }
 
-static int stbi_gif_info(stbi *s, int *x, int *y, int *comp)
+int stbi_gif_info(stbi *s, int *x, int *y, int *comp)
 {
    return stbi_gif_info_raw(s,x,y,comp);
 }
 
-static int stbi_bmp_info(stbi *s, int *x, int *y, int *comp)
+int stbi_bmp_info(stbi *s, int *x, int *y, int *comp)
 {
    int hsz;
    if (get8(s) != 'B' || get8(s) != 'M') {
@@ -3598,7 +3600,7 @@ static int stbi_bmp_info(stbi *s, int *x, int *y, int *comp)
    return 1;
 }
 
-static int stbi_psd_info(stbi *s, int *x, int *y, int *comp)
+int stbi_psd_info(stbi *s, int *x, int *y, int *comp)
 {
    int channelCount;
    if (get32(s) != 0x38425053) {
@@ -3629,7 +3631,7 @@ static int stbi_psd_info(stbi *s, int *x, int *y, int *comp)
    return 1;
 }
 
-static int stbi_pic_info(stbi *s, int *x, int *y, int *comp)
+int stbi_pic_info(stbi *s, int *x, int *y, int *comp)
 {
    int act_comp=0,num_packets=0,chained;
    pic_packet_t packets[10];
@@ -3674,7 +3676,7 @@ static int stbi_pic_info(stbi *s, int *x, int *y, int *comp)
    return 1;
 }
 
-static int stbi_info_main(stbi *s, int *x, int *y, int *comp)
+int stbi_info_main(stbi *s, int *x, int *y, int *comp)
 {
    if (stbi_jpeg_info(s, x, y, comp))
        return 1;
