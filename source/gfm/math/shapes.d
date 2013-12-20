@@ -18,8 +18,9 @@ import gfm.math.vector;
 
 /// A Segment is 2 points.
 /// When considered like a vector, it represents the arrow from a to b.
-struct Segment(T, size_t N)
+align(1) struct Segment(T, size_t N)
 {
+    align(1):
     public
     {
         alias Vector!(T, N) point_t;
@@ -34,8 +35,9 @@ alias Segment!(double, 3u) seg3d; /// 3D double segment.
 
 /// A Triangle is 3 points.
 /// Bugs: Define normal direction.
-struct Triangle(T, size_t N)
+align(1) struct Triangle(T, size_t N)
 {
+    align(1):
     public
     {
         alias Vector!(T, N) point_t;
@@ -66,8 +68,9 @@ alias Triangle!(double, 2u) triangle2d; /// 2D double triangle.
 alias Triangle!(double, 3u) triangle3d; /// 3D double triangle.
 
 /// A Sphere is a point + a radius.
-struct Sphere(T, size_t N)
+align(1) struct Sphere(T, size_t N)
 {
+    align(1):
     public nothrow
     {
         alias Vector!(T, N) point_t;
@@ -133,8 +136,9 @@ alias Sphere!(double, 3u) sphere3d; /// 3D double sphere (ie. a circle).
 
 
 /// A Ray ir a point + a direction.
-struct Ray(T, size_t N)
+align(1) struct Ray(T, size_t N)
 {
+align(1):
 nothrow:
     public
     {

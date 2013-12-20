@@ -15,8 +15,9 @@ import std.traits,
   Bugs: rounding is not IEEE compliant.
 
  */ 
-struct half
+align(1) struct half
 {
+    align(1):
     public
     {
         ushort value;

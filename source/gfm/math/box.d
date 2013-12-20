@@ -9,6 +9,7 @@ import gfm.math.vector,
 /// N-dimensional half-open interval [a, b[.
 align(1) struct Box(T, size_t N)
 {
+    align(1):
     static assert(N > 0);
 
     public
@@ -126,7 +127,7 @@ align(1) struct Box(T, size_t N)
             return true;
         }
 
-        /// Euclidean squared distance from a point
+        /// Euclidean squared distance from a point.
         /// See_also: Numerical Recipes Third Edition (2007)
         double squaredDistance(bound_t point) pure const nothrow
         {
@@ -142,7 +143,8 @@ align(1) struct Box(T, size_t N)
             return distanceSquared;
         }
 
-        // Euclidean distance from a point
+        /// Euclidean distance from a point.
+        /// See_also: squaredDistance.
         double distance(bound_t point)
         {
             return sqrt(squaredDistance(point));
@@ -178,18 +180,19 @@ align(1) struct Box(T, size_t N)
             return grow(-space);
         }
 
-        // shortcut for scalar
+        /// Extends the area of this Box.
         Box grow(T space) pure const nothrow
         {
             return grow(bound_t(space));
         }
 
-        // shortcut for scalar
+        /// Shrink the area of this Box.
         Box shrink(T space) pure const nothrow
         {
             return shrink(bound_t(space));
         }
 
+        /// Returns: true if each dimension of the box is >= 0.
         bool isSorted() pure const nothrow
         {
             for(size_t i = 0; i < N; ++i)
@@ -200,6 +203,7 @@ align(1) struct Box(T, size_t N)
             return true;
         }
 
+        /// Assign with another box.
         ref Box opAssign(U)(U x) nothrow if (is(typeof(x.isBox)))
         {
             static if(is(U.element_t : T))
@@ -221,6 +225,7 @@ align(1) struct Box(T, size_t N)
             return this;
         }
 
+        /// Returns: true if comparing equal boxes.
         bool opEquals(U)(U other) pure const nothrow if (is(U : Box))
         {
             return (min == other.min) && (max == other.max);
@@ -235,18 +240,25 @@ align(1) struct Box(T, size_t N)
     }
 }
 
+/// Instanciate to use a 2D box.
 template box2(T)
 {
     alias Box!(T, 2u) box2;
 }
 
+/// Instanciate to use a 3D box.
 template box3(T)
 {
     alias Box!(T, 3u) box3;
 }
 
-alias box2!int box2i;
-alias box3!int box3i;
+
+alias box2!int box2i; /// 2D box with integer coordinates.
+alias box3!int box3i; /// 3D box with integer coordinates.
+alias box2!float box2f; /// 2D box with float coordinates.
+alias box3!float box3f; /// 3D box with float coordinates.
+alias box2!double box2d; /// 2D box with double coordinates.
+alias box3!double box3d; /// 3D box with double coordinates.
 
 unittest
 {

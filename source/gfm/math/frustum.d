@@ -13,6 +13,7 @@ import gfm.math.vector,
 /// See_also: Flipcode article by Nate Miller $(WEB www.flipcode.com/archives/Plane_Class.shtml).
 align(1) struct Plane(T) if (isFloatingPoint!T)
 {
+    align(1):
     public
     {
         vec3!T n; /// Normal (always stored normalized).
@@ -101,6 +102,7 @@ unittest
 /// Bugs: verify proper signedness of half-spaces
 align(1) struct Frustum(T) if (isFloatingPoint!T)
 {
+    align(1):
     public
     {
         enum size_t LEFT   = 0, 

@@ -14,6 +14,7 @@ import gfm.math.funcs;
  */
 align(1) struct Vector(T, size_t N)
 {
+align(1):
 nothrow:
     public
     {

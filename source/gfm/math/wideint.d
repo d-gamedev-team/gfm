@@ -82,8 +82,9 @@ private template integer(bool signed, int bits)
 }
 
 /// Recursive 2^n integer implementation.
-struct wideIntImpl(bool signed, int bits)
+align(1) struct wideIntImpl(bool signed, int bits)
 {
+    align(1):
     static assert(bits >= 128);
     private
     {

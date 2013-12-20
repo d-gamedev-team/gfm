@@ -14,6 +14,7 @@ deprecated("Fraction was renamed to Rational.") alias Rational Fraction;
  */
 align(1) struct Rational
 {
+    align(1):    
     public
     {
         long num;   /// Numerator.

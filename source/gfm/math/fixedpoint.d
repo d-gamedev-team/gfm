@@ -17,8 +17,9 @@ import gfm.math.wideint,
  
     Bugs: No proper rounding.
  */
-struct FixedPoint(int M, int N)
+align(1) struct FixedPoint(int M, int N)
 {
+    align(1):
     static assert(M > 0);       // M == 0 is unsupported
     static assert(N > 0);       // N == 0 also unsupported, but in this case you can use wideint!M
 

@@ -12,6 +12,7 @@ import gfm.math.vector,
 /// Holds a rotation + angle in a proper but wild space.
 align(1) struct Quaternion(T)
 {
+    align(1):
     public
     {
         union

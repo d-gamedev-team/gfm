@@ -20,6 +20,7 @@ import gfm.math.vector,
 ///   C = number of columns
 align(1) struct Matrix(T, size_t R, size_t C)
 {
+    align(1):
     public
     {
         static assert(R >= 1u && C >= 1u);
