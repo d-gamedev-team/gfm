@@ -40,7 +40,7 @@ final class SDL2Surface
         }
 
         /// Create surface from RGBA data. Pixels data is <b>not</b> and not owned.
-        /// See_also: $WEB(wiki.libsdl.org/SDL_CreateRGBSurfaceFrom,SDL_CreateRGBSurfaceFrom)
+        /// See_also: clone, $WEB(wiki.libsdl.org/SDL_CreateRGBSurfaceFrom,SDL_CreateRGBSurfaceFrom)
         /// Throws: $(D SDL2Exception) on error.
         this(SDL2 sdl2, void* pixels, int width, int height, int depth, int pitch, 
              uint Rmask, uint Gmask, uint Bmask, uint Amask)
@@ -66,6 +66,24 @@ final class SDL2Surface
                     SDL_FreeSurface(_surface);
                 _surface = null;
             }
+        }
+
+        /// Converts the surface to another format.
+        /// Returns: A new surface.
+        SDL2Surface convert(const(SDL_PixelFormat)* newFormat)
+        {
+            SDL_Surface* surface = SDL_ConvertSurface(_surface, newFormat, 0);
+            if (surface is null)
+                _sdl2.throwSDL2Exception("SDL_ConvertSurface");
+            assert(surface != _surface); // should not be the same handle
+            return new SDL2Surface(_sdl2, surface, Owned.YES);
+        }
+
+        /// Returns: A copy of the surface, useful for taking ownership of not-owned pixel data.
+        /// See_also: $WEB(wiki.libsdl.org/SDL_CreateRGBSurfaceFrom,SDL_CreateRGBSurfaceFrom)
+        SDL2Surface clone()
+        {
+            return convert(pixelFormat());
         }
 
         /// Returns: Width of the surface in pixels.
