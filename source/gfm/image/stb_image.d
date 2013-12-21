@@ -3,8 +3,13 @@
 /// Removed:
 /// $(UL
 ///   $(LI Loading with callbacks.)
+///   $(LI info functions.)
 ///   $(LI HDR support.)
 ///   $(LI STDIO support.)
+///   $(LI Iphone PNG support.)
+///   $(LI PIC support.)
+///   $(LI TGA support.)
+///   $(LI PSD support.)
 /// )
 /// Added:
 /// $(UL
@@ -14,6 +19,24 @@
 /// $(UL
 ///   $(LI Support a range as input.)
 ///  )
+
+//============================    Contributors    =========================
+//
+// Image formats                                Optimizations & bugfixes
+// Sean Barrett (jpeg, png, bmp)                Fabian "ryg" Giesen
+// Nicolas Schulz (hdr, psd)                                                 
+// Jonathan Dummer (tga)                     Bug fixes & warning fixes           
+// Jean-Marc Lienher (gif)                      Marc LeBlanc               
+// Tom Seddon (pic)                             Christpher Lloyd           
+// Thatcher Ulrich (psd)                        Dave Moore                 
+// Won Chun                   
+// the Horde3D community      
+// Extensions, features                            Janez Zemva                
+// Jetro Lauha (stbi_info)                      Jonathan Blow              
+// James "moose2000" Brown (iPhone PNG)         Laurent Gomila                             
+// Ben "Disch" Wenger (io callbacks)            Aruelien Pocheville
+// Martin "SpartanJ" Golini                     Ryamond Barbiero
+// David Woo
 
 module gfm.image.stb_image;
 
@@ -92,6 +115,7 @@ ubyte *stbi_load_main(stbi *s, int *x, int *y, int *comp, int req_comp)
     try
     {
         stbi_jpeg_test(s);
+        stbi_rewind(s);
         return stbi_jpeg_load(s,x,y,comp,req_comp);
     }
     catch(STBImageException e)
@@ -102,6 +126,7 @@ ubyte *stbi_load_main(stbi *s, int *x, int *y, int *comp, int req_comp)
     try
     {
         stbi_png_test(s);
+        stbi_rewind(s);
         return stbi_png_load(s,x,y,comp,req_comp);
     }
     catch(STBImageException e)
@@ -112,6 +137,7 @@ ubyte *stbi_load_main(stbi *s, int *x, int *y, int *comp, int req_comp)
     try
     {
         stbi_bmp_test(s);
+        stbi_rewind(s);
         return stbi_bmp_load(s,x,y,comp,req_comp);
     }
     catch(STBImageException e)
@@ -122,6 +148,7 @@ ubyte *stbi_load_main(stbi *s, int *x, int *y, int *comp, int req_comp)
     try
     {
         stbi_gif_test(s);
+        stbi_rewind(s);
         return stbi_gif_load(s,x,y,comp,req_comp);
     }
     catch(STBImageException e)
