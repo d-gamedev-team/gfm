@@ -97,6 +97,8 @@ final class SDL2
             {
                 SDL_LogSetOutputFunction(_previousLogCallback, _previousLogUserdata);
                 _SDL2LoggingRedirected = false;
+
+                SDL_SetAssertionHandler(null, cast(void*)this);
             }
 
             if (_SDLInitialized)
