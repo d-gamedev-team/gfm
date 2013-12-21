@@ -41,6 +41,7 @@ final class SDL2
         /// Load SDL2 library, redirect logging to our logger.
         /// You can pass a null logger if you don't want logging.
         /// Throws: $(D SDL2Exception) on error.
+        /// TODO: Custom SDL assertion handler.
         this(Log log)
         {
             _log = log is null ? new NullLog() : log;
