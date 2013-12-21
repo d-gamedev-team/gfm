@@ -20,7 +20,6 @@
     "dependencies": {
         "gfm:core": "~master",
         "gfm:assimp": "~master",
-        "gfm:enet": "~master",
         "gfm:freeimage": "~master",
         "gfm:image": "~master",
         "gfm:math": "~master",
