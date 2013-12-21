@@ -61,6 +61,8 @@ final class SDL2
                 SDL_LogGetOutputFunction(_previousLogCallback, &_previousLogUserdata);
                 SDL_LogSetAllPriority(SDL_LOG_PRIORITY_VERBOSE);
                 SDL_LogSetOutputFunction(&loggingCallbackSDL, cast(void*)this);
+
+                SDL_SetAssertionHandler(&assertCallbackSDL, cast(void*)this);
                 _SDL2LoggingRedirected = true;
             }
 
@@ -398,6 +400,16 @@ final class SDL2
                 _log.info(formattedMessage);
         }
 
+        SDL_assert_state onLogSDLAssertion(const(SDL_assert_data)* adata)
+        {
+            _log.warnf("SDL assertion error: %s in %s line %d", adata.condition, adata.filename, adata.linenum);
+
+            debug 
+                return SDL_ASSERTION_ABORT; // crash in debug mode
+            else
+                return SDL_ASSERTION_ALWAYS_IGNORE; // ingore SDL assertions in release
+        }
+
         // dispatch to relevant event callbacks
         void dispatchEvent(const (SDL_Event*) event)
         {
@@ -558,6 +570,28 @@ extern(C) private nothrow
             // Crash immediately
             exit(-1);
         }
+    }
+
+    SDL_assert_state assertCallbackSDL(const(SDL_assert_data)* data, void* userData)
+    {
+        try
+        {
+            SDL2 sdl2 = cast(SDL2)userData;
+
+            try
+                return sdl2.onLogSDLAssertion(data);
+            catch (Exception e)
+            {
+                // got exception while logging, ignore it
+            }
+        }
+        catch (Throwable e)
+        {
+            // No Throwable is supposed to cross C callbacks boundaries
+            // Crash immediately
+            exit(-1);
+        }
+        return SDL_ASSERTION_ALWAYS_IGNORE;
     }
 }
 
