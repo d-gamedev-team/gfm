@@ -89,12 +89,47 @@ void stbi_rewind(stbi *s)
 
 ubyte *stbi_load_main(stbi *s, int *x, int *y, int *comp, int req_comp)
 {
-   if (stbi_jpeg_test(s)) return stbi_jpeg_load(s,x,y,comp,req_comp);
-   if (stbi_png_test(s))  return stbi_png_load(s,x,y,comp,req_comp);
-   if (stbi_bmp_test(s))  return stbi_bmp_load(s,x,y,comp,req_comp);
-   if (stbi_gif_test(s))  return stbi_gif_load(s,x,y,comp,req_comp);
+    try
+    {
+        stbi_jpeg_test(s);
+        return stbi_jpeg_load(s,x,y,comp,req_comp);
+    }
+    catch(STBImageException e)
+    {
+        stbi_rewind(s);
+    }
 
-   throw new STBImageException("Image not of any known type, or corrupt");
+    try
+    {
+        stbi_png_test(s);
+        return stbi_png_load(s,x,y,comp,req_comp);
+    }
+    catch(STBImageException e)
+    {
+        stbi_rewind(s);
+    }
+
+    try
+    {
+        stbi_bmp_test(s);
+        return stbi_bmp_load(s,x,y,comp,req_comp);
+    }
+    catch(STBImageException e)
+    {
+        stbi_rewind(s);
+    }
+
+    try
+    {
+        stbi_gif_test(s);
+        return stbi_gif_load(s,x,y,comp,req_comp);
+    }
+    catch(STBImageException e)
+    {
+        stbi_rewind(s);
+    }
+
+    throw new STBImageException("Image not of any known type, or corrupt");
 }
 
 /// Loads an image from memory.
@@ -1284,34 +1319,15 @@ ubyte* stbi_jpeg_load(stbi *s, int *x, int *y, int *comp, int req_comp)
    return load_jpeg_image(&j, x,y,comp,req_comp);
 }
 
-int stbi_jpeg_test(stbi *s)
-{
-   int r;
-   jpeg j;
-   j.s = s;
-   r = decode_jpeg_header(&j, SCAN_type);
-   stbi_rewind(s);
-   return r;
-}
-
-int stbi_jpeg_info_raw(jpeg *j, int *x, int *y, int *comp)
-{
-   if (!decode_jpeg_header(j, SCAN_header)) {
-      stbi_rewind( j.s );
-      return 0;
-   }
-   if (x) *x = j.s.img_x;
-   if (y) *y = j.s.img_y;
-   if (comp) *comp = j.s.img_n;
-   return 1;
-}
-
-int stbi_jpeg_info(stbi *s, int *x, int *y, int *comp)
+void stbi_jpeg_test(stbi *s)
 {
    jpeg j;
    j.s = s;
-   return stbi_jpeg_info_raw(&j, x, y, comp);
+   int r = decode_jpeg_header(&j, SCAN_type);   
+   if (r == 0)
+       throw new STBImageException("Couldn't decode JPEG header");
 }
+
 
 // public domain zlib decode    v0.2  Sean Barrett 2006-11-18
 //    simple implementation
@@ -2244,54 +2260,28 @@ ubyte *stbi_png_load(stbi *s, int *x, int *y, int *comp, int req_comp)
    return do_png(&p, x,y,comp,req_comp);
 }
 
-int stbi_png_test(stbi *s)
+void stbi_png_test(stbi *s)
 {
-   int r;
-   r = check_png_header(s);
-   stbi_rewind(s);
-   return r;
-}
-
-int stbi_png_info_raw(png *p, int *x, int *y, int *comp)
-{
-   if (!parse_png_file(p, SCAN_header, 0)) {
-      stbi_rewind( p.s );
-      return 0;
-   }
-   if (x) *x = p.s.img_x;
-   if (y) *y = p.s.img_y;
-   if (comp) *comp = p.s.img_n;
-   return 1;
-}
-
-int      stbi_png_info(stbi *s, int *x, int *y, int *comp)
-{
-   png p;
-   p.s = s;
-   return stbi_png_info_raw(&p, x, y, comp);
+   int r = check_png_header(s);
+   if (r == 0)
+       throw new STBImageException("Couldn't decode PNG header");
 }
 
 // Microsoft/Windows BMP image
 
-int bmp_test(stbi *s)
+void stbi_bmp_test(stbi *s)
 {
-   int sz;
-   if (get8(s) != 'B') return 0;
-   if (get8(s) != 'M') return 0;
-   get32le(s); // discard filesize
-   get16le(s); // discard reserved
-   get16le(s); // discard reserved
-   get32le(s); // discard data offset
-   sz = get32le(s);
-   if (sz == 12 || sz == 40 || sz == 56 || sz == 108) return 1;
-   return 0;
-}
+    if (get8(s) != 'B') throw new STBImageException("Couldn't decode BMP header");
+    if (get8(s) != 'M') throw new STBImageException("Couldn't decode BMP header");
+    get32le(s); // discard filesize
+    get16le(s); // discard reserved
+    get16le(s); // discard reserved
+    get32le(s); // discard data offset
+    int sz = get32le(s);
+    if (sz == 12 || sz == 40 || sz == 56 || sz == 108) 
+        return;
 
-int stbi_bmp_test(stbi *s)
-{
-   int r = bmp_test(s);
-   stbi_rewind(s);
-   return r;
+    throw new STBImageException("Couldn't decode BMP header");
 }
 
 
@@ -2561,21 +2551,16 @@ struct stbi_gif
    int line_size;
 }
 
-int gif_test(stbi *s)
+void stbi_gif_test(stbi *s)
 {
-   int sz;
-   if (get8(s) != 'G' || get8(s) != 'I' || get8(s) != 'F' || get8(s) != '8') return 0;
-   sz = get8(s);
-   if (sz != '9' && sz != '7') return 0;
-   if (get8(s) != 'a') return 0;
-   return 1;
-}
-
-int stbi_gif_test(stbi *s)
-{
-   int r = gif_test(s);
-   stbi_rewind(s);
-   return r;
+    int sz;
+    if (get8(s) != 'G' || get8(s) != 'I' || get8(s) != 'F' || get8(s) != '8') 
+        throw new STBImageException("Couldn't decode GIF header");
+    sz = get8(s);
+    if (sz != '9' && sz != '7') 
+        throw new STBImageException("Couldn't decode GIF header");
+    if (get8(s) != 'a') 
+        throw new STBImageException("Couldn't decode GIF header");
 }
 
 void stbi_gif_parse_colortable(stbi *s, ubyte pal[256][4], int num_entries, int transp)
@@ -2613,18 +2598,6 @@ int stbi_gif_header(stbi *s, stbi_gif *g, int *comp, int is_info)
    if (g.flags & 0x80)
       stbi_gif_parse_colortable(s,g.pal, 2 << (g.flags & 7), -1);
 
-   return 1;
-}
-
-int stbi_gif_info_raw(stbi *s, int *x, int *y, int *comp)
-{
-   stbi_gif g;   
-   if (!stbi_gif_header(s, &g, comp, 1)) {
-      stbi_rewind( s );
-      return 0;
-   }
-   if (x) *x = g.w;
-   if (y) *y = g.h;
    return 1;
 }
 
@@ -2872,57 +2845,4 @@ ubyte *stbi_gif_load(stbi *s, int *x, int *y, int *comp, int req_comp)
    return u;
 }
 
-int stbi_gif_info(stbi *s, int *x, int *y, int *comp)
-{
-   return stbi_gif_info_raw(s,x,y,comp);
-}
-
-int stbi_bmp_info(stbi *s, int *x, int *y, int *comp)
-{
-   int hsz;
-   if (get8(s) != 'B' || get8(s) != 'M') {
-       stbi_rewind( s );
-       return 0;
-   }
-   skip(s,12);
-   hsz = get32le(s);
-   if (hsz != 12 && hsz != 40 && hsz != 56 && hsz != 108) {
-       stbi_rewind( s );
-       return 0;
-   }
-   if (hsz == 12) {
-      *x = get16le(s);
-      *y = get16le(s);
-   } else {
-      *x = get32le(s);
-      *y = get32le(s);
-   }
-   if (get16le(s) != 1) {
-       stbi_rewind( s );
-       return 0;
-   }
-   *comp = get16le(s) / 8;
-   return 1;
-}
-
-int stbi_info_main(stbi *s, int *x, int *y, int *comp)
-{
-   if (stbi_jpeg_info(s, x, y, comp))
-       return 1;
-   if (stbi_png_info(s, x, y, comp))
-       return 1;
-   if (stbi_gif_info(s, x, y, comp))
-       return 1;
-   if (stbi_bmp_info(s, x, y, comp))
-       return 1;
-
-   throw new STBImageException("Image not of any known type, or corrupt");
-}
-
-int stbi_info_from_memory(const(ubyte) *buffer, int len, int *x, int *y, int *comp)
-{
-   stbi s;
-   start_mem(&s,buffer,len);
-   return stbi_info_main(&s,x,y,comp);
-}
 
