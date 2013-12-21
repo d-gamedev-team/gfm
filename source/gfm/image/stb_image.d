@@ -1804,10 +1804,14 @@ chunk get_chunk_header(stbi *s)
 
 static int check_png_header(stbi *s)
 {
-   static immutable ubyte[8] png_sig = [ 137,80,78,71,13,10,26,10 ];
-   int i;
-   for (i=0; i < 8; ++i)
-      if (get8u(s) != png_sig[i]) throw new STBImageException("Bad PNG sig, not a PNG");
+   static immutable ubyte[8] png_sig = [ 137, 80, 78, 71, 13, 10, 26, 10 ];
+   for (int i = 0; i < 8; ++i)
+   {
+       ubyte headerByte = get8u(s);
+       ubyte expected = png_sig[i];
+       if (headerByte != expected) 
+           throw new STBImageException("Bad PNG sig, not a PNG");
+   }
    return 1;
 }
 
@@ -2027,60 +2031,6 @@ int expand_palette(png *a, ubyte *palette, int len, int pal_img_n)
    return 1;
 }
 
-__gshared int stbi_unpremultiply_on_load = 0;
-__gshared int stbi_de_iphone_flag = 0;
-
-void stbi_set_unpremultiply_on_load(int flag_true_if_should_unpremultiply)
-{
-   stbi_unpremultiply_on_load = flag_true_if_should_unpremultiply;
-}
-void stbi_convert_iphone_png_to_rgb(int flag_true_if_should_convert)
-{
-   stbi_de_iphone_flag = flag_true_if_should_convert;
-}
-
-void stbi_de_iphone(png *z)
-{
-   stbi *s = z.s;
-   uint i, pixel_count = s.img_x * s.img_y;
-   ubyte *p = z.out_;
-
-   if (s.img_out_n == 3) {  // convert bgr to rgb
-      for (i=0; i < pixel_count; ++i) {
-         ubyte t = p[0];
-         p[0] = p[2];
-         p[2] = t;
-         p += 3;
-      }
-   } else {
-      assert(s.img_out_n == 4);
-      if (stbi_unpremultiply_on_load) {
-         // convert bgr to rgb and unpremultiply
-         for (i=0; i < pixel_count; ++i) {
-            ubyte a = p[3];
-            ubyte t = p[0];
-            if (a) {
-               p[0] = cast(ubyte)(p[2] * 255 / a);
-               p[1] = cast(ubyte)(p[1] * 255 / a);
-               p[2] = cast(ubyte)( t   * 255 / a);
-            } else {
-               p[0] = p[2];
-               p[2] = t;
-            } 
-            p += 4;
-         }
-      } else {
-         // convert bgr to rgb
-         for (i=0; i < pixel_count; ++i) {
-            ubyte t = p[0];
-            p[0] = p[2];
-            p[2] = t;
-            p += 4;
-         }
-      }
-   }
-}
-
 int parse_png_file(png *z, int scan, int req_comp)
 {
    ubyte[1024] palette;
@@ -2088,7 +2038,7 @@ int parse_png_file(png *z, int scan, int req_comp)
    ubyte has_trans=0;
    ubyte tc[3];
    uint ioff=0, idata_limit=0, i, pal_len=0;
-   int first=1,k,interlace=0, iphone=0;
+   int first=1,k,interlace=0;
    stbi *s = z.s;
 
    z.expanded = null;
@@ -2102,10 +2052,6 @@ int parse_png_file(png *z, int scan, int req_comp)
    for (;;) {
       chunk c = get_chunk_header(s);
       switch (c.type) {
-         case PNG_TYPE('C','g','B','I'):
-            iphone = stbi_de_iphone_flag;
-            skip(s, c.length);
-            break;
          case PNG_TYPE('I','H','D','R'): {
             int depth,color,comp,filter;
             if (!first) throw new STBImageException("Multiple IHDR, corrupt PNG");
@@ -2190,7 +2136,7 @@ int parse_png_file(png *z, int scan, int req_comp)
             if (first) throw new STBImageException("first not IHDR, corrupt PNG");
             if (scan != SCAN_load) return 1;
             if (z.idata == null) throw new STBImageException("no IDAT, corrupt PNG");
-            z.expanded = stbi_zlib_decode_malloc_guesssize_headerflag(z.idata, ioff, 16384, cast(int *) &raw_len, !iphone);
+            z.expanded = stbi_zlib_decode_malloc_guesssize_headerflag(z.idata, ioff, 16384, cast(int *) &raw_len, 1);
             if (z.expanded == null) return 0; // zlib should set error
             free(z.idata); z.idata = null;
             if ((req_comp == s.img_n+1 && req_comp != 3 && !pal_img_n) || has_trans)
@@ -2200,8 +2146,6 @@ int parse_png_file(png *z, int scan, int req_comp)
             if (!create_png_image(z, z.expanded, raw_len, s.img_out_n, interlace)) return 0;
             if (has_trans)
                if (!compute_transparency(z, tc, s.img_out_n)) return 0;
-            if (iphone && s.img_out_n > 2)
-               stbi_de_iphone(z);
             if (pal_img_n) {
                // pal_img_n == 3 or 4
                s.img_n = pal_img_n; // record the actual colors we had
