@@ -24,10 +24,22 @@ final class SDL2Surface
             assert(surface !is null);
             _sdl2 = sdl2;
             _surface = surface;
-            _owned = owned;
+            _handleOwned = owned;
         }
 
-        /// Create surface from RGBA data
+        /// Create a new RGBA surface. Both pixels data and handle are owned.
+        /// Throws: $(D SDL2Exception) on error.
+        this(SDL2 sdl2, int width, int height, int depth,
+             uint Rmask, uint Gmask, uint Bmask, uint Amask)
+        {
+            _sdl2 = sdl2;
+            _surface = SDL_CreateRGBSurface(0, width, height, depth, Rmask, Gmask, Bmask, Amask);
+            if (_surface is null)
+                _sdl2.throwSDL2Exception("SDL_CreateRGBSurface");
+            _handleOwned = Owned.YES;
+        }
+
+        /// Create surface from RGBA data. Pixels data is <b>not</b> and not owned.
         /// See_also: $WEB(wiki.libsdl.org/SDL_CreateRGBSurfaceFrom,SDL_CreateRGBSurfaceFrom)
         /// Throws: $(D SDL2Exception) on error.
         this(SDL2 sdl2, void* pixels, int width, int height, int depth, int pitch, 
@@ -37,7 +49,7 @@ final class SDL2Surface
             _surface = SDL_CreateRGBSurfaceFrom(pixels, width, height, depth, pitch, Rmask, Gmask, Bmask, Amask);
             if (_surface is null)
                 _sdl2.throwSDL2Exception("SDL_CreateRGBSurfaceFrom");
-            _owned = Owned.YES;
+            _handleOwned = Owned.YES;
         }
 
         ~this()
@@ -50,7 +62,7 @@ final class SDL2Surface
         {
             if (_surface !is null)
             {
-                if (_owned == Owned.YES)
+                if (_handleOwned == Owned.YES)
                     SDL_FreeSurface(_surface);
                 _surface = null;
             }
@@ -134,6 +146,6 @@ final class SDL2Surface
     {
         SDL2 _sdl2;
         SDL_Surface* _surface;
-        Owned _owned;
+        Owned _handleOwned;
     }
 }
