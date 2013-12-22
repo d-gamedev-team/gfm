@@ -255,12 +255,20 @@
 
 </dl>
 </div>
-<hr><div class="row-fluid declaration"><h3> this(SDL2 <i>sdl2</i>, void* <i>pixels</i>, int <i>width</i>, int <i>height</i>, int <i>depth</i>, int <i>pitch</i>, uint <i>Rmask</i>, uint <i>Gmask</i>, uint <i>Bmask</i>, uint <i>Amask</i>);
+<hr><div class="row-fluid declaration"><h3> this(SDL2 <i>sdl2</i>, int <i>width</i>, int <i>height</i>, int <i>depth</i>, uint <i>Rmask</i>, uint <i>Gmask</i>, uint <i>Bmask</i>, uint <i>Amask</i>);
 </h3></div>
-<div class="declaration-content"><dl><p>Create surface from RGBA data
+<div class="declaration-content"><dl><p>Create a new RGBA surface. Both pixels data and handle are owned.
 </p>
 
-<dt>See Also</dt><dd>$WEB(wiki.libsdl.org/SDL_CreateRGBSurfaceFrom,SDL_CreateRGBSurfaceFrom)
+<dt>Throws</dt><dd><span class="inlinecode">SDL2Exception</span> on error.</dd>
+</dl>
+</div>
+<hr><div class="row-fluid declaration"><h3> this(SDL2 <i>sdl2</i>, void* <i>pixels</i>, int <i>width</i>, int <i>height</i>, int <i>depth</i>, int <i>pitch</i>, uint <i>Rmask</i>, uint <i>Gmask</i>, uint <i>Bmask</i>, uint <i>Amask</i>);
+</h3></div>
+<div class="declaration-content"><dl><p>Create surface from RGBA data. Pixels data is <b>not</b> and not owned.
+</p>
+
+<dt>See Also</dt><dd>clone, $WEB(wiki.libsdl.org/SDL_CreateRGBSurfaceFrom,SDL_CreateRGBSurfaceFrom)
 </dd>
 <dt>Throws</dt><dd><span class="inlinecode">SDL2Exception</span> on error.</dd>
 </dl>
@@ -269,6 +277,21 @@
 </h3></div>
 <div class="declaration-content"><dl><p>Releases the SDL resource.</p>
 
+</dl>
+</div>
+<hr><div class="row-fluid declaration"><h3>SDL2Surface <span class="symbol-target" id="convert">&nbsp;</span><a class="symbol-link" href="#convert">convert</a>(const(SDL_PixelFormat)* <i>newFormat</i>);
+</h3></div>
+<div class="declaration-content"><dl><p>Converts the surface to another format.
+</p>
+
+<dt>Returns</dt><dd>A new surface.</dd>
+</dl>
+</div>
+<hr><div class="row-fluid declaration"><h3>SDL2Surface <span class="symbol-target" id="clone">&nbsp;</span><a class="symbol-link" href="#clone">clone</a>();
+</h3></div>
+<div class="declaration-content"><dl><dt>Returns</dt><dd>A copy of the surface, useful for taking ownership of not-owned pixel data.
+</dd>
+<dt>See Also</dt><dd>$WEB(wiki.libsdl.org/SDL_CreateRGBSurfaceFrom,SDL_CreateRGBSurfaceFrom)</dd>
 </dl>
 </div>
 <hr><div class="row-fluid declaration"><h3>const @property int <span class="symbol-target" id="width">&nbsp;</span><a class="symbol-link" href="#width">width</a>();

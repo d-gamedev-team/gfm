@@ -241,8 +241,13 @@
 
 <dt>Removed:</dt><dd>
 <ul>  <li>Loading with callbacks.</li>
+   <li>info functions.</li>
    <li>HDR support.</li>
    <li>STDIO support.</li>
+   <li>Iphone PNG support.</li>
+   <li>PIC support.</li>
+   <li>TGA support.</li>
+   <li>PSD support.</li>
  </ul>
 </dd>
 <dt>Added:</dt><dd>
@@ -259,7 +264,7 @@
 
 </dl>
 </div>
-<hr><div class="row-fluid declaration"><h3>ubyte* <span class="symbol-target" id="stbi_load_from_memory">&nbsp;</span><a class="symbol-link" href="#stbi_load_from_memory">stbi_load_from_memory</a>(ubyte[] <i>buffer</i>, out int <i>width</i>, out int <i>height</i>, out int <i>components</i>, int <i>requestedComponents</i>);
+<hr><div class="row-fluid declaration"><h3>ubyte* <span class="symbol-target" id="stbi_load_from_memory">&nbsp;</span><a class="symbol-link" href="#stbi_load_from_memory">stbi_load_from_memory</a>(void[] <i>buffer</i>, out int <i>width</i>, out int <i>height</i>, out int <i>components</i>, int <i>requestedComponents</i>);
 </h3></div>
 <div class="declaration-content"><dl><p>Loads an image from memory.</p>
 
@@ -269,6 +274,14 @@
 </h3></div>
 <div class="declaration-content"><dl><p>Frees an image loaded by stb_image.</p>
 
+</dl>
+</div>
+<hr><div class="row-fluid declaration"><h3>Bitmap!vec4ub <span class="symbol-target" id="stbiLoadImage">&nbsp;</span><a class="symbol-link" href="#stbiLoadImage">stbiLoadImage</a>(void[] <i>buffer</i>);
+</h3></div>
+<div class="declaration-content"><dl><p>Load an image from memory and puts it in a Bitmap.
+</p>
+
+<dt>See Also</dt><dd>Bitmap.</dd>
 </dl>
 </div>
 
