@@ -6,7 +6,7 @@ $(LINK2 https://github.com/p0nce/gfm, GFM) is a feature-rich library to ease the
 <h3>Overview:</h3>
 
 $(UL
-    <p>$(LI gfm.core sub-package:
+    <p>$(LI gfm.core:
         $(UL
             $(LI $(D log.d): logging interface + implementations (HTML file, colored console output...).)
             $(LI $(D queue.d): a dead simple queue/fifo/stack/ring-buffer, with a range interface.)
@@ -16,7 +16,7 @@ $(UL
             $(LI $(D text.d): string utilities.)
          )
     )</p>
-    <p>$(LI gfm.math sub-package:
+    <p>$(LI gfm.math:
         $(UL
             $(LI $(D vector.d): small vectors for 2D and 3D.)
             $(LI $(D matrix.d): small matrices for 2D and 3D.)
@@ -35,7 +35,7 @@ $(UL
             $(LI $(D simplexnoise.d): Simplex noise implementation.)
          )
     )</p>
-    <p>$(LI gfm.opengl sub-package:
+    <p>$(LI gfm.opengl:
         $(UL
             $(LI OpenGL wrapper based on package derelict-gl3.)
             $(LI makes easier to use the OpenGL API correctly.)
@@ -48,14 +48,14 @@ $(UL
          )
     )</p>
 
-    <p>$(LI gfm.net sub-package:
+    <p>$(LI gfm.net:
         $(UL
             $(LI $(D uri.d): URI parsing (RFC 3986).)
             $(LI $(D httpclient.d): HTTP client (RFC 2616).)
             $(LI $(D cbor.d): CBOR serialization/deserialization (RFC 7049).)
          )
     )</p>
-    <p>$(LI gfm.sdl2 sub-package:
+    <p>$(LI gfm.sdl2:
         $(UL
             $(LI SDL 2.0 wrapper based on package derelict-sdl2.)
             $(LI including SDL_image and SDL_ttf wrappers.)
@@ -64,23 +64,24 @@ $(UL
          )
     )</p>
 
-    <p>$(LI gfm.image sub-package:
+    <p>$(LI gfm.image:
         $(UL
             $(LI $(D image.d): generic abstract image and software rendering routines.)
             $(LI $(D bitmap.d): planar and tile-based concrete images.)
             $(LI $(D cie.d): physical color computations.)
             $(LI $(D hsv.d): RGB <-> HSV conversions.)
+            $(LI $(D stb_image.d): stb_image port, loads BMP, PNG, GIF and JPEG.)
          )
     )</p>
 
-    <p>$(LI gfm.freeimage sub-package:
+    <p>$(LI gfm.freeimage:
         $(UL
             $(LI FreeImage wrapper based on package derelict-fi.)
             $(LI FIBITMAP wrapper.)
          )
     )</p>
     
-    <p>$(LI gfm.assimp sub-package:
+    <p>$(LI gfm.assimp:
         $(UL
             $(LI Assimp wrapper based on package derelict-assimp3.)
             $(LI scene wrapper.)
