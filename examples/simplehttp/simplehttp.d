@@ -1,4 +1,4 @@
-import gfm.net.all;
+import gfm.net;
 
 import std.stdio;
 

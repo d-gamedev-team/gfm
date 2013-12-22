@@ -2,10 +2,10 @@ import std.math,
        std.random,
        std.typecons;
 
-import gfm.core.all,
-       gfm.sdl2.all,
-       gfm.opengl.all,
-       gfm.math.all;
+import gfm.core,
+       gfm.sdl2,
+       gfm.opengl,
+       gfm.math;
 
 // This example show how to use shaders and textures
 

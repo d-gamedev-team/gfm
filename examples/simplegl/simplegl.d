@@ -1,9 +1,9 @@
 import std.math,
        std.typecons;
 
-import gfm.core.all,
-       gfm.sdl2.all,
-       gfm.opengl.all;
+import gfm.core,
+       gfm.sdl2,
+       gfm.opengl;
 
 // This example show how to draw an OpenGL triangle
 
