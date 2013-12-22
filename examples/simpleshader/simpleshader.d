@@ -62,13 +62,13 @@ void main()
         #endif
     ";
 
-    auto program = new GLProgram(gl, tunnelProgramSource);
+    auto program = scoped!GLProgram(gl, tunnelProgramSource);
 
     // create noise texture
     int texWidth = 1024;
     int texHeight = 1024;
     auto random = Random();
-    auto simplex = new SimplexNoise!Random(random);
+    auto simplex = scoped!(SimplexNoise!Random)(random);
     ubyte texData[] = new ubyte[texWidth * texHeight * 3];
     int ind = 0;
     for (int y = 0; y < texHeight; ++y)
@@ -88,7 +88,7 @@ void main()
             texData[ind++] = grey;
             texData[ind++] = grey;
         }
-    auto noiseTexture = new GLTexture2D(gl);
+    auto noiseTexture = scoped!GLTexture2D(gl);
     
     noiseTexture.setMinFilter(GL_LINEAR_MIPMAP_LINEAR);
     noiseTexture.setMagFilter(GL_LINEAR);
