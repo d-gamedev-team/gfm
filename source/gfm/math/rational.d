@@ -44,6 +44,12 @@ align(1) struct Rational
             return format("%s/%s", num, denom);
         }
 
+        /// Cast to floating point.
+        T opCast(T)() pure const nothrow if (isFloatingPoint!T)
+        {
+            return cast(T)num / cast(T)denom;
+        }
+
         /// Assign with another Rational.
         ref Rational opAssign(T)(T other) pure nothrow if (is(Unqual!T == Rational))
         {
