@@ -81,7 +81,7 @@
             "dependencies": {
                 "derelict-gl3": "~master",
                 "gfm:core": "~master",
-                "gfm:math": "~master"                
+                "gfm:math": "~master"
             }
         },
         {
