@@ -1,0 +1,20 @@
+{
+    "name": "gfm-examples",
+    "description": "GFM examples",
+    "homepage": "http://github.com/p0nce/gfm/",
+    "copyright": "none",
+    "license": "public domain",
+    "authors": [ "ponce" ],
+    "targetType": "executable",
+    "name": "simplegl",
+    "targetName": "simplegl",
+    "sourcePaths": [ "." ],
+    "importPaths": [ "." ],
+    "mainSourceFile": "simplegl.d",
+
+    "dependencies": 
+    {
+        "gfm:sdl2": "~master",
+        "gfm:opengl": "~master"
+    }
+}
