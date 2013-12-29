@@ -562,18 +562,17 @@ align(1) struct Matrix(T, size_t R, size_t C)
             }
 
             /// Returns: "lookAt" projection.
-            /// See: http://msdn.microsoft.com/en-us/library/windows/desktop/bb205343(v=vs.85).aspx
             /// Thanks to vuaru for corrections.
             static Matrix lookAt(vec3!T eye, vec3!T target, vec3!T up) pure nothrow
             {
                 vec3!T Z = (eye - target).normalized();
-                vec3!T X = cross(up, Z).normalized();
-                vec3!T Y = cross(Z, X);
+                vec3!T X = cross(-up, Z).normalized();
+                vec3!T Y = cross(Z, -X);
 
-                return Matrix(X.x,         X.y,         X.z,     -dot(X, eye),
-                              Y.x,         Y.y,         Y.z,     -dot(Y, eye),
-                              Z.x,         Z.y,         Z.z,     -dot(Z, eye),
-                              0,           0,           0,        1);
+                return Matrix(-X.x,        -X.y,        -X.z,      dot(X, eye),
+                               Y.x,         Y.y,         Y.z,     -dot(Y, eye),
+                               Z.x,         Z.y,         Z.z,     -dot(Z, eye),
+                               0,           0,           0,        1);
             }
 
             /// Extract frustum from a 4x4 matrice.
