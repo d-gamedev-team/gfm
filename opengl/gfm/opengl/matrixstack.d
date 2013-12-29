@@ -51,7 +51,7 @@ final class MatrixStack(size_t R, T) if (R == 3 || R == 4)
         }
 
         /// Replacement for $(D glPushMatrix).
-        void push() pure nothrow
+        void push() pure
         {
             if(_top + 1 >= _depth)
                 throw new OpenGLException("Matrix stack is full");
@@ -62,9 +62,9 @@ final class MatrixStack(size_t R, T) if (R == 3 || R == 4)
         }
 
         /// Replacement for $(D glPopMatrix).
-        void pop() pure nothrow
+        void pop() pure
         {
-            if (top <= 0)
+            if (_top <= 0)
                 throw new OpenGLException("Matrix stack is empty");
 
             --_top;
