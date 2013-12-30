@@ -1,20 +1,13 @@
 
 /// D translation of stb_image-1.33 (http://nothings.org/stb_image.c)
-/// Removed:
+/// This port only supports:
 /// $(UL
-///   $(LI Loading with callbacks.)
-///   $(LI info functions.)
-///   $(LI HDR support.)
-///   $(LI STDIO support.)
-///   $(LI Iphone PNG support.)
-///   $(LI PIC support.)
-///   $(LI TGA support.)
-///   $(LI PSD support.)
+///   $(LI PNG.)
+///   $(LI JPEG.)
+///   $(LI GIF.)
+///   $(LI BMP.)
 /// )
-/// Added:
-/// $(UL
-///   $(LI Exceptions.)
-///  )
+///
 /// TODO:
 /// $(UL
 ///   $(LI Support a range as input.)
@@ -160,6 +153,7 @@ ubyte *stbi_load_main(stbi *s, int *x, int *y, int *comp, int req_comp)
 }
 
 /// Loads an image from memory.
+/// Throws: STBImageException on error.
 ubyte* stbi_load_from_memory(void[] buffer, out int width, out int height, out int components, int requestedComponents)
 {
    stbi s;
@@ -175,6 +169,7 @@ void stbi_image_free(void *retval_from_stbi_load)
 
 /// Load an image from memory and puts it in a Bitmap.
 /// See_also: Bitmap.
+/// Throws: STBImageException on error.
 Bitmap!vec4ub stbiLoadImage(void[] buffer)
 {
     int width, height, components;
