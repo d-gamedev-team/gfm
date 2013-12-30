@@ -19,10 +19,8 @@ MODULES =
     $(MODULE gfm.math.rational, rational numbers)    
     $(MODULE gfm.math.simplerng, random distributions)
     $(MODULE gfm.math.shapes, segment/triangla/sphere/ray)
-    $(MODULE gfm.math.frustum, frustum/plane)
     $(MODULE gfm.math.funcs, misc. real functions)
     $(MODULE gfm.math.simplexnoise, simplex noise)
-    $(MODULE gfm.math.solver, simplex noise)
 
     $(MODULE gfm.net.uri, URI parsing)
     $(MODULE gfm.net.httpclient, very basic HTTP client)
