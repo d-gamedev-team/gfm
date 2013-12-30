@@ -4,8 +4,6 @@ import gfm.core.memory,
        gfm.math.vector,
        gfm.math.matrix;
 
-import gfm.opengl.opengl;
-
 /// A matrix stack designed to replace fixed-pipeline matrix stacks.
 /// This stack always expose both the top element and its inverse.
 final class MatrixStack(size_t R, T) if (R == 3 || R == 4)
@@ -51,10 +49,10 @@ final class MatrixStack(size_t R, T) if (R == 3 || R == 4)
         }
 
         /// Replacement for $(D glPushMatrix).
-        void push() pure
+        void push() pure nothrow
         {
             if(_top + 1 >= _depth)
-                throw new OpenGLException("Matrix stack is full");
+                assert(false, "Matrix stack is full");
 
             _matrices[_top + 1] = _matrices[_top];
             _invMatrices[_top + 1] = _invMatrices[_top];
@@ -62,10 +60,10 @@ final class MatrixStack(size_t R, T) if (R == 3 || R == 4)
         }
 
         /// Replacement for $(D glPopMatrix).
-        void pop() pure
+        void pop() pure nothrow
         {
             if (_top <= 0)
-                throw new OpenGLException("Matrix stack is empty");
+                assert(false, "Matrix stack is empty");
 
             --_top;
         }
@@ -163,4 +161,7 @@ unittest
     s.loadIdentity();
     s.push();
     s.pop();
+
+    s.translate(vec3d(4,5,6));
+    s.scale(vec3d(0.5));
 }
