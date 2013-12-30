@@ -27,11 +27,9 @@ $(UL
             $(LI $(D fixedpoint.d): fixed-point numbers.)
             $(LI $(D fraction.d): rational numbers.)
             $(LI $(D statistics.d): statistical functions.)
-            $(LI $(D solver.d): polynomial solvers up to quadratic.)
             $(LI $(D simplerng.d): random distributions: a port of SimpleRNG from John D. Cook.)
-            $(LI $(D shapes.d): segment, triangle, sphere, ray...)
-            $(LI $(D frustum.d): 3D frustum and 3D plane.)
-            $(LI $(D funcs.d): useful math functions.)
+            $(LI $(D shapes.d): segment, triangle, sphere, ray, plane, frustum.)
+            $(LI $(D funcs.d): useful math functions, polynomial solvers.)
             $(LI $(D simplexnoise.d): Simplex noise implementation.)
          )
     )</p>

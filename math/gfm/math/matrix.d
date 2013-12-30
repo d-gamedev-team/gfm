@@ -8,7 +8,7 @@ import std.math,
        std.conv;
 
 import gfm.math.vector,
-       gfm.math.frustum,
+       gfm.math.shapes,
        gfm.math.quaternion;
 
 /// Generic non-resizeable matrix with R rows and C columns.
