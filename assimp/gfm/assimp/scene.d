@@ -36,6 +36,21 @@ class AssimpScene
                 assimp.throwAssimpException("aiImportFileFromMemory");
         }
 
+        /// Import mesh from a memory area using specified import properties.
+        /// The ASSIMP library must have been loaded.
+        /// Throws: AssimpException on error.
+        this(Assimp assimp, ubyte[] data, aiPropertyStore* props, uint postProcessFlags = 0)
+        {
+            _assimp = assimp;
+            _scene = aiImportFileFromMemoryWithProperties(cast(const(char)*)(data.ptr),
+                                                          cast(uint)data.length,
+                                                          postProcessFlags,
+                                                          null,
+                                                          props);
+            if (_scene is null)
+                assimp.throwAssimpException("aiImportFileFromMemoryWithProperties");
+        }
+
         ~this()
         {
             close();
