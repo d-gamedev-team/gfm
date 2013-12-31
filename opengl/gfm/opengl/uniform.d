@@ -249,7 +249,7 @@ final class GLUniform
             _gl.runtimeCheck();
         }
 
-        static bool typeIsCompliant(T)(GLenum type)
+        public static bool typeIsCompliant(T)(GLenum type)
         {
             switch (type)
             {
