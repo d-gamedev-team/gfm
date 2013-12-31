@@ -1,5 +1,6 @@
 
 /// D translation of stb_image-1.33 (http://nothings.org/stb_image.c)
+///
 /// This port only supports:
 /// $(UL
 ///   $(LI PNG.)
