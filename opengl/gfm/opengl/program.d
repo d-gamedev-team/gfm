@@ -13,7 +13,8 @@ import gfm.core.log,
        gfm.math.matrix,
        gfm.opengl.opengl, 
        gfm.opengl.shader, 
-       gfm.opengl.uniform;
+       gfm.opengl.uniform,
+       gfm.opengl.uniformblock;
 
 /// OpenGL Program wrapper.
 final class GLProgram
@@ -244,8 +245,30 @@ final class GLProgram
                 GLint numActiveUniforms;
                 glGetProgramiv(_program, GL_ACTIVE_UNIFORMS, &numActiveUniforms);
 
+                // get uniform block indices (if > 0, it's a block uniform)
+                GLint[] uniformIndex;
+                GLint[] blockIndex;
+                uniformIndex.length = numActiveUniforms;
+                blockIndex.length = numActiveUniforms;
+
+                for (GLint i = 0; i < numActiveUniforms; ++i)
+                    uniformIndex[i] = i;
+
+                glGetActiveUniformsiv(  _program,
+                                        cast(GLuint*)uniformIndex.length,
+                                        cast(GLuint*)uniformIndex,
+                                        GL_UNIFORM_BLOCK_INDEX,
+                                        blockIndex.ptr);
+                _gl.runtimeCheck();
+
+                // get active uniform blocks
+                getUniformBlocks(_gl, this);
+
                 for (GLint i = 0; i < numActiveUniforms; ++i)
                 {
+                    if(blockIndex[i] >= 0)
+                        continue;
+
                     GLint size;
                     GLenum type;
                     GLsizei length;
