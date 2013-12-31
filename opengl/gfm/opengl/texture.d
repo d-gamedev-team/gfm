@@ -206,6 +206,11 @@ class GLTexture
           return _handle;
         }
 
+        GLuint target() pure const nothrow
+        {
+            return _target;
+        }
+		
         /// Regenerates the mipmapped levels.
         /// Throws: $(D OpenGLException) on error.
         void generateMipmap()
