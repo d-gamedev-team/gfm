@@ -246,19 +246,19 @@ final class GLProgram
                 glGetProgramiv(_program, GL_ACTIVE_UNIFORMS, &numActiveUniforms);
 
                 // get uniform block indices (if > 0, it's a block uniform)
-                GLint[] uniformIndex;
+                GLuint[] uniformIndex;
                 GLint[] blockIndex;
                 uniformIndex.length = numActiveUniforms;
                 blockIndex.length = numActiveUniforms;
 
                 for (GLint i = 0; i < numActiveUniforms; ++i)
-                    uniformIndex[i] = i;
+                    uniformIndex[i] = cast(GLuint)i;
 
-                glGetActiveUniformsiv(  _program,
-                                        cast(GLuint*)uniformIndex.length,
-                                        cast(GLuint*)uniformIndex,
-                                        GL_UNIFORM_BLOCK_INDEX,
-                                        blockIndex.ptr);
+                glGetActiveUniformsiv( _program,
+                                       cast(GLint)uniformIndex.length,
+                                       uniformIndex.ptr,
+                                       GL_UNIFORM_BLOCK_INDEX,
+                                       blockIndex.ptr);
                 _gl.runtimeCheck();
 
                 // get active uniform blocks
