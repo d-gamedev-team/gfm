@@ -1,10 +1,12 @@
 /**
-  This module implements abstract shapes in any number of dimensions like:
+  This module implements some abstract geometric shapes:
   $(UL
   $(LI Line segments.)
   $(LI Triangle.)
   $(LI Circles/spheres.)
   $(LI Rays)
+  $(LI Planes)
+  $(LI Frustum)
   )
  */
 module gfm.math.shapes;

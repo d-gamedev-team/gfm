@@ -12,7 +12,7 @@ import gfm.core.log,
 
 /// SDL Window wrapper.
 /// There is two ways to receive events, either by polling a SDL2 object, 
-/// or by
+/// or by overriding the event callbacks.
 class SDL2Window
 {
     public

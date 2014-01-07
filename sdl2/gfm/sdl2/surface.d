@@ -40,7 +40,7 @@ final class SDL2Surface
         }
 
         /// Create surface from RGBA data. Pixels data is <b>not</b> and not owned.
-        /// See_also: clone, $WEB(wiki.libsdl.org/SDL_CreateRGBSurfaceFrom,SDL_CreateRGBSurfaceFrom)
+        /// See_also: clone, $(WEB wiki.libsdl.org/SDL_CreateRGBSurfaceFrom,SDL_CreateRGBSurfaceFrom)
         /// Throws: $(D SDL2Exception) on error.
         this(SDL2 sdl2, void* pixels, int width, int height, int depth, int pitch, 
              uint Rmask, uint Gmask, uint Bmask, uint Amask)
