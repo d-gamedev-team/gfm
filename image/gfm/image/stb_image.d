@@ -3,10 +3,10 @@
 ///
 /// This port only supports:
 /// $(UL
-///   $(LI PNG.)
-///   $(LI JPEG.)
+///   $(LI PNG 8-bit-per-channel only.)
+///   $(LI JPEG baseline (no JPEG progressive).)
 ///   $(LI GIF.)
-///   $(LI BMP.)
+///   $(LI BMP non-1bpp, non-RLE.)
 /// )
 ///
 /// TODO:
@@ -894,7 +894,7 @@ int process_marker(jpeg *z, int m)
                 throw new STBImageException("Bad DHT header, corrupt JPEG");
             for (i=0; i < 16; ++i) {
                sizes[i] = get8(z.s);
-               m += sizes[i];
+               m_ += sizes[i];
             }
             L -= 17;
             if (tc == 0) {
@@ -1044,10 +1044,16 @@ int decode_jpeg_header(jpeg *z, int scan)
    if (!SOI(m)) throw new STBImageException("No SOI, corrupt JPEG");
    if (scan == SCAN_type) return 1;
    m = get_marker(z);
-   while (!SOF(m)) {
+   while (!SOF(m)) 
+   {
+
       if (!process_marker(z,m)) return 0;
       m = get_marker(z);
-      while (m == MARKER_none) {
+
+
+
+      while (m == MARKER_none) 
+      {
          // some files have extra padding after their blocks, so ok, we'll scan
          if (at_eof(z.s)) throw new STBImageException("No SOF, corrupt JPEG");
          m = get_marker(z);
