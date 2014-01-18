@@ -24,7 +24,7 @@ final class LockedQueue(T)
             _writerSemaphore = new Semaphore(capacity);
         }
 
-        /// Returns: capacity of the locked queue.
+        /// Returns: Capacity of the locked queue.
         size_t capacity() const
         {
             // no lock-required as capacity does not change
