@@ -132,7 +132,13 @@ function updateBreadcrumb(qualifiedName, sourceRepoUrl) {
 		var part = parts[i];
 
 		if(i == parts.length - 1) {
-			var sourceUrl = sourceRepoUrl + '/' + moduleNameToPath(qualifiedName);
+			var modulePath = moduleNameToPath(qualifiedName);
+			var sourceUrl;
+			if (parts.length > 1) {
+				sourceUrl = sourceRepoUrl + '/' + parts[1] + '/' + modulePath;
+			} else {
+				sourceUrl = sourceRepoUrl + '/' + modulePath;
+			}
 			$breadcrumb.append('<li class="active"><h2>' + part + ' <a href="' + sourceUrl + '"><small>view source</small></a></h2></li>');
 		} else {
 			$breadcrumb.append('<li><h2>' + part + '<span class="divider">/</span></h2></li>');

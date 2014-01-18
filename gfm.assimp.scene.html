@@ -35,7 +35,7 @@
 	<!-- Introduce DDoc settings required by JavaScript -->
 	<script type="text/javascript">
 		var Title = 'gfm.assimp.scene';
-		var SourceRepository = 'http://github.com/p0nce/gfm/tree/master/source';
+		var SourceRepository = 'http://github.com/p0nce/gfm/tree/master';
 		var PackageSeparator = '.';
 	</script>
 	
@@ -250,6 +250,15 @@
 <hr><div class="row-fluid declaration"><h3> this(Assimp <i>assimp</i>, ubyte[] <i>data</i>, uint <i>postProcessFlags</i> = 0);
 </h3></div>
 <div class="declaration-content"><dl><p>Import mesh from a memory area.
+ The ASSIMP library must have been loaded.
+</p>
+
+<dt>Throws</dt><dd>AssimpException on error.</dd>
+</dl>
+</div>
+<hr><div class="row-fluid declaration"><h3> this(Assimp <i>assimp</i>, ubyte[] <i>data</i>, aiPropertyStore* <i>props</i>, uint <i>postProcessFlags</i> = 0);
+</h3></div>
+<div class="declaration-content"><dl><p>Import mesh from a memory area using specified import properties.
  The ASSIMP library must have been loaded.
 </p>
 

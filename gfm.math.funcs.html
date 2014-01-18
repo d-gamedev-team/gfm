@@ -35,7 +35,7 @@
 	<!-- Introduce DDoc settings required by JavaScript -->
 	<script type="text/javascript">
 		var Title = 'gfm.math.funcs';
-		var SourceRepository = 'http://github.com/p0nce/gfm/tree/master/source';
+		var SourceRepository = 'http://github.com/p0nce/gfm/tree/master';
 		var PackageSeparator = '.';
 	</script>
 	
@@ -390,6 +390,18 @@ use bt intrinsics</dd>
 <dt>Returns</dt><dd>Number of roots in outRoots.
 </dd>
 <dt>See Also</dt><dd><a href="http://www.codeguru.com/forum/archive/index.php/t-265551.html">www.codeguru.com/forum/archive/index.php/t-265551.html</a></dd>
+</dl>
+</div>
+<hr><div class="row-fluid declaration"><h3>pure nothrow size_t <span class="symbol-target" id="solveQuartic">&nbsp;</span><a class="symbol-link" href="#solveQuartic">solveQuartic</a>(T)(T <i>a</i>, T <i>b</i>, T <i>c</i>, T <i>d</i>, T <i>e</i>, T[] <i>roots</i>) if (isFloatingPoint!T);
+</h3></div>
+<div class="declaration-content"><dl><p>Returns the roots of a quartic polynomial  a + b x + c x^2 + d x^3 + e x^4 = 0
+</p>
+
+<p>Returns number of roots. roots slice should have room for up to 4 elements.
+</p>
+<dt>Known Bugs</dt><dd>doesn't pass unit-test!
+</dd>
+<dt>See Also</dt><dd><a href="http://mathworld.wolfram.com/QuarticEquation.html">mathworld.wolfram.com/QuarticEquation.html</a></dd>
 </dl>
 </div>
 
