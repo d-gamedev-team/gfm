@@ -36,7 +36,6 @@ alias Segment!(double, 2u) seg2d; /// 2D double segment.
 alias Segment!(double, 3u) seg3d; /// 3D double segment.
 
 /// A Triangle is 3 points.
-/// Bugs: Define normal direction.
 align(1) struct Triangle(T, size_t N)
 {
     align(1):
@@ -59,6 +58,15 @@ align(1) struct Triangle(T, size_t N)
                 return ((b.x * a.y - a.x * b.y)
                       + (c.x * b.y - b.x * c.y)
                       + (a.x * c.y - c.x * a.y)) / 2;
+            }
+        }
+
+        static if (N == 3u)
+        {
+            /// Returns: Triangle normal.
+            Vector!(T, 3u) computeNormal() pure const nothrow
+            {
+                return cross(b - a, c - a).normalized();
             }
         }
     }
@@ -157,7 +165,8 @@ nothrow:
         static if (N == 3u)
         {
             /// Ray vs triangle intersection.
-            /// Bugs: Verify what triangle axis is reffered to.
+            /// See_also: "Fast, Minimum Storage Ray/Triangle intersection", Mommer & Trumbore (1997)
+            /// Returns: Barycentric coordinates, the intersection point is at $(D (1 - u - v) * A + u * B + v * C).
             bool intersect(Triangle!(T, 3u) triangle, out T t, out T u, out T v)
             {
                 point_t edge1 = triangle.b - triangle.a;
