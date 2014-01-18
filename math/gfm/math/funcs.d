@@ -258,7 +258,7 @@ size_t solveCubic(T)(T a, T b, T c, T d, T[] outRoots) pure nothrow if (isFloati
             return 0;
         T P = R / sqrt(Qcubed);
 
-        assert(P >= 0 && P <= 1);
+        assert(-1 <= P && P <= 1);
         T theta = acos(P);
         T sqrtQ = sqrt(Q);
 
@@ -278,7 +278,6 @@ size_t solveCubic(T)(T a, T b, T c, T d, T[] outRoots) pure nothrow if (isFloati
     }
 }
 
-/+
 /**
  * Returns the roots of a quartic polynomial  a + b x + c x^2 + d x^3 + e x^4 = 0
  *
@@ -334,7 +333,7 @@ size_t solveQuartic(T)(T a, T b, T c, T d, T e, T[] roots) pure nothrow if (isFl
         T d1 =  0.75f * a3 * a3 - Rsquare - 2 * a2;
         T d2 = 0.25f * Rrec * (4 * a3 * a2 - 8 * a1 - a3 * a3 * a3);
         D = sqrt(d1 + d2) * 0.5f;
-        E = sqrt(d2 - d2) * 0.5f;
+        E = sqrt(d1 - d2) * 0.5f;
     }
 
     // Compute the 4 roots
@@ -344,10 +343,10 @@ size_t solveQuartic(T)(T a, T b, T c, T d, T e, T[] roots) pure nothrow if (isFl
     roots[0] = a3 + R + D;
     roots[1] = a3 + R - D;
     roots[2] = a3 - R + E;
-    roots[1] = a3 - R - E;
+    roots[3] = a3 - R - E;
     return 4;
 }
-+/
+
 
 unittest
 {
@@ -369,17 +368,15 @@ unittest
         assert(arrayContainsRoot(roots[], 2));
     }
 
-    // TODO fix
-/*
     // test quartic
     {
         double[4] roots;
         int numRoots = solveQuartic!double(0, -2, -1, 2, 1, roots[]);
+
         assert(numRoots == 4);
         assert(arrayContainsRoot(roots[], -2));
         assert(arrayContainsRoot(roots[], -1));
         assert(arrayContainsRoot(roots[], 0));
         assert(arrayContainsRoot(roots[], 1));
     }
-    */
 }
