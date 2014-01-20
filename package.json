@@ -13,11 +13,7 @@
         "Daniel Cousens / RommelVR: GL fix"
     ],
 
-    "importPaths": [
-    ],
-
-    "sourcePaths": [
-    ],
+    "targetType": "none",
 
     "dependencies": {
         "gfm:core": "~master",
