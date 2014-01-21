@@ -93,6 +93,16 @@ class VertexSpecification
             return _iboID = iboID;
         }
 
+        //property for accessing the count of the VBO elements
+        @property GLuint VBOCount() { return _vboCount; }
+        /// Ditto
+        @property GLuint VBOCount(GLuint vboCount) { return _vboCount = vboCount; }
+
+        //property for accessing the count of the VBO elements
+        @property GLuint IBOCount() { return _iboCount; }
+        /// Ditto
+        @property GLuint IBOCount(GLuint iboCount) { return _iboCount = iboCount; }
+
         /// Adds an item to the vertex specification.
         /// Params: role = what is the role of this attribute;
         /// n = 1, 2, 3 or 4, is the number of components of the attribute;
@@ -124,8 +134,10 @@ class VertexSpecification
             UNUSED,
             USED
         }
-        GLuint _vboID;   /// The Vertex BO this VertexSpecification refers to
-        GLuint _iboID;   /// The Index BO this VertexSpecification refers to
+        GLuint _vboID;      /// The Vertex BO this VertexSpecification refers to
+        GLuint _iboID;      /// The Index BO this VertexSpecification refers to
+        GLuint _iboCount;   /// The count of the elements to be drawn when using the IBO
+        GLuint _vboCount;   /// The count of the vertices
         State _state;
         OpenGL _gl;
         GLuint _genericAttribIndex;
