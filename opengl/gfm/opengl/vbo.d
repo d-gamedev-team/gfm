@@ -13,9 +13,12 @@ import derelict.opengl3.gl3,
 import gfm.core.log,
        gfm.opengl.opengl;
 
-/** 
- * A vertex specification describes the format of a vertex. It's like an OpenGL VAO, except more manual.
- * Can only be built manually for now.
+/**
+ * A VertexSpecification makes it easy to use Vertex Buffer Object with interleaved attributes.
+ * It's role is similar to the OpenGL VAO one.
+ * If the user requests it, the VertexSpecification can "take control" of a given VBO and/or IBO
+ * and automatically bind/unbind them when the VertexSpecification is used/unused.
+ * You have to specify every attribute manually for now.
  *
  * TODO: Extract vertex specification from a struct at compile-time.
  */
@@ -26,9 +29,12 @@ class VertexSpecification
         /// Creates a vertex specification.
         this(OpenGL gl)
         {
+            _vboID = 0;
+            _iboID = 0;
             _gl = gl;
+            _genericAttribIndex = 4;
             _currentOffset = 0;
-            _elements = [];
+            _attributes = [];
             _state = State.UNUSED;
         }
 
@@ -38,40 +44,69 @@ class VertexSpecification
         }
 
         /// Use this vertex specification.
-        /// Params: 
-        ///    useOlderAttribFunctions = Whether to use older pointer attribute functions, 
-        ///                              which can be more portable.
         /// Throws: $(D OpenGLException) on error.
-        void use(bool useOlderAttribFunctions = false)
+        void use()
         {
             assert(_state == State.UNUSED);
-            for (uint i = 0; i < _elements.length; ++i)
-                _elements[i].use(_gl, i, useOlderAttribFunctions, cast(GLsizei) _currentOffset);
-            _state = useOlderAttribFunctions ? State.USED_OLDER_FUNCTIONS : State.USED_NEWER_FUNCTION;
+            if (_vboID) // if we are "in control" of this VBO, we have to bind it to current OpenGL state
+                glBindBuffer(GL_ARRAY_BUFFER, _vboID);
+            if (_iboID)  // ditto, for the ibo
+                glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, _iboID);
+            // for every attribute
+            for (uint i = 0; i < _attributes.length; ++i)
+                _attributes[i].use(_gl, cast(GLsizei) _currentOffset);
+            _state = State.USED;
         }
 
         /// Unuse this vertex specification.
         /// Throws: $(D OpenGLException) on error.
         void unuse()
         {
-            assert(_state == State.USED_OLDER_FUNCTIONS || _state == State.USED_NEWER_FUNCTION);
-            for (uint i = 0; i < _elements.length; ++i)
-                _elements[i].unuse(_gl, i, _state == State.USED_OLDER_FUNCTIONS);
+            assert(_state == State.USED);
+            // TODO: is this really needed? I suggest it is: leaving a clean state after unusing an object
+            // seems the most reasonable way of doing things.
+            if (_vboID) // if we are "in control" of this VBO, we have to bind it to current OpenDL state
+                glBindBuffer(GL_ARRAY_BUFFER, 0);
+            if (_iboID)  // ditto, for the ibo
+                glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+            // unuse all the attributes
+            for (uint i = 0; i < _attributes.length; ++i)
+                _attributes[i].unuse(_gl);
             _state = State.UNUSED;
         }
 
+        /// This property allows the user to set/unset the VBO "ownership"
+        @property GLuint VBO() { return _vboID; } // property can always be read
+        /// Ditto
+        @property GLuint VBO(GLuint vboID) { // write property
+            assert (_state == State.UNUSED); // Can be modified ONLY when unused
+            return _vboID = vboID;
+        }
+
+        /// This property allows the user to set/unset the IBO "ownership"
+        @property GLuint IBO() { return _iboID; } // property can always be read
+        /// Ditto
+        @property GLuint IBO(GLuint iboID) { // write property
+            assert (_state == State.UNUSED); // Can be modified ONLY when unused
+            return _iboID = iboID;
+        }
+
         /// Adds an item to the vertex specification.
-        void add(VertexElement.Role role, GLenum glType, int n)
+        /// Params: role = what is the role of this attribute;
+        /// n = 1, 2, 3 or 4, is the number of components of the attribute
+        void add(VertexAttribute.Role role, GLenum glType, int n, GLboolean normalize = GL_FALSE)
         {
             assert(n > 0 && n <= 4);
             assert(_state == State.UNUSED);
             assert(isGLTypeSuitable(glType));
-            _elements ~= VertexElement(role, n, _currentOffset, glType);
+            _attributes ~= VertexAttribute(role, n, _currentOffset, glType, _genericAttribIndex, normalize);
             _currentOffset += n * glTypeSize(glType);
+            if (role == VertexAttribute.Role.GENERIC)
+                _genericAttribIndex++;
         }
 
         /// Adds padding space to the vertex specification.
-        /// This is useful for alignment.
+        /// This is useful for alignment. TODO: clarify
         void addDummyBytes(int nBytes)
         {
             assert(_state == State.UNUSED);
@@ -84,18 +119,20 @@ class VertexSpecification
         enum State
         {
             UNUSED,
-            USED_OLDER_FUNCTIONS,
-            USED_NEWER_FUNCTION
+            USED
         }
+        GLuint _vboID;   /// The Vertex BO this VertexSpecification refers to
+        GLuint _iboID;   /// The Index BO this VertexSpecification refers to
         State _state;
         OpenGL _gl;
-        VertexElement[] _elements;
+        GLuint _genericAttribIndex;
+        VertexAttribute[] _attributes;
         size_t _currentOffset;
     }
 }
 
 /// Describes a single attribute in a vertex entry.
-struct VertexElement
+struct VertexAttribute
 {
     /// Role of this vertex attribute.
     enum Role
@@ -103,82 +140,80 @@ struct VertexElement
         POSITION,  /// This attribute is a position.
         COLOR,     /// This attribute is a color.
         TEX_COORD, /// This attribute is a texture coordinate.
-        NORMAL     /// This attribute is a normal.
+        NORMAL,    /// This attribute is a normal.
+        GENERIC    /// This attribute is a generic vertex attribute
     }
 
     Role role;
     int n;
     size_t offset;
     GLenum glType;
+    GLuint genericIndex;
+    GLboolean  normalize;
 
     package
     {
         /// Use this attribute.
         /// Throws: $(D OpenGLException) on error.
-        void use(OpenGL gl, GLuint index, bool useOlderAttribFunctions, GLsizei sizeOfVertex)
+        void use(OpenGL gl, GLsizei sizeOfVertex)
         {
-            if (useOlderAttribFunctions)
+            final switch (role)
             {
-                final switch (role)
-                {
-                    case Role.POSITION:
-                        glEnableClientState(GL_VERTEX_ARRAY);
-                        glVertexPointer(n, glType, sizeOfVertex, cast(GLvoid *) offset);
-                        break;
+                case Role.POSITION:
+                    glEnableClientState(GL_VERTEX_ARRAY);
+                    glVertexPointer(n, glType, sizeOfVertex, cast(GLvoid *) offset);
+                    break;
 
-                    case Role.COLOR:
-                        glEnableClientState(GL_COLOR_ARRAY);
-                        glColorPointer(n, glType, sizeOfVertex, cast(GLvoid *) offset);
-                        break;
+                case Role.COLOR:
+                    glEnableClientState(GL_COLOR_ARRAY);
+                    glColorPointer(n, glType, sizeOfVertex, cast(GLvoid *) offset);
+                    break;
 
-                    case Role.TEX_COORD:
-                        glEnableClientState(GL_TEXTURE_COORD_ARRAY);
-                        glTexCoordPointer(n, glType, sizeOfVertex, cast(GLvoid *) offset);
-                        break;
+                case Role.TEX_COORD:
+                    glEnableClientState(GL_TEXTURE_COORD_ARRAY);
+                    glTexCoordPointer(n, glType, sizeOfVertex, cast(GLvoid *) offset);
+                    break;
 
-                    case Role.NORMAL:
-                        glEnableClientState(GL_NORMAL_ARRAY);
-                        assert(n == 3);
-                        glNormalPointer(glType, sizeOfVertex, cast(GLvoid *) offset);
-                        break;
-                }
+                case Role.NORMAL:
+                    glEnableClientState(GL_NORMAL_ARRAY);
+                    assert(n == 3);
+                    glNormalPointer(glType, sizeOfVertex, cast(GLvoid *) offset);
+                    break;
+
+               case Role.GENERIC:
+                    glEnableVertexAttribArray(genericIndex);
+                    glVertexAttribPointer(genericIndex, n, glType, normalize, sizeOfVertex, cast(GLvoid *) offset);
+                    break;
             }
-            else
-            {
-                glEnableVertexAttribArray(index);
-                glVertexAttribPointer(index, n, glType, GL_FALSE, sizeOfVertex, cast(GLvoid *) offset);
-            }
+
             gl.runtimeCheck();
         }
 
         /// Unuse this attribute.
         /// Throws: $(D OpenGLException) on error.
-        void unuse(OpenGL gl, GLuint index, bool useOlderAttribFunctions)
+        void unuse(OpenGL gl)
         {
-            if(useOlderAttribFunctions)
+            final switch (role)
             {
-                final switch (role)
-                {
-                    case Role.POSITION:
-                        glDisableClientState(GL_VERTEX_ARRAY);
-                        break;
+                case Role.POSITION:
+                    glDisableClientState(GL_VERTEX_ARRAY);
+                    break;
 
-                    case Role.COLOR:
-                        glDisableClientState(GL_COLOR_ARRAY);
-                        break;
+                case Role.COLOR:
+                    glDisableClientState(GL_COLOR_ARRAY);
+                    break;
 
-                    case Role.TEX_COORD:
-                        glDisableClientState(GL_TEXTURE_COORD_ARRAY);
-                        break;
+                case Role.TEX_COORD:
+                    glDisableClientState(GL_TEXTURE_COORD_ARRAY);
+                    break;
 
-                    case Role.NORMAL:
-                        glDisableClientState(GL_NORMAL_ARRAY);
-                        break;
-                }
-            }
-            else
-            {
-                glDisableVertexAttribArray(index);
+                case Role.NORMAL:
+                    glDisableClientState(GL_NORMAL_ARRAY);
+                    break;
+
+                case Role.GENERIC:
+                    glDisableVertexAttribArray(genericIndex);
+                    break;
             }
             gl.runtimeCheck();
         }

@@ -219,8 +219,13 @@ final class GLProgram
 
         /// Links this OpenGL program.
         /// Throws: $(D OpenGLException) on error.
-        void link()
+        void link(string[] attributeNames...)
         {
+            foreach (int i, string name; attributeNames)
+            {
+                glBindAttribLocation(_program, i+4, name.toStringz);
+                _gl.runtimeCheck();
+            }
             glLinkProgram(_program);
             _gl.runtimeCheck();
             GLint res;
@@ -350,7 +355,7 @@ final class GLProgram
         }
 
         /// Gets an uniform by name.
-        /// Returns: A GLUniform with this name. This GLUniform might be created on demand if 
+        /// Returns: A GLUniform with this name. This GLUniform might be created on demand if
         ///          the name hasn't been found. So it might be a "fake" uniform.
         /// See_also: GLUniform.
         GLUniform uniform(string name)
