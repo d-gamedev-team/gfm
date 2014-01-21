@@ -32,6 +32,8 @@ class VertexSpecification
             _vboID = 0;
             _iboID = 0;
             _gl = gl;
+// the indices we use start from 4 to avoid clashing with "standard" aliases at least with nVidia and AMD hardware AFAIK
+// see http://stackoverflow.com/questions/528028/glvertexattrib-which-attribute-indices-are-predefined
             _genericAttribIndex = 4;
             _currentOffset = 0;
             _attributes = [];
@@ -63,7 +65,7 @@ class VertexSpecification
         void unuse()
         {
             assert(_state == State.USED);
-            // TODO: is this really needed? I suggest it is: leaving a clean state after unusing an object
+            // Leaving a clean state after unusing an object
             // seems the most reasonable way of doing things.
             if (_vboID) // if we are "in control" of this VBO, we have to bind it to current OpenDL state
                 glBindBuffer(GL_ARRAY_BUFFER, 0);
@@ -93,7 +95,8 @@ class VertexSpecification
 
         /// Adds an item to the vertex specification.
         /// Params: role = what is the role of this attribute;
-        /// n = 1, 2, 3 or 4, is the number of components of the attribute
+        /// n = 1, 2, 3 or 4, is the number of components of the attribute;
+        /// For compatibility, you should not define more than 12 attributes
         void add(VertexAttribute.Role role, GLenum glType, int n, GLboolean normalize = GL_FALSE)
         {
             assert(n > 0 && n <= 4);

@@ -222,7 +222,8 @@ final class GLProgram
         void link(string[] attributeNames...)
         {
             foreach (int i, string name; attributeNames)
-            {
+            {   /// This "i+4" is used for avoiding clashes with standard
+                /// attributes, check vbo.d for extra details
                 glBindAttribLocation(_program, i+4, name.toStringz);
                 _gl.runtimeCheck();
             }
