@@ -58,18 +58,22 @@ void main(){
     squareVS.IBO.setData(squareIndices.sizeof, squareIndices.ptr);
 
     // write and compile the shaders for the SQUARE
-    string[] squareVertSource = [
-        r"#version 110",
-        r"void main() {",
-        r"  gl_FrontColor = gl_Color;",
-        r"  gl_Position = vec4(0.5, 0.5, 0.5, 1) * gl_Vertex;",
-        r"}"];
+    string[] squareVertSource = 
+    [
+        "#version 110\n",
+        "void main() {",
+        "  gl_FrontColor = gl_Color;",
+        "  gl_Position = vec4(0.5, 0.5, 0.5, 1) * gl_Vertex;",
+        "}"
+    ];
 
-    string[] squareFragSource = [
-    r"#version 110",
-    r"void main() {",
-    r"    gl_FragColor = gl_Color;",
-    r"}"];
+    string[] squareFragSource = 
+    [
+        "#version 110\n",
+        "void main() {",
+        "    gl_FragColor = gl_Color;",
+        "}"
+    ];
 
     auto squareVertex = new GLShader(gl, GL_VERTEX_SHADER, squareVertSource);
     auto squareFrag = new GLShader(gl, GL_FRAGMENT_SHADER, squareFragSource);
@@ -90,21 +94,25 @@ void main(){
     //please note: we will NOT use indices for the triangle, and will NOT confer VBO controll over the triangleVS object
 
     //write and compile the shaders for the TRIANGLE
-    string[] triangleVertSource = [
-        r"#version 110",
-        r"attribute vec4 color_attribute;",
-        r"varying vec4 Color;",
-        r"void main() {",
-        r"  Color = color_attribute;",
-        r"  gl_Position = vec4(0.5, 0.5, 0.5, 1) * gl_Vertex;",
-        r"}"];
+    string[] triangleVertSource = 
+    [
+        "#version 110\n",
+        "attribute vec4 color_attribute;",
+        "varying vec4 Color;",
+        "void main() {",
+        "  Color = color_attribute;",
+        "  gl_Position = vec4(0.5, 0.5, 0.5, 1) * gl_Vertex;",
+        "}"
+    ];
 
-    string[] triangleFragSource = [
-        r"#version 110",
-        r"varying vec4 Color;"
-        r"void main() {",
-        r"    gl_FragColor = vec4(Color.xyz, 0.7);",
-        r"}"];
+    string[] triangleFragSource = 
+    [
+        "#version 110\n",
+        "varying vec4 Color;"
+        "void main() {",
+        "    gl_FragColor = vec4(Color.xyz, 0.7);",
+        "}"
+    ];
 
     auto triangleVertex = new GLShader(gl, GL_VERTEX_SHADER, triangleVertSource);
     auto triangleFrag = new GLShader(gl, GL_FRAGMENT_SHADER, triangleFragSource);
@@ -124,24 +132,28 @@ void main(){
     hexVS.VBO.setData(hexFanVertices.sizeof, hexFanVertices.ptr);
 
     //write and compile the shaders for the HEXAGON
-    string[] hexVertSource = [
-        r"#version 130",                    //NOTE: OpenGL 3 + extensions / OpenGL3.3 required for this shader!
-        r"#extension GL_ARB_explicit_attrib_location : enable",
-        r"layout(location = 0) in vec4 position_attribute;",
-        r"layout(location = 1) in vec4 color_attribute;",
-        r"out vec4 out_Color;",
-        r"void main() {",
-        r"  out_Color = color_attribute;", //pass the color to the post-vertex and to the fragment shader
-        r"  gl_Position = vec4(0.5, 0.4, 1, 1) * position_attribute + vec4(-0.4, 0.4, 0, 0);",
-        r"}"];
+    string[] hexVertSource = 
+    [
+        "#version 330\n",                    //NOTE: OpenGL 3 + extensions / OpenGL3.3 required for this shader!
+        "#extension GL_ARB_explicit_attrib_location : enable\n",
+        "layout(location = 0) in vec4 position_attribute;",
+        "layout(location = 1) in vec4 color_attribute;",
+        "out vec4 out_Color;",
+        "void main() {",
+        "  out_Color = color_attribute;", //pass the color to the post-vertex and to the fragment shader
+        "  gl_Position = vec4(0.5, 0.4, 1, 1) * position_attribute + vec4(-0.4, 0.4, 0, 0);",
+        "}"
+    ];
 
-    string[] hexFragSource = [
-        r"#version 130",                    //NOTE: OpenGL 3.0 REQUIRED FOR VERSION 130!
-        r"in vec4 out_Color;",
-        r"out vec4 final_Color;",
-        r"void main() {",
-        r"    final_Color = out_Color;",
-        r"}"];
+    string[] hexFragSource = 
+    [
+        "#version 330\n",                    //NOTE: OpenGL 3.0 REQUIRED FOR VERSION 130!
+        "in vec4 out_Color;",
+        "out vec4 final_Color;",
+        "void main() {",
+        "    final_Color = out_Color;",
+        "}"
+    ];
 
     auto hexVertex = new GLShader(gl, GL_VERTEX_SHADER, hexVertSource);
     auto hexFrag = new GLShader(gl, GL_FRAGMENT_SHADER, hexFragSource);
@@ -158,7 +170,8 @@ void main(){
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 
     /* While the program is running */
-    while(!sdl.keyboard().isPressed(SDLK_RETURN)) {
+    while(!sdl.keyboard().isPressed(SDLK_ESCAPE)) 
+    {
         sdl.processEvents();
 
         // clear the whole window
