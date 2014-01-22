@@ -1,5 +1,6 @@
 import gfm.opengl,
-       gfm.sdl2;
+       gfm.sdl2,
+       gfm.core;
 
 import std.typecons,
        std.string;
@@ -8,8 +9,12 @@ void main()
 {
     int width = 800;
     int height = 600;
-    auto sdl = scoped!SDL2(null);
-    auto gl  = scoped!OpenGL(null);
+
+    // create a default logger
+    auto log = defaultLog();
+
+    auto sdl = scoped!SDL2(log);
+    auto gl  = scoped!OpenGL(log);
 
     auto window = scoped!SDL2Window(sdl, SDL_WINDOWPOS_UNDEFINED,
             SDL_WINDOWPOS_UNDEFINED, width, height, SDL_WINDOW_OPENGL);
@@ -93,11 +98,9 @@ void main()
     // TRIANGLE
     //
 
-    Vertex[3] triangleVertices = [ { [-0.5, -0.5, 0], [1, 0, 0] },
-                                   { [ 0.5, -0.5, 0], [0, 1, 0] },
+    Vertex[3] triangleVertices = [ { [-0.5, -0.5, 0], [1, 0.5, 0] },
+                                   { [ 0.5, -0.5, 0], [0.5, 1, 0] },
                                    { [   0,  0.5, 0], [1, 1, 0] } ];
-
-    auto triangleVS = scoped!VertexSpecification(gl);
 
     // Creates and binds the buffer used by the triangle vertices.
     // Please note: we will NOT use indices for the triangle
@@ -107,23 +110,29 @@ void main()
     auto triangleProgram = scoped!GLProgram(gl,
         r"#version 110
         
-        varying vec4 Color;
+        varying vec4 color;
 
         #if VERTEX_SHADER
 
         attribute vec4 color_attribute;
+        uniform float angle;
         
         void main()
         {
-            Color = color_attribute;
-            gl_Position = vec4(0.5, 0.5, 0.5, 1) * gl_Vertex;
+            color = color_attribute;
+            mat4 rot = mat4( cos(angle), -sin(angle), 0.0, 0.0,
+                             sin(angle), cos(angle),  0.0, 0.0,
+                             0.0       , 0.0,         1.0, 0.0,
+                             0.0       , 0.0,         0.0, 1.0 );
+
+            gl_Position = rot * ( vec4(0.5, 0.5, 0.5, 1.0) * gl_Vertex );
         }
 
         #elif FRAGMENT_SHADER
 
         void main()
         {
-            gl_FragColor = vec4(Color.xyz, 0.7);
+            gl_FragColor = vec4(color.xyz, 0.7);
         }
 
         #endif
@@ -132,6 +141,7 @@ void main()
     // add one attribute to the triangle: position, as "legacy" Role.POSITION (OpenGL 2.0 style);
     // add another attribute: color, as GENERIC attribute (OpenGL 3.0+ style); the color is added by attribute name
     // Variables will be accessible in the shader by 'gl_Vertex' and 'color_attribute' respectively
+    auto triangleVS = scoped!VertexSpecification(gl);
     triangleVS.addLegacy(VertexAttribute.Role.POSITION, GL_FLOAT, 3);
     triangleVS.addGeneric(GL_FLOAT, 3, "color_attribute");
 
@@ -157,20 +167,20 @@ void main()
         #extension GL_ARB_explicit_attrib_location : enable
         layout(location = 0) in vec4 position_attribute;
         layout(location = 1) in vec4 color_attribute;
-        out vec4 out_Color;
+        out vec4 out_color;
         void main() 
         {
-          out_Color = color_attribute; //pass the color to the post-vertex and to the fragment shader
+          out_color = color_attribute; //pass the color to the post-vertex and to the fragment shader
           gl_Position = vec4(0.5, 0.4, 1, 1) * position_attribute + vec4(-0.4, 0.4, 0, 0);
         }
 
         #elif FRAGMENT_SHADER
 
-        in vec4 out_Color;
-        out vec4 final_Color;
+        in vec4 out_color;
+        out vec4 final_color;
         void main() 
         {
-            final_Color = out_Color;
+            final_color = out_color;
         }
 
         #endif
@@ -181,15 +191,17 @@ void main()
     hexVS.addGeneric(GL_FLOAT, 3, 0);
     hexVS.addGeneric(GL_FLOAT, 3, 1);
 
+    double time = 0;
 
-    // unbind buffers: not really needed, but it's nice to clean your own mess.
-    glBindBuffer(GL_ARRAY_BUFFER, 0);
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+    // The FrameCounter object gives the clock and maintain statistics about framerate.
+    auto frameCounter = scoped!FrameCounter(sdl);
 
     /* While the program is running */
     while(!sdl.keyboard().isPressed(SDLK_ESCAPE)) 
     {
         sdl.processEvents();
+
+        time += frameCounter.tickSecs();
 
         // clear the whole window
         glClear(GL_COLOR_BUFFER_BIT);
@@ -201,20 +213,21 @@ void main()
         squareProgram.unuse();  // unuse this VertexSpecification
         squareVS.unuse();       // unuse the square shader program
 
-        // draw the triangle
-        triangleVBO.bind();     // manually bind the VBO
-        triangleProgram.use();
-        triangleVS.use(triangleProgram);
-        glDrawArrays(GL_TRIANGLES, 0, cast(int)(triangleVBO.size() / triangleVS.vertexSize()));
-        triangleProgram.unuse();
-        triangleVS.unuse();
-
         // draw the hexagon
         hexProgram.use();       // use the hexagon shader program
         hexVS.use();            // use this VertexSpecification
         glDrawArrays(GL_TRIANGLE_FAN, 0, cast(int)(hexVS.VBO.size() / hexVS.vertexSize()));
         hexProgram.unuse();     // unuse th VertexSpecification
         hexVS.unuse();          // unuse the shader program
+
+        // draw the triangle
+        triangleVBO.bind();     // manually bind the VBO
+        triangleProgram.uniform("angle").set!float(time * 0.4);
+        triangleProgram.use();
+        triangleVS.use(triangleProgram);
+        glDrawArrays(GL_TRIANGLES, 0, cast(int)(triangleVBO.size() / triangleVS.vertexSize()));
+        triangleProgram.unuse();
+        triangleVS.unuse();
 
         window.setTitle("Test: a green hexagon, a blue rectangle, a yellow transparent triangle");
         window.swapBuffers();
