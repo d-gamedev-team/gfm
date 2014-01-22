@@ -8,6 +8,7 @@
     "authors": [
         "ponce",
         "Gerbrand Kamphuis / vuaru: many fixes",
+        "Francesco Cattoglio: OpenGL wrapper improvements",
         "John D. Cook: SimpleRNG author",
         "Sam Hocevar: many bits of code",
         "Daniel Cousens / RommelVR: GL fix"
