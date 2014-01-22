@@ -34,8 +34,6 @@ class VertexSpecification
             _vbo = null;
             _ibo = null;
             _gl = gl;
-// the indices we use start from 4 to avoid clashing with "standard" aliases at least with nVidia and AMD hardware AFAIK
-// see http://stackoverflow.com/questions/528028/glvertexattrib-which-attribute-indices-are-predefined
             _currentOffset = 0;
             _attributes = [];
             _state = State.UNUSED;
