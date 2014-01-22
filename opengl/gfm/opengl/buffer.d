@@ -24,6 +24,14 @@ final class GLBuffer
             _size = 0;
         }
 
+        /// Creates a buffer already filled with data.
+        /// Throws: $(D OpenGLException) on error.
+        this(T)(OpenGL gl, GLuint target, GLuint usage, T[] buffer)
+        {
+            this(gl, target, usage);
+            setData(buffer);
+        }
+
         ~this()
         {
             close();

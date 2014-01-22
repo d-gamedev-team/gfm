@@ -54,13 +54,11 @@ void main()
     auto squareVS = scoped!VertexSpecification(gl);
 
     // create and bind the buffer used by the square vertices.
-    squareVS.VBO = new GLBuffer(gl, GL_ARRAY_BUFFER, GL_STATIC_DRAW);
-    squareVS.VBO.setData(squareVertices[]);
+    squareVS.VBO = new GLBuffer(gl, GL_ARRAY_BUFFER, GL_STATIC_DRAW, squareVertices[]);
     scope(exit) squareVS.VBO.close();
 
     // create and bind the buffer used by the square indices.
-    squareVS.IBO = new GLBuffer(gl, GL_ELEMENT_ARRAY_BUFFER, GL_STATIC_DRAW);
-    squareVS.IBO.setData(squareIndices.sizeof, squareIndices.ptr);
+    squareVS.IBO = new GLBuffer(gl, GL_ELEMENT_ARRAY_BUFFER, GL_STATIC_DRAW, squareIndices[]);
     scope(exit) squareVS.IBO.close();
     
     // Compiles the shaders for the square.
@@ -103,8 +101,7 @@ void main()
 
     // Creates and binds the buffer used by the triangle vertices.
     // Please note: we will NOT use indices for the triangle
-    auto triangleVBO = scoped!GLBuffer(gl, GL_ARRAY_BUFFER, GL_STATIC_DRAW); // this buffer will hold the vertex data
-    triangleVBO.setData(triangleVertices[]);
+    auto triangleVBO = scoped!GLBuffer(gl, GL_ARRAY_BUFFER, GL_STATIC_DRAW, triangleVertices[]); // this buffer will hold the vertex data
     
     // Compiles the shaders for the triangle.
     auto triangleProgram = scoped!GLProgram(gl,
@@ -146,8 +143,8 @@ void main()
 
     auto hexVS = scoped!VertexSpecification(gl);
     // create and bind the buffer used by the hexagon vertices.
-    hexVS.VBO = new GLBuffer(gl, GL_ARRAY_BUFFER, GL_STATIC_DRAW);
-    hexVS.VBO.setData(hexFanVertices[]);
+    hexVS.VBO = new GLBuffer(gl, GL_ARRAY_BUFFER, GL_STATIC_DRAW, hexFanVertices[]);
+    scope(exit) hexVS.VBO.close();
 
     // Compiles the shaders for the hexagon.
     // Note: OpenGL 3 + extensions / OpenGL3.3 required for this shader.
