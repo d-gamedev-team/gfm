@@ -219,14 +219,8 @@ final class GLProgram
 
         /// Links this OpenGL program.
         /// Throws: $(D OpenGLException) on error.
-        void link(string[] attributeNames...)
+        void link()
         {
-            foreach (int i, string name; attributeNames)
-            {   /// This "i+4" is used for avoiding clashes with standard
-                /// attributes, check vbo.d for extra details
-                glBindAttribLocation(_program, i+4, name.toStringz);
-                _gl.runtimeCheck();
-            }
             glLinkProgram(_program);
             _gl.runtimeCheck();
             GLint res;
@@ -419,6 +413,8 @@ final class GLAttribute
         }
 
     }
+
+    @property GLint location() { return _location; } // property, getter only
 
     private
     {

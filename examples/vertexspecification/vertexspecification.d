@@ -51,44 +51,40 @@ void main(){
     triangleVS = new VertexSpecification(gl);
     hexVS      = new VertexSpecification(gl);
 
-    GLuint tempID;
+    GLBuffer buffer, triangleVBO; // buffer is a generic buffer, to be initialized and copied into VertexSpecifications
+
     // create and bind the buffer used by the square vertices
-    glGenBuffers(1, &tempID);
-    glBindBuffer(GL_ARRAY_BUFFER, tempID);
-    glBufferData(GL_ARRAY_BUFFER, (squareVertices.sizeof), squareVertices.ptr, GL_STATIC_DRAW);
-    squareVS.VBO = tempID;    // "give ownership" of the VBO to the VS
+    buffer = new GLBuffer(gl, GL_ARRAY_BUFFER, GL_STATIC_DRAW);
+    buffer.setData(squareVertices.sizeof, squareVertices.ptr);
+    squareVS.VBO = buffer;    // "give ownership" of the VBO to the VS
     // create and bind the buffer used by the square indices
-    glGenBuffers(1, &tempID);
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, tempID);
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, squareIndices.sizeof, squareIndices.ptr, GL_STATIC_DRAW);
-    squareVS.IBO = tempID;    // "give ownership" of the IBO to the VS
+    buffer = new GLBuffer(gl, GL_ELEMENT_ARRAY_BUFFER, GL_STATIC_DRAW);
+    buffer.setData(squareIndices.sizeof, squareIndices.ptr);
+    squareVS.IBO = buffer;    // "give ownership" of the IBO to the VS
+
     // create and bind the buffer used by the hexagon vertices
-    glGenBuffers(1, &tempID);
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, tempID);
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, hexFanVertices.sizeof, hexFanVertices.ptr, GL_STATIC_DRAW);
-    hexVS.VBO = tempID;    // "give ownership" of the VBO to the VS
+    buffer = new GLBuffer(gl, GL_ARRAY_BUFFER, GL_STATIC_DRAW);
+    buffer.setData(hexFanVertices.sizeof, hexFanVertices.ptr);
+    hexVS.VBO = buffer;    // "give ownership" of the VBO to the VS, we will NOT use indices for rendering
 
     // create and bind the buffer used by the triangle vertices
-    GLuint triangleVBO;
-    glGenBuffers(1, &triangleVBO);
-    glBindBuffer(GL_ARRAY_BUFFER, triangleVBO);
-    glBufferData(GL_ARRAY_BUFFER, (triangleVertices.sizeof), triangleVertices.ptr, GL_STATIC_DRAW);
+    triangleVBO = new GLBuffer(gl, GL_ARRAY_BUFFER, GL_STATIC_DRAW);
+    triangleVBO.setData(triangleVertices.sizeof, triangleVertices.ptr);
     //we will NOT use indices for drawing the triangle, and will NOT confer VBO controll over the triangleVS object
 
-    // add first attribute for the SQUARE: position; as GENERIC attribute (OpenGL 3.0+ style), 3 floats
-    squareVS.add(VertexAttribute.Role.GENERIC, GL_FLOAT, 3);
-    // add one attribute for the SQUARE: color as Role.COLOR (OpenGL 2.0 style), 3 floats
-    squareVS.add(VertexAttribute.Role.COLOR, GL_FLOAT, 3);
+    // add attributes for the SQUARE: position and color with "legacy" code (OpenGL 2.0 style), 3 floats each
+    squareVS.addLegacy(VertexAttribute.Role.POSITION, GL_FLOAT, 3);
+    squareVS.addLegacy(VertexAttribute.Role.COLOR, GL_FLOAT, 3);
 
-    // add first attribute for the HEXAGON: position; as GENERIC attribute (OpenGL 3.0+ style), 3 floats
-    hexVS.add(VertexAttribute.Role.GENERIC, GL_FLOAT, 3);
-    // add one attribute for the HEXAGON: color as Role.GENERIC (OpenGL 3.0+ style), 3 floats
-    hexVS.add(VertexAttribute.Role.GENERIC, GL_FLOAT, 3);
+    // add attributes for the HEXAGON: position and color as GENERIC attributes (OpenGL 3.0+ style), 3 floats each
+    // fixed locations
+    hexVS.addGeneric(GL_FLOAT, 3, "position_attribute");
+    hexVS.addGeneric(GL_FLOAT, 3, "color_attribute");
 
     // add one attribute to the TRIANGLE: position, as Role.POSITION (OpenGL 2.0 style);
-    triangleVS.add(VertexAttribute.Role.POSITION, GL_FLOAT, 3);
+    triangleVS.addLegacy(VertexAttribute.Role.POSITION, GL_FLOAT, 3);
     // add one attribute to the TRIANGLE: color, as GENERIC attribute (OpenGL 3.0+ style);
-    triangleVS.add(VertexAttribute.Role.GENERIC, GL_FLOAT, 3);
+    triangleVS.addGeneric(GL_FLOAT, 3, "color_attribute");
 
     // unbind buffers: not really needed, but it's nice to clean your own mess.
     glBindBuffer(GL_ARRAY_BUFFER, 0);
@@ -97,10 +93,9 @@ void main(){
     //write and compile the shaders for the SQUARE
     string[] squareVertSource = [
         r"#version 110",
-        r"attribute vec4 position_attribute;",
         r"void main() {",
         r"  gl_FrontColor = gl_Color;",
-        r"  gl_Position = vec4(0.5, 0.5, 0.5, 1) * position_attribute;",
+        r"  gl_Position = vec4(0.5, 0.5, 0.5, 1) * gl_Vertex;",
         r"}"];
 
     string[] squareFragSource = [
@@ -113,7 +108,7 @@ void main(){
     auto squareFrag = new GLShader(gl, GL_FRAGMENT_SHADER, squareFragSource);
     auto squareProgram = new GLProgram(gl);
     squareProgram.attach(squareVertex, squareFrag);
-    squareProgram.link("position_attribute");
+    squareProgram.link();
 
     //write and compile the shaders for the TRIANGLE
     string[] triangleVertSource = [
@@ -134,15 +129,13 @@ void main(){
 
     auto triangleVertex = new GLShader(gl, GL_VERTEX_SHADER, triangleVertSource);
     auto triangleFrag = new GLShader(gl, GL_FRAGMENT_SHADER, triangleFragSource);
-    auto triangleProgram = new GLProgram(gl);
-    triangleProgram.attach(triangleVertex, triangleFrag);
-    triangleProgram.link("color_attribute");
+    auto triangleProgram = new GLProgram(gl, triangleFrag, triangleVertex);
 
     //write and compile the shaders for the HEXAGON
     string[] hexVertSource = [
         r"#version 130",                    //NOTE: OpenGL 3.0 REQUIRED FOR VERSION 130!
-        r"in vec4 color_attribute;",
         r"in vec4 position_attribute;",
+        r"in vec4 color_attribute;",
         r"out vec4 out_Color;",
         r"void main() {",
         r"  out_Color = color_attribute;", //pass the color to the post-vertex and to the fragment shader
@@ -160,7 +153,7 @@ void main(){
     auto hexVertex = new GLShader(gl, GL_VERTEX_SHADER, hexVertSource);
     auto hexFrag = new GLShader(gl, GL_FRAGMENT_SHADER, hexFragSource);
     auto hexProgram = new GLProgram(gl, hexFrag, hexVertex);
-    hexProgram.link("position_attribute", "color_attribute");
+    hexProgram.link();
 
     /* While the program is running */
     writeln("Entering the rendering loop");
@@ -173,22 +166,22 @@ void main(){
         // draw the square
         squareVS.use();         // use this VertexSpecification
         squareProgram.use();    // use the square shader program
-        glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, cast(void*)0);
+        glDrawElements(GL_TRIANGLES, cast(int)(squareVS.IBO.size()/uint.sizeof), GL_UNSIGNED_INT, cast(void*)0);
         squareProgram.unuse();  // unuse this VertexSpecification
         squareVS.unuse();       // unuse the square shader program
 
-        glBindBuffer(GL_ARRAY_BUFFER, triangleVBO); //manually bind the VBO
-        triangleVS.use();
+        triangleVBO.bind();     // manually bind the VBO
+        triangleVS.use(triangleProgram);
         triangleProgram.use();
-        glDrawArrays(GL_TRIANGLES, 0, 3);
+        glDrawArrays(GL_TRIANGLES, 0, cast(int)(triangleVBO.size()/triangleVS.getVertexSize()));
         triangleProgram.unuse();
         triangleVS.unuse();
 
-        hexVS.use();         // use this VertexSpecification
-        hexProgram.use();    // use the hexagon shader program
-        glDrawArrays(GL_TRIANGLE_FAN, 0, 9);
-        hexProgram.unuse();  // unuse th VertexSpecification
-        hexVS.unuse();       // unuse the shader program
+        hexVS.use(hexProgram);            // use this VertexSpecification
+        hexProgram.use();       // use the hexagon shader program
+        glDrawArrays(GL_TRIANGLE_FAN, 0, cast(int)(hexVS.VBO.size()/hexVS.getVertexSize()));
+        hexProgram.unuse();     // unuse th VertexSpecification
+        hexVS.unuse();          // unuse the shader program
 
         window.setTitle("testing VertexSpecification");
         window.swapBuffers();
