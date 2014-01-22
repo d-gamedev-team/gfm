@@ -76,19 +76,31 @@ class VertexSpecification
             _state = State.UNUSED;
         }
 
-        /// This property allows the user to set/unset the VBO "ownership"
-        @property GLBuffer VBO() { return _vbo; } // property can always be read
+        /// This property allows the user to set/unset the used VBO.
+        /// You can't select another VBO while this VertexSpecification is being used.
+        @property GLBuffer VBO() pure
+        {
+            return _vbo; 
+        }
+
         /// Ditto
-        @property GLBuffer VBO(GLBuffer vbo) { // write property
-            assert (_state == State.UNUSED); // Can be modified ONLY when unused
+        @property GLBuffer VBO(GLBuffer vbo) pure nothrow
+        {
+            assert(_state == State.UNUSED);
             return _vbo = vbo;
         }
 
-        /// This property allows the user to set/unset the IBO "ownership"
-        @property GLBuffer IBO() { return _ibo; } // property can always be read
+        /// This property allows the user to set/unset the used IBO.
+        /// You can't select another IBO while this VertexSpecification is being used.
+        @property GLBuffer IBO() pure nothrow
+        {
+            return _ibo;
+        }
+
         /// Ditto
-        @property GLBuffer IBO(GLBuffer ibo) { // write property
-            assert (_state == State.UNUSED); // Can be modified ONLY when unused
+        @property GLBuffer IBO(GLBuffer ibo) pure nothrow
+        {
+            assert(_state == State.UNUSED);
             return _ibo = ibo;
         }
 
@@ -142,7 +154,10 @@ class VertexSpecification
 
         /// Returns the size of the Vertex; this size can be computer
         /// after you added all your attributes
-        size_t getVertexSize() { return _currentOffset; }
+        size_t getVertexSize() pure const nothrow
+        { 
+            return _currentOffset;
+        }
     }
 
     private
@@ -213,7 +228,9 @@ struct VertexAttribute
                     break;
 
                case Role.GENERIC:
-                    if (genericLocation == -1)  {       // we need to recover the location of the attribute
+                    if (genericLocation == -1)
+                    {
+                        // we need to recover the location of the attribute
                         assert(program !is null);
                         genericLocation = program.attrib(genericName).location;
                     }
