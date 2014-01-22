@@ -350,7 +350,7 @@ final class GLProgram
         }
 
         /// Gets an uniform by name.
-        /// Returns: A GLUniform with this name. This GLUniform might be created on demand if 
+        /// Returns: A GLUniform with this name. This GLUniform might be created on demand if
         ///          the name hasn't been found. So it might be a "fake" uniform.
         /// See_also: GLUniform.
         GLUniform uniform(string name)
@@ -413,6 +413,8 @@ final class GLAttribute
         }
 
     }
+
+    @property GLint location() { return _location; } // property, getter only
 
     private
     {

@@ -11,10 +11,9 @@ final class GLBuffer
     {
         /// Creates an empty buffer.
         /// Throws: $(D OpenGLException) on error.
-        this(OpenGL gl, GLuint target, GLuint storage, GLuint usage)
+        this(OpenGL gl, GLuint target, GLuint usage)
         {
             _gl = gl;
-            _storage = storage;
             _usage = usage;
             _target = target;
             _firstLoad = true;
@@ -123,7 +122,6 @@ final class GLBuffer
         GLuint _buffer;
         size_t _size;
         GLuint _target;
-        GLuint _storage;
         GLuint _usage;
         bool _firstLoad;
         bool _initialized;
