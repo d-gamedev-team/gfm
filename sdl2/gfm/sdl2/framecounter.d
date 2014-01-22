@@ -49,7 +49,8 @@ final class FrameCounter
 
         /// Marks the beginning of a new frame.
         /// Returns: Current time difference since last frame, in seconds.
-        double tick()
+        deprecated alias tick = tickSecs;
+        double tickSecs()
         {
             return tickMs() * 0.001;
         }
