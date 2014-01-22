@@ -47,6 +47,13 @@ final class GLBuffer
 
         /// Returns: Copy bytes to the buffer.
         /// Throws: $(D OpenGLException) on error.
+        void setData(T)(T[] buffer)
+        {
+            setData(buffer.length * T.sizeof, buffer.ptr);
+        }
+
+        /// Returns: Copy bytes to the buffer.
+        /// Throws: $(D OpenGLException) on error.
         void setData(size_t size, void * data)
         {
             bind();
