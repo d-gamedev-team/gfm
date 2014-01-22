@@ -190,17 +190,16 @@ struct VertexAttribute
         GENERIC    /// This attribute is a generic vertex attribute
     }
 
-    // FIXME TODO should those be private?
-    Role role;
-    int n;
-    size_t offset;
-    GLenum glType;
-    GLint genericLocation;
-    string genericName;
-    GLboolean normalize;
-
-    package
+    private
     {
+        Role role;
+        int n;
+        size_t offset;
+        GLenum glType;
+        GLint genericLocation;
+        string genericName;
+        GLboolean normalize;
+
         /// Use this attribute.
         /// Throws: $(D OpenGLException) on error.
         void use(OpenGL gl, GLProgram program, GLsizei sizeOfVertex)
@@ -284,7 +283,7 @@ private
              || t == GL_UNSIGNED_SHORT
              || t == GL_INT   
              || t == GL_UNSIGNED_INT 
-//             || t == GL_HALF  
+             || t == GL_HALF_FLOAT
              || t == GL_FLOAT 
              || t == GL_DOUBLE);
     }
@@ -295,7 +294,7 @@ private
         {
             case GL_BYTE:
             case GL_UNSIGNED_BYTE: return 1;
-//            case GL_HALF:
+            case GL_HALF_FLOAT:
             case GL_SHORT:
             case GL_UNSIGNED_SHORT: return 2;
             case GL_INT:
