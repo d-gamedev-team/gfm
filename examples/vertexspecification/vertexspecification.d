@@ -28,15 +28,7 @@ void main()
         Position position;
         Color color;
     }
-    Vertex[4] squareVertices = [{[0, 0, 0], [1, 1, 1]},
-                                {[1, 0, 0], [0, 1, 1]},
-                                {[1, 1, 0], [0, 0, 1]},
-                                {[0, 1, 0], [0.5, 0.5, .5]}     ];
-    GLuint[6] squareIndices = [0, 1, 2, 0, 2, 3];
 
-    Vertex[3] triangleVertices = [{[-0.5, -0.5, 0], [1, 0, 0]},
-                                  {[ 0.5, -0.5, 0], [0, 1, 0]},
-                                  {[   0,  0.5, 0], [1, 1, 0]}  ];
 
     Vertex[8] hexFanVertices = [{[   0,   0, 0], [1, 1, 1]},
                                 {[   0,   1, 0], [0, 1, 0]},
@@ -47,39 +39,50 @@ void main()
                                 {[-0.5, 0.5, 0], [0, 1, 0]},
                                 {[   0,   1, 0], [0, 1, 0]}     ];
 
-    VertexSpecification squareVS, triangleVS, hexVS;
 
-
+    //
     // SQUARE
-    squareVS   = new VertexSpecification(gl);
+    //
+
+    Vertex[4] squareVertices = [ { [0, 0, 0], [1, 1, 1] },
+                                 { [1, 0, 0], [0, 1, 1] },
+                                 { [1, 1, 0], [0, 0, 1] },
+                                 { [0, 1, 0], [.5, .5, .5] } ];
+
+    GLuint[6] squareIndices = [0, 1, 2, 0, 2, 3];
+
+    auto squareVS = scoped!VertexSpecification(gl);
+
     // create and bind the buffer used by the square vertices.
     squareVS.VBO = new GLBuffer(gl, GL_ARRAY_BUFFER, GL_STATIC_DRAW);
-    squareVS.VBO.setData(squareVertices.sizeof, squareVertices.ptr);
+    squareVS.VBO.setData(squareVertices[]);
+    scope(exit) squareVS.VBO.close();
+
     // create and bind the buffer used by the square indices.
     squareVS.IBO = new GLBuffer(gl, GL_ELEMENT_ARRAY_BUFFER, GL_STATIC_DRAW);
     squareVS.IBO.setData(squareIndices.sizeof, squareIndices.ptr);
+    scope(exit) squareVS.IBO.close();
+    
+    // Compiles the shaders for the square.
+    auto squareProgram = scoped!GLProgram(gl,
+        r"#version 110
+        #if VERTEX_SHADER
 
-    // write and compile the shaders for the SQUARE
-    string[] squareVertSource = 
-    [
-        "#version 110\n",
-        "void main() {",
-        "  gl_FrontColor = gl_Color;",
-        "  gl_Position = vec4(0.5, 0.5, 0.5, 1) * gl_Vertex;",
-        "}"
-    ];
+        void main()
+        {
+            gl_FrontColor = gl_Color;
+            gl_Position = vec4(0.5, 0.5, 0.5, 1) * gl_Vertex;
+        }
 
-    string[] squareFragSource = 
-    [
-        "#version 110\n",
-        "void main() {",
-        "    gl_FragColor = gl_Color;",
-        "}"
-    ];
+        #elif FRAGMENT_SHADER
 
-    auto squareVertex = new GLShader(gl, GL_VERTEX_SHADER, squareVertSource);
-    auto squareFrag = new GLShader(gl, GL_FRAGMENT_SHADER, squareFragSource);
-    auto squareProgram = new GLProgram(gl, squareVertex, squareFrag);
+        void main()
+        {
+            gl_FragColor = gl_Color;
+        }
+
+        #endif
+        ");
 
     // Add attributes for the square: position and color with "legacy" code (OpenGL 2.0 style), 3 floats each.
     // Variables will be accessible in the shader by 'gl_Vertex' and 'gl_Color' variables
@@ -87,38 +90,47 @@ void main()
     squareVS.addLegacy(VertexAttribute.Role.COLOR, GL_FLOAT, 3);
 
 
+
+    //
     // TRIANGLE
-    triangleVS = new VertexSpecification(gl);
-    // create and bind the buffer used by the triangle vertices
-    GLBuffer triangleVBO; // this buffer will hold the vertex data
-    triangleVBO = new GLBuffer(gl, GL_ARRAY_BUFFER, GL_STATIC_DRAW);
-    triangleVBO.setData(triangleVertices.sizeof, triangleVertices.ptr);
-    //please note: we will NOT use indices for the triangle, and will NOT confer VBO controll over the triangleVS object
+    //
 
-    //write and compile the shaders for the TRIANGLE
-    string[] triangleVertSource = 
-    [
-        "#version 110\n",
-        "attribute vec4 color_attribute;",
-        "varying vec4 Color;",
-        "void main() {",
-        "  Color = color_attribute;",
-        "  gl_Position = vec4(0.5, 0.5, 0.5, 1) * gl_Vertex;",
-        "}"
-    ];
+    Vertex[3] triangleVertices = [ { [-0.5, -0.5, 0], [1, 0, 0] },
+                                   { [ 0.5, -0.5, 0], [0, 1, 0] },
+                                   { [   0,  0.5, 0], [1, 1, 0] } ];
 
-    string[] triangleFragSource = 
-    [
-        "#version 110\n",
-        "varying vec4 Color;"
-        "void main() {",
-        "    gl_FragColor = vec4(Color.xyz, 0.7);",
-        "}"
-    ];
+    auto triangleVS = scoped!VertexSpecification(gl);
 
-    auto triangleVertex = new GLShader(gl, GL_VERTEX_SHADER, triangleVertSource);
-    auto triangleFrag = new GLShader(gl, GL_FRAGMENT_SHADER, triangleFragSource);
-    auto triangleProgram = new GLProgram(gl, triangleFrag, triangleVertex);
+    // Creates and binds the buffer used by the triangle vertices.
+    // Please note: we will NOT use indices for the triangle
+    auto triangleVBO = scoped!GLBuffer(gl, GL_ARRAY_BUFFER, GL_STATIC_DRAW); // this buffer will hold the vertex data
+    triangleVBO.setData(triangleVertices[]);
+    
+    // Compiles the shaders for the triangle.
+    auto triangleProgram = scoped!GLProgram(gl,
+        r"#version 110
+        
+        varying vec4 Color;
+
+        #if VERTEX_SHADER
+
+        attribute vec4 color_attribute;
+        
+        void main()
+        {
+            Color = color_attribute;
+            gl_Position = vec4(0.5, 0.5, 0.5, 1) * gl_Vertex;
+        }
+
+        #elif FRAGMENT_SHADER
+
+        void main()
+        {
+            gl_FragColor = vec4(Color.xyz, 0.7);
+        }
+
+        #endif
+        ");
 
     // add one attribute to the triangle: position, as "legacy" Role.POSITION (OpenGL 2.0 style);
     // add another attribute: color, as GENERIC attribute (OpenGL 3.0+ style); the color is added by attribute name
@@ -127,41 +139,47 @@ void main()
     triangleVS.addGeneric(GL_FLOAT, 3, "color_attribute");
 
 
+
+    //
     // HEXAGON
-    hexVS     = new VertexSpecification(gl);
+    //
+
+    auto hexVS = scoped!VertexSpecification(gl);
     // create and bind the buffer used by the hexagon vertices.
     hexVS.VBO = new GLBuffer(gl, GL_ARRAY_BUFFER, GL_STATIC_DRAW);
-    hexVS.VBO.setData(hexFanVertices.sizeof, hexFanVertices.ptr);
+    hexVS.VBO.setData(hexFanVertices[]);
 
-    //write and compile the shaders for the HEXAGON
-    string[] hexVertSource = 
-    [
-        "#version 330\n",                    //NOTE: OpenGL 3 + extensions / OpenGL3.3 required for this shader!
-        "#extension GL_ARB_explicit_attrib_location : enable\n",
-        "layout(location = 0) in vec4 position_attribute;",
-        "layout(location = 1) in vec4 color_attribute;",
-        "out vec4 out_Color;",
-        "void main() {",
-        "  out_Color = color_attribute;", //pass the color to the post-vertex and to the fragment shader
-        "  gl_Position = vec4(0.5, 0.4, 1, 1) * position_attribute + vec4(-0.4, 0.4, 0, 0);",
-        "}"
-    ];
+    // Compiles the shaders for the hexagon.
+    // Note: OpenGL 3 + extensions / OpenGL3.3 required for this shader.
+    // Pass the color to the post-vertex and to the fragment shader.
+    auto hexProgram = scoped!GLProgram(gl, 
+        r"#version 330
+       
+        #if VERTEX_SHADER
 
-    string[] hexFragSource = 
-    [
-        "#version 330\n",                    //NOTE: OpenGL 3.0 REQUIRED FOR VERSION 330!
-        "in vec4 out_Color;",
-        "out vec4 final_Color;",
-        "void main() {",
-        "    final_Color = out_Color;",
-        "}"
-    ];
+        #extension GL_ARB_explicit_attrib_location : enable
+        layout(location = 0) in vec4 position_attribute;
+        layout(location = 1) in vec4 color_attribute;
+        out vec4 out_Color;
+        void main() 
+        {
+          out_Color = color_attribute; //pass the color to the post-vertex and to the fragment shader
+          gl_Position = vec4(0.5, 0.4, 1, 1) * position_attribute + vec4(-0.4, 0.4, 0, 0);
+        }
 
-    auto hexVertex = new GLShader(gl, GL_VERTEX_SHADER, hexVertSource);
-    auto hexFrag = new GLShader(gl, GL_FRAGMENT_SHADER, hexFragSource);
-    auto hexProgram = new GLProgram(gl, hexFrag, hexVertex);
+        #elif FRAGMENT_SHADER
 
-    // add attributes for the hexagon: position and color as GENERIC attributes (OpenGL 3.0+ style), 3 floats each
+        in vec4 out_Color;
+        out vec4 final_Color;
+        void main() 
+        {
+            final_Color = out_Color;
+        }
+
+        #endif
+        ");
+
+    // Add attributes for the hexagon: position and color as GENERIC attributes (OpenGL 3.0+ style), 3 floats each
     // both are added by attribute location (the location is fixed in the shader via "layout(location = N) in ...")
     hexVS.addGeneric(GL_FLOAT, 3, 0);
     hexVS.addGeneric(GL_FLOAT, 3, 1);
