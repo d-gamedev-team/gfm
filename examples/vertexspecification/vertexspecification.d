@@ -4,7 +4,8 @@ import gfm.opengl,
 import std.typecons,
        std.string;
 
-void main(){
+void main()
+{
     int width = 800;
     int height = 600;
     auto sdl = scoped!SDL2(null);
@@ -22,7 +23,8 @@ void main(){
 
     alias GLfloat[3] Position;
     alias GLfloat[3] Color;
-    struct Vertex {
+    struct Vertex 
+    {
         Position position;
         Color color;
     }
@@ -50,10 +52,10 @@ void main(){
 
     // SQUARE
     squareVS   = new VertexSpecification(gl);
-    // create and bind the buffer used by the square vertices. VS has "ownership"
+    // create and bind the buffer used by the square vertices.
     squareVS.VBO = new GLBuffer(gl, GL_ARRAY_BUFFER, GL_STATIC_DRAW);
     squareVS.VBO.setData(squareVertices.sizeof, squareVertices.ptr);
-    // create and bind the buffer used by the square indices. VS has "ownership"
+    // create and bind the buffer used by the square indices.
     squareVS.IBO = new GLBuffer(gl, GL_ELEMENT_ARRAY_BUFFER, GL_STATIC_DRAW);
     squareVS.IBO.setData(squareIndices.sizeof, squareIndices.ptr);
 
@@ -126,8 +128,8 @@ void main(){
 
 
     // HEXAGON
-    hexVS      = new VertexSpecification(gl);
-    // create and bind the buffer used by the hexagon vertices. VS has "ownership"
+    hexVS     = new VertexSpecification(gl);
+    // create and bind the buffer used by the hexagon vertices.
     hexVS.VBO = new GLBuffer(gl, GL_ARRAY_BUFFER, GL_STATIC_DRAW);
     hexVS.VBO.setData(hexFanVertices.sizeof, hexFanVertices.ptr);
 
@@ -147,7 +149,7 @@ void main(){
 
     string[] hexFragSource = 
     [
-        "#version 330\n",                    //NOTE: OpenGL 3.0 REQUIRED FOR VERSION 130!
+        "#version 330\n",                    //NOTE: OpenGL 3.0 REQUIRED FOR VERSION 330!
         "in vec4 out_Color;",
         "out vec4 final_Color;",
         "void main() {",
@@ -180,20 +182,22 @@ void main(){
         // draw the square
         squareVS.use();         // use this VertexSpecification
         squareProgram.use();    // use the square shader program
-        glDrawElements(GL_TRIANGLES, cast(int)(squareVS.IBO.size()/uint.sizeof), GL_UNSIGNED_INT, cast(void*)0);
+        glDrawElements(GL_TRIANGLES, cast(int)(squareVS.IBO.size() / uint.sizeof), GL_UNSIGNED_INT, cast(void*)0);
         squareProgram.unuse();  // unuse this VertexSpecification
         squareVS.unuse();       // unuse the square shader program
 
+        // draw the triangle
         triangleVBO.bind();     // manually bind the VBO
         triangleProgram.use();
         triangleVS.use(triangleProgram);
-        glDrawArrays(GL_TRIANGLES, 0, cast(int)(triangleVBO.size()/triangleVS.getVertexSize()));
+        glDrawArrays(GL_TRIANGLES, 0, cast(int)(triangleVBO.size() / triangleVS.vertexSize()));
         triangleProgram.unuse();
         triangleVS.unuse();
 
+        // draw the hexagon
         hexProgram.use();       // use the hexagon shader program
         hexVS.use();            // use this VertexSpecification
-        glDrawArrays(GL_TRIANGLE_FAN, 0, cast(int)(hexVS.VBO.size()/hexVS.getVertexSize()));
+        glDrawArrays(GL_TRIANGLE_FAN, 0, cast(int)(hexVS.VBO.size() / hexVS.vertexSize()));
         hexProgram.unuse();     // unuse th VertexSpecification
         hexVS.unuse();          // unuse the shader program
 
