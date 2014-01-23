@@ -235,8 +235,11 @@
 <br><br>
 <hr><div class="row-fluid declaration"><h3>class <span class="symbol-target" id="VertexSpecification">&nbsp;</span><a class="symbol-link" href="#VertexSpecification">VertexSpecification</a>;
 </h3></div>
-<div class="declaration-content"><dl><p>A vertex specification describes the format of a vertex. It's like an OpenGL VAO, except more manual.
- Can only be built manually for now.
+<div class="declaration-content"><dl><p>A <span class="symbol-target" id="VertexSpecification">&nbsp;</span><a class="symbol-link" href="#VertexSpecification">VertexSpecification</a> makes it easy to use Vertex Buffer Object with interleaved attributes.
+ It's role is similar to the OpenGL VAO one.
+ If the user requests it, the <span class="symbol-target" id="VertexSpecification">&nbsp;</span><a class="symbol-link" href="#VertexSpecification">VertexSpecification</a> can "take control" of a given VBO and/or IBO
+ and automatically bind/unbind them when the <span class="symbol-target" id="VertexSpecification">&nbsp;</span><a class="symbol-link" href="#VertexSpecification">VertexSpecification</a> is used/unused.
+ You have to specify every attribute manually for now.
 </p>
 
 <dt>TODO:</dt><dd>
@@ -248,16 +251,11 @@ Extract vertex specification from a struct at compile-time.</dd>
 
 </dl>
 </div>
-<hr><div class="row-fluid declaration"><h3>void <span class="symbol-target" id="use">&nbsp;</span><a class="symbol-link" href="#use">use</a>(bool <i>useOlderAttribFunctions</i> = false);
+<hr><div class="row-fluid declaration"><h3>void <span class="symbol-target" id="use">&nbsp;</span><a class="symbol-link" href="#use">use</a>(GLProgram <i>program</i> = null);
 </h3></div>
 <div class="declaration-content"><dl><p>Use this vertex specification.
 </p>
 
-<dt>Parameters</dt><dd><table class="table table-condensed table-bordered"><tr><td>bool <i>useOlderAttribFunctions</i></td>
-<td>Whether to <span class="symbol-target" id="use">&nbsp;</span><a class="symbol-link" href="#use">use</a> older pointer attribute functions, 
-                              which can be more portable.</td>
-</tr>
-</table></dd>
 <dt>Throws</dt><dd><span class="inlinecode">OpenGLException</span> on error.</dd>
 </dl>
 </div>
@@ -269,22 +267,84 @@ Extract vertex specification from a struct at compile-time.</dd>
 <dt>Throws</dt><dd><span class="inlinecode">OpenGLException</span> on error.</dd>
 </dl>
 </div>
-<hr><div class="row-fluid declaration"><h3>void <span class="symbol-target" id="add">&nbsp;</span><a class="symbol-link" href="#add">add</a>(VertexElement.Role <i>role</i>, GLenum <i>glType</i>, int <i>n</i>);
+<hr><div class="row-fluid declaration"><h3>pure @property GLBuffer <span class="symbol-target" id="VBO">&nbsp;</span><a class="symbol-link" href="#VBO">VBO</a>();
+<br>pure nothrow @property GLBuffer <span class="symbol-target" id="VBO">&nbsp;</span><a class="symbol-link" href="#VBO">VBO</a>(GLBuffer <i>vbo</i>);
 </h3></div>
-<div class="declaration-content"><dl><p>Adds an item to the vertex specification.</p>
+<div class="declaration-content"><dl><p>This property allows the user to set/unset the used <span class="symbol-target" id="VBO">&nbsp;</span><a class="symbol-link" href="#VBO">VBO</a>.
+ You can't select another <span class="symbol-target" id="VBO">&nbsp;</span><a class="symbol-link" href="#VBO">VBO</a> while this VertexSpecification is being used.</p>
 
+</dl>
+</div>
+<hr><div class="row-fluid declaration"><h3>pure nothrow @property GLBuffer <span class="symbol-target" id="IBO">&nbsp;</span><a class="symbol-link" href="#IBO">IBO</a>();
+<br>pure nothrow @property GLBuffer <span class="symbol-target" id="IBO">&nbsp;</span><a class="symbol-link" href="#IBO">IBO</a>(GLBuffer <i>ibo</i>);
+</h3></div>
+<div class="declaration-content"><dl><p>This property allows the user to set/unset the used <span class="symbol-target" id="IBO">&nbsp;</span><a class="symbol-link" href="#IBO">IBO</a>.
+ You can't select another <span class="symbol-target" id="IBO">&nbsp;</span><a class="symbol-link" href="#IBO">IBO</a> while this VertexSpecification is being used.</p>
+
+</dl>
+</div>
+<hr><div class="row-fluid declaration"><h3>void <span class="symbol-target" id="addLegacy">&nbsp;</span><a class="symbol-link" href="#addLegacy">addLegacy</a>(VertexAttribute.Role <i>role</i>, GLenum <i>glType</i>, int <i>n</i>);
+</h3></div>
+<div class="declaration-content"><dl><p>Adds an non-generic attribute to the vertex specification.
+</p>
+
+<dt>Parameters</dt><dd><table class="table table-condensed table-bordered"><tr><td>VertexAttribute.Role <i>role</i></td>
+<td>what is the <i>role</i> of this attribute;</td>
+</tr>
+<tr><td>int <i>n</i></td>
+<td>1, 2, 3 or 4, is the number of components of the attribute;
+ For compatibility, you should not define more than 16 attributes</td>
+</tr>
+</table></dd>
+</dl>
+</div>
+<hr><div class="row-fluid declaration"><h3>void <span class="symbol-target" id="addGeneric">&nbsp;</span><a class="symbol-link" href="#addGeneric">addGeneric</a>(GLenum <i>glType</i>, int <i>n</i>, GLuint <i>location</i>, GLboolean <i>normalize</i> = GL_FALSE);
+</h3></div>
+<div class="declaration-content"><dl><p>Adds a generic attribute to the vertex specification.
+</p>
+
+<dt>Parameters</dt><dd><table class="table table-condensed table-bordered"><tr><td>role</td>
+<td>what is the role of this attribute;</td>
+</tr>
+<tr><td>int <i>n</i></td>
+<td>1, 2, 3 or 4, is the number of components of the attribute;
+ For compatibility, you should not define more than 16 attributes</td>
+</tr>
+</table></dd>
+</dl>
+</div>
+<hr><div class="row-fluid declaration"><h3>void <span class="symbol-target" id="addGeneric">&nbsp;</span><a class="symbol-link" href="#addGeneric">addGeneric</a>(GLenum <i>glType</i>, int <i>n</i>, string <i>name</i>, GLboolean <i>normalize</i> = GL_FALSE);
+</h3></div>
+<div class="declaration-content"><dl><p>Adds a generic attribute to the vertex specification.
+</p>
+
+<dt>Parameters</dt><dd><table class="table table-condensed table-bordered"><tr><td>role</td>
+<td>what is the role of this attribute;</td>
+</tr>
+<tr><td>int <i>n</i></td>
+<td>1, 2, 3 or 4, is the number of components of the attribute;
+ For compatibility, you should not define more than 16 attributes</td>
+</tr>
+</table></dd>
 </dl>
 </div>
 <hr><div class="row-fluid declaration"><h3>void <span class="symbol-target" id="addDummyBytes">&nbsp;</span><a class="symbol-link" href="#addDummyBytes">addDummyBytes</a>(int <i>nBytes</i>);
 </h3></div>
 <div class="declaration-content"><dl><p>Adds padding space to the vertex specification.
- This is useful for alignment.</p>
+ This is useful for alignment. TODO: clarify</p>
+
+</dl>
+</div>
+<hr><div class="row-fluid declaration"><h3>deprecated alias <span class="symbol-target" id="getVertexSize">&nbsp;</span><a class="symbol-link" href="#getVertexSize">getVertexSize</a> = vertexSize;
+</h3></div>
+<div class="declaration-content"><dl><p>Returns the size of the Vertex; this size can be computer
+ after you added all your attributes</p>
 
 </dl>
 </div>
 </div>
 </div>
-<hr><div class="row-fluid declaration"><h3>struct <span class="symbol-target" id="VertexElement">&nbsp;</span><a class="symbol-link" href="#VertexElement">VertexElement</a>;
+<hr><div class="row-fluid declaration"><h3>struct <span class="symbol-target" id="VertexAttribute">&nbsp;</span><a class="symbol-link" href="#VertexAttribute">VertexAttribute</a>;
 </h3></div>
 <div class="declaration-content"><dl><p>Describes a single attribute in a vertex entry.</p>
 
@@ -314,24 +374,13 @@ Extract vertex specification from a struct at compile-time.</dd>
 
 </dl>
 </div>
-</div>
+<hr><div class="row-fluid declaration"><h3><span class="symbol-target" id="GENERIC">&nbsp;</span><a class="symbol-link" href="#GENERIC">GENERIC</a></h3></div>
+<div class="declaration-content"><dl><p>This attribute is a generic vertex attribute</p>
 
-</div>
-<hr><div class="row-fluid declaration"><h3>package void <span class="symbol-target" id="use">&nbsp;</span><a class="symbol-link" href="#use">use</a>(OpenGL <i>gl</i>, GLuint <i>index</i>, bool <i>useOlderAttribFunctions</i>, GLsizei <i>sizeOfVertex</i>);
-</h3></div>
-<div class="declaration-content"><dl><p>Use this attribute.
-</p>
-
-<dt>Throws</dt><dd><span class="inlinecode">OpenGLException</span> on error.</dd>
 </dl>
 </div>
-<hr><div class="row-fluid declaration"><h3>package void <span class="symbol-target" id="unuse">&nbsp;</span><a class="symbol-link" href="#unuse">unuse</a>(OpenGL <i>gl</i>, GLuint <i>index</i>, bool <i>useOlderAttribFunctions</i>);
-</h3></div>
-<div class="declaration-content"><dl><p>Unuse this attribute.
-</p>
+</div>
 
-<dt>Throws</dt><dd><span class="inlinecode">OpenGLException</span> on error.</dd>
-</dl>
 </div>
 </div>
 </div>
