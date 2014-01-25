@@ -258,6 +258,7 @@ struct VertexAttribute
                case Role.GENERIC:
                     glEnableVertexAttribArray(genericLocation);
                     glVertexAttribPointer(genericLocation, n, glType, normalize, sizeOfVertex, cast(GLvoid *) offset);
+                    break;
             }
 
             gl.runtimeCheck();
