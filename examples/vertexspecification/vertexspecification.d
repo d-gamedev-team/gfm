@@ -160,7 +160,7 @@ void main()
     // Note: OpenGL 3 + extensions / OpenGL3.3 required for this shader.
     // Pass the color to the post-vertex and to the fragment shader.
     auto hexProgram = scoped!GLProgram(gl, 
-        r"#version 330
+        r"#version 130
        
         #if VERTEX_SHADER
 
