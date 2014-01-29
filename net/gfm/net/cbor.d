@@ -486,19 +486,19 @@ CBORValue decodeCBOR(R)(R input) if (isInputRange!R)
 
                 case 25: // half-float
                 {
-                    half_ushort hu = void;
+                    half_ushort hu;
                     hu.i = cast(ushort)readBigEndianIntN(input, 2);
                     return CBORValue(cast(double)hu.f);
                 }
                 case 26: //float
                 {
-                    float_uint fu = void;
+                    float_uint fu;
                     fu.i = cast(uint)readBigEndianIntN(input, 4);
                     return CBORValue(cast(double)fu.f);
                 }
                 case 27: // double
                 {
-                    double_ulong du = void;
+                    double_ulong du;
                     du.i = readBigEndianIntN(input, 8);
                     return CBORValue(cast(real)du.f);
                 }
@@ -605,14 +605,14 @@ void encodeCBOR(R)(R output, CBORValue value) if (isOutputRange!(R, ubyte))
             
             if (cast(double)asHalf == d) // does it fit in a half?
             {
-                half_ushort hu = void;
+                half_ushort hu;
                 hu.f = asHalf;
                 output.writeMajorType(CBORMajorType.TYPE_7, 25);
                 output.writeBigEndianIntN(2, hu.i);
             }
             else if (cast(double)asFloat == d) // does it fit in a float?
             {
-                float_uint fu = void;
+                float_uint fu;
                 fu.f = asFloat;
                 output.writeMajorType(CBORMajorType.TYPE_7, 26);
                 output.writeBigEndianIntN(4, fu.i);
@@ -620,7 +620,7 @@ void encodeCBOR(R)(R output, CBORValue value) if (isOutputRange!(R, ubyte))
             else 
             {
                 // encode as double
-                double_ulong du = void;
+                double_ulong du;
                 du.f = d;
                 output.writeMajorType(CBORMajorType.TYPE_7, 27);
                 output.writeBigEndianIntN(8, du.i);
