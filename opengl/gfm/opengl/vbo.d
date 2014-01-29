@@ -44,9 +44,27 @@ class VertexSpecification
             assert(_state == State.UNUSED);
         }
 
+        /// Locates all the generic attributes who were given a name
+        void locateAttributes(GLProgram program) {
+            assert(_state == State.UNUSED);
+            for (uint i = 0; i < _attributes.length; ++i)
+                _attributes[i].recoverLocation(_gl, program);
+        }
+
         /// Use this vertex specification.
+        /// Re-loads all the attribute locations before actually using it
         /// Throws: $(D OpenGLException) on error.
-        void use(GLProgram program = null)
+        void use(GLProgram program)
+        {
+            locateAttributes(program);
+            use();
+        }
+
+        /// Use this vertex specification.
+        /// You should only call this function after a call on
+        /// locateAttributes() or use(GLProgram).
+        /// Throws: $(D OpenGLException) on error.
+        void use()
         {
             assert(_state == State.UNUSED);
             if (_vbo !is null) // if we are "in control" of this VBO, we have to bind it to current OpenGL state
@@ -55,7 +73,7 @@ class VertexSpecification
                 _ibo.bind();
             // for every attribute
             for (uint i = 0; i < _attributes.length; ++i)
-                _attributes[i].use(_gl, program, cast(GLsizei) _currentOffset);
+                _attributes[i].use(_gl, cast(GLsizei) _currentOffset);
             _state = State.USED;
         }
 
@@ -80,7 +98,7 @@ class VertexSpecification
         /// You can't select another VBO while this VertexSpecification is being used.
         @property GLBuffer VBO() pure
         {
-            return _vbo; 
+            return _vbo;
         }
 
         /// Ditto
@@ -114,7 +132,7 @@ class VertexSpecification
             assert(n > 0 && n <= 4);
             assert(_state == State.UNUSED);
             assert(isGLTypeSuitable(glType));
-            _attributes ~= VertexAttribute(role, n, _currentOffset, glType, -1, null, GL_FALSE);
+            _attributes ~= VertexAttribute(role, n, _currentOffset, glType, -1, "", GL_FALSE);
             _currentOffset += n * glTypeSize(glType);
         }
 
@@ -127,7 +145,7 @@ class VertexSpecification
             assert(n > 0 && n <= 4);
             assert(_state == State.UNUSED);
             assert(isGLTypeSuitable(glType));
-            _attributes ~= VertexAttribute(VertexAttribute.Role.GENERIC, n, _currentOffset, glType, location, null, normalize);
+            _attributes ~= VertexAttribute(VertexAttribute.Role.GENERIC, n, _currentOffset, glType, location, "", normalize);
             _currentOffset += n * glTypeSize(glType);
         }
 
@@ -156,7 +174,7 @@ class VertexSpecification
         /// after you added all your attributes
         deprecated alias getVertexSize = vertexSize;
         size_t vertexSize() pure const nothrow
-        { 
+        {
             return _currentOffset;
         }
     }
@@ -200,9 +218,19 @@ struct VertexAttribute
         string genericName;
         GLboolean normalize;
 
+        /// If needed, recover the location of this generic attribute.
+        void recoverLocation(OpenGL gl, GLProgram program) {
+            // The attributes that require recovery of location are the one
+            // called by name;
+            if (genericName.length) {
+                genericLocation = program.attrib(genericName).location;
+                gl.runtimeCheck();
+            }
+        }
+
         /// Use this attribute.
         /// Throws: $(D OpenGLException) on error.
-        void use(OpenGL gl, GLProgram program, GLsizei sizeOfVertex)
+        void use(OpenGL gl, GLsizei sizeOfVertex)
         {
             final switch (role)
             {
@@ -228,12 +256,6 @@ struct VertexAttribute
                     break;
 
                case Role.GENERIC:
-                    if (genericLocation == -1)
-                    {
-                        // we need to recover the location of the attribute
-                        assert(program !is null);
-                        genericLocation = program.attrib(genericName).location;
-                    }
                     glEnableVertexAttribArray(genericLocation);
                     glVertexAttribPointer(genericLocation, n, glType, normalize, sizeOfVertex, cast(GLvoid *) offset);
                     break;
