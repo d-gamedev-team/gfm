@@ -4,7 +4,8 @@ import core.stdc.stdlib;
 
 import std.string,
        std.conv,
-       std.array;
+       std.array,
+       std.algorithm;
 
 import derelict.opengl3.gl3,
        derelict.opengl3.gl;
@@ -33,6 +34,17 @@ final class OpenGL
 {
     public
     {
+        enum Vendor
+        {
+            AMD,
+            Apple, // for software rendering aka no driver
+            Intel,
+            Mesa,
+            Microsoft, // for "GDI generic" aka no driver
+            NVIDIA,
+            other
+        }
+
         /// Load OpenGL library, redirect debug output to our logger.
         /// You can pass a null logger if you don't want logging.
         /// Throws: $(D OpenGLException) on error.
@@ -159,6 +171,27 @@ final class OpenGL
         string getVendorString()
         {
             return getString(GL_VENDOR);
+        }
+
+        /// Tries to detect the driver maker.
+        /// Returns: Identified vendor.
+        Vendor getVendor()
+        {
+            string s = getVendorString();
+            if (canFind(s, "AMD") || canFind(s, "ATI") || canFind(s, "Advanced Micro Devices"))
+                return Vendor.AMD;
+            else if (canFind(s, "NVIDIA") || canFind(s, "nouveau") || canFind(s, "Nouveau"))
+                return Vendor.NVIDIA;
+            else if (canFind(s, "Intel"))
+                return Vendor.INTEL;
+            else if (canFind(s, "Mesa"))
+                return Vendor.Mesa;
+            else if (canFind(s, "Microsoft"))
+                return Vendor.Microsoft;
+            else if (canFind(s, "Apple"))
+                return Vendor.Apple;
+            else
+                return Vendor.OTHER;
         }
 
         /// Returns: Name of the renderer. This name is typically specific 
