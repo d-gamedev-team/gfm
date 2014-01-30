@@ -160,11 +160,13 @@ void main()
     // Note: OpenGL 3 + extensions / OpenGL3.3 required for this shader.
     // Pass the color to the post-vertex and to the fragment shader.
     auto hexProgram = scoped!GLProgram(gl, 
-        r"#version 130
+        format(
+        r"#version %s
        
         #if VERTEX_SHADER
 
         #extension GL_ARB_explicit_attrib_location : enable
+
         layout(location = 0) in vec4 position_attribute;
         layout(location = 1) in vec4 color_attribute;
         out vec4 out_color;
@@ -184,7 +186,7 @@ void main()
         }
 
         #endif
-        ");
+        ", gl.getVendor() == OpenGL.Vendor.NVIDIA ? "330" : "130" ));
 
     // Add attributes for the hexagon: position and color as GENERIC attributes (OpenGL 3.0+ style), 3 floats each
     // both are added by attribute location (the location is fixed in the shader via "layout(location = N) in ...")
