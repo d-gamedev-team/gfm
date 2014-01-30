@@ -183,7 +183,7 @@ final class OpenGL
             else if (canFind(s, "NVIDIA") || canFind(s, "nouveau") || canFind(s, "Nouveau"))
                 return Vendor.NVIDIA;
             else if (canFind(s, "Intel"))
-                return Vendor.INTEL;
+                return Vendor.Intel;
             else if (canFind(s, "Mesa"))
                 return Vendor.Mesa;
             else if (canFind(s, "Microsoft"))
@@ -191,7 +191,7 @@ final class OpenGL
             else if (canFind(s, "Apple"))
                 return Vendor.Apple;
             else
-                return Vendor.OTHER;
+                return Vendor.other;
         }
 
         /// Returns: Name of the renderer. This name is typically specific 
