@@ -371,7 +371,7 @@ unittest
     // test quartic
     {
         double[4] roots;
-        int numRoots = solveQuartic!double(0, -2, -1, 2, 1, roots[]);
+        int numRoots = cast(int) (solveQuartic!double(0, -2, -1, 2, 1, roots[]));
 
         assert(numRoots == 4);
         assert(arrayContainsRoot(roots[], -2));
