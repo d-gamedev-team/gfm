@@ -1,11 +1,11 @@
 /// Provides the Packet class.
 
-module enet.packet;
+module gfm.enet.packet;
 
 import std.traits : isArray, isScalarType;
 import derelict.enet.enet;
-import enet.exceptions;
-import enet.library;
+import gfm.enet.exceptions;
+import gfm.enet.library;
 
 /// Encompasses an ENetPacket with an object-oriented wrapper. Once a packet has
 /// been sent, the data cannot be modified.

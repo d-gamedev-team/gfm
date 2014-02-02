@@ -1,10 +1,10 @@
 /// Provides the ReceivedPacket struct and the Packet class.
 
-module enet.peer;
+module gfm.enet.peer;
 
 import derelict.enet.enet;
-import enet.exceptions;
-import enet.packet;
+import gfm.enet.exceptions;
+import gfm.enet.packet;
 
 struct ReceivedPacket
 {

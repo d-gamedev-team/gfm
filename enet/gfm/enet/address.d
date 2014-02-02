@@ -1,9 +1,9 @@
-module enet.address;
+module gfm.enet.address;
 
 import std.string;
 import std.c.stdlib;
 import derelict.enet.enet;
-import enet.exceptions;
+import gfm.enet.exceptions;
 
 class Address
 {
@@ -86,3 +86,4 @@ class Address
         }
     }
 }
+

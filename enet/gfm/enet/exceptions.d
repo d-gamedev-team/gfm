@@ -1,6 +1,6 @@
 /// Defines any new ENet-related exceptions that may be thrown.
 
-module enet.exceptions;
+module gfm.enet.exceptions;
 
 /// Writes a string along with the caller function and line number.
 debug void writed(string msg, string caller = __FUNCTION__)

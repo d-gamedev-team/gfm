@@ -1,10 +1,10 @@
 /// Deals with the setup and cleanup necessary to properly use the ENet library.
 
-module enet.library;
+module gfm.enet.library;
 
 import derelict.util.exception;
 import derelict.enet.enet;
-import enet.exceptions;
+import gfm.enet.exceptions;
 
 package bool enetInitialized = false;
 

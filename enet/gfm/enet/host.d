@@ -1,16 +1,16 @@
 /// Provides the Host, Server, and Client classes.
 
-module enet.host;
+module gfm.enet.host;
 
 import std.algorithm : countUntil, remove;
 import std.stdio;
 import derelict.enet.enet;
-import enet.address;
-import enet.event;
-import enet.exceptions;
-import enet.library;
-import enet.packet;
-import enet.peer;
+import gfm.enet.address;
+import gfm.enet.event;
+import gfm.enet.exceptions;
+import gfm.enet.library;
+import gfm.enet.packet;
+import gfm.enet.peer;
 
 /**
  * A subclass of Host that exists to concisely create a client-oriented Host

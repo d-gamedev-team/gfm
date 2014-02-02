@@ -2,10 +2,10 @@
 /// program start. Also deinitializes ENet and unloads DerelictENet at program
 /// termination.
 
-module enet.autoload;
+module gfm.enet.autoload;
 
 import core.memory;
-import enet.library;
+import gfm.enet.library;
 
 shared static this()
 {

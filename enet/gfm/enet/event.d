@@ -1,8 +1,8 @@
-module enet.event;
+module gfm.enet.event;
 
 import derelict.enet.enet;
-import enet.packet;
-import enet.peer;
+import gfm.enet.packet;
+import gfm.enet.peer;
 
 class Event
 {
