@@ -75,14 +75,18 @@ $(UL
     <p>$(LI gfm.freeimage:
         $(UL
             $(LI FreeImage wrapper based on package derelict-fi.)
-            $(LI FIBITMAP wrapper.)
          )
     )</p>
     
     <p>$(LI gfm.assimp:
         $(UL
             $(LI Assimp wrapper based on package derelict-assimp3.)
-            $(LI scene wrapper.)
+         )
+    )</p>
+
+    <p>$(LI gfm.enet:
+        $(UL
+            $(LI ENet wrapper based on package derelict_extras-enet.)
          )
     )</p>
 
