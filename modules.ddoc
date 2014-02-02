@@ -59,3 +59,13 @@ MODULES =
 
     $(MODULE gfm.assimp.assimp, ASSIMP library wrapper)
     $(MODULE gfm.assimp.scene, ASSIMP scene wrapper)
+
+    $(MODULE gfm.enet.host, ENet host wrapper)
+    $(MODULE gfm.enet.peer, ENet peer wrapper)
+    $(MODULE gfm.enet.packet, ENet packet wrapper)
+    $(MODULE gfm.enet.address, ENet address wrapper)
+    $(MODULE gfm.enet.event, ENet event wrapper)
+    $(MODULE gfm.enet.exceptions, ENet errors)    
+    $(MODULE gfm.enet.autoload, ENet auto-loader)    
+    $(MODULE gfm.enet.library, ENet initialization)
+

@@ -11,6 +11,7 @@ xcopy /Y /e ..\gfm\sdl2 source
 xcopy /Y /e ..\gfm\opengl source
 xcopy /Y /e ..\gfm\assimp source
 xcopy /Y /e ..\gfm\freeimage source
+xcopy /Y /e ..\gfm\enet source
 
 rdmd bootDoc\generate.d source
 
