@@ -1,13 +1,12 @@
-module gfm.enet;
-
-// ENet OO wrapper
+module enet;
 
 public
 {
-    import derelict.enet.enet;
-
-    import gfm.enet.enet,
-           gfm.enet.packet,
-           gfm.enet.host,
-           gfm.enet.peer;
+    import enet.address;
+    import enet.autoload;
+    import enet.event;
+    import enet.exceptions;
+    import enet.host;
+    import enet.packet;
+    import enet.peer;
 }

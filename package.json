@@ -8,6 +8,7 @@
     "authors": [
         "ponce",
         "Gerbrand Kamphuis / vuaru: many fixes",
+        "Kyle Hunter / Kelet: ENet wrapper",
         "Francesco Cattoglio: OpenGL wrapper improvements",
         "John D. Cook: SimpleRNG author",
         "Sam Hocevar: many bits of code",
@@ -19,6 +20,7 @@
     "dependencies": {
         "gfm:core": "~master",
         "gfm:assimp": "~master",
+        "gfm:enet": "~master",
         "gfm:freeimage": "~master",
         "gfm:image": "~master",
         "gfm:math": "~master",
