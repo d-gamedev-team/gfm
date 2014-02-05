@@ -310,7 +310,7 @@ nothrow:
         /// v.yz = v.zx;
         /// assert(v == [0, 2, 0]);
         /// ---
-        void opDispatch(string op, U)(U x) pure
+        @property void opDispatch(string op, U)(U x) pure
             if ((op.length >= 2)
                 && (isValidSwizzleUnique!op)                   // v.xyy will be rejected
                 && is(typeof(Vector!(T, op.length)(x)))) // can be converted to a small vector of the right size
