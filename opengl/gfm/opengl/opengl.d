@@ -69,6 +69,15 @@ final class OpenGL
             close();
         }
 
+        /// Returns: true if the OpenGL extension is supported.
+        bool supportsExtension(string extension)
+        {
+            foreach(s; _extensions)
+                if (s == extension)
+                    return true;
+            return false;
+        }
+
         /// Reload OpenGL function pointers.
         /// Once a first OpenGL context has been created, 
         /// you should call reload() to get the context you want.

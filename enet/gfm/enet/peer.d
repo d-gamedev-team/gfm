@@ -1,90 +1,136 @@
+/// Provides the ReceivedPacket struct and the Packet class.
+
 module gfm.enet.peer;
 
 import derelict.enet.enet;
-import gfm.enet.enet;
+import gfm.enet.exceptions;
+import gfm.enet.packet;
 
-/// ENet peer
-/// http://enet.bespin.org/group__peer.html
+struct ReceivedPacket
+{
+    Packet packet;
+    ubyte channelID;
+}
+
+/// Encompasses an ENetPeer with an object-oriented wrapper.
 class Peer
 {
-    public
+    protected ENetPeer *_handle;
+
+    /// Possibles states of a peer.
+    enum State
     {
-        this(ENet enet, ENetPeer* handle, bool connected)
+        disconnected = ENET_PEER_STATE_DISCONNECTED,
+        connecting = ENET_PEER_STATE_CONNECTING,
+        acknowledgingConnect = ENET_PEER_STATE_ACKNOWLEDGING_CONNECT,
+        connectionPending = ENET_PEER_STATE_CONNECTION_PENDING,
+        connectionSucceeded = ENET_PEER_STATE_CONNECTION_SUCCEEDED,
+        connected = ENET_PEER_STATE_CONNECTED,
+        disconnectLater = ENET_PEER_STATE_DISCONNECT_LATER,
+        disconnecting = ENET_PEER_STATE_DISCONNECTING,
+        acknowledgingDisconnect = ENET_PEER_STATE_ACKNOWLEDGING_DISCONNECT,
+        zombie = ENET_PEER_STATE_ZOMBIE
+    }
+
+    this(ENetPeer *handle)
+    {
+        _handle = handle;
+    }
+
+    /// Queues a Packet's internal ENetPacket to be sent. Dirties the sent
+    /// packet, meaning it cannot be changed.
+    /// Throws: ENetException if enet_peer_send fails
+    void send(Packet packet, ubyte channelID=0)
+    {
+        auto errCode = enet_peer_send(_handle, channelID, packet._handle);
+        if(errCode < 0)
+            throw new ENetException("enet_peer_send failed");
+        packet._dirty = true;
+    }
+
+    /** 
+     * Attempts to dequeue any incoming queued packet.
+     * Returns: A ReceivedPacket struct, with packet member being null if no
+     *          packet is received.
+     */
+    ReceivedPacket receive()
+    {
+        ubyte channelID;
+        ENetPacket *packet = enet_peer_receive(_handle, &channelID);
+        Packet wrappedPacket = new Packet(packet);
+        return ReceivedPacket(wrappedPacket, channelID);
+    }
+
+    /// Forcefully disconnects a peer.
+    void reset()
+    {
+        enet_peer_reset(_handle);
+    }
+
+    /// Request a disconnection from a peer.
+    void disconnect(uint data=0)
+    {
+        enet_peer_disconnect(_handle, data);
+    }
+
+    /// Force an immediate disconnection from a peer
+    void disconnectNow(uint data=0)
+    {
+        enet_peer_disconnect_now(_handle, data);
+    }
+
+    /// Request a disconnection from a peer, but only after all queued
+    /// outgoing packets are sent.
+    void disconnectLater(uint data=0)
+    {
+        enet_peer_disconnect_later(_handle, data);
+    }
+
+    /// Sends a ping request to a peer.
+    void ping()
+    {
+        enet_peer_ping(_handle);
+    }
+
+    /// Sets the timeout parameters for a peer.
+    void setTimeout(uint limit, uint min, uint max)
+    {
+        enet_peer_timeout(_handle, limit, min, max);
+    }
+
+    /// Sets the throttle parameters for a peer. The throttle represents a
+    /// probability that an unreliable packet should not be dropped and thus
+    /// sent by ENet to the peer.
+    void throttleConfigure(uint interval, uint accel, uint decel)
+    {
+        enet_peer_throttle_configure(_handle, interval, accel, decel);
+    }
+
+    @property
+    {
+        /// Gets application private data.
+        void *data()
         {
-            _enet = enet;
-            _handle = handle;
-            _connected = connected;
+            return _handle.data;
         }
 
-        /// Throws: ENetException on error.
-        void send(ubyte channelID, ENetPacket* packet)
+        /// Sets application private data.
+        void data(void *newData)
         {
-            int errCode = enet_peer_send(_handle, channelID, packet);
-            if (0 != errCode)
-                throw new ENetException("enet_peer_send failed");
-        }
-
-        ENetPacket* receive(out ubyte channelID) // TODO return aggregate
-        {
-            return enet_peer_receive(_handle, &channelID);
-        }
-        
-        /// Forcefully disconnects a peer. 
-        void reset()
-        {
-            enet_peer_reset(_handle);
-        }
-
-        /// Request a disconnection from a peer. 
-        void disconnect(uint data = 0)
-        {
-            enet_peer_disconnect(_handle, data);
-        }
-
-        /// Force an immediate disconnection from a peer. 
-        void disconnectNow(uint data)
-        {
-            enet_peer_disconnect_now(_handle, data);
-        }
-
-        /// Request a disconnection from a peer, but only after all queued outgoing packets are sent. 
-        void disconnectLater(uint data)
-        {
-            enet_peer_disconnect_later(_handle, data);
-        }
-
-        /// Sends a ping request to a peer. 
-        void ping()
-        {
-            enet_peer_ping(_handle);
-        }
-
-        // Sends a ping request to a peer. 
-        void setPingInterval(uint pingInterval)
-        {
-            enet_peer_ping_interval(_handle, pingInterval);
-        }
-
-        void setTimeout(uint timeoutLimit, uint timeoutMinimum, uint timeoutMaximum)
-        {
-            enet_peer_timeout(_handle, timeoutLimit, timeoutMinimum, timeoutMaximum);     
-        }
-
-        void throttleConfigure(uint interval, uint acceleration, uint deceleration)
-        {
-            enet_peer_throttle_configure(_handle, interval, acceleration, deceleration);
-        }
-
-        ENetPeer* handle()
-        {
-            return _handle;
+            _handle.data = newData;
         }
     }
 
-    private
+    // Todo: Add all
+    /// Trivial getters for _ENetPeer struct.
+    @property
     {
-        ENet _enet;
-        ENetPeer* _handle;
-        bool _connected;
+        ENetAddress address() { return _handle.address; }
+        size_t channelCount() { return _handle.channelCount; }
+        uint incomingBandwidth() { return _handle.incomingBandwidth; }
+        uint outgoingBandwidth() { return _handle.outgoingBandwidth; }
+        uint packetLoss() { return _handle.packetLoss; }
+        uint roundTripTime() { return _handle.roundTripTime; }
+        State state() { return cast(State)_handle.state; }
     }
 }
