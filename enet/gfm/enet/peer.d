@@ -3,7 +3,7 @@
 module gfm.enet.peer;
 
 import derelict.enet.enet;
-import gfm.enet.exceptions;
+import gfm.enet.enet;
 import gfm.enet.packet;
 
 struct ReceivedPacket
@@ -13,9 +13,10 @@ struct ReceivedPacket
 }
 
 /// Encompasses an ENetPeer with an object-oriented wrapper.
-class Peer
+final class Peer
 {
-    protected ENetPeer *_handle;
+    private ENet _enet;
+    private ENetPeer *_handle;
 
     /// Possibles states of a peer.
     enum State
@@ -32,8 +33,9 @@ class Peer
         zombie = ENET_PEER_STATE_ZOMBIE
     }
 
-    this(ENetPeer *handle)
+    this(ENet enet, ENetPeer *handle)
     {
+        _enet = enet;
         _handle = handle;
     }
 
@@ -57,7 +59,7 @@ class Peer
     {
         ubyte channelID;
         ENetPacket *packet = enet_peer_receive(_handle, &channelID);
-        Packet wrappedPacket = new Packet(packet);
+        Packet wrappedPacket = new Packet(_enet, packet);
         return ReceivedPacket(wrappedPacket, channelID);
     }
 

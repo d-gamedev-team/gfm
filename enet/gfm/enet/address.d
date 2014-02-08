@@ -3,9 +3,9 @@ module gfm.enet.address;
 import std.string;
 import std.c.stdlib;
 import derelict.enet.enet;
-import gfm.enet.exceptions;
+import gfm.enet.enet;
 
-class Address
+final class Address
 {
     package ENetAddress *_handle;
 
