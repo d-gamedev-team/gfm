@@ -170,9 +170,9 @@ class Server : Host
          uint incomingBandwidth = 0,
          uint outgoingBandwidth = 0)
     {
-        Address serverAddress = new Address(Address.Host.any, port);
+        Address serverAddress = Address(ENET_HOST_ANY, port);
         super(enet,
-              serverAddress,
+              &serverAddress,
               peerCount,
               channelLimit,
               incomingBandwidth,
@@ -186,7 +186,6 @@ class Server : Host
         auto inLimit = (20*10^^6)/8; // 20mbps
         auto outLimit = (10*10^^6)/8; // 10mbps
         auto server = new Server(enet, 27777, 32, 8, inLimit, outLimit);
-        assert(server.address.port == 27777);
         assert(server.peerCount == 32);
         assert(server.channelLimit == 8);
         assert(server.bandwidthLimits == [inLimit, outLimit]);
@@ -207,7 +206,6 @@ class Host
     protected ENet _enet;
     private
     {
-        Address _address;
         Peer[] _peers;
         bool _usingRangeCoder;
     }
@@ -231,22 +229,15 @@ class Host
      * Throws: ENetException if enet_create_host fails
      */
     this(ENet enet,
-         Address address,
+         Address* address,
          size_t peerCount,
          size_t channelLimit,
          uint incomingBandwidth=0,
          uint outgoingBandwidth=0)
     {
         _enet = enet;
-        _address = address;
-        ENetAddress *addressHandle;
 
-        if(address is null)
-            addressHandle = null;
-        else
-            addressHandle = address._handle;
-
-        _handle = enet_host_create(addressHandle,
+        _handle = enet_host_create(&address.address,
                                    peerCount,
                                    channelLimit,
                                    incomingBandwidth,
@@ -266,10 +257,8 @@ class Host
         auto inLimit = (2*10^^6)/8;
         auto outLimit = (2*10^^6)/8;
         // Create an address which refers to localhost address and port 32807
-        auto hostAddr = new Address(Address.Host.any, 32807);
+        auto hostAddr = new Address(ENET_HOST_ANY, 32807);
         auto host = new Host(enet, hostAddr, maxPeers, maxChans, inLimit, outLimit);
-        assert(host.address.host == "0.0.0.0");
-        assert(host.address.port == 32807);
         assert(host.peerCount == 32);
         assert(host.channelLimit == 16);
         assert(host.bandwidthLimits == [inLimit, outLimit]);
@@ -287,7 +276,6 @@ class Host
         auto maxChannels = 16;
         // A null Address disallows other peers from connecting
         auto host = new Host(enet, null, maxPeers, maxChannels);
-        assert(host.address is null);
         assert(host.peerCount == 32);
         assert(host.channelLimit == 16);
         assert(host.bandwidthLimits == [0, 0]);
@@ -333,7 +321,7 @@ class Host
     Peer connect(Address foreignAddress, size_t channelCount, uint data=0)
     {
         ENetPeer *peer = enet_host_connect(_handle,
-                                           foreignAddress._handle,
+                                           &foreignAddress.address,
                                            channelCount,
                                            data);
 
@@ -371,7 +359,7 @@ class Host
      */
     Peer connect(string hostName, ushort port, size_t channelCount, uint data=0)
     {
-        Address foreignAddress = new Address(hostName, port);
+        Address foreignAddress = Address(hostName, port);
         return connect(foreignAddress, channelCount, data);
     }
 
@@ -455,7 +443,7 @@ class Host
         // Both hosts must be using range coder
         server.compressWithRangeCoder();
         client.compressWithRangeCoder();
-        auto serverAddress = new Address("localhost", port);
+        auto serverAddress = Address("localhost", port);
         client.connect(serverAddress, port);
         client.destroy(); // Or let GC clean it up
         server.destroy();
@@ -677,9 +665,9 @@ class Host
     // Getters
     @property
     {
-        // Wrapped properties
-        Address address() { return _address; }
-        Address receivedAddress() { return new Address(&_handle.receivedAddress); }
+        Address address() { return Address(_handle.address); }
+
+        Address receivedAddress() { return Address(_handle.receivedAddress); }
         Peer[] peers() { return _peers; }
 
         // _ENetHost structure properties

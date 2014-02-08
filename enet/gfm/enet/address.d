@@ -1,89 +1,56 @@
 module gfm.enet.address;
 
-import std.string;
-import std.c.stdlib;
+import std.string,
+       core.stdc.string;
+
 import derelict.enet.enet;
+
 import gfm.enet.enet;
 
-final class Address
+struct Address
 {
-    package ENetAddress *_handle;
+    ENetAddress address;
 
-    enum Host
-    {
-        any = ENET_HOST_ANY,
-        broadcast = ENET_HOST_BROADCAST
-    }
+    alias address this;
 
-    enum Port
+    this(ENetAddress other)
     {
-        any = ENET_PORT_ANY
+        address = other;
     }
 
     this(string hostName, ushort port)
     {
-        _handle = cast(ENetAddress*)malloc(ENetAddress.sizeof);
-        if(_handle == null)
-            throw new ENetException("malloc failed");
-        auto errCode = enet_address_set_host(_handle, hostName.toStringz());
+        auto errCode = enet_address_set_host(&address, hostName.toStringz());
         if(errCode < 0)
             throw new ENetException("enet_address_set_host failed");
-        _handle.port = port;
+        address.port = port;
     }
 
-    this(uint host, ushort port)
+    this(uint host, ushort port) pure nothrow
     {
-        _handle = cast(ENetAddress*)malloc(ENetAddress.sizeof);
-        if(_handle == null)
-            throw new ENetException("malloc failed");
-        _handle.host = host;
-        _handle.port = port;
+        address.host = host;
+        address.port = port;
     }
 
-    this(ENetAddress *address)
+    string host()
     {
-        _handle = address;
+        enum MAX_LEN = 39; // Maximum ipv6 length 
+        char[MAX_LEN] buffer; 
+            
+        auto errCode = enet_address_get_host_ip(&address, buffer.ptr, MAX_LEN);
+        if(errCode < 0)
+            throw new ENetException("enet_address_get_host failed");
+
+        size_t len = strlen(buffer.ptr);
+        return buffer[0..len].idup;
     }
 
-    ~this()
+    void setHost(const char* hostName)
     {
-        free(_handle);
-    }
-
-    @property
-    {
-        string host()
-        {
-            import std.algorithm : countUntil;
-            enum maxLen = 39; // Maximum ipv6
-            auto hostName = new char[maxLen];
-            char *ptr = &hostName[0];
-            auto errCode = enet_address_get_host_ip(_handle, ptr, maxLen);
-            if(errCode < 0)
-                throw new ENetException("enet_address_get_host failed");
-            hostName.length = hostName.countUntil('\0');
-            return cast(string)hostName;
-        }
-
-        void host(const char* hostName)
-        {
-            auto errCode = enet_address_set_host(_handle, hostName);
-            if(errCode < 0)
-                throw new ENetException("enet_address_set_host failed");
-        }
-    }
-
-    @property
-    {
-        ushort port()
-        {
-            return _handle.port;
-        }
-
-        void port(ushort newPort)
-        {
-            _handle.port = newPort;
-        }
-    }
+        auto errCode = enet_address_set_host(&address, hostName);
+        if(errCode < 0)
+            throw new ENetException("enet_address_set_host failed");
+    }    
 }
 
+static assert(ENetAddress.sizeof == Address.sizeof);
