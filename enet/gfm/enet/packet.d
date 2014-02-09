@@ -11,7 +11,7 @@ import gfm.enet.enet;
 /// been sent, the data cannot be modified.
 final class Packet
 {
-    debug private size_t _largestPacketSize;
+    private size_t _largestPacketSize;
 
     package
     {
@@ -36,7 +36,7 @@ final class Packet
         _handle = enet_packet_create(data, dataLength, flags);
         if(_handle is null)
             throw new ENetException("enet_packet_create failed");
-        debug _largestPacketSize = dataLength;
+        _largestPacketSize = dataLength;
         _dirty = false;
         _destroyed = false;
     }
@@ -46,11 +46,8 @@ final class Packet
     {
         _enet = enet;
         _handle = packet;
-        debug
-        {
-            if(_handle != null)
-                _largestPacketSize = _handle.dataLength;
-        }
+        if(_handle != null)
+            _largestPacketSize = _handle.dataLength;
         _dirty = false; // Not guaranteed, but trust thy user.
         _destroyed = false;
     }
@@ -93,11 +90,9 @@ final class Packet
         {
             if(dataLength != _handle.dataLength)
             {
-                debug
-                {
-                    if(dataLength > _largestPacketSize)
-                        _enet._log.warn("Packet size is larger than underlying data");
-                }
+                if(dataLength > _largestPacketSize)
+                    _enet._log.warn("Packet size is larger than underlying data");
+                
                 auto errCode = enet_packet_resize(_handle, dataLength);
                 if(errCode < 0)
                     throw new ENetException("enet_packet_resize failed");
@@ -124,11 +119,8 @@ final class Packet
     {
         if(!_dirty)
         {
-            debug
-            {
-                if(data.length > _largestPacketSize)
-                    _largestPacketSize = data.length;
-            }
+            if(data.length > _largestPacketSize)
+                _largestPacketSize = data.length;
             resize(data.length);
             _handle.data = &data[0];
         }
