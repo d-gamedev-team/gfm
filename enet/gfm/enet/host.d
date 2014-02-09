@@ -116,7 +116,7 @@ final class Client : Host
         assert(client.bandwidthLimits == [0, 0]);
         assert(client.incomingBandwidth == 0);
         assert(client.outgoingBandwidth == 0);
-        client.destroy(); // Can either manually destroy it or let the GC do it
+        client.close(); // Can either manually destroy it or let the GC do it
     }
 
     // 4 channels, 768kbps downstream, 128kbps upstream
@@ -131,7 +131,7 @@ final class Client : Host
         assert(client.bandwidthLimits == [inLimit, outLimit]);
         assert(client.incomingBandwidth == inLimit);
         assert(client.outgoingBandwidth == outLimit);
-        client.destroy(); // Can either manually destroy it or let the GC do it
+        client.close(); // Can either manually destroy it or let the GC do it
     }
 }
 
@@ -191,7 +191,7 @@ class Server : Host
         assert(server.bandwidthLimits == [inLimit, outLimit]);
         assert(server.incomingBandwidth == inLimit);
         assert(server.outgoingBandwidth == outLimit);
-        server.destroy(); // Can either manually destroy it or let the GC do it
+        server.close(); // Can either manually destroy it or let the GC do it
     }
 }
 
@@ -264,7 +264,7 @@ class Host
         assert(host.bandwidthLimits == [inLimit, outLimit]);
         assert(host.incomingBandwidth == inLimit);
         assert(host.outgoingBandwidth == outLimit);
-        host.destroy(); // Can either manually destroy it or let the GC do it
+        host.close(); // Can either manually destroy it or let the GC do it
     }
 
     // Creates Host for purposes of being a client
@@ -281,7 +281,7 @@ class Host
         assert(host.bandwidthLimits == [0, 0]);
         assert(host.incomingBandwidth == 0);
         assert(host.outgoingBandwidth == 0);
-        host.destroy(); // Can either manually destroy it or let the GC do it
+        host.close(); // Can either manually destroy it or let the GC do it
     }
 
     ~this()
@@ -341,8 +341,8 @@ class Host
         auto server = new Server(enet, port, maxPeers, maxChannels);
         auto client = new Client(enet, maxPeers, maxChannels);
         client.connect(server.address, maxChannels);
-        client.destroy(); // Or let GC handle it
-        server.destroy();
+        client.close(); // Or let GC handle it
+        server.close();
     }
 
     /** 
@@ -373,8 +373,8 @@ class Host
         auto server = new Server(enet, port, maxPeers, maxChannels);
         auto client = new Client(enet, maxPeers, maxChannels);
         client.connect("localhost", port, maxChannels);
-        client.destroy(); // Or let GC handle it
-        server.destroy();
+        client.close(); // Or let GC handle it
+        server.close();
     }
 
     /**
@@ -409,9 +409,9 @@ class Host
         client1.connect(server.address, maxChannels);
         client2.connect(server.address, maxChannels);
         server.broadcast(packet);
-        client1.destroy(); // Or let GC clean up
-        client2.destroy();
-        server.destroy();
+        client1.close(); // Or let GC clean up
+        client2.close();
+        server.close();
     }
 
     /// Sets the packet compressor the host should use to the default range
@@ -445,8 +445,8 @@ class Host
         client.compressWithRangeCoder();
         auto serverAddress = Address("localhost", port);
         client.connect(serverAddress, port);
-        client.destroy(); // Or let GC clean it up
-        server.destroy();
+        client.close(); // Or let GC clean it up
+        server.close();
     }
 
     /// Turns off the range coder packet compressor
@@ -464,7 +464,7 @@ class Host
         auto server = new Server(enet, 25403, 1, 1);
         server.compressWithRangeCoder(); // Enable
         server.disableRangeCoder(); // Disable
-        server.destroy(); // Or let GC clean it up
+        server.close(); // Or let GC clean it up
     }
 
     /**
