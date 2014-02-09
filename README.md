@@ -4,6 +4,8 @@ GFM is a feature-rich library to ease the creation of video games / multimedia a
 
 Documentation and overview can be found here: http://p0nce.github.com/gfm/
 
+[![Build Status](https://travis-ci.org/p0nce/gfm.png?branch=master)](https://travis-ci.org/p0nce/gfm)
+
 ## License
 
 Public Domain (Unlicense).
