@@ -109,68 +109,50 @@ final class Packet
         }
     }
 
-    @property
+    /// Gets the ENetPacket's data.
+    ubyte[] data()
     {
-        /// Gets the ENetPacket's data.
-        ubyte[] data()
-        {
-            return _handle.data[0.._handle.dataLength];
-        }
+        return _handle.data[0.._handle.dataLength];
+    }
 
-        /**
-         * Sets the ENetPacket's data.
-         * Throws: ENetException if the packet is dirty (has been sent)
-         * See_Also: resize
-         */
-        void data(ubyte[] data)
+    /**
+        * Sets the ENetPacket's data.
+        * Throws: ENetException if the packet is dirty (has been sent)
+        * See_Also: resize
+        */
+    void setData(ubyte[] data)
+    {
+        if(!_dirty)
         {
-            if(!_dirty)
+            debug
             {
-                debug
-                {
-                    if(data.length > _largestPacketSize)
-                        _largestPacketSize = data.length;
-                }
-                resize(data.length);
-                _handle.data = &data[0];
+                if(data.length > _largestPacketSize)
+                    _largestPacketSize = data.length;
             }
-            else
-            {
-                throw new ENetException("Changing sent packets is not allowed");
-            }
+            resize(data.length);
+            _handle.data = &data[0];
+        }
+        else
+        {
+            throw new ENetException("Changing sent packets is not allowed");
         }
     }
 
-    @property
+    /// Gets the size of the ENetPacket in bytes.
+    size_t size() pure const nothrow
     {
-        /// Gets the size of the ENetPacket.
-        size_t size()
-        {
-            return _handle.dataLength;
-        }
-
-        /**
-         * Resizes the ENetPacket. Alias for resize.
-         * Throws: ENetException if the packet is dirty (has been sent)
-         */
-        void size(size_t dataLength)
-        {
-            resize(dataLength);
-        }
+        return _handle.dataLength;
     }
 
-    @property
+    /// Gets application private data.
+    void* userData()
     {
-        /// Gets application private data.
-        void *userData()
-        {
-            return _handle.userData;
-        }
+        return _handle.userData;
+    }
 
-        /// Sets application private data.
-        void userData(void *newData)
-        {
-            _handle.userData = newData;
-        }
+    /// Sets application private data.
+    void setUserData(void *newData)
+    {
+        _handle.userData = newData;
     }
 }

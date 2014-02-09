@@ -93,21 +93,6 @@ final class Peer
         enet_peer_throttle_configure(_handle, interval, accel, decel);
     }
 
-    @property
-    {
-        /// Gets application private data.
-        void *data()
-        {
-            return _handle.data;
-        }
-
-        /// Sets application private data.
-        void data(void *newData)
-        {
-            _handle.data = newData;
-        }
-    }
-
     // Todo: Add all
     /// Trivial getters for _ENetPeer struct.    
     ENetAddress address() pure const nothrow
