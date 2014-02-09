@@ -55,35 +55,7 @@ final class Client : Host
               outgoingBandwidth);
     }
 
-    // Creates a Client with 2 peers and 4 channels maximum
-    unittest
-    {
-        auto enet = scoped!ENet();
-        auto client = new Client(enet, 2, 4);
-        assert(client.peerCount == 2);
-        assert(client.channelLimit == 4);
-        assert(client.bandwidthLimits == [0, 0]);
-        assert(client.incomingBandwidth == 0);
-        assert(client.outgoingBandwidth == 0);
-        client.close(); // Don't let the GC destroy your resources.
-    }
 
-    // Similar to before, only with a downstream and upstream bandwidth limit
-    unittest
-    {
-        auto enet = scoped!ENet();
-        auto maxPeers = 32;
-        auto maxChannels = 16;
-        auto inLimit = (1*10^^6)/8; // 1mbps
-        auto outLimit = (512*10^^5)/8; // 512kbps
-        auto client = new Client(enet, maxPeers, maxChannels, inLimit, outLimit);
-        assert(client.peerCount == 32);
-        assert(client.channelLimit == 16);
-        assert(client.bandwidthLimits == [(1*10^^6)/8, (512*10^^5)/8]);
-        assert(client.incomingBandwidth == (1*10^^6)/8);
-        assert(client.outgoingBandwidth == (512*10^^5)/8);
-        client.close(); // Don't let the GC destroy your resources.
-    }
     
     /**
      * Creates a new Client, a subclass of Host
@@ -104,35 +76,8 @@ final class Client : Host
     this(ENet enet, size_t channelLimit, uint[2] bandwidthLimits=[0, 0])
     {
         this(enet, 1, channelLimit, bandwidthLimits[0], bandwidthLimits[1]);
-    }
+    }  
     
-    // Creates a client with 1 channel maximum, no bandwidth limits
-    unittest
-    {
-        auto enet = scoped!ENet();
-        auto client = new Client(enet, 1);
-        assert(client.peerCount == 1);
-        assert(client.channelLimit == 1);
-        assert(client.bandwidthLimits == [0, 0]);
-        assert(client.incomingBandwidth == 0);
-        assert(client.outgoingBandwidth == 0);
-        client.close(); // Can either manually destroy it or let the GC do it
-    }
-
-    // 4 channels, 768kbps downstream, 128kbps upstream
-    unittest
-    {
-        auto enet = scoped!ENet();
-        auto inLimit = (768*10^^5)/8; // 768kbps
-        auto outLimit = (128*10^^5)/8; // 128kbps
-        auto client = new Client(enet, 4, [inLimit, outLimit]);
-        assert(client.peerCount == 1);
-        assert(client.channelLimit == 4);
-        assert(client.bandwidthLimits == [inLimit, outLimit]);
-        assert(client.incomingBandwidth == inLimit);
-        assert(client.outgoingBandwidth == outLimit);
-        client.close(); // Can either manually destroy it or let the GC do it
-    }
 }
 
 /**
@@ -177,21 +122,6 @@ class Server : Host
               channelLimit,
               incomingBandwidth,
               outgoingBandwidth);
-    }
-
-    // Creates a server on port 27777, with 32 max peers and 8 max channels, with bandwidth limits
-    unittest
-    {
-        auto enet = scoped!ENet();
-        auto inLimit = (20*10^^6)/8; // 20mbps
-        auto outLimit = (10*10^^6)/8; // 10mbps
-        auto server = new Server(enet, 27777, 32, 8, inLimit, outLimit);
-        assert(server.peerCount == 32);
-        assert(server.channelLimit == 8);
-        assert(server.bandwidthLimits == [inLimit, outLimit]);
-        assert(server.incomingBandwidth == inLimit);
-        assert(server.outgoingBandwidth == outLimit);
-        server.close(); // Can either manually destroy it or let the GC do it
     }
 }
 
@@ -248,42 +178,6 @@ class Host
         _usingRangeCoder = false;
     }
     
-    // Creates Host for purposes of being a server
-    unittest
-    {
-        auto enet = scoped!ENet();
-        auto maxPeers = 32;
-        auto maxChans = 16;
-        auto inLimit = (2*10^^6)/8;
-        auto outLimit = (2*10^^6)/8;
-        // Create an address which refers to localhost address and port 32807
-        auto hostAddr = new Address(ENET_HOST_ANY, 32807);
-        auto host = new Host(enet, hostAddr, maxPeers, maxChans, inLimit, outLimit);
-        assert(host.peerCount == 32);
-        assert(host.channelLimit == 16);
-        assert(host.bandwidthLimits == [inLimit, outLimit]);
-        assert(host.incomingBandwidth == inLimit);
-        assert(host.outgoingBandwidth == outLimit);
-        host.close(); // Can either manually destroy it or let the GC do it
-    }
-
-    // Creates Host for purposes of being a client
-    unittest
-    {
-        auto enet = scoped!ENet();
-        // Bandwidth defaults to 0, which means unlimited
-        auto maxPeers = 32;
-        auto maxChannels = 16;
-        // A null Address disallows other peers from connecting
-        auto host = new Host(enet, null, maxPeers, maxChannels);
-        assert(host.peerCount == 32);
-        assert(host.channelLimit == 16);
-        assert(host.bandwidthLimits == [0, 0]);
-        assert(host.incomingBandwidth == 0);
-        assert(host.outgoingBandwidth == 0);
-        host.close(); // Can either manually destroy it or let the GC do it
-    }
-
     ~this()
     {
         close();
@@ -297,15 +191,6 @@ class Host
             enet_host_destroy(_handle);
             _handle = null;
         }
-    }
-
-    // Creates and destroys a host
-    unittest
-    {
-        auto enet = scoped!ENet();
-        auto host = new Host(enet, null, 1, 1);
-        host.close();
-        assert(host._handle == null); // _handle is of package visibility
     }
 
     /** 
@@ -331,20 +216,6 @@ class Host
         return new Peer(_enet, peer);
     }
     
-    // Creates 2 hosts and connect them together
-    unittest
-    {
-        auto enet = scoped!ENet();
-        ushort port = 25403;
-        auto maxPeers = 1;
-        auto maxChannels = 1;
-        auto server = new Server(enet, port, maxPeers, maxChannels);
-        auto client = new Client(enet, maxPeers, maxChannels);
-        client.connect(server.address, maxChannels);
-        client.close(); // Or let GC handle it
-        server.close();
-    }
-
     /** 
      * Initiates a connection to a foreign host
      * 
@@ -361,20 +232,6 @@ class Host
     {
         Address foreignAddress = Address(hostName, port);
         return connect(foreignAddress, channelCount, data);
-    }
-
-    // Creates 2 hosts and connect them together
-    unittest
-    {
-        auto enet = scoped!ENet();
-        ushort port = 25403;
-        auto maxPeers = 1;
-        auto maxChannels = 1;
-        auto server = new Server(enet, port, maxPeers, maxChannels);
-        auto client = new Client(enet, maxPeers, maxChannels);
-        client.connect("localhost", port, maxChannels);
-        client.close(); // Or let GC handle it
-        server.close();
     }
 
     /**
@@ -395,25 +252,6 @@ class Host
         packet._dirty = true;
     }
     
-    // Broadcasts a packet to several peers
-    unittest
-    {
-        auto enet = scoped!ENet();
-        ushort port = 25403;
-        auto maxPeers = 2;
-        auto maxChannels = 1;
-        auto server = new Server(enet, port, maxPeers, maxChannels);
-        auto client1 = new Client(enet, 1, maxChannels);
-        auto client2 = new Client(enet, 1, maxChannels);
-        auto packet = new Packet(enet, [0, 1, 2, 3, 4]);
-        client1.connect(server.address, maxChannels);
-        client2.connect(server.address, maxChannels);
-        server.broadcast(packet);
-        client1.close(); // Or let GC clean up
-        client2.close();
-        server.close();
-    }
-
     /// Sets the packet compressor the host should use to the default range
     /// coder
     void compressWithRangeCoder()
@@ -430,41 +268,12 @@ class Host
         }
     }
     
-    // Makes a server and client host which use range coder
-    unittest
-    {
-        import std.stdio;
-        auto enet = scoped!ENet();
-        ushort port = 25403;
-        auto maxPeers = 1;
-        auto maxChannels = 1;
-        auto server = new Server(enet, port, maxPeers, maxChannels);
-        auto client = new Client(enet, maxPeers, maxChannels);
-        // Both hosts must be using range coder
-        server.compressWithRangeCoder();
-        client.compressWithRangeCoder();
-        auto serverAddress = Address("localhost", port);
-        client.connect(serverAddress, port);
-        client.close(); // Or let GC clean it up
-        server.close();
-    }
-
     /// Turns off the range coder packet compressor
     void disableRangeCoder()
     {
         if(_usingRangeCoder)
             enet_host_compress(_handle, null);
         _usingRangeCoder = false;
-    }
-
-    // Makes a server, enables the range coder, then disables it
-    unittest
-    {
-        auto enet = scoped!ENet();
-        auto server = new Server(enet, 25403, 1, 1);
-        server.compressWithRangeCoder(); // Enable
-        server.disableRangeCoder(); // Disable
-        server.close(); // Or let GC clean it up
     }
 
     /**
@@ -696,4 +505,201 @@ class Host
         size_t connectedPeers() { return _handle.connectedPeers; }
         size_t bandwidthLimitedPeers() { return _handle.bandwidthLimitedPeers; }
     }
+}
+
+
+// Tests
+
+// Creates a Client with 2 peers and 4 channels maximum
+unittest
+{
+    auto enet = scoped!ENet();
+    auto client = new Client(enet, 2, 4);
+    assert(client.peerCount == 2);
+    assert(client.channelLimit == 4);
+    assert(client.bandwidthLimits == [0, 0]);
+    assert(client.incomingBandwidth == 0);
+    assert(client.outgoingBandwidth == 0);
+    client.close(); // Don't let the GC destroy your resources.
+}
+
+// Similar to before, only with a downstream and upstream bandwidth limit
+unittest
+{
+    auto enet = scoped!ENet();
+    auto maxPeers = 32;
+    auto maxChannels = 16;
+    auto inLimit = (1*10^^6)/8; // 1mbps
+    auto outLimit = (512*10^^5)/8; // 512kbps
+    auto client = new Client(enet, maxPeers, maxChannels, inLimit, outLimit);
+    assert(client.peerCount == 32);
+    assert(client.channelLimit == 16);
+    assert(client.bandwidthLimits == [(1*10^^6)/8, (512*10^^5)/8]);
+    assert(client.incomingBandwidth == (1*10^^6)/8);
+    assert(client.outgoingBandwidth == (512*10^^5)/8);
+    client.close(); // Don't let the GC destroy your resources.
+}
+
+// Creates a client with 1 channel maximum, no bandwidth limits
+unittest
+{
+    auto enet = scoped!ENet();
+    auto client = new Client(enet, 1);
+    assert(client.peerCount == 1);
+    assert(client.channelLimit == 1);
+    assert(client.bandwidthLimits == [0, 0]);
+    assert(client.incomingBandwidth == 0);
+    assert(client.outgoingBandwidth == 0);
+    client.close(); // Can either manually destroy it or let the GC do it
+}
+
+// 4 channels, 768kbps downstream, 128kbps upstream
+unittest
+{
+    auto enet = scoped!ENet();
+    auto inLimit = (768*10^^5)/8; // 768kbps
+    auto outLimit = (128*10^^5)/8; // 128kbps
+    auto client = new Client(enet, 4, [inLimit, outLimit]);
+    assert(client.peerCount == 1);
+    assert(client.channelLimit == 4);
+    assert(client.bandwidthLimits == [inLimit, outLimit]);
+    assert(client.incomingBandwidth == inLimit);
+    assert(client.outgoingBandwidth == outLimit);
+    client.close(); // Can either manually destroy it or let the GC do it
+}
+
+// Creates a server on port 27777, with 32 max peers and 8 max channels, with bandwidth limits
+unittest
+{
+    auto enet = scoped!ENet();
+    auto inLimit = (20*10^^6)/8; // 20mbps
+    auto outLimit = (10*10^^6)/8; // 10mbps
+    auto server = new Server(enet, 27777, 32, 8, inLimit, outLimit);
+    assert(server.peerCount == 32);
+    assert(server.channelLimit == 8);
+    assert(server.bandwidthLimits == [inLimit, outLimit]);
+    assert(server.incomingBandwidth == inLimit);
+    assert(server.outgoingBandwidth == outLimit);
+    server.close(); // Can either manually destroy it or let the GC do it
+}
+
+// Creates Host for purposes of being a server
+unittest
+{
+    auto enet = scoped!ENet();
+    auto maxPeers = 32;
+    auto maxChans = 16;
+    auto inLimit = (2*10^^6)/8;
+    auto outLimit = (2*10^^6)/8;
+    // Create an address which refers to localhost address and port 32807
+    auto hostAddr = new Address(ENET_HOST_ANY, 32807);
+    auto host = new Host(enet, hostAddr, maxPeers, maxChans, inLimit, outLimit);
+    assert(host.peerCount == 32);
+    assert(host.channelLimit == 16);
+    assert(host.bandwidthLimits == [inLimit, outLimit]);
+    assert(host.incomingBandwidth == inLimit);
+    assert(host.outgoingBandwidth == outLimit);
+    host.close(); // Can either manually destroy it or let the GC do it
+}
+
+// Creates Host for purposes of being a client
+unittest
+{
+    auto enet = scoped!ENet();
+    // Bandwidth defaults to 0, which means unlimited
+    auto maxPeers = 32;
+    auto maxChannels = 16;
+    // A null Address disallows other peers from connecting
+    auto host = new Host(enet, null, maxPeers, maxChannels);
+    assert(host.peerCount == 32);
+    assert(host.channelLimit == 16);
+    assert(host.bandwidthLimits == [0, 0]);
+    assert(host.incomingBandwidth == 0);
+    assert(host.outgoingBandwidth == 0);
+    host.close(); // Can either manually destroy it or let the GC do it
+}
+
+// Creates and destroys a host
+unittest
+{
+    auto enet = scoped!ENet();
+    auto host = new Host(enet, null, 1, 1);
+    host.close();
+    assert(host._handle == null); // _handle is of package visibility
+}
+
+// Creates 2 hosts and connect them together
+unittest
+{
+    auto enet = scoped!ENet();
+    ushort port = 25403;
+    auto maxPeers = 1;
+    auto maxChannels = 1;
+    auto server = new Server(enet, port, maxPeers, maxChannels);
+    auto client = new Client(enet, maxPeers, maxChannels);
+    client.connect(server.address, maxChannels);
+    client.close(); // Or let GC handle it
+    server.close();
+}
+
+// Creates 2 hosts and connect them together
+unittest
+{
+    auto enet = scoped!ENet();
+    ushort port = 25403;
+    auto maxPeers = 1;
+    auto maxChannels = 1;
+    auto server = new Server(enet, port, maxPeers, maxChannels);
+    auto client = new Client(enet, maxPeers, maxChannels);
+    client.connect("localhost", port, maxChannels);
+    client.close(); // Or let GC handle it
+    server.close();
+}
+
+// Broadcasts a packet to several peers
+unittest
+{
+    auto enet = scoped!ENet();
+    ushort port = 25403;
+    auto maxPeers = 2;
+    auto maxChannels = 1;
+    auto server = new Server(enet, port, maxPeers, maxChannels);
+    auto client1 = new Client(enet, 1, maxChannels);
+    auto client2 = new Client(enet, 1, maxChannels);
+    auto packet = new Packet(enet, [0, 1, 2, 3, 4]);
+    client1.connect(server.address, maxChannels);
+    client2.connect(server.address, maxChannels);
+    server.broadcast(packet);
+    client1.close(); // Or let GC clean up
+    client2.close();
+    server.close();
+}
+
+// Makes a server and client host which use range coder
+unittest
+{
+    import std.stdio;
+    auto enet = scoped!ENet();
+    ushort port = 25403;
+    auto maxPeers = 1;
+    auto maxChannels = 1;
+    auto server = new Server(enet, port, maxPeers, maxChannels);
+    auto client = new Client(enet, maxPeers, maxChannels);
+    // Both hosts must be using range coder
+    server.compressWithRangeCoder();
+    client.compressWithRangeCoder();
+    auto serverAddress = Address("localhost", port);
+    client.connect(serverAddress, port);
+    client.close(); // Or let GC clean it up
+    server.close();
+}
+
+// Makes a server, enables the range coder, then disables it
+unittest
+{
+    auto enet = scoped!ENet();
+    auto server = new Server(enet, 25403, 1, 1);
+    server.compressWithRangeCoder(); // Enable
+    server.disableRangeCoder(); // Disable
+    server.close(); // Or let GC clean it up
 }
