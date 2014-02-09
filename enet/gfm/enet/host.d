@@ -538,14 +538,14 @@ class Host
 
     private void processPeers(Event event)
     {
-        if(event.type == Event.Type.connect)
+        if(event.type() == ENET_EVENT_TYPE_CONNECT)
         {
             _peers.length++;
-            _peers[$-1] = event.peer;
+            _peers[$-1] = event.peer();
         }
-        else if(event.type == Event.Type.disconnect)
+        else if(event.type() == ENET_EVENT_TYPE_DISCONNECT)
         {
-            _peers = _peers.remove(_peers.countUntil(event.peer));
+            _peers = _peers.remove(_peers.countUntil(event.peer()));
         }
     }
 

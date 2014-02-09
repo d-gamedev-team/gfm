@@ -21,17 +21,6 @@ final class Packet
         bool _destroyed; // When ENet internally destroys packet
     }
 
-    /// Flags to be used with the ENetPacket constructor which defines aspects
-    /// of packet behavior. To use multiple flags, bitwise or them together.
-    enum Flags
-    {
-        reliable = ENET_PACKET_FLAG_RELIABLE,
-        unsequenced = ENET_PACKET_FLAG_UNSEQUENCED,
-        noAllocate = ENET_PACKET_FLAG_NO_ALLOCATE,
-        unreliableFragment = ENET_PACKET_FLAG_UNRELIABLE_FRAGMENT,
-        sent = ENET_PACKET_FLAG_SENT
-    }
-
     /**
      * Creates an ENetPacket internally.
      * Throws: ENetException when enet_packet_create fails

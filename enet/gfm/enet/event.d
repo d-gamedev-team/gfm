@@ -17,15 +17,6 @@ final class Event
 
     public
     {
-        /// Possible types of an event.
-        enum Type
-        {
-            none = ENET_EVENT_TYPE_NONE,
-            connect = ENET_EVENT_TYPE_CONNECT,
-            disconnect = ENET_EVENT_TYPE_DISCONNECT,
-            receive = ENET_EVENT_TYPE_RECEIVE
-        }
-
         this(ENet enet, ENetEvent *handle)
         {
             _handle = handle;
@@ -37,32 +28,29 @@ final class Event
         }
 
         /// Trivial getters for _ENetEvent struct.
-        @property
-        {
-            Type type() 
-            { 
-                return cast(Type)_handle.type; 
-            }
+        ENetEventType type() pure const nothrow
+        { 
+            return _handle.type; 
+        }
 
-            Peer peer() 
-            { 
-                return _peer; 
-            }
+        Peer peer() pure nothrow
+        { 
+            return _peer; 
+        }
 
-            ubyte channelID() 
-            { 
-                return _handle.channelID; 
-            }
+        ubyte channelID() pure const nothrow
+        { 
+            return _handle.channelID; 
+        }
 
-            uint data() 
-            { 
-                return _handle.data; 
-            }
+        uint data() pure const nothrow
+        { 
+            return _handle.data; 
+        }
 
-            Packet packet() 
-            { 
-                return _packet; 
-            }
+        Packet packet() pure nothrow
+        { 
+            return _packet; 
         }
     }
 }

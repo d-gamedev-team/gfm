@@ -18,21 +18,6 @@ final class Peer
     private ENet _enet;
     private ENetPeer *_handle;
 
-    /// Possibles states of a peer.
-    enum State
-    {
-        disconnected = ENET_PEER_STATE_DISCONNECTED,
-        connecting = ENET_PEER_STATE_CONNECTING,
-        acknowledgingConnect = ENET_PEER_STATE_ACKNOWLEDGING_CONNECT,
-        connectionPending = ENET_PEER_STATE_CONNECTION_PENDING,
-        connectionSucceeded = ENET_PEER_STATE_CONNECTION_SUCCEEDED,
-        connected = ENET_PEER_STATE_CONNECTED,
-        disconnectLater = ENET_PEER_STATE_DISCONNECT_LATER,
-        disconnecting = ENET_PEER_STATE_DISCONNECTING,
-        acknowledgingDisconnect = ENET_PEER_STATE_ACKNOWLEDGING_DISCONNECT,
-        zombie = ENET_PEER_STATE_ZOMBIE
-    }
-
     this(ENet enet, ENetPeer *handle)
     {
         _enet = enet;
@@ -124,15 +109,39 @@ final class Peer
     }
 
     // Todo: Add all
-    /// Trivial getters for _ENetPeer struct.
-    @property
-    {
-        ENetAddress address() { return _handle.address; }
-        size_t channelCount() { return _handle.channelCount; }
-        uint incomingBandwidth() { return _handle.incomingBandwidth; }
-        uint outgoingBandwidth() { return _handle.outgoingBandwidth; }
-        uint packetLoss() { return _handle.packetLoss; }
-        uint roundTripTime() { return _handle.roundTripTime; }
-        State state() { return cast(State)_handle.state; }
+    /// Trivial getters for _ENetPeer struct.    
+    ENetAddress address() pure const nothrow
+    { 
+        return _handle.address; 
+    }
+
+    size_t channelCount() pure const nothrow
+    { 
+        return _handle.channelCount; 
+    }
+
+    uint incomingBandwidth() pure const nothrow
+    { 
+        return _handle.incomingBandwidth; 
+    }
+
+    uint outgoingBandwidth() pure const nothrow
+    { 
+        return _handle.outgoingBandwidth; 
+    }
+
+    uint packetLoss() pure const nothrow
+    { 
+        return _handle.packetLoss; 
+    }
+
+    uint roundTripTime() pure const nothrow
+    { 
+        return _handle.roundTripTime; 
+    }
+
+    ENetPeerState state() pure const nothrow
+    { 
+        return _handle.state; 
     }
 }

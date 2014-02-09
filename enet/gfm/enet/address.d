@@ -7,13 +7,14 @@ import derelict.enet.enet;
 
 import gfm.enet.enet;
 
+/// A wrapper for ENetAddress.
 struct Address
 {
     ENetAddress address;
 
     alias address this;
 
-    this(ENetAddress other)
+    this(ENetAddress other) pure const nothrow
     {
         address = other;
     }
@@ -32,7 +33,7 @@ struct Address
         address.port = port;
     }
 
-    string host()
+    string host() const
     {
         enum MAX_LEN = 39; // Maximum ipv6 length 
         char[MAX_LEN] buffer; 
