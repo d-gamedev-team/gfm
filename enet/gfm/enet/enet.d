@@ -26,6 +26,46 @@ final class ENet
         this(Log log = null)
         {   
             _log = log is null ? new NullLog() : log;
+
+            ShouldThrow missingSymFunc( string symName )
+            {
+                // Supports from libenet 1.3.3 to 1.3.11+
+                // Obviously we should take extras care in gfm:enet to 
+                // use these functions with care.
+
+                if (symName == "enet_linked_version")
+                    return ShouldThrow.No;
+
+                if (symName == "enet_socket_get_address")
+                    return ShouldThrow.No;
+
+                if (symName == "enet_socket_get_option")
+                    return ShouldThrow.No;
+
+                if (symName == "enet_socket_shutdown")
+                    return ShouldThrow.No;
+
+                if (symName == "enet_host_random_seed")
+                    return ShouldThrow.No;
+
+                if (symName == "enet_peer_ping_interval")
+                    return ShouldThrow.No;
+
+                if (symName == "enet_peer_timeout")
+                    return ShouldThrow.No;
+
+                if (symName == "enet_peer_on_connect")
+                    return ShouldThrow.No;
+
+                if (symName == "enet_peer_on_disconnect")
+                    return ShouldThrow.No;
+
+                // Any other missing symbol should throw.
+                return ShouldThrow.Yes;
+            }
+
+            DerelictENet.missingSymbolCallback = &missingSymFunc;
+
             try
                 DerelictENet.load();
             catch(DerelictException e)
