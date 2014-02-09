@@ -48,7 +48,7 @@ final class GLBuffer
         }
 
         /// Returns: Size of buffer in bytes.
-        size_t size() pure const nothrow
+        @property size_t size() pure const nothrow
         {
             return _size;
         }
