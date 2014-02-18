@@ -227,7 +227,9 @@ final class GLProgram
             glGetProgramiv(_program, GL_LINK_STATUS, &res);
             if (GL_TRUE != res)
             {
-                _gl._log.errorf("%s", getLinkLog());
+                string linkLog = getLinkLog();
+                if (linkLog != null)
+                    _gl._log.errorf("%s", linkLog);
                 throw new OpenGLException("Cannot link program");
             }
 
@@ -336,12 +338,15 @@ final class GLProgram
         }
 
         /// Gets the linking report.
-        /// Returns: Log output of the GLSL linker.
+        /// Returns: Log output of the GLSL linker. Can return null!
         /// Throws: $(D OpenGLException) on error.
         string getLinkLog()
         {
             GLint logLength;
             glGetProgramiv(_program, GL_INFO_LOG_LENGTH, &logLength);
+            if (logLength <= 0) // " If program has no information log, a value of 0 is returned."
+                return null;
+
             char[] log = new char[logLength + 1];
             GLint dummy;
             glGetProgramInfoLog(_program, logLength, &dummy, log.ptr);

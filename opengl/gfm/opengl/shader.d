@@ -94,7 +94,7 @@ final class GLShader
         }
 
         /// Gets the compiling report. 
-        /// Returns: Log output of the GLSL compiler.
+        /// Returns: Log output of the GLSL compiler. Can return null!
         /// Throws: $(D OpenGLException) on error.
         string getInfoLog()
         {
