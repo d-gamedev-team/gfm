@@ -82,7 +82,9 @@ final class GLShader
             _gl.runtimeCheck();
 
             // print info log
-            _gl._log.info(getInfoLog());
+            string infoLog = getInfoLog();
+            if (infoLog != null)
+                _gl._log.info(infoLog);
 
             GLint compiled;
             glGetShaderiv(_shader, GL_COMPILE_STATUS, &compiled);
@@ -98,7 +100,10 @@ final class GLShader
         {
             GLint logLength;
             glGetShaderiv(_shader, GL_INFO_LOG_LENGTH, &logLength);
-            char[] log = new char[logLength + 1];
+            if (logLength <= 0) // "If shader has no information log, a value of 0 is returned."
+                return null;
+
+            char[] log = new char[logLength];
             GLint dummy;
             glGetShaderInfoLog(_shader, logLength, &dummy, log.ptr);
             _gl.runtimeCheck();
