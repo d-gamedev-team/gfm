@@ -8,7 +8,7 @@ import gfm.core.text;
 
 /// A dumb and permissive INI reader/writer.
 /// Bugs: This parser is not robust.
-class INIFile
+deprecated("Use the ctini package instead.") class INIFile
 {
     public
     {
