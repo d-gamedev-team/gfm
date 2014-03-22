@@ -740,7 +740,7 @@ private
     {
         for (int i = 0; i < numBytes; ++i)
         {
-            ubyte b = (n >> (numBytes - 1 - i)) & 255;
+            ubyte b = (n >> ((numBytes - 1 - i) * 8) ) & 255;
             output.put(b);
         }
     }
