@@ -52,7 +52,7 @@ final class OpenGL
         /// Throws: $(D OpenGLException) on error.
         this(Logger logger)
         {
-            _logger = logger is null ? new NullLogger() : logger;
+            _logger = logger is null ? new StdIOLogger(LogLevel.off) : logger;
             DerelictGL3.load(); // load latest available version
 
             DerelictGL.load(); // load deprecated functions too
@@ -524,20 +524,3 @@ extern(System) private
     }
 }
 
-
-// TODO: remove this when there is an equivalent in std.logger
-private
-{
-    class NullLogger : Logger 
-    {
-        public this()
-        {
-            super("null", LogLevel.unspecific);
-        }
-
-        override void writeLogMsg(LoggerPayload payload)
-        {
-            // do nothing
-        }
-    }
-}

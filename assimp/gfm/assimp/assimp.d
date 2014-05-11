@@ -37,7 +37,7 @@ final class Assimp
         /// Throws: AssimpException on error.
         this(Logger logger)
         {
-            _logger = logger is null ? new NullLogger() : logger;
+            _logger = logger is null ? new StdIOLogger(LogLevel.off) : logger;
 
             try
             {
@@ -152,23 +152,6 @@ extern (C) private
         {
             // ignoring IO exceptions, format errors, etc... to be nothrow
             // making the whole Log interface nothrow is not that trivial
-        }
-    }
-}
-
-// TODO: remove this when there is an equivalent in std.logger
-private
-{
-    class NullLogger : Logger 
-    {
-        public this() @safe
-        {
-            super("null", LogLevel.unspecific);
-        }
-
-        override void writeLogMsg(LoggerPayload payload)
-        {
-            // do nothing
         }
     }
 }

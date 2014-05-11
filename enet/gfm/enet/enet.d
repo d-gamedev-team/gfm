@@ -25,7 +25,7 @@ final class ENet
         /// Throws: ENetException when enet_initialize fails.
         this(Logger logger = null)
         {   
-            _logger = logger is null ? new NullLogger() : logger;
+            _logger = logger is null ? new StdIOLogger(LogLevel.off) : logger;
 
             ShouldThrow missingSymFunc( string symName )
             {
@@ -106,21 +106,3 @@ final class ENet
 
     }
 }
-
-// TODO: remove this when there is an equivalent in std.logger
-private
-{
-    class NullLogger : Logger 
-    {
-        public this() @safe
-        {
-            super("null", LogLevel.unspecific);
-        }
-
-        override void writeLogMsg(LoggerPayload payload)
-        {
-            // do nothing
-        }
-    }
-}
-

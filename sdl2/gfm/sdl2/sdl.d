@@ -45,7 +45,7 @@ final class SDL2
         /// TODO: Custom SDL assertion handler.
         this(Logger logger)
         {
-            _logger = logger is null ? new NullLogger() : logger;
+            _logger = logger is null ? new StdIOLogger(LogLevel.off) : logger;
             _SDLInitialized = false;
             _SDL2LoggingRedirected = false;
             try
@@ -666,19 +666,3 @@ final class SDL2VideoDisplay
     }
 }
 
-// TODO: remove this when there is an equivalent in std.logger
-private
-{
-    class NullLogger : Logger 
-    {
-        public this()
-        {
-            super("null", LogLevel.unspecific);
-        }
-
-        override void writeLogMsg(LoggerPayload payload)
-        {
-            // do nothing
-        }
-    }
-}

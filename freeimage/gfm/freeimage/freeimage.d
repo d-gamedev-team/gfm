@@ -32,7 +32,7 @@ final class FreeImage
         /// Throws: FreeImageException on error.
         this(Logger logger, bool useExternalPlugins = false)
         {
-            _logger = logger is null ? new NullLogger() : logger;
+            _logger = logger is null ? new StdIOLogger(LogLevel.off) : logger;
 
             try
             {
@@ -86,22 +86,5 @@ final class FreeImage
     private
     {
         bool _libInitialized;
-    }
-}
-
-// TODO: remove this when there is an equivalent in std.logger
-private
-{
-    class NullLogger : Logger 
-    {
-        public this() @safe
-        {
-            super("null", LogLevel.unspecific);
-        }
-
-        override void writeLogMsg(LoggerPayload payload)
-        {
-            // do nothing
-        }
     }
 }
