@@ -15,8 +15,8 @@ void main()
     int height = 720;
     double ratio = width / cast(double)height;
 
-    // create a default logger
-    auto log = LogManager.defaultLogger();
+    // create a logger
+    auto log = new ConsoleLogger();
 
     // load dynamic libraries
     auto sdl2 = scoped!SDL2(log);
@@ -64,3 +64,4 @@ void main()
         window.swapBuffers();
     }
 }
+
