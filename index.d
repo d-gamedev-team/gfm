@@ -50,7 +50,6 @@ $(UL
         $(UL
             $(LI $(D uri.d): URI parsing (RFC 3986).)
             $(LI $(D httpclient.d): HTTP client (RFC 2616).)
-            $(LI $(D cbor.d): CBOR serialization/deserialization (RFC 7049).)
          )
     )</p>
     <p>$(LI gfm.sdl2:
