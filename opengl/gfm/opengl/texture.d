@@ -200,6 +200,15 @@ class GLTexture
             _gl.runtimeCheck();
         }
 
+        /// Gets the texture data.
+        /// Throws: $(D OpenGLException) on error.
+        final void getTexImage(int level, GLenum format, GLenum type, void* data)
+        {
+            bind();
+            glGetTexImage(_target, level, format, type, data);
+            _gl.runtimeCheck();
+        }
+
         /// Returns: Wrapped OpenGL resource handle.
         GLuint handle() pure const nothrow
         {
