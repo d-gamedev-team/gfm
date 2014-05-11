@@ -4,8 +4,9 @@ import std.string;
 
 import derelict.sdl2.sdl;
 
-import gfm.core.log,
-       gfm.core.text,
+import std.logger;
+
+import gfm.core.text,
        gfm.math.vector,
        gfm.math.box,
        gfm.sdl2.sdl,
@@ -204,9 +205,9 @@ final class SDL2RendererInfo
 {
     public
     {
-        this(Log log, int index, SDL_RendererInfo info)
+        this(Logger logger, int index, SDL_RendererInfo info)
         {
-            _log = log;
+            _logger = logger;
             _index = index;
             _info = info;
         }
@@ -214,7 +215,7 @@ final class SDL2RendererInfo
         /// Returns: Renderer name.
         string name()
         {
-            return sanitizeUTF8(_info.name, _log, "SDL2 renderer name");
+            return sanitizeUTF8(_info.name, _logger, "SDL2 renderer name");
         }
 
         /// Returns: true if this renderer is software.
@@ -257,7 +258,7 @@ final class SDL2RendererInfo
 
     private
     {
-        Log _log;
+        Logger _logger;
         int _index;
         SDL_RendererInfo _info;
     }

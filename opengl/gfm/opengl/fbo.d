@@ -4,8 +4,9 @@ import std.string;
 
 import derelict.opengl3.gl3;
 
-import gfm.core.log,
-       gfm.opengl.opengl,
+import std.logger;
+
+import gfm.opengl.opengl,
        gfm.opengl.texture, 
        gfm.opengl.renderbuffer;
 
@@ -30,7 +31,7 @@ final class GLFBO
                 _useEXTFallback = false;
             else if (EXT_framebuffer_object())
             {
-                gl._log.warn("ARB_framebuffer_object missing, using EXT_framebuffer_object as fallback");
+                gl._logger.warning("ARB_framebuffer_object missing, using EXT_framebuffer_object as fallback");
                 _useEXTFallback = true;
             }
             else

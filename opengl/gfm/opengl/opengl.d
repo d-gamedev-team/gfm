@@ -10,6 +10,8 @@ import std.string,
 import derelict.opengl3.gl3,
        derelict.opengl3.gl;
 
+import std.logger;
+
 import gfm.core.log,
        gfm.core.text,
        gfm.opengl.textureunit;
@@ -48,14 +50,14 @@ final class OpenGL
         /// Load OpenGL library, redirect debug output to our logger.
         /// You can pass a null logger if you don't want logging.
         /// Throws: $(D OpenGLException) on error.
-        this(Log log)
+        this(Logger logger)
         {
-            _log = log is null ? new NullLog() : log;
+            _logger = logger is null ? new NullLogger() : logger;
             DerelictGL3.load(); // load latest available version
 
             DerelictGL.load(); // load deprecated functions too
 
-            _log.infof("OpenGL loaded, version %s", DerelictGL3.loadedVersion());
+            _logger.infoF("OpenGL loaded, version %s", DerelictGL3.loadedVersion());
 
             // do not log here since unimportant errors might happen:
             // no context is necessarily created at this point
@@ -84,18 +86,18 @@ final class OpenGL
         void reload()
         {
             DerelictGL3.reload();
-            _log.infof("OpenGL reloaded, version %s", DerelictGL3.loadedVersion());
-            _log.infof("    Version: %s", getVersionString());
-            _log.infof("    Renderer: %s", getRendererString());
-            _log.infof("    Vendor: %s", getVendorString());
-            _log.infof("    GLSL version: %s", getGLSLVersionString());
+            _logger.infoF("OpenGL reloaded, version %s", DerelictGL3.loadedVersion());
+            _logger.infoF("    Version: %s", getVersionString());
+            _logger.infoF("    Renderer: %s", getRendererString());
+            _logger.infoF("    Vendor: %s", getVendorString());
+            _logger.infoF("    GLSL version: %s", getGLSLVersionString());
 
             // parse extensions
             _extensions = std.array.split(getExtensionsString());
 
-            _log.infof("    Extensions: %s found", _extensions.length);
-            _log.infof("    - EXT_texture_filter_anisotropic is%s supported", EXT_texture_filter_anisotropic() ? "": " not");
-            _log.infof("    - EXT_framebuffer_object is%s supported", EXT_framebuffer_object() ? "": " not");
+            _logger.infoF("    Extensions: %s found", _extensions.length);
+            _logger.infoF("    - EXT_texture_filter_anisotropic is%s supported", EXT_texture_filter_anisotropic() ? "": " not");
+            _logger.infoF("    - EXT_framebuffer_object is%s supported", EXT_framebuffer_object() ? "": " not");
             getLimits(true);
             _textureUnits = new TextureUnits(this);
 
@@ -125,7 +127,7 @@ final class OpenGL
                 if (r != GL_NO_ERROR)
                 {
                     flushGLErrors(); // flush other errors if any
-                    _log.errorf("OpenGL error: %s", getErrorString(r));
+                    _logger.errorF("OpenGL error: %s", getErrorString(r));
                     assert(false); // break here
                 }
             }
@@ -165,7 +167,7 @@ final class OpenGL
             if (sZ is null)
                 return "(unknown)";
             else
-                return sanitizeUTF8(sZ, _log, "OpenGL");
+                return sanitizeUTF8(sZ, _logger, "OpenGL");
         }
 
         /// Returns: OpenGL version string, can be "major_number.minor_number" or 
@@ -256,7 +258,7 @@ final class OpenGL
             else
             {
                 if (logging)
-                    _log.warn("couldn't get OpenGL integer");
+                    _logger.warning("couldn't get OpenGL integer");
                 return defaultValue;
             }
         }
@@ -284,7 +286,7 @@ final class OpenGL
             catch(OpenGLException e)
             {
                 if (logging)
-                    _log.warn(e.msg);
+                    _logger.warning(e.msg);
                 return defaultValue;
             }
         }
@@ -292,7 +294,7 @@ final class OpenGL
 
     package
     {
-        Log _log;
+        Logger _logger;
 
         static string getErrorString(GLint r) pure nothrow
         {
@@ -442,7 +444,7 @@ extern(System) private
 
             try
             {
-                Log log = opengl._log;
+                Logger logger = opengl._logger;
 
                 string ssource;
                 switch (source)
@@ -468,39 +470,45 @@ extern(System) private
                     default:                                stype = "unknown"; break;
                 }
 
-                Log.MessageType mt;
+                LogLevel level;
+
                 string sseverity;
                 switch (severity)
                 {
                     case GL_DEBUG_SEVERITY_HIGH:
-                        mt = Log.MessageType.ERROR;
+                        level = LogLevel.error;
                         sseverity = "high";
                         break;
 
                     case GL_DEBUG_SEVERITY_MEDIUM: 
-                        mt = Log.MessageType.WARNING;
+                        level = LogLevel.warning;
                         sseverity = "medium";
                         break;
 
                     case GL_DEBUG_SEVERITY_LOW:    
-                        mt = Log.MessageType.WARNING;
+                        level = LogLevel.warning;
                         sseverity = "low";
                         break;
 
                     case GL_DEBUG_SEVERITY_NOTIFICATION:
-                        mt = Log.MessageType.INFO;
+                        level = LogLevel.info;
                         sseverity = "notification";
                         break;
 
                     default:
-                        mt = Log.MessageType.WARNING;
+                        level = LogLevel.warning;
                         sseverity = "unknown";
                         break;
                 }
 
                 string text = sanitizeUTF8(message, log, "OpenGL debug output");
 
-                log.messagef(mt, format("opengl: %s (id: %s, source: %s, type: %s, severity: %s)", text, id, ssource, stype, sseverity)); 
+                if (level == LogLevel.info)
+                    logger.infoF("opengl: %s (id: %s, source: %s, type: %s, severity: %s)", text, id, ssource, stype, sseverity);
+                if (level == LogLevel.warning)
+                    logger.warningF("opengl: %s (id: %s, source: %s, type: %s, severity: %s)", text, id, ssource, stype, sseverity);
+                if (level == LogLevel.error)
+                    logger.errorF("opengl: %s (id: %s, source: %s, type: %s, severity: %s)", text, id, ssource, stype, sseverity);
             }
             catch (Exception e)
             {
@@ -516,3 +524,20 @@ extern(System) private
     }
 }
 
+
+// TODO: remove this when there is an equivalent in std.logger
+private
+{
+    class NullLogger : Logger 
+    {
+        public this()
+        {
+            super("null", LogLevel.unspecific);
+        }
+
+        override void writeLogMsg(LoggerPayload payload)
+        {
+            // do nothing
+        }
+    }
+}

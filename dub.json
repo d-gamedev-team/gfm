@@ -33,7 +33,10 @@
         {
             "name": "core",
             "sourcePaths": [ "core/gfm/core" ],
-            "importPaths": [ "core" ]
+            "importPaths": [ "core" ],
+			"dependencies": {
+                "logger": "~master"
+            }
         },
         {
             "name": "math",
@@ -55,13 +58,13 @@
             "sourcePaths": [ "net/gfm/net" ],
             "importPaths": [ "net" ]
         },
-         {
+        {
             "name": "enet",
             "sourcePaths": [ "enet/gfm/enet" ],
             "importPaths": [ "enet" ],
              "dependencies": {
                 "derelict_extras-enet": ">=1.3.10",
-                "gfm:core": "~master"
+                "logger": "~master"
             }
         },
         {
@@ -70,7 +73,8 @@
             "importPaths": [ "assimp" ],
             "dependencies": {
                 "derelict-assimp3": "~master",
-                "gfm:core": "~master"
+                "gfm:core": "~master",
+                "logger": "~master"
             }
         },
         {
@@ -79,6 +83,7 @@
             "importPaths": [ "opengl" ],
             "dependencies": {
                 "derelict-gl3": "~master",
+                "logger": "~master",
                 "gfm:core": "~master",
                 "gfm:math": "~master"
             }
@@ -89,6 +94,7 @@
             "importPaths": [ "sdl2" ],
             "dependencies": {
                 "derelict-sdl2": "~master",
+                "logger": "~master",
                 "gfm:core": "~master",
                 "gfm:math": "~master"
             }
@@ -99,7 +105,8 @@
             "importPaths": [ "freeimage" ],
             "dependencies": {
                 "derelict-fi": "~master",
-                "gfm:core": "~master"
+                "gfm:core": "~master",
+                "logger": "~master"
             }
         }
     ]

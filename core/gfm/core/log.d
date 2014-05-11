@@ -1,12 +1,8 @@
-
-
-
 module gfm.core.log;
 
 import std.stream,
        std.stdio,
        std.string;
-
 
 version(Windows)
 {
@@ -123,7 +119,7 @@ class Log
 Dispatch log messages to multiple loggers.
 
  */
-final class MultiLog : Log
+deprecated("Use the logger package instead") final class MultiLog : Log
 {
     public
     {
@@ -151,7 +147,7 @@ final class MultiLog : Log
 Throw-away log messages.
 
 */
-final class NullLog : Log
+deprecated("Use a custom Logger instead from the logger package") final class NullLog : Log
 {
     protected
     {
@@ -166,7 +162,7 @@ final class NullLog : Log
 Displays coloured log messages in the console.
 
 */
-final class ConsoleLog : Log
+deprecated("Use StdIOLogger instead from the logger package") final class ConsoleLog : Log
 {
     public
     {
@@ -246,7 +242,7 @@ final class ConsoleLog : Log
 Output log messages in a file.
 
 */
-final class FileLog : Log
+deprecated("Use FileLogger instead from the logger package") final class FileLog : Log
 {
     public
     {
@@ -334,7 +330,7 @@ final class FileLog : Log
 
 /// Gets the default logger.
 /// Returns: the default logging object, which writes to both a file and the console.
-Log defaultLog()
+deprecated("Use LogManager.defaultLogger() from the logger package instead") Log defaultLog()
 {
     Log consoleLogger = new ConsoleLog();
     Log fileLogger = new FileLog("output_log.html");

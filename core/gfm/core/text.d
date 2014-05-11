@@ -7,7 +7,7 @@ import std.file,
        std.array,
        std.c.string;
 
-import gfm.core.log;
+import std.logger;
 
 
 /// Reads a text file at once.
@@ -39,7 +39,7 @@ string sanitizeUTF8(const(char*) inputZ)
 
 /// Sanitize a C string from a library.
 /// Returns: Sanitized UTF-8 string. Invalid UTF-8 sequences generate warning messages.
-string sanitizeUTF8(const(char*) inputZ, Log log, string source)
+string sanitizeUTF8(const(char*) inputZ, Logger logger, string source)
 {
     assert(inputZ != null);
     size_t inputLength = strlen(inputZ);
@@ -69,7 +69,7 @@ string sanitizeUTF8(const(char*) inputZ, Log log, string source)
 
     // optionally, warn that input had invalid UTF-8
     if (foundInvalid && log !is null)
-        log.warnf("got invalid UTF-8 sequence from %s", source);
+        logger.warningF("got invalid UTF-8 sequence from %s", source);
 
     return result.data;
 }

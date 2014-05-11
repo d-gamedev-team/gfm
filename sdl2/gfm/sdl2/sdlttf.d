@@ -6,8 +6,9 @@ import derelict.sdl2.sdl,
        derelict.sdl2.ttf,
        derelict.util.exception;
 
-import gfm.core.log,
-       gfm.core.text,
+import std.logger;
+
+import gfm.core.text,
        gfm.math.vector,
        gfm.sdl2.sdl,
        gfm.sdl2.surface;
@@ -22,7 +23,7 @@ final class SDLTTF
         this(SDL2 sdl2)
         {
             _sdl2 = sdl2; // force loading of SDL first
-            _log = sdl2._log;
+            _logger = sdl2._logger;
             _SDLTTFInitialized = false;
 
             try
@@ -38,7 +39,7 @@ final class SDLTTF
             if (res != 0)
                 throwSDL2TTFException("TTF_Init");
 
-             _log.infof("SDL_ttf: initialized.");
+             _logger.infoF("SDL_ttf: initialized.");
             _SDLTTFInitialized = true;
         }
 
@@ -62,7 +63,7 @@ final class SDLTTF
 
     private
     {
-        Log _log;
+        Logger _logger;
         SDL2 _sdl2;
         bool _SDLTTFInitialized;
 
@@ -74,7 +75,7 @@ final class SDLTTF
 
         string getErrorString()
         {
-            return sanitizeUTF8(TTF_GetError(), _log, "SDL_TTF error string");
+            return sanitizeUTF8(TTF_GetError(), _logger, "SDL_TTF error string");
         }
     }
 }

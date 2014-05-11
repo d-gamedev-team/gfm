@@ -6,8 +6,9 @@ import derelict.util.exception,
        derelict.sdl2.sdl,
        derelict.sdl2.image;
 
-import gfm.core.log,
-       gfm.core.text,
+import std.logger;
+
+import gfm.core.text,
        gfm.sdl2.sdl, 
        gfm.sdl2.surface;
 
@@ -22,7 +23,7 @@ final class SDLImage
         this(SDL2 sdl2, int flags = IMG_INIT_JPG | IMG_INIT_PNG | IMG_INIT_TIF | IMG_INIT_WEBP)
         {
             _sdl2 = sdl2; // force loading of SDL first
-            _log = sdl2._log;
+            _logger = sdl2._logger;
             _SDLImageInitialized = false;
             
             try
@@ -37,16 +38,16 @@ final class SDLImage
             int inited = IMG_Init(flags);
 
             if ((inited & IMG_INIT_JPG) != 0)
-                _log.infof("SDL_image: JPG loading enabled.");
+                _logger.infoF("SDL_image: JPG loading enabled.");
 
             if ((inited & IMG_INIT_PNG) != 0)
-                _log.infof("SDL_image: PNG loading enabled.");
+                _logger.infoF("SDL_image: PNG loading enabled.");
 
             if ((inited & IMG_INIT_TIF) != 0)
-                _log.infof("SDL_image: TIF loading enabled.");
+                _logger.infoF("SDL_image: TIF loading enabled.");
 
             if ((inited & IMG_INIT_WEBP) != 0)
-                _log.infof("SDL_image: WebP loading enabled.");
+                _logger.infoF("SDL_image: WebP loading enabled.");
 
             _SDLImageInitialized = true;
 
@@ -85,7 +86,7 @@ final class SDLImage
 
     private
     {
-        Log _log;
+        Logger _logger;
         SDL2 _sdl2;
         bool _SDLImageInitialized;
 
@@ -97,7 +98,7 @@ final class SDLImage
 
         string getErrorString()
         {
-            return sanitizeUTF8(IMG_GetError(), _log, "SDL_Image error string");
+            return sanitizeUTF8(IMG_GetError(), _logger, "SDL_Image error string");
         }
     }
 }

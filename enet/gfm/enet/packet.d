@@ -91,7 +91,7 @@ final class Packet
             if(dataLength != _handle.dataLength)
             {
                 if(dataLength > _largestPacketSize)
-                    _enet._log.warn("Packet size is larger than underlying data");
+                    _enet._logger.warning("Packet size is larger than underlying data");
                 
                 auto errCode = enet_packet_resize(_handle, dataLength);
                 if(errCode < 0)

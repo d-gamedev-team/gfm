@@ -6,8 +6,9 @@ import std.conv,
 import derelict.freeimage.freeimage,
        derelict.util.exception;
 
-import gfm.core.log,
-       gfm.core.text;
+import std.logger;
+
+import gfm.core.text;
 
 /// The one exception type thrown in this wrapper.
 /// A failing FreeImage function should <b>always</b> throw an FreeImageException.
@@ -29,9 +30,9 @@ final class FreeImage
     {
         /// Loads the FreeImage library and logs some information.
         /// Throws: FreeImageException on error.
-        this(Log log, bool useExternalPlugins = false)
+        this(Logger logger, bool useExternalPlugins = false)
         {
-            _log = log is null ? new NullLog() : log;
+            _logger = logger is null ? new NullLogger() : logger;
 
             try
             {
@@ -45,8 +46,8 @@ final class FreeImage
             //FreeImage_Initialise(useExternalPlugins ? TRUE : FALSE); // documentation says it's useless
             _libInitialized = true;
 
-            _log.infof("FreeImage %s initialized.", getVersion());
-            _log.infof("%s.", getCopyrightMessage());
+            _logger.infoF("FreeImage %s initialized.", getVersion());
+            _logger.infoF("%s.", getCopyrightMessage());
         }
 
         ~this()
@@ -67,23 +68,40 @@ final class FreeImage
         string getVersion()
         {
             const(char)* versionZ = FreeImage_GetVersion();
-            return sanitizeUTF8(versionZ, _log, "FreeImage_GetVersion");
+            return sanitizeUTF8(versionZ, _logger, "FreeImage_GetVersion");
         }
 
         string getCopyrightMessage()
         {
             const(char)* copyrightZ = FreeImage_GetCopyrightMessage();
-            return sanitizeUTF8(copyrightZ, _log, "FreeImage_GetCopyrightMessage");
+            return sanitizeUTF8(copyrightZ, _logger, "FreeImage_GetCopyrightMessage");
         }
     }
 
     package
     {
-        Log _log;
+        Logger _logger;
     }
 
     private
     {
         bool _libInitialized;
+    }
+}
+
+// TODO: remove this when there is an equivalent in std.logger
+private
+{
+    class NullLogger : Logger 
+    {
+        public this() @safe
+        {
+            super("null", LogLevel.unspecific);
+        }
+
+        override void writeLogMsg(LoggerPayload payload)
+        {
+            // do nothing
+        }
     }
 }

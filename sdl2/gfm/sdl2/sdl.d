@@ -10,8 +10,9 @@ import derelict.sdl2.sdl,
        derelict.sdl2.image,
        derelict.util.exception;
 
-import gfm.core.log,
-       gfm.core.text,
+import std.logger;
+
+import gfm.core.text,
        gfm.math.vector,
        gfm.math.box,
        gfm.sdl2.renderer,
@@ -42,9 +43,9 @@ final class SDL2
         /// You can pass a null logger if you don't want logging.
         /// Throws: $(D SDL2Exception) on error.
         /// TODO: Custom SDL assertion handler.
-        this(Log log)
+        this(Logger logger)
         {
-            _log = log is null ? new NullLog() : log;
+            _logger = logger is null ? new NullLogger() : logger;
             _SDLInitialized = false;
             _SDL2LoggingRedirected = false;
             try
@@ -69,7 +70,7 @@ final class SDL2
             if (0 != SDL_Init(0))
                 throwSDL2Exception("SDL_Init");
 
-            _log.infof("Platform: %s, %s CPU, L1 cacheline size: %sb", getPlatform(), getCPUCount(), getL1LineSize());
+            _logger.infoF("Platform: %s, %s CPU, L1 cacheline size: %sb", getPlatform(), getCPUCount(), getL1LineSize());
             
             subSystemInit(SDL_INIT_TIMER);
             subSystemInit(SDL_INIT_VIDEO);
@@ -77,12 +78,12 @@ final class SDL2
             subSystemInit(SDL_INIT_AUDIO);
             subSystemInit(SDL_INIT_HAPTIC);
 
-            _log.infof("Available drivers: %s", join(getVideoDrivers(), ", "));
-            _log.infof("Running using video driver: %s", sanitizeUTF8(SDL_GetCurrentVideoDriver(), _log, "SDL_GetCurrentVideoDriver"));
+            _logger.infoF("Available drivers: %s", join(getVideoDrivers(), ", "));
+            _logger.infoF("Running using video driver: %s", sanitizeUTF8(SDL_GetCurrentVideoDriver(), _logger, "SDL_GetCurrentVideoDriver"));
 
             int numDisplays = SDL_GetNumVideoDisplays();
             
-            _log.infof("%s video display(s) detected.", numDisplays);
+            _logger.infoF("%s video display(s) detected.", numDisplays);
 
             _keyboard = new SDL2Keyboard(this);            
         }
@@ -174,7 +175,7 @@ final class SDL2
                 int err = SDL_GetRenderDriverInfo(i, &info);
                 if (err != 0)
                     throwSDL2Exception("SDL_GetRenderDriverInfo");
-                res ~= new SDL2RendererInfo(_log, i, info);
+                res ~= new SDL2RendererInfo(_logger, i, info);
             }
             return res;
         }
@@ -253,7 +254,7 @@ final class SDL2
             if (s is null)
                 throwSDL2Exception("SDL_GetClipboardText");
 
-            return sanitizeUTF8(s, _log, "SDL clipboard text");
+            return sanitizeUTF8(s, _logger, "SDL clipboard text");
         }   
 
         /// Returns: Available SDL video drivers.
@@ -263,14 +264,14 @@ final class SDL2
             string[] res;
             res.length = numDrivers;
             for(int i = 0; i < numDrivers; ++i)
-                res[i] = sanitizeUTF8(SDL_GetVideoDriver(i), _log, "SDL_GetVideoDriver");
+                res[i] = sanitizeUTF8(SDL_GetVideoDriver(i), _logger, "SDL_GetVideoDriver");
             return res;
         }
 
         /// Returns: Platform name.
         string getPlatform()
         {
-            return sanitizeUTF8(SDL_GetPlatform(), _log, "SDL_GetPlatform");
+            return sanitizeUTF8(SDL_GetPlatform(), _logger, "SDL_GetPlatform");
         }
 
         /// Returns: L1 cacheline size in bytes.
@@ -294,7 +295,7 @@ final class SDL2
 
     package
     {
-        Log _log;
+        Logger _logger;
 
         // exception mechanism that shall be used by every module here
         void throwSDL2Exception(string callThatFailed)
@@ -308,7 +309,7 @@ final class SDL2
         {
             const(char)* message = SDL_GetError();
             SDL_ClearError(); // clear error
-            return sanitizeUTF8(message, _log, "SDL error string");
+            return sanitizeUTF8(message, _logger, "SDL error string");
         }
 
         void registerWindow(SDL2Window window)
@@ -392,19 +393,19 @@ final class SDL2
             string formattedMessage = format("SDL (category %s, priority %s): %s", 
                                              readableCategory(category), 
                                              readablePriority(priority), 
-                                             sanitizeUTF8(message, _log, "SDL logging"));
+                                             sanitizeUTF8(message, _logger, "SDL logging"));
 
             if (priority == SDL_LOG_PRIORITY_WARN)
-                _log.warn(formattedMessage);
+                _logger.warning(formattedMessage);
             else if (priority == SDL_LOG_PRIORITY_ERROR ||  priority == SDL_LOG_PRIORITY_CRITICAL)
-                _log.error(formattedMessage);
+                _logger.error(formattedMessage);
             else
-                _log.info(formattedMessage);
+                _logger.info(formattedMessage);
         }
 
         SDL_assert_state onLogSDLAssertion(const(SDL_assert_data)* adata)
         {
-            _log.warnf("SDL assertion error: %s in %s line %d", adata.condition, adata.filename, adata.linenum);
+            _logger.warningF("SDL assertion error: %s in %s line %d", adata.condition, adata.filename, adata.linenum);
 
             debug 
                 return SDL_ASSERTION_ABORT; // crash in debug mode
@@ -481,7 +482,7 @@ final class SDL2
 
             if (window is null)
             {
-                _log.warnf("Received a SDL event for an unknown window (id = %s)", windowEvent.windowID);
+                _logger.warningF("Received a SDL event for an unknown window (id = %s)", windowEvent.windowID);
                 return; // no such id known, warning
             }
 
@@ -665,3 +666,19 @@ final class SDL2VideoDisplay
     }
 }
 
+// TODO: remove this when there is an equivalent in std.logger
+private
+{
+    class NullLogger : Logger 
+    {
+        public this()
+        {
+            super("null", LogLevel.unspecific);
+        }
+
+        override void writeLogMsg(LoggerPayload payload)
+        {
+            // do nothing
+        }
+    }
+}

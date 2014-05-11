@@ -3,7 +3,7 @@ module gfm.enet.enet;
 import derelict.enet.enet;
 import derelict.util.exception;
 
-import gfm.core.log;
+import std.logger;
 
 /// General ENet exception thrown for all cases.
 final class ENetException : Exception
@@ -23,9 +23,9 @@ final class ENet
     {
         /// Loads DerelictENet and initializes the ENet library.
         /// Throws: ENetException when enet_initialize fails.
-        this(Log log = null)
+        this(Logger logger = null)
         {   
-            _log = log is null ? new NullLog() : log;
+            _logger = logger is null ? new NullLogger() : logger;
 
             ShouldThrow missingSymFunc( string symName )
             {
@@ -97,11 +97,30 @@ final class ENet
 
     package
     {
-        Log _log;
+        Logger _logger;
     }
 
     private
     {
         bool _enetInitialized = false;
+
     }
 }
+
+// TODO: remove this when there is an equivalent in std.logger
+private
+{
+    class NullLogger : Logger 
+    {
+        public this() @safe
+        {
+            super("null", LogLevel.unspecific);
+        }
+
+        override void writeLogMsg(LoggerPayload payload)
+        {
+            // do nothing
+        }
+    }
+}
+

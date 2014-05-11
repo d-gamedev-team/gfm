@@ -148,7 +148,7 @@ final class GLProgram
                         else
                         {
                             if (lineIndex != 0)
-                                gl._log.warn("For maximum compatibility, #version directive should be the first line of your shader.");
+                                gl._logger.warning("For maximum compatibility, #version directive should be the first line of your shader.");
 
                             versionLine = lineIndex;
                         }
@@ -229,7 +229,7 @@ final class GLProgram
             {
                 string linkLog = getLinkLog();
                 if (linkLog != null)
-                    _gl._log.errorf("%s", linkLog);
+                    _gl._logger.errorF("%s", linkLog);
                 throw new OpenGLException("Cannot link program");
             }
 
@@ -282,7 +282,7 @@ final class GLProgram
                                        &type,
                                        buffer.ptr);
                     _gl.runtimeCheck();
-                    string name = sanitizeUTF8(buffer.ptr, _gl._log, "OpenGL uniform name");
+                    string name = sanitizeUTF8(buffer.ptr, _gl._logger, "OpenGL uniform name");
                    _activeUniforms[name] = new GLUniform(_gl, _program, type, name, size);
                 }
             }
@@ -304,7 +304,7 @@ final class GLProgram
                     GLsizei length;
                     glGetActiveAttrib(_program, cast(GLuint)i, cast(GLint)(buffer.length), &length, &size, &type, buffer.ptr);                    
                     _gl.runtimeCheck();
-                    string name = sanitizeUTF8(buffer.ptr, _gl._log, "OpenGL attribute name");
+                    string name = sanitizeUTF8(buffer.ptr, _gl._logger, "OpenGL attribute name");
                     GLint location = glGetAttribLocation(_program, buffer.ptr);
                     _gl.runtimeCheck();
 
@@ -351,7 +351,7 @@ final class GLProgram
             GLint dummy;
             glGetProgramInfoLog(_program, logLength, &dummy, log.ptr);
             _gl.runtimeCheck();
-            return sanitizeUTF8(log.ptr, _gl._log, "shader link log");
+            return sanitizeUTF8(log.ptr, _gl._logger, "shader link log");
         }
 
         /// Gets an uniform by name.
@@ -366,7 +366,7 @@ final class GLProgram
             {
                 // no such variable found, either it's really missing or the OpenGL driver discarded an unused uniform
                 // create a fake disabled GLUniform to allow the show to proceed
-                _gl._log.warnf("Faking uniform variable '%s'", name);
+                _gl._logger.warningF("Faking uniform variable '%s'", name);
                 _activeUniforms[name] = new GLUniform(_gl, name);
                 return _activeUniforms[name];
             }

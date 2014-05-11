@@ -4,8 +4,9 @@ import std.string;
 
 import derelict.sdl2.sdl;
 
-import gfm.core.log,
-       gfm.math.vector,
+import std.logger;
+
+import gfm.math.vector,
        gfm.math.box,
        gfm.sdl2.sdl,
        gfm.sdl2.surface;
@@ -22,7 +23,7 @@ class SDL2Window
         this(SDL2 sdl2, int x, int y, int width, int height, int flags)
         {
             _sdl2 = sdl2;
-            _log = sdl2._log;
+            _logger = sdl2._logger;
             _surface = null;
             _glContext = null;
             _surfaceMustBeRenewed = false;
@@ -238,7 +239,7 @@ class SDL2Window
 
     private
     {
-        Log _log;
+        Logger _logger;
         SDL2Surface _surface;
         SDL2GLContext _glContext;
         uint _id;

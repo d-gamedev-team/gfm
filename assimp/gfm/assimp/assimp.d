@@ -4,11 +4,12 @@ import std.conv,
        std.string,
        std.array : join;
 
+import std.logger;
+
+import gfm.core.text;
+
 import derelict.assimp3.assimp,
        derelict.util.exception;
-
-import gfm.core.log,
-       gfm.core.text;
 
 /// The one exception type thrown in this wrapper.
 /// A failing ASSIMP function should <b>always</b> throw an AssimpException.
@@ -34,9 +35,9 @@ final class Assimp
         /// Load ASSIMP library, redirect logging to our logger.
         /// You can pass a null logger if you don't want logging.
         /// Throws: AssimpException on error.
-        this(Log log)
+        this(Logger logger)
         {
-            _log = log is null ? new NullLog() : log;
+            _logger = logger is null ? new NullLogger() : logger;
 
             try
             {
@@ -49,8 +50,8 @@ final class Assimp
 
             _libInitialized = true;
 
-            _log.infof("Assimp %s initialized.", getVersion());
-            _log.infof("%s.", getLegalString());
+            _logger.infoF("Assimp %s initialized.", getVersion());
+            _logger.infoF("%s.", getLegalString());
 
             // enable verbose logging in debug-mode
             debug
@@ -108,13 +109,13 @@ final class Assimp
         string getLegalString()
         {
             const(char)* legalZ = aiGetLegalString();
-            return sanitizeUTF8(legalZ, _log, "Assimp legal string");
+            return sanitizeUTF8(legalZ, _logger, "Assimp legal string");
         }
     }
 
     package
     {
-        Log _log;
+        Logger _logger;
 
         // exception mechanism that shall be used by every module here
         void throwAssimpException(string callThatFailed)
@@ -126,7 +127,7 @@ final class Assimp
         string getErrorString()
         {
             const(char)* errorZ = aiGetErrorString();
-            return sanitizeUTF8(errorZ, _log, "Assimp error string");
+            return sanitizeUTF8(errorZ, _logger, "Assimp error string");
         }
     }
 
@@ -144,13 +145,30 @@ extern (C) private
         Assimp assimp = cast(Assimp)user;
         try
         {
-            Log log = assimp._log;
-            log.infof("assimp: %s", sanitizeUTF8(message, log, "Assimp logging"));
+            Logger logger = assimp._logger;
+            logger.infoF("assimp: %s", sanitizeUTF8(message, log, "Assimp logging"));
         }
         catch(Exception e)
         {
             // ignoring IO exceptions, format errors, etc... to be nothrow
             // making the whole Log interface nothrow is not that trivial
+        }
+    }
+}
+
+// TODO: remove this when there is an equivalent in std.logger
+private
+{
+    class NullLogger : Logger 
+    {
+        public this() @safe
+        {
+            super("null", LogLevel.unspecific);
+        }
+
+        override void writeLogMsg(LoggerPayload payload)
+        {
+            // do nothing
         }
     }
 }

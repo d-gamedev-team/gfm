@@ -84,7 +84,7 @@ final class GLShader
             // print info log
             string infoLog = getInfoLog();
             if (infoLog != null)
-                _gl._log.info(infoLog);
+                _gl._logger.info(infoLog);
 
             GLint compiled;
             glGetShaderiv(_shader, GL_COMPILE_STATUS, &compiled);
