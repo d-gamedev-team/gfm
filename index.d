@@ -9,8 +9,7 @@ $(UL
     <p>$(LI gfm.core:
         $(UL
             $(LI $(D log.d): logging interface + implementations (HTML file, colored console output...).)
-            $(LI $(D queue.d): a dead simple queue/fifo/stack/ring-buffer, with a range interface.)
-            $(LI $(D lockedqueue.d): synchronized queue for thread communication.)
+            $(LI $(D queue.d): a dead simple queue/fifo/stack/ring-buffer, with a range interface. Synchronized queue for threads.)
             $(LI $(D memory.d): aligned malloc/free/realloc.)
             $(LI $(D alignedbuffer.d): aligned array-like container.)
             $(LI $(D text.d): string utilities.)
