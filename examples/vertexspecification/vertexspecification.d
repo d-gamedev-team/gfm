@@ -1,6 +1,7 @@
+import std.logger;
+
 import gfm.opengl,
-       gfm.sdl2,
-       gfm.core;
+       gfm.sdl2;
 
 import std.typecons,
        std.string;
@@ -11,7 +12,7 @@ void main()
     int height = 600;
 
     // create a default logger
-    auto log = defaultLog();
+    auto log = LogManager.defaultLogger();
 
     auto sdl = scoped!SDL2(log);
     auto gl  = scoped!OpenGL(log);

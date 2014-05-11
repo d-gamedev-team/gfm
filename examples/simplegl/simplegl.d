@@ -1,6 +1,8 @@
 import std.math,
        std.typecons;
 
+import std.logger;
+
 import gfm.core,
        gfm.sdl2,
        gfm.opengl;
@@ -14,7 +16,7 @@ void main()
     double ratio = width / cast(double)height;
 
     // create a default logger
-    auto log = defaultLog();
+    auto log = LogManager.defaultLogger();
 
     // load dynamic libraries
     auto sdl2 = scoped!SDL2(log);
