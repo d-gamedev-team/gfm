@@ -2,7 +2,6 @@ MODULES =
     $(MODULE index, Index)
 	$(MODULE gfm.core.log, logging)
     $(MODULE gfm.core.queue, queue/fifo/stack/ring-buffer)
-    $(MODULE gfm.core.lockedqueue, synchronized queue)
     $(MODULE gfm.core.memory, aligned malloc/free/realloc)
     $(MODULE gfm.core.ini, INI parser/writer)
     $(MODULE gfm.core.text, string utilities)    
@@ -24,7 +23,6 @@ MODULES =
 
     $(MODULE gfm.net.uri, URI parsing)
     $(MODULE gfm.net.httpclient, very basic HTTP client)
-    $(MODULE gfm.net.cbor, CBOR implementation)
 
     $(MODULE gfm.sdl2.sdl, SDL wrapper)    
     $(MODULE gfm.sdl2.window, SDL_Window wrapper)

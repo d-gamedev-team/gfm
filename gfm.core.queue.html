@@ -61,7 +61,6 @@
     <li class="sidebar-list-entry tree-leaf"><a href="index.html" title="index"><i class="icon-th"></i>index</a></li>
 	<li class="sidebar-list-entry tree-leaf"><a href="gfm.core.log.html" title="gfm.core.log"><i class="icon-th"></i>gfm.core.log</a></li>
     <li class="sidebar-list-entry tree-leaf"><a href="gfm.core.queue.html" title="gfm.core.queue"><i class="icon-th"></i>gfm.core.queue</a></li>
-    <li class="sidebar-list-entry tree-leaf"><a href="gfm.core.lockedqueue.html" title="gfm.core.lockedqueue"><i class="icon-th"></i>gfm.core.lockedqueue</a></li>
     <li class="sidebar-list-entry tree-leaf"><a href="gfm.core.memory.html" title="gfm.core.memory"><i class="icon-th"></i>gfm.core.memory</a></li>
     <li class="sidebar-list-entry tree-leaf"><a href="gfm.core.ini.html" title="gfm.core.ini"><i class="icon-th"></i>gfm.core.ini</a></li>
     <li class="sidebar-list-entry tree-leaf"><a href="gfm.core.text.html" title="gfm.core.text"><i class="icon-th"></i>gfm.core.text</a></li>    
@@ -83,7 +82,6 @@
 
     <li class="sidebar-list-entry tree-leaf"><a href="gfm.net.uri.html" title="gfm.net.uri"><i class="icon-th"></i>gfm.net.uri</a></li>
     <li class="sidebar-list-entry tree-leaf"><a href="gfm.net.httpclient.html" title="gfm.net.httpclient"><i class="icon-th"></i>gfm.net.httpclient</a></li>
-    <li class="sidebar-list-entry tree-leaf"><a href="gfm.net.cbor.html" title="gfm.net.cbor"><i class="icon-th"></i>gfm.net.cbor</a></li>
 
     <li class="sidebar-list-entry tree-leaf"><a href="gfm.sdl2.sdl.html" title="gfm.sdl2.sdl"><i class="icon-th"></i>gfm.sdl2.sdl</a></li>    
     <li class="sidebar-list-entry tree-leaf"><a href="gfm.sdl2.window.html" title="gfm.sdl2.window"><i class="icon-th"></i>gfm.sdl2.window</a></li>
@@ -163,7 +161,6 @@
     <li class="sidebar-list-entry tree-leaf"><a href="index.html" title="index"><i class="icon-th"></i>index</a></li>
 	<li class="sidebar-list-entry tree-leaf"><a href="gfm.core.log.html" title="gfm.core.log"><i class="icon-th"></i>gfm.core.log</a></li>
     <li class="sidebar-list-entry tree-leaf"><a href="gfm.core.queue.html" title="gfm.core.queue"><i class="icon-th"></i>gfm.core.queue</a></li>
-    <li class="sidebar-list-entry tree-leaf"><a href="gfm.core.lockedqueue.html" title="gfm.core.lockedqueue"><i class="icon-th"></i>gfm.core.lockedqueue</a></li>
     <li class="sidebar-list-entry tree-leaf"><a href="gfm.core.memory.html" title="gfm.core.memory"><i class="icon-th"></i>gfm.core.memory</a></li>
     <li class="sidebar-list-entry tree-leaf"><a href="gfm.core.ini.html" title="gfm.core.ini"><i class="icon-th"></i>gfm.core.ini</a></li>
     <li class="sidebar-list-entry tree-leaf"><a href="gfm.core.text.html" title="gfm.core.text"><i class="icon-th"></i>gfm.core.text</a></li>    
@@ -185,7 +182,6 @@
 
     <li class="sidebar-list-entry tree-leaf"><a href="gfm.net.uri.html" title="gfm.net.uri"><i class="icon-th"></i>gfm.net.uri</a></li>
     <li class="sidebar-list-entry tree-leaf"><a href="gfm.net.httpclient.html" title="gfm.net.httpclient"><i class="icon-th"></i>gfm.net.httpclient</a></li>
-    <li class="sidebar-list-entry tree-leaf"><a href="gfm.net.cbor.html" title="gfm.net.cbor"><i class="icon-th"></i>gfm.net.cbor</a></li>
 
     <li class="sidebar-list-entry tree-leaf"><a href="gfm.sdl2.sdl.html" title="gfm.sdl2.sdl"><i class="icon-th"></i>gfm.sdl2.sdl</a></li>    
     <li class="sidebar-list-entry tree-leaf"><a href="gfm.sdl2.window.html" title="gfm.sdl2.window"><i class="icon-th"></i>gfm.sdl2.window</a></li>
@@ -358,6 +354,52 @@
 
 <dt>See Also</dt><dd><a href="#QueueImpl">QueueImpl</a></dd>
 </dl>
+</div>
+<hr><div class="row-fluid declaration"><h3>class <span class="symbol-target" id="LockedQueue">&nbsp;</span><a class="symbol-link" href="#LockedQueue">LockedQueue</a>(T);
+</h3></div>
+<div class="declaration-content"><dl><p>Locked queue for inter-thread communication.
+    Support multiple writers, multiple readers.
+    Blocks threads either when empty or full.
+</p>
+
+<dt>See Also</dt><dd><a href="#Queue">Queue</a></dd>
+</dl>
+<div class="offset1 member-list"><hr><div class="row-fluid declaration"><h3>const size_t <span class="symbol-target" id="capacity">&nbsp;</span><a class="symbol-link" href="#capacity">capacity</a>();
+</h3></div>
+<div class="declaration-content"><dl><dt>Returns</dt><dd>Capacity of the locked queue.</dd>
+</dl>
+</div>
+<hr><div class="row-fluid declaration"><h3>void <span class="symbol-target" id="pushBack">&nbsp;</span><a class="symbol-link" href="#pushBack">pushBack</a>(T <i>x</i>);
+</h3></div>
+<div class="declaration-content"><dl><p>Push an item to the back, block if queue is full.</p>
+
+</dl>
+</div>
+<hr><div class="row-fluid declaration"><h3>void <span class="symbol-target" id="pushFront">&nbsp;</span><a class="symbol-link" href="#pushFront">pushFront</a>(T <i>x</i>);
+</h3></div>
+<div class="declaration-content"><dl><p>Push an item to the front, block if queue is full.</p>
+
+</dl>
+</div>
+<hr><div class="row-fluid declaration"><h3>T <span class="symbol-target" id="popFront">&nbsp;</span><a class="symbol-link" href="#popFront">popFront</a>();
+</h3></div>
+<div class="declaration-content"><dl><p>Pop an item from the front, block if queue is empty.</p>
+
+</dl>
+</div>
+<hr><div class="row-fluid declaration"><h3>T <span class="symbol-target" id="popBack">&nbsp;</span><a class="symbol-link" href="#popBack">popBack</a>();
+</h3></div>
+<div class="declaration-content"><dl><p>Pop an item from the back, block if queue is empty.</p>
+
+</dl>
+</div>
+<hr><div class="row-fluid declaration"><h3>void <span class="symbol-target" id="clear">&nbsp;</span><a class="symbol-link" href="#clear">clear</a>();
+</h3></div>
+<div class="declaration-content"><dl><p>Removes all locked queue items.</p>
+
+</dl>
+</div>
+</div>
 </div>
 
 

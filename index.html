@@ -61,7 +61,6 @@
     <li class="sidebar-list-entry tree-leaf"><a href="index.html" title="index"><i class="icon-th"></i>index</a></li>
 	<li class="sidebar-list-entry tree-leaf"><a href="gfm.core.log.html" title="gfm.core.log"><i class="icon-th"></i>gfm.core.log</a></li>
     <li class="sidebar-list-entry tree-leaf"><a href="gfm.core.queue.html" title="gfm.core.queue"><i class="icon-th"></i>gfm.core.queue</a></li>
-    <li class="sidebar-list-entry tree-leaf"><a href="gfm.core.lockedqueue.html" title="gfm.core.lockedqueue"><i class="icon-th"></i>gfm.core.lockedqueue</a></li>
     <li class="sidebar-list-entry tree-leaf"><a href="gfm.core.memory.html" title="gfm.core.memory"><i class="icon-th"></i>gfm.core.memory</a></li>
     <li class="sidebar-list-entry tree-leaf"><a href="gfm.core.ini.html" title="gfm.core.ini"><i class="icon-th"></i>gfm.core.ini</a></li>
     <li class="sidebar-list-entry tree-leaf"><a href="gfm.core.text.html" title="gfm.core.text"><i class="icon-th"></i>gfm.core.text</a></li>    
@@ -83,7 +82,6 @@
 
     <li class="sidebar-list-entry tree-leaf"><a href="gfm.net.uri.html" title="gfm.net.uri"><i class="icon-th"></i>gfm.net.uri</a></li>
     <li class="sidebar-list-entry tree-leaf"><a href="gfm.net.httpclient.html" title="gfm.net.httpclient"><i class="icon-th"></i>gfm.net.httpclient</a></li>
-    <li class="sidebar-list-entry tree-leaf"><a href="gfm.net.cbor.html" title="gfm.net.cbor"><i class="icon-th"></i>gfm.net.cbor</a></li>
 
     <li class="sidebar-list-entry tree-leaf"><a href="gfm.sdl2.sdl.html" title="gfm.sdl2.sdl"><i class="icon-th"></i>gfm.sdl2.sdl</a></li>    
     <li class="sidebar-list-entry tree-leaf"><a href="gfm.sdl2.window.html" title="gfm.sdl2.window"><i class="icon-th"></i>gfm.sdl2.window</a></li>
@@ -163,7 +161,6 @@
     <li class="sidebar-list-entry tree-leaf"><a href="index.html" title="index"><i class="icon-th"></i>index</a></li>
 	<li class="sidebar-list-entry tree-leaf"><a href="gfm.core.log.html" title="gfm.core.log"><i class="icon-th"></i>gfm.core.log</a></li>
     <li class="sidebar-list-entry tree-leaf"><a href="gfm.core.queue.html" title="gfm.core.queue"><i class="icon-th"></i>gfm.core.queue</a></li>
-    <li class="sidebar-list-entry tree-leaf"><a href="gfm.core.lockedqueue.html" title="gfm.core.lockedqueue"><i class="icon-th"></i>gfm.core.lockedqueue</a></li>
     <li class="sidebar-list-entry tree-leaf"><a href="gfm.core.memory.html" title="gfm.core.memory"><i class="icon-th"></i>gfm.core.memory</a></li>
     <li class="sidebar-list-entry tree-leaf"><a href="gfm.core.ini.html" title="gfm.core.ini"><i class="icon-th"></i>gfm.core.ini</a></li>
     <li class="sidebar-list-entry tree-leaf"><a href="gfm.core.text.html" title="gfm.core.text"><i class="icon-th"></i>gfm.core.text</a></li>    
@@ -185,7 +182,6 @@
 
     <li class="sidebar-list-entry tree-leaf"><a href="gfm.net.uri.html" title="gfm.net.uri"><i class="icon-th"></i>gfm.net.uri</a></li>
     <li class="sidebar-list-entry tree-leaf"><a href="gfm.net.httpclient.html" title="gfm.net.httpclient"><i class="icon-th"></i>gfm.net.httpclient</a></li>
-    <li class="sidebar-list-entry tree-leaf"><a href="gfm.net.cbor.html" title="gfm.net.cbor"><i class="icon-th"></i>gfm.net.cbor</a></li>
 
     <li class="sidebar-list-entry tree-leaf"><a href="gfm.sdl2.sdl.html" title="gfm.sdl2.sdl"><i class="icon-th"></i>gfm.sdl2.sdl</a></li>    
     <li class="sidebar-list-entry tree-leaf"><a href="gfm.sdl2.window.html" title="gfm.sdl2.window"><i class="icon-th"></i>gfm.sdl2.window</a></li>
@@ -257,8 +253,7 @@
 
 <ul>    <p><li>gfm.core:
         <ul>            <li><span class="inlinecode">log.d</span>: logging interface + implementations (HTML file, colored console output...).</li>
-            <li><span class="inlinecode">queue.d</span>: a dead simple queue/fifo/stack/ring-buffer, with a range interface.</li>
-            <li><span class="inlinecode">lockedqueue.d</span>: synchronized queue for thread communication.</li>
+            <li><span class="inlinecode">queue.d</span>: a dead simple queue/fifo/stack/ring-buffer, with a range interface. Synchronized queue for threads.</li>
             <li><span class="inlinecode">memory.d</span>: aligned malloc/free/realloc.</li>
             <li><span class="inlinecode">alignedbuffer.d</span>: aligned array-like container.</li>
             <li><span class="inlinecode">text.d</span>: string utilities.</li>
@@ -295,7 +290,6 @@
     <p><li>gfm.net:
         <ul>            <li><span class="inlinecode">uri.d</span>: URI parsing (RFC 3986).</li>
             <li><span class="inlinecode">httpclient.d</span>: HTTP client (RFC 2616).</li>
-            <li><span class="inlinecode">cbor.d</span>: CBOR serialization/deserialization (RFC 7049).</li>
          </ul>
     </li></p>
     <p><li>gfm.sdl2:
