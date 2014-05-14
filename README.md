@@ -2,7 +2,7 @@
 
 GFM is a feature-rich library to ease the creation of video games / multimedia applications with the D programming language. Pick what you need.
 
-Documentation and overview can be found here: http://p0nce.github.com/gfm/
+Documentation and overview can be found here: http://d-gamedev-team.github.io/gfm/
 
 [![Build Status](https://travis-ci.org/d-gamedev-team/gfm.png?branch=master)](https://travis-ci.org/d-gamedev-team/gfm)
 
