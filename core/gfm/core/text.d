@@ -69,7 +69,7 @@ string sanitizeUTF8(const(char*) inputZ, Logger logger, string source)
 
     // optionally, warn that input had invalid UTF-8
     if (foundInvalid && log !is null)
-        logger.warningF("got invalid UTF-8 sequence from %s", source);
+        logger.warningf("got invalid UTF-8 sequence from %s", source);
 
     return result.data;
 }

@@ -50,8 +50,8 @@ final class Assimp
 
             _libInitialized = true;
 
-            _logger.infoF("Assimp %s initialized.", getVersion());
-            _logger.infoF("%s.", getLegalString());
+            _logger.infof("Assimp %s initialized.", getVersion());
+            _logger.infof("%s.", getLegalString());
 
             // enable verbose logging in debug-mode
             debug
@@ -146,7 +146,7 @@ extern (C) private
         try
         {
             Logger logger = assimp._logger;
-            logger.infoF("assimp: %s", sanitizeUTF8(message, log, "Assimp logging"));
+            logger.infof("assimp: %s", sanitizeUTF8(message, log, "Assimp logging"));
         }
         catch(Exception e)
         {

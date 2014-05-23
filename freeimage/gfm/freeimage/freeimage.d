@@ -46,8 +46,8 @@ final class FreeImage
             //FreeImage_Initialise(useExternalPlugins ? TRUE : FALSE); // documentation says it's useless
             _libInitialized = true;
 
-            _logger.infoF("FreeImage %s initialized.", getVersion());
-            _logger.infoF("%s.", getCopyrightMessage());
+            _logger.infof("FreeImage %s initialized.", getVersion());
+            _logger.infof("%s.", getCopyrightMessage());
         }
 
         ~this()

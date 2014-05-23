@@ -70,7 +70,7 @@ final class SDL2
             if (0 != SDL_Init(0))
                 throwSDL2Exception("SDL_Init");
 
-            _logger.infoF("Platform: %s, %s CPU, L1 cacheline size: %sb", getPlatform(), getCPUCount(), getL1LineSize());
+            _logger.infof("Platform: %s, %s CPU, L1 cacheline size: %sb", getPlatform(), getCPUCount(), getL1LineSize());
             
             subSystemInit(SDL_INIT_TIMER);
             subSystemInit(SDL_INIT_VIDEO);
@@ -78,12 +78,12 @@ final class SDL2
             subSystemInit(SDL_INIT_AUDIO);
             subSystemInit(SDL_INIT_HAPTIC);
 
-            _logger.infoF("Available drivers: %s", join(getVideoDrivers(), ", "));
-            _logger.infoF("Running using video driver: %s", sanitizeUTF8(SDL_GetCurrentVideoDriver(), _logger, "SDL_GetCurrentVideoDriver"));
+            _logger.infof("Available drivers: %s", join(getVideoDrivers(), ", "));
+            _logger.infof("Running using video driver: %s", sanitizeUTF8(SDL_GetCurrentVideoDriver(), _logger, "SDL_GetCurrentVideoDriver"));
 
             int numDisplays = SDL_GetNumVideoDisplays();
             
-            _logger.infoF("%s video display(s) detected.", numDisplays);
+            _logger.infof("%s video display(s) detected.", numDisplays);
 
             _keyboard = new SDL2Keyboard(this);            
         }
@@ -405,7 +405,7 @@ final class SDL2
 
         SDL_assert_state onLogSDLAssertion(const(SDL_assert_data)* adata)
         {
-            _logger.warningF("SDL assertion error: %s in %s line %d", adata.condition, adata.filename, adata.linenum);
+            _logger.warningf("SDL assertion error: %s in %s line %d", adata.condition, adata.filename, adata.linenum);
 
             debug 
                 return SDL_ASSERTION_ABORT; // crash in debug mode
@@ -482,7 +482,7 @@ final class SDL2
 
             if (window is null)
             {
-                _logger.warningF("Received a SDL event for an unknown window (id = %s)", windowEvent.windowID);
+                _logger.warningf("Received a SDL event for an unknown window (id = %s)", windowEvent.windowID);
                 return; // no such id known, warning
             }
 

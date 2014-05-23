@@ -47,7 +47,7 @@ final class GLUniform
             }
             else
             {
-                _gl._logger.warningF("uniform %s is unrecognized or has size 0, disabled", _name);
+                _gl._logger.warningf("uniform %s is unrecognized or has size 0, disabled", _name);
                 _disabled = true;
             }
         }
@@ -58,7 +58,7 @@ final class GLUniform
         {
             _gl = gl;
             _disabled = true;
-            _gl._logger.warningF("creating fake uniform '%s' which either does not exist in the shader program, or was discarded by the driver as unused", name);
+            _gl._logger.warningf("creating fake uniform '%s' which either does not exist in the shader program, or was discarded by the driver as unused", name);
         }
 
         /// Sets a uniform variable value.
@@ -139,7 +139,7 @@ final class GLUniform
             // safety check to prevent defaults values in uniforms
             if (_firstSet)
             {
-                _gl._logger.warningF("uniform '%s' left to default value, driver will probably zero it", _name);
+                _gl._logger.warningf("uniform '%s' left to default value, driver will probably zero it", _name);
                 _firstSet = false;
             }
 

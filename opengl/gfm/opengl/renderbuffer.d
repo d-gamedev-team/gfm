@@ -30,7 +30,7 @@ final class GLRenderBuffer
                 // fallback to non multisampled
                 if (glRenderbufferStorageMultisample is null)
                 {
-                    gl._logger.warningF("render-buffer multisampling is not supported, fallback to non-multisampled");
+                    gl._logger.warningf("render-buffer multisampling is not supported, fallback to non-multisampled");
                     goto non_mutisampled;
                 }
                 
@@ -43,7 +43,7 @@ final class GLRenderBuffer
                 if (samples >= maxSamples)
                 {
                     int newSamples = clamp(samples, 0, maxSamples - 1);
-                    gl._logger.warningF(format("implementation does not support %s samples, fallback to %s samples", samples, newSamples));
+                    gl._logger.warningf(format("implementation does not support %s samples, fallback to %s samples", samples, newSamples));
                     samples = newSamples;
                 }
 

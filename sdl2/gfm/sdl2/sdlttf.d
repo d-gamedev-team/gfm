@@ -39,7 +39,7 @@ final class SDLTTF
             if (res != 0)
                 throwSDL2TTFException("TTF_Init");
 
-             _logger.infoF("SDL_ttf: initialized.");
+             _logger.infof("SDL_ttf: initialized.");
             _SDLTTFInitialized = true;
         }
 

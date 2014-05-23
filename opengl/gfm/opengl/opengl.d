@@ -57,7 +57,7 @@ final class OpenGL
 
             DerelictGL.load(); // load deprecated functions too
 
-            _logger.infoF("OpenGL loaded, version %s", DerelictGL3.loadedVersion());
+            _logger.infof("OpenGL loaded, version %s", DerelictGL3.loadedVersion());
 
             // do not log here since unimportant errors might happen:
             // no context is necessarily created at this point
@@ -86,18 +86,18 @@ final class OpenGL
         void reload()
         {
             DerelictGL3.reload();
-            _logger.infoF("OpenGL reloaded, version %s", DerelictGL3.loadedVersion());
-            _logger.infoF("    Version: %s", getVersionString());
-            _logger.infoF("    Renderer: %s", getRendererString());
-            _logger.infoF("    Vendor: %s", getVendorString());
-            _logger.infoF("    GLSL version: %s", getGLSLVersionString());
+            _logger.infof("OpenGL reloaded, version %s", DerelictGL3.loadedVersion());
+            _logger.infof("    Version: %s", getVersionString());
+            _logger.infof("    Renderer: %s", getRendererString());
+            _logger.infof("    Vendor: %s", getVendorString());
+            _logger.infof("    GLSL version: %s", getGLSLVersionString());
 
             // parse extensions
             _extensions = std.array.split(getExtensionsString());
 
-            _logger.infoF("    Extensions: %s found", _extensions.length);
-            _logger.infoF("    - EXT_texture_filter_anisotropic is%s supported", EXT_texture_filter_anisotropic() ? "": " not");
-            _logger.infoF("    - EXT_framebuffer_object is%s supported", EXT_framebuffer_object() ? "": " not");
+            _logger.infof("    Extensions: %s found", _extensions.length);
+            _logger.infof("    - EXT_texture_filter_anisotropic is%s supported", EXT_texture_filter_anisotropic() ? "": " not");
+            _logger.infof("    - EXT_framebuffer_object is%s supported", EXT_framebuffer_object() ? "": " not");
             getLimits(true);
             _textureUnits = new TextureUnits(this);
 
@@ -127,7 +127,7 @@ final class OpenGL
                 if (r != GL_NO_ERROR)
                 {
                     flushGLErrors(); // flush other errors if any
-                    _logger.errorF("OpenGL error: %s", getErrorString(r));
+                    _logger.errorf("OpenGL error: %s", getErrorString(r));
                     assert(false); // break here
                 }
             }
@@ -504,11 +504,11 @@ extern(System) private
                 string text = sanitizeUTF8(message, log, "OpenGL debug output");
 
                 if (level == LogLevel.info)
-                    logger.infoF("opengl: %s (id: %s, source: %s, type: %s, severity: %s)", text, id, ssource, stype, sseverity);
+                    logger.infof("opengl: %s (id: %s, source: %s, type: %s, severity: %s)", text, id, ssource, stype, sseverity);
                 if (level == LogLevel.warning)
-                    logger.warningF("opengl: %s (id: %s, source: %s, type: %s, severity: %s)", text, id, ssource, stype, sseverity);
+                    logger.warningf("opengl: %s (id: %s, source: %s, type: %s, severity: %s)", text, id, ssource, stype, sseverity);
                 if (level == LogLevel.error)
-                    logger.errorF("opengl: %s (id: %s, source: %s, type: %s, severity: %s)", text, id, ssource, stype, sseverity);
+                    logger.errorf("opengl: %s (id: %s, source: %s, type: %s, severity: %s)", text, id, ssource, stype, sseverity);
             }
             catch (Exception e)
             {

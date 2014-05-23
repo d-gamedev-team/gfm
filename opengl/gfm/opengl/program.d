@@ -229,7 +229,7 @@ final class GLProgram
             {
                 string linkLog = getLinkLog();
                 if (linkLog != null)
-                    _gl._logger.errorF("%s", linkLog);
+                    _gl._logger.errorf("%s", linkLog);
                 throw new OpenGLException("Cannot link program");
             }
 
@@ -366,7 +366,7 @@ final class GLProgram
             {
                 // no such variable found, either it's really missing or the OpenGL driver discarded an unused uniform
                 // create a fake disabled GLUniform to allow the show to proceed
-                _gl._logger.warningF("Faking uniform variable '%s'", name);
+                _gl._logger.warningf("Faking uniform variable '%s'", name);
                 _activeUniforms[name] = new GLUniform(_gl, name);
                 return _activeUniforms[name];
             }
