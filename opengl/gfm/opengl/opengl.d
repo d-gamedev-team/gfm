@@ -52,7 +52,7 @@ final class OpenGL
         /// Throws: $(D OpenGLException) on error.
         this(Logger logger)
         {
-            _logger = logger is null ? new StdIOLogger(LogLevel.off) : logger;
+            _logger = logger is null ? new NullLogger() : logger;
             DerelictGL3.load(); // load latest available version
 
             DerelictGL.load(); // load deprecated functions too

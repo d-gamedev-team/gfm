@@ -37,7 +37,7 @@ final class Assimp
         /// Throws: AssimpException on error.
         this(Logger logger)
         {
-            _logger = logger is null ? new StdIOLogger(LogLevel.off) : logger;
+            _logger = logger is null ? new NullLogger() : logger;
 
             try
             {

@@ -45,7 +45,7 @@ final class SDL2
         /// TODO: Custom SDL assertion handler.
         this(Logger logger)
         {
-            _logger = logger is null ? new StdIOLogger(LogLevel.off) : logger;
+            _logger = logger is null ? new NullLogger() : logger;
             _SDLInitialized = false;
             _SDL2LoggingRedirected = false;
             try

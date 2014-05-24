@@ -32,7 +32,7 @@ final class FreeImage
         /// Throws: FreeImageException on error.
         this(Logger logger, bool useExternalPlugins = false)
         {
-            _logger = logger is null ? new StdIOLogger(LogLevel.off) : logger;
+            _logger = logger is null ? new NullLogger() : logger;
 
             try
             {
