@@ -164,7 +164,7 @@ deprecated("Use a custom Logger instead from the logger package") final class Nu
 Displays coloured log messages in the console.
 
 */
-deprecated("Use StdIOLogger instead from the logger package") final class ConsoleLog : Log
+deprecated("Use ConsoleLogger instead") final class ConsoleLog : Log
 {
     public
     {
