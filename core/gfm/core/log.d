@@ -358,7 +358,7 @@ class ConsoleLogger : Logger
             }
         }
 
-        override void writeLogMsg(LoggerPayload payload) @trusted
+        override void writeLogMsg(ref LoggerPayload payload) @trusted
         {
             LogLevel logLevel;
             synchronized(this)
