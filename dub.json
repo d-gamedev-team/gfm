@@ -82,7 +82,7 @@
             "sourcePaths": [ "opengl/gfm/opengl" ],
             "importPaths": [ "opengl" ],
             "dependencies": {
-                "derelict-gl3": "~master",
+                "derelict-gl3": ">=1.0.0",
                 "logger": "==0.0.7",
                 "gfm:core": "~master",
                 "gfm:math": "~master"
@@ -93,7 +93,7 @@
             "sourcePaths": [ "sdl2/gfm/sdl2" ],
             "importPaths": [ "sdl2" ],
             "dependencies": {
-                "derelict-sdl2": "~master",
+                "derelict-sdl2": "~>1.2.0",
                 "logger": "==0.0.7",
                 "gfm:core": "~master",
                 "gfm:math": "~master"
