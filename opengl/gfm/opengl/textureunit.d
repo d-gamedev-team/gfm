@@ -59,6 +59,13 @@ final class TextureUnits
 
             return _textureUnits[_activeTexture];
         }
+
+        /// Clear state about a texture, called on deletion.
+        void forgetTexture(GLuint texture)
+        {
+            for (size_t i = 0; i < _textureUnits.length; ++i)
+                _textureUnits[i].forgetTexture(texture);
+        }
     }
 
     private
@@ -74,6 +81,8 @@ final class TextureUnit
 {
     public
     {
+        enum UNKNOWN_BINDING = -1;
+
         /// Binds this texture unit lazily.
         /// Throws: $(D OpenGLException) on error.
         void bind(GLenum target, GLuint texture)
@@ -95,7 +104,7 @@ final class TextureUnit
             _gl = gl;
             _index = index;
 
-            _currentBinding[] = -1; // default is unknown
+            _currentBinding[] = UNKNOWN_BINDING; // default is unknown
         }
 
         enum Target : GLenum
@@ -128,6 +137,16 @@ final class TextureUnit
                 case Target.TEXTURE_CUBE_MAP_ARRAY: return 8;
                 case Target.TEXTURE_2D_MULTISAMPLE: return 9;
                 case Target.TEXTURE_2D_MULTISAMPLE_ARRAY: return 10;
+            }
+        }
+
+        /// Clear state about a texture, called on texture deletion.
+        void forgetTexture(GLuint texture)
+        {
+            for (size_t i = 0; i < _currentBinding.length; ++i)
+            {
+                if (_currentBinding[i] == texture)
+                    _currentBinding[i] = UNKNOWN_BINDING;
             }
         }
 

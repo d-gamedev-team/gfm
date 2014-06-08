@@ -43,6 +43,7 @@ class GLTexture
         {
             if (_initialized)
             {
+                _gl.textureUnits().forgetTexture(_handle);
                 glDeleteTextures(1, &_handle);
                 _initialized = false;
             }
