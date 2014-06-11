@@ -143,7 +143,7 @@ final class GLProgram
                             debug
                                 throw new OpenGLException(message);
                             else
-                                gl._log.warn(message);
+                                gl._logger.warning(message);
                         }
                         else
                         {
