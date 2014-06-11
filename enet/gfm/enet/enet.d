@@ -15,7 +15,7 @@ final class ENetException : Exception
 }
 
 /// Owns the loader, logging, keyboard state...
-/// This object is passed around to other SDL wrapper objects
+/// This object is passed around to other ENet wrapper objects
 /// to ensure library loading.
 final class ENet
 {
@@ -30,8 +30,8 @@ final class ENet
             ShouldThrow missingSymFunc( string symName )
             {
                 // Supports from libenet 1.3.3 to 1.3.11+
-                // Obviously we should take extras care in gfm:enet to 
-                // use these functions with care.
+                // Obviously we should take extras care in gfm:enet
+                // not to strictly rely on these functions.
 
                 if (symName == "enet_linked_version")
                     return ShouldThrow.No;
