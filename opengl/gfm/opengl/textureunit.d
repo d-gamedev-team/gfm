@@ -16,7 +16,7 @@ final class TextureUnits
         this(OpenGL gl)
         {
             _gl = gl;
-            _activeTexture = -1; // default is unknown
+            _activeTexture = 0; // default is the first unit 0
 
             // Use the max total image units
             // Note: each shader stage has its own max to deal with
@@ -37,12 +37,9 @@ final class TextureUnits
             if (glActiveTexture is null)
                 return;
 
-            if (_activeTexture != texture)
-            {
-                glActiveTexture(GL_TEXTURE0 + texture);
-                _gl.runtimeCheck();
-                _activeTexture = texture;
-            }
+            glActiveTexture(GL_TEXTURE0 + texture);
+            _gl.runtimeCheck();
+            _activeTexture = texture;
         }
 
         /// Gets texture unit i.
@@ -54,9 +51,6 @@ final class TextureUnits
         /// Gets the active texture unit.
         TextureUnit current()
         {
-            if (_activeTexture == -1)
-                setActiveTexture(0);
-
             return _textureUnits[_activeTexture];
         }
 
