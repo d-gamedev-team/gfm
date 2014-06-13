@@ -14,7 +14,7 @@
 
     "dependencies": 
     {
-        "gfm:sdl2": "~master",
-        "gfm:opengl": "~master"
+        "gfm:sdl2": {"path": "../../", "version": "~master"},
+        "gfm:opengl": {"path": "../../", "version": "~master"}
     }
 }
