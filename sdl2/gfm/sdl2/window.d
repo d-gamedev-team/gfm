@@ -159,6 +159,14 @@ class SDL2Window
             return _id;
         }
 
+        SDL_SysWMinfo getWindowInfo()
+        {
+            SDL_SysWMinfo info;
+            int res = SDL_GetWindowWMInfo(_window, &info);
+            if (res != SDL_TRUE)
+                _sdl2.throwSDL2Exception("SDL_GetWindowWMInfo");
+            return info;
+        }
 
         // override these function, they are event callbacks
 
