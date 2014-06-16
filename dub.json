@@ -18,15 +18,15 @@
     "targetType": "none",
 
     "dependencies": {
-        "gfm:core": "~master",
-        "gfm:assimp": "~master",
-        "gfm:enet": "~master",
-        "gfm:freeimage": "~master",
-        "gfm:image": "~master",
-        "gfm:math": "~master",
-        "gfm:net": "~master",
-        "gfm:opengl": "~master",
-        "gfm:sdl2": "~master"
+        "gfm:core": "*",
+        "gfm:assimp": "*",
+        "gfm:enet": "*",
+        "gfm:freeimage": "*",
+        "gfm:image": "*",
+        "gfm:math": "*",
+        "gfm:net": "*",
+        "gfm:opengl": "*",
+        "gfm:sdl2": "*"
     },
 
     "subPackages": [
@@ -49,8 +49,8 @@
             "sourcePaths": [ "image/gfm/image" ],
             "importPaths": [ "image" ],
             "dependencies": {
-                "gfm:core": "~master",
-                "gfm:math": "~master"
+                "gfm:core": "*",
+                "gfm:math": "*"
             }
         },
         {
@@ -73,7 +73,7 @@
             "importPaths": [ "assimp" ],
             "dependencies": {
                 "derelict-assimp3": "~master",
-                "gfm:core": "~master",
+                "gfm:core": "*",
                 "logger": "==0.0.7"
             }
         },
@@ -84,8 +84,8 @@
             "dependencies": {
                 "derelict-gl3": ">=1.0.0",
                 "logger": "==0.0.7",
-                "gfm:core": "~master",
-                "gfm:math": "~master"
+                "gfm:core": "*",
+                "gfm:math": "*"
             }
         },
         {
@@ -95,8 +95,8 @@
             "dependencies": {
                 "derelict-sdl2": "~>1.2.0",
                 "logger": "==0.0.7",
-                "gfm:core": "~master",
-                "gfm:math": "~master"
+                "gfm:core": "*",
+                "gfm:math": "*"
             }
         },
         {
@@ -105,7 +105,7 @@
             "importPaths": [ "freeimage" ],
             "dependencies": {
                 "derelict-fi": "~master",
-                "gfm:core": "~master",
+                "gfm:core": "*",
                 "logger": "==0.0.7"
             }
         }
