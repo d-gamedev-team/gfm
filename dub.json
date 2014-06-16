@@ -26,8 +26,7 @@
         "gfm:math": "~master",
         "gfm:net": "~master",
         "gfm:opengl": "~master",
-        "gfm:sdl2": "~master",
-        "gfm:bgfx": "~master"
+        "gfm:sdl2": "~master"
     },
 
     "subPackages": [
@@ -108,14 +107,6 @@
                 "derelict-fi": "~master",
                 "gfm:core": "~master",
                 "logger": "==0.0.7"
-            }
-        },
-        {
-            "name": "bgfx",
-            "sourcePaths": [ "bgfx/gfm/bgfx" ],
-            "importPaths": [ "bgfx" ],
-            "dependencies": {
-                "derelict_extras-bgfx": "~>0.0.2"
             }
         }
     ]
