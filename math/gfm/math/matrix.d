@@ -479,7 +479,7 @@ align(1) struct Matrix(T, size_t R, size_t C)
         // rotations are implemented for 3x3 and 4x4 matrices.
         static if (isSquare && (R == 3 || R == 4) && isFloatingPoint!T)
         {
-            private static Matrix rotateAxis(size_t i, size_t j)(T angle) pure nothrow
+            public static Matrix rotateAxis(size_t i, size_t j)(T angle) pure nothrow
             {
                 Matrix res = identity();
                 const T cosa = cos(angle);
@@ -492,13 +492,13 @@ align(1) struct Matrix(T, size_t R, size_t C)
             }
 
             /// Returns: rotation matrix along axis X
-            public alias rotateAxis!(1, 2) rotateX;
+            alias rotateAxis!(1, 2) rotateX;
 
             /// Returns: rotation matrix along axis Y
-            public alias rotateAxis!(2, 0) rotateY;
+            alias rotateAxis!(2, 0) rotateY;
 
             /// Returns: rotation matrix along axis Z
-            public alias rotateAxis!(0, 1) rotateZ;
+            alias rotateAxis!(0, 1) rotateZ;
 
             /// Similar to the glRotate matrix, however the angle is expressed in radians
             /// See_also: $(LINK http://www.cs.rutgers.edu/~decarlo/428/gl_man/rotate.html)
