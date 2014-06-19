@@ -215,11 +215,13 @@ final class SDL2
             return _keyboard;
         }
 
-        /// Returns: true if an application termiantion has been requested.
-        bool wasQuitResquested() const
+        /// Returns: true if an application termination has been requested.
+        bool wasQuitRequested() const
         {
             return _quitWasRequested;
         }        
+
+        deprecated alias wasQuitResquested = wasQuitRequested;
 
         /// Start text input.
         void startTextInput()
