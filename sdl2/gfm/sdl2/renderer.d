@@ -101,6 +101,24 @@ final class SDL2Renderer
                 _sdl2.throwSDL2Exception("SDL_RenderSetViewport");
         }
 
+        /// Sets the scale of the renderer.
+        /// See_also: $(LINK http://wiki.libsdl.org/SDL_RenderSetScale)
+        /// Throws: $(D SDL2Exception) on error.
+        void setScale(float x, float y)
+        {
+            if (0 != SDL_RenderSetScale(_renderer, x, y))
+                _sdl2.throwSDL2Exception("SDL_RenderSetScale");
+        }
+
+        /// Sets a device independent resolution of the renderer.
+        /// See_also: $(LINK http://wiki.libsdl.org/SDL_RenderSetLogicalSize)
+        /// Throws: $(D SDL2Exception) on error.
+        void setLogicalSize(int w, int h)
+        {
+            if (0 != SDL_RenderSetLogicalSize(_renderer, w, h))
+                _sdl2.throwSDL2Exception("SDL_RenderSetLogicalSize");
+        }
+
         /// Sets SDL blend mode.
         /// See_also: $(LINK http://wiki.libsdl.org/SDL_SetRenderDrawBlendMode)
         /// Throws: $(D SDL2Exception) on error.
