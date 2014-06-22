@@ -72,7 +72,7 @@
             "sourcePaths": [ "assimp/gfm/assimp" ],
             "importPaths": [ "assimp" ],
             "dependencies": {
-                "derelict-assimp3": "~master",
+                "derelict-assimp3": ">=v1.0.0",
                 "gfm:core": "*",
                 "logger": "==0.0.7"
             }
@@ -104,7 +104,7 @@
             "sourcePaths": [ "freeimage/gfm/freeimage" ],
             "importPaths": [ "freeimage" ],
             "dependencies": {
-                "derelict-fi": "~master",
+                "derelict-fi": ">=1.0.0",
                 "gfm:core": "*",
                 "logger": "==0.0.7"
             }
