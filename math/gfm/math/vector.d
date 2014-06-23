@@ -195,7 +195,7 @@ nothrow:
         }
 
         /// Returns: a pointer to content.
-        T* ptr() pure nothrow @property
+        inout(T)* ptr() pure inout nothrow @property
         {
             return v.ptr;
         }
