@@ -126,7 +126,7 @@ align(1) struct Matrix(T, size_t R, size_t C)
         }
 
         /// Return a pointer to content.
-        T* ptr() pure nothrow @property
+        inout(T)* ptr() pure inout nothrow @property
         {
             return v.ptr;
         }
