@@ -43,7 +43,6 @@ class GLTexture
         {
             if (_initialized)
             {
-                _gl.textureUnits().forgetTexture(_handle);
                 glDeleteTextures(1, &_handle);
                 _initialized = false;
             }
@@ -246,9 +245,8 @@ class GLTexture
         void bind()
         {
             // Bind on whatever the current texture unit is!
-            // consequently, do not ever change texture parameters if you want 
-            // to rely on a texture being bound to a texture unit
-            _gl.textureUnits().current().bind(_target, _handle);
+            glBindTexture(target, _handle);
+            _gl.runtimeCheck();
         }
     }
 }
