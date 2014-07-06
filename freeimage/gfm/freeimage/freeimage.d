@@ -16,7 +16,7 @@ class FreeImageException : Exception
 {
     public
     {
-        this(string message, string file =__FILE__, size_t line = __LINE__, Throwable next = null)
+        @safe pure nothrow this(string message, string file =__FILE__, size_t line = __LINE__, Throwable next = null)
         {
             super(message, file, line, next);
         }
