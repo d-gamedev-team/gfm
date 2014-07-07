@@ -36,12 +36,14 @@ template isImage(I)
 }
 
 /// Returns: true if an image contains the given point.
+deprecated("Use ae.utils.graphics instead") 
 bool contains(I)(I img, int x, int y) if (isImage!I)
 {
     return cast(uint)x < img.dimension.x && cast(uint)y < img.dimension.y;
 }
 
 /// EdgeMode defines how images are sampled beyond their boundaries.
+deprecated("Use ae.utils.graphics instead")
 enum EdgeMode
 {
     BLACK,  /// Return black.
@@ -52,6 +54,7 @@ enum EdgeMode
 
 
 /// Draws a single pixel.
+deprecated("Use ae.utils.graphics instead")
 void drawPixel(I, P)(I img, int x, int y, P p) if (isImage!I && is(P : I.element_t))
 {
     if (!img.contains(x, y))
@@ -61,6 +64,7 @@ void drawPixel(I, P)(I img, int x, int y, P p) if (isImage!I && is(P : I.element
 
 /// Returns: pixel of an Image at position (x, y). 
 /// At boundaries, what happens depends on em.
+deprecated("Use ae.utils.graphics instead")
 I.element_t getPixel(I)(I img, int x, int y, EdgeMode em)
 {
     if (!img.contains(x, y))
@@ -95,6 +99,7 @@ I.element_t getPixel(I)(I img, int x, int y, EdgeMode em)
 }
 
 /// Draws a rectangle outline in an Image.
+deprecated("Use ae.utils.graphics instead")
 void drawRect(I, P)(I img, int x, int y, int width, int height, P e) if (isImage!I && is(P : I.element_t))
 {
     drawHorizontalLine(img, x, x + width, y, e);
@@ -104,6 +109,7 @@ void drawRect(I, P)(I img, int x, int y, int width, int height, P e) if (isImage
 }
 
 /// Fills an uniform rectangle area in an Image.
+deprecated("Use ae.utils.graphics instead")
 void fillRect(I, P)(I img, int x, int y, int width, int height, P e) if (isImage!I && is(P : I.element_t))
 {
     for (int j = 0; j < height; ++j)
@@ -112,6 +118,7 @@ void fillRect(I, P)(I img, int x, int y, int width, int height, P e) if (isImage
 }
 
 /// Fills a whole image with a single element value.
+deprecated("Use ae.utils.graphics instead")
 void fillImage(I, P)(I img, P e) if (isImage!I && is(P : I.element_t))
 {
     immutable int width = img.dimension.x;
@@ -122,6 +129,7 @@ void fillImage(I, P)(I img, P e) if (isImage!I && is(P : I.element_t))
 }
 
 /// Performs an image blit from src to dest.
+deprecated("Use ae.utils.graphics instead")
 void copyRect(I)(I dest, I src) if (isImage!I)
 {
     // check same size
@@ -138,6 +146,7 @@ void copyRect(I)(I dest, I src) if (isImage!I)
 }
 
 /// Draws an horizontal line on an Image.
+deprecated("Use ae.utils.graphics instead")
 void drawHorizontalLine(I, P)(I img, int x1, int x2, int y, P p) if (isImage!I && is(P : I.element_t))
 {
     for (int x = x1; x < x2; ++x)
@@ -145,6 +154,7 @@ void drawHorizontalLine(I, P)(I img, int x1, int x2, int y, P p) if (isImage!I &
 }
 
 /// Draws a vertical line on an Image.
+deprecated("Use ae.utils.graphics instead")
 void drawVerticalLine(I, P)(I img, int x, int y1, int y2, P p) if (isImage!I && is(P : I.element_t))
 {
     for (int y = y1; y < y2; ++y)

@@ -50,7 +50,8 @@
             "importPaths": [ "image" ],
             "dependencies": {
                 "gfm:core": "*",
-                "gfm:math": "*"
+                "gfm:math": "*",
+                "ae-graphics": "==0.0.2"
             }
         },
         {

@@ -13,6 +13,7 @@ import gfm.math.vector;
 /// Converts a RGB triplet to HSV.
 /// Authors: Sam Hocevar 
 /// See_also: $(WEB http://lolengine.net/blog/2013/01/13/fast-rgb-to-hsv)
+deprecated("Use ae.utils.graphics.hls instead")
 vec3f rgb2hsv(vec3f rgb) pure nothrow
 {
     float K = 0.0f;
@@ -40,6 +41,7 @@ vec3f rgb2hsv(vec3f rgb) pure nothrow
 /// Convert a HSV triplet to RGB.
 /// Authors: Sam Hocevar.
 /// See_also: $(WEB http://lolengine.net/blog/2013/01/13/fast-rgb-to-hsv).
+deprecated("Use ae.utils.graphics.hls instead")
 vec3f hsv2rgb(vec3f hsv) pure nothrow
 {
     float S = hsv.y;

@@ -40,6 +40,8 @@ import core.stdc.string;
 import gfm.math.vector,
        gfm.image.bitmap;
 
+import ae.utils.graphics.image;
+
 enum STBI_VERSION = 1;
 
 /// The exception type thrown when loading an image failed.
@@ -171,6 +173,7 @@ void stbi_image_free(void *retval_from_stbi_load)
 /// Load an image from memory and puts it in a Bitmap.
 /// See_also: Bitmap.
 /// Throws: STBImageException on error.
+deprecated("Use ae.utils.graphics instead")
 Bitmap!vec4ub stbiLoadImage(void[] buffer)
 {
     int width, height, components;
@@ -182,6 +185,23 @@ Bitmap!vec4ub stbiLoadImage(void[] buffer)
 
     auto result = Bitmap!vec4ub(vec2i(width, height));
     memcpy(result.ptr, data, width * height);
+    return result;
+}
+
+/// Load an image from memory and puts it in a ae.utils.graphics.image.Image.
+/// Throws: STBImageException on error.
+Image!vec4ub stbiLoadImageAE(void[] buffer)
+{
+    int width, height, components;
+    ubyte* data = stbi_load_from_memory(buffer, width, height, components, 4);
+    scope(exit) stbi_image_free(data);
+
+    if(components != 4)
+        throw new STBImageException("Could't convert image to 4 components");
+
+    auto result = Image!vec4ub(width, height);
+    size_t length = width * height * vec4ub.sizeof;
+    result.pixels[] = cast(vec4ub[])(data[0..length]);
     return result;
 }
 

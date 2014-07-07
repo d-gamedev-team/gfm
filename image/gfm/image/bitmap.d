@@ -17,7 +17,7 @@ import gfm.image.image;
     A Bitmap is mostly a triplet of (base address + dimension + stride).
     Data can be owned or not.
  */
-struct Bitmap(T)
+deprecated("Use ae.utils.graphics.image.Image instead") struct Bitmap(T)
 {
 nothrow:
     public
@@ -197,35 +197,11 @@ nothrow:
 static assert(isImage!(Bitmap!int));
 static assert(isImage!(Bitmap!vec4ub));
 
-unittest
-{
-    {
-        int[] b;
-        b.length = 10 * 10;
-        b[] = 0;
-        auto bitmap = Bitmap!int(b.ptr, vec2i(10, 5), 20 * int.sizeof);
-
-        fillImage(bitmap, 1);
-        assert(bitmap.dimension.x == 10);
-        assert(bitmap.dimension.y == 5);
-
-        for (int j = 0; j < 5; ++j)
-            for (int i = 0; i < 10; ++i)
-                assert(bitmap.get(i, j) == 1);
-
-        for (int j = 0; j < 5; ++j)
-            for (int i = 0; i < 10; ++i)
-            {
-                assert(b[i + (2 * j) * 10] == 1);
-                assert(b[i + (2 * j + 1) * 10] == 0);
-            }
-    }
-}
-
 
 /**
   A TiledBitmap is like a Bitmap but pixels are organized in tiles.
  */
+deprecated("Use ae.utils.graphics.image.Image instead")
 struct TiledBitmap(T, size_t tileWidth, size_t tileHeight)
 {    
     static assert(tileWidth >= 1 && isPowerOf2(tileWidth));
