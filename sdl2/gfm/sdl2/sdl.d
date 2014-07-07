@@ -13,8 +13,6 @@ import derelict.sdl2.sdl,
 import std.logger;
 
 import gfm.core.text,
-       gfm.math.vector,
-       gfm.math.box,
        gfm.sdl2.renderer,
        gfm.sdl2.window,
        gfm.sdl2.keyboard;
@@ -132,7 +130,6 @@ final class SDL2
                 if (res != 0)
                     throwSDL2Exception("SDL_GetDisplayBounds");
 
-                box2i bounds = box2i(rect.x, rect.y, rect.x + rect.w, rect.y + rect.h);
                 SDL2DisplayMode[] availableModes;
 
                 int numModes = SDL_GetNumDisplayModes(displayIndex);
@@ -145,14 +142,14 @@ final class SDL2
                     availableModes ~= new SDL2DisplayMode(modeIndex, mode);
                 }
 
-                availableDisplays ~= new SDL2VideoDisplay(displayIndex, bounds, availableModes);
+                availableDisplays ~= new SDL2VideoDisplay(displayIndex, rect, availableModes);
             }
             return availableDisplays;
         }
 
         /// Returns: Resolution of the first display.
         /// Throws: $(D SDL2Exception) on error.
-        vec2i firstDisplaySize()
+        SDL_Point firstDisplaySize()
         {
             auto displays = getDisplays();
             if (displays.length == 0)
@@ -628,7 +625,7 @@ final class SDL2VideoDisplay
 {
     public
     {
-        this(int displayindex, box2i bounds, SDL2DisplayMode[] availableModes)
+        this(int displayindex, SDL_Rect bounds, SDL2DisplayMode[] availableModes)
         {
             _displayindex = displayindex;
             _bounds = bounds;
@@ -640,12 +637,12 @@ final class SDL2VideoDisplay
             return _availableModes;
         }
 
-        const(vec2i) dimension() pure const nothrow
+        SDL_Point dimension() pure const nothrow
         {
-            return vec2i(_bounds.width, _bounds.height);
+            return SDL_Point(_bounds.w, _bounds.h);
         }
 
-        const(box2i) bounds() pure const nothrow
+        SDL_Rect bounds() pure const nothrow
         {
             return _bounds;
         }
@@ -653,7 +650,7 @@ final class SDL2VideoDisplay
         override string toString()
         {
             string res = format("display #%s (start = %s,%s - dimension = %s x %s)\n", _displayindex, 
-                                _bounds.min.x, _bounds.min.y, _bounds.width, _bounds.height);
+                                _bounds.x, _bounds.y, _bounds.w, _bounds.h);
             foreach (mode; _availableModes)
                 res ~= format("  - %s\n", mode);
             return res;
@@ -664,7 +661,7 @@ final class SDL2VideoDisplay
     {
         int _displayindex;
         SDL2DisplayMode[] _availableModes;
-        box2i _bounds;
+        SDL_Rect _bounds;
     }
 }
 

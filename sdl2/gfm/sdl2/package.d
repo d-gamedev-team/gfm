@@ -7,9 +7,6 @@ public
     import derelict.sdl2.sdl,
            derelict.sdl2.image;
 
-    import gfm.math.vector,
-           gfm.math.box;
-
     import gfm.sdl2.sdl,
            gfm.sdl2.surface,
            gfm.sdl2.window,

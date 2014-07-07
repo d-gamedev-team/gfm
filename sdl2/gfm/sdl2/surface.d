@@ -2,8 +2,7 @@ module gfm.sdl2.surface;
 
 import derelict.sdl2.sdl;
 
-import gfm.math.vector,
-       gfm.sdl2.sdl;
+import gfm.sdl2.sdl;
 
 /// SDL Surface wrapper.
 /// A SDL2Surface might own the SDL_Surface* handle or not.
@@ -137,9 +136,14 @@ final class SDL2Surface
             return _surface.format;
         }
 
+        struct RGBA
+        {
+            ubyte r, g, b, a;
+        }
+
         /// Get a surface pixel color.
         /// Bugs: must be locked when using this method. Slow!
-        vec4ub getRGBA(int x, int y)
+        RGBA getRGBA(int x, int y)
         {
             // crash if out of image
             if (x < 0 || x >= width())
@@ -156,7 +160,7 @@ final class SDL2Surface
             uint* pixel = cast(uint*)(pixels + y * pitch + x * fmt.BytesPerPixel);
             ubyte r, g, b, a;
             SDL_GetRGBA(*pixel, fmt, &r, &g, &b, &a);
-            return vec4ub(r, g, b, a);
+            return RGBA(r, g, b, a);
         }
     }
 

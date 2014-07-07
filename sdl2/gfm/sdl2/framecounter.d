@@ -5,7 +5,6 @@ import std.string;
 import derelict.sdl2.sdl;
 
 import gfm.core.queue,
-       gfm.math.statistics,
        gfm.sdl2.sdl;
 
 
@@ -22,7 +21,7 @@ final class FrameCounter
             _sdl = sdl;
             _firstFrame = true;
             _elapsedTime = 0;
-            _stats = new RingBuffer!ulong(10);
+            _frameTimes = new RingBuffer!ulong(10);
         }
 
         /// Marks the beginning of a new frame.
@@ -33,7 +32,7 @@ final class FrameCounter
             {
                 _lastTime = SDL_GetTicks();
                 _firstFrame = false;
-                _stats.pushBack(0);
+                _frameTimes.pushBack(0);
                 return 0; // no advance for first frame
             }
             else
@@ -42,7 +41,7 @@ final class FrameCounter
                 uint delta = now - _lastTime;
                 _elapsedTime += delta;
                 _lastTime = now;
-                _stats.pushBack(delta);
+                _frameTimes.pushBack(delta);
                 return delta;
             }
         }
@@ -70,22 +69,30 @@ final class FrameCounter
         /// Returns: Displayable framerate statistics.
         string getFPSString()
         {
-            double avg = average(_stats[]);
+            double sum = 0;
+            double min = double.infinity;
+            double max = -double.infinity;
+            foreach(ulong frameTime; _frameTimes[])
+            {
+                if (frameTime < min)
+                    min = frameTime;
+                if (frameTime > max)
+                    max = frameTime;
+                sum += frameTime;
+            }
+
+            double avg = sum / cast(double)(_frameTimes[].length);
             int avgFPS = cast(int)(0.5 + ( avg != 0 ? 1000 / avg : 0 ) );
             int avgdt = cast(int)(0.5 + avg);
 
-            return format("FPS: %s dt: avg %sms min %sms max %sms",
-                          avgFPS,
-                          avgdt,
-                          minElement(_stats[]),
-                          maxElement(_stats[]));
+            return format("FPS: %s dt: avg %sms min %sms max %sms", avgFPS, avgdt, min, max);
         }
     }
 
     private
     {
         SDL2 _sdl;
-        RingBuffer!ulong _stats;
+        RingBuffer!ulong _frameTimes;
         bool _firstFrame;
         uint _lastTime;
         ulong _elapsedTime;

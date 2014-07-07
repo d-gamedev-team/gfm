@@ -7,8 +7,6 @@ import derelict.sdl2.sdl;
 import std.logger;
 
 import gfm.core.text,
-       gfm.math.vector,
-       gfm.math.box,
        gfm.sdl2.sdl,
        gfm.sdl2.window,
        gfm.sdl2.texture,
@@ -85,9 +83,9 @@ final class SDL2Renderer
         /// Sets the window drawing area.
         /// See_also: $(LINK http://wiki.libsdl.org/SDL_RenderSetViewport)
         /// Throws: $(D SDL2Exception) on error.
-        void setViewport(box2i b)
+        void setViewport(int x, int y, int w, int h)
         {
-            SDL_Rect r = box2i_to_SDL_Rect(b);
+            SDL_Rect r = SDL_Rect(x, y, w, h);
             if (0 != SDL_RenderSetViewport(_renderer, &r))
                 _sdl2.throwSDL2Exception("SDL_RenderSetViewport");
         }
@@ -131,9 +129,9 @@ final class SDL2Renderer
         /// Draw a line.
         /// See_also: $(LINK http://wiki.libsdl.org/SDL_RenderDrawLine)
         /// Throws: $(D SDL2Exception) on error.
-        void drawLine(vec2i a, vec2i b)
+        void drawLine(int x1, int y1, int x2, int y2)
         {
-            if (0 != SDL_RenderDrawLine(_renderer, a.x, a.y, b.x, b.y))
+            if (0 != SDL_RenderDrawLine(_renderer, x1, y1, x2, y2))
                 _sdl2.throwSDL2Exception("SDL_RenderDrawLine");
 
         }
@@ -141,36 +139,36 @@ final class SDL2Renderer
         /// Draw several lines at once.
         /// See_also: $(LINK http://wiki.libsdl.org/SDL_RenderDrawLines)
         /// Throws: $(D SDL2Exception) on error.
-        void drawLines(vec2i[] points)
+        void drawLines(SDL_Point[] points)
         {
-            if (0 != SDL_RenderDrawLines(_renderer, cast(SDL_Point*)(points.ptr), cast(int)(points.length)))
+            if (0 != SDL_RenderDrawLines(_renderer, points.ptr, cast(int)(points.length)))
                 _sdl2.throwSDL2Exception("SDL_RenderDrawLines");
         }
 
         /// Draw a point.
         /// See_also: $(LINK http://wiki.libsdl.org/SDL_RenderDrawPoint)
         /// Throws: $(D SDL2Exception) on error.
-        void drawPoint(vec2i point)
+        void drawPoint(int x, int y)
         {
-            if (0 != SDL_RenderDrawPoint(_renderer, point.x, point.y))
+            if (0 != SDL_RenderDrawPoint(_renderer, x, y))
                 _sdl2.throwSDL2Exception("SDL_RenderDrawPoint");
         }
 
         /// Draw several point at once.
         /// See_also: $(LINK http://wiki.libsdl.org/SDL_RenderDrawPoints)
         /// Throws: $(D SDL2Exception) on error.
-        void drawPoints(vec2i[] points)
+        void drawPoints(SDL_Point[] points)
         {
-            if (0 != SDL_RenderDrawPoints(_renderer, cast(SDL_Point*)(points.ptr), cast(int)(points.length)))
+            if (0 != SDL_RenderDrawPoints(_renderer, points.ptr, cast(int)(points.length)))
                 _sdl2.throwSDL2Exception("SDL_RenderDrawPoints");
         }
 
         /// Draw a rectangle outline.
         /// See_also: $(LINK http://wiki.libsdl.org/SDL_RenderDrawRect)
         /// Throws: $(D SDL2Exception) on error.
-        void drawRect(box2i rect)
+        void drawRect(int x, int y, int width, int height)
         {
-            SDL_Rect r = box2i_to_SDL_Rect(rect);
+            SDL_Rect r = SDL_Rect(x, y, width, height);
             if (0 != SDL_RenderDrawRect(_renderer, &r))
                 _sdl2.throwSDL2Exception("SDL_RenderDrawRect");
         }
@@ -178,9 +176,9 @@ final class SDL2Renderer
         /// Draw a filled rectangle.
         /// See_also: $(LINK http://wiki.libsdl.org/SDL_RenderFillRect)
         /// Throws: $(D SDL2Exception) on error.
-        void fillRect(box2i rect)
+        void fillRect(int x, int y, int width, int height)
         {
-            SDL_Rect r = box2i_to_SDL_Rect(rect);
+            SDL_Rect r = SDL_Rect(x, y, width, height);
             if (0 != SDL_RenderFillRect(_renderer, &r))
                 _sdl2.throwSDL2Exception("SDL_RenderFillRect");
         }
@@ -188,12 +186,10 @@ final class SDL2Renderer
         /// Blit a rectangle from a texture.
         /// See_also: $(LINK http://wiki.libsdl.org/SDL_RenderCopy)
         /// Throws: $(D SDL2Exception) on error.
-        void copy(SDL2Texture texture, box2i srcRect, box2i dstRect)
+        void copy(SDL2Texture texture, SDL_Rect srcRect, SDL_Rect dstRect)
         {
             auto f = texture.format();
-            SDL_Rect src = box2i_to_SDL_Rect(srcRect);
-            SDL_Rect dst = box2i_to_SDL_Rect(dstRect);
-            if (0 != SDL_RenderCopy(_renderer, texture._handle, &src, &dst))
+            if (0 != SDL_RenderCopy(_renderer, texture._handle, &srcRect, &dstRect))
                 _sdl2.throwSDL2Exception("SDL_RenderCopy");
         }
     }
@@ -202,20 +198,7 @@ final class SDL2Renderer
     {
         SDL2 _sdl2;
         SDL_Renderer* _renderer;
-    }
-
-    private
-    {
-        static SDL_Rect box2i_to_SDL_Rect(box2i b) pure
-        {
-            SDL_Rect res = void;
-            res.x = b.min.x;
-            res.y = b.min.y;
-            res.w = b.width;
-            res.h = b.height;
-            return res;
-        }
-    }
+    }    
 }
 
 /// SDL Renderer information.

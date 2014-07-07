@@ -9,7 +9,6 @@ import derelict.sdl2.sdl,
 import std.logger;
 
 import gfm.core.text,
-       gfm.math.vector,
        gfm.sdl2.sdl,
        gfm.sdl2.surface;
 
@@ -192,11 +191,11 @@ final class SDLFont
         }
 
         /// Returns: Size of text in pixels if rendered with this font.
-        vec2i measureText(string text)
+        SDL_Point measureText(string text)
         {
             int w, h;
             TTF_SizeUTF8(_font, toStringz(text), &w, &h);
-            return vec2i(w, h);
+            return SDL_Point(w, h);
         }
 
         /// Create a 32-bit ARGB surface and render the given text at high quality, 

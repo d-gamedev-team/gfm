@@ -6,9 +6,7 @@ import derelict.sdl2.sdl;
 
 import std.logger;
 
-import gfm.math.vector,
-       gfm.math.box,
-       gfm.sdl2.sdl,
+import gfm.sdl2.sdl,
        gfm.sdl2.surface;
 
 /// SDL Window wrapper.
@@ -86,21 +84,35 @@ class SDL2Window
             SDL_SetWindowFullscreen(_window, activated ? SDL_WINDOW_FULLSCREEN : 0);
         }
 
-        final void setPosition(vec2i position)
+        final void setPosition(int positionX, int positionY)
         {
-            SDL_SetWindowPosition(_window, position.x, position.y);
+            SDL_SetWindowPosition(_window, positionX, positionY);
         }
 
-        final void setSize(vec2i size)
+        final void setSize(int width, int height)
         {
-            SDL_SetWindowSize(_window, size.x, size.y);
+            SDL_SetWindowSize(_window, width, height);
         }
 
-        final vec2i getSize()
+        final SDL_Point getSize()
         {
             int w, h;
             SDL_GetWindowSize(_window, &w, &h);
-            return vec2i(w, h);
+            return SDL_Point(w, h);
+        }
+
+        final int getWidth()
+        {
+            int w, h;
+            SDL_GetWindowSize(_window, &w, &h);
+            return w;
+        }
+
+        final int getHeight()
+        {
+            int w, h;
+            SDL_GetWindowSize(_window, &w, &h);
+            return h;
         }
 
         final void setTitle(string title)

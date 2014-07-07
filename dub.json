@@ -95,8 +95,7 @@
             "dependencies": {
                 "derelict-sdl2": "~>1.2.1",
                 "logger": "==0.1.0",
-                "gfm:core": "*",
-                "gfm:math": "*"
+                "gfm:core": "*"
             }
         },
         {
