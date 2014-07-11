@@ -221,6 +221,15 @@ final class SDLFont
         {
             return checkedSurface(TTF_RenderUTF8_Shaded(_font, toStringz(text), fg, bg));
         }
+
+        /// Create a 32-bit ARGB surface and render the given text at high quality, 
+        /// using alpha blending to dither the font with the given color.
+        /// Uses multi-line text wrapping.
+        /// Throws: $(D SDL2Exception) on error.
+        SDL2Surface renderTextBlendedWrapped(string text, SDL_Color color, uint wrapLength)
+        {
+            return checkedSurface(TTF_RenderUTF8_Blended_Wrapped(_font, toStringz(text), color, wrapLength));
+        }
     }
 
     private

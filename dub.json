@@ -94,7 +94,7 @@
             "sourcePaths": [ "sdl2/gfm/sdl2" ],
             "importPaths": [ "sdl2" ],
             "dependencies": {
-                "derelict-sdl2": "~>1.2.1",
+                "derelict-sdl2": "~>1.2.3",
                 "logger": "==0.1.0",
                 "gfm:core": "*"
             }
