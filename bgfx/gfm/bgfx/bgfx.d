@@ -1,13 +1,18 @@
 module gfm.bgfx.bgfx;
 
+import derelict.bgfx.bgfx;
+import derelict.util.exception;
 
 /// General bgfx exception thrown for all cases.
 /// However, bgfx has no recoverable errors.
 final class BgfxException : Exception
 {
-    this(string msg)
+    public
     {
-        super(msg);
+        @safe pure nothrow this(string message, string file =__FILE__, size_t line = __LINE__, Throwable next = null)
+        {
+            super(message, file, line, next);
+        }
     }
 }
 
