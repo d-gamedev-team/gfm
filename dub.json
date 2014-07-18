@@ -83,7 +83,7 @@
             "sourcePaths": [ "opengl/gfm/opengl" ],
             "importPaths": [ "opengl" ],
             "dependencies": {
-                "derelict-gl3": "==1.0.2",
+                "derelict-gl3": "==1.0.4",
                 "logger": "==0.1.0",
                 "gfm:core": "*",
                 "gfm:math": "*"
