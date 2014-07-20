@@ -20,8 +20,7 @@ align(1) struct Box(T, size_t N)
         bound_t max;
 
         /// Construct a box which extends between 2 points.
-        /// min is inside the box.
-        /// max is just outside.
+        /// Boundaries: min is inside the box, max is just outside.
         this(bound_t min_, bound_t max_) pure nothrow
         {
             min = min_;
@@ -70,21 +69,21 @@ align(1) struct Box(T, size_t N)
                 return (min + max) / 2;
             }
 
-            /// Returns: Box width of the box.
+            /// Returns: Width of the box, always applicable.
             static if (N >= 1)
             T width() pure const nothrow @property
             {
                 return max.x - min.x;
             }
 
-            /// Returns: Height of the box if applicable.
+            /// Returns: Height of the box, if applicable.
             static if (N >= 2)
             T height() pure const nothrow @property
             {
                 return max.y - min.y;
             }
 
-            /// Returns: Depth of the box if applicable.
+            /// Returns: Depth of the box, if applicable.
             static if (N >= 3)
             T depth() pure const nothrow @property
             {
