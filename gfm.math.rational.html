@@ -62,7 +62,6 @@
 	<li class="sidebar-list-entry tree-leaf"><a href="gfm.core.log.html" title="gfm.core.log"><i class="icon-th"></i>gfm.core.log</a></li>
     <li class="sidebar-list-entry tree-leaf"><a href="gfm.core.queue.html" title="gfm.core.queue"><i class="icon-th"></i>gfm.core.queue</a></li>
     <li class="sidebar-list-entry tree-leaf"><a href="gfm.core.memory.html" title="gfm.core.memory"><i class="icon-th"></i>gfm.core.memory</a></li>
-    <li class="sidebar-list-entry tree-leaf"><a href="gfm.core.ini.html" title="gfm.core.ini"><i class="icon-th"></i>gfm.core.ini</a></li>
     <li class="sidebar-list-entry tree-leaf"><a href="gfm.core.text.html" title="gfm.core.text"><i class="icon-th"></i>gfm.core.text</a></li>    
     <li class="sidebar-list-entry tree-leaf"><a href="gfm.core.alignedbuffer.html" title="gfm.core.alignedbuffer"><i class="icon-th"></i>gfm.core.alignedbuffer</a></li>
 
@@ -162,7 +161,6 @@
 	<li class="sidebar-list-entry tree-leaf"><a href="gfm.core.log.html" title="gfm.core.log"><i class="icon-th"></i>gfm.core.log</a></li>
     <li class="sidebar-list-entry tree-leaf"><a href="gfm.core.queue.html" title="gfm.core.queue"><i class="icon-th"></i>gfm.core.queue</a></li>
     <li class="sidebar-list-entry tree-leaf"><a href="gfm.core.memory.html" title="gfm.core.memory"><i class="icon-th"></i>gfm.core.memory</a></li>
-    <li class="sidebar-list-entry tree-leaf"><a href="gfm.core.ini.html" title="gfm.core.ini"><i class="icon-th"></i>gfm.core.ini</a></li>
     <li class="sidebar-list-entry tree-leaf"><a href="gfm.core.text.html" title="gfm.core.text"><i class="icon-th"></i>gfm.core.text</a></li>    
     <li class="sidebar-list-entry tree-leaf"><a href="gfm.core.alignedbuffer.html" title="gfm.core.alignedbuffer"><i class="icon-th"></i>gfm.core.alignedbuffer</a></li>
 
@@ -264,19 +262,19 @@
 
 </dl>
 </div>
-<hr><div class="row-fluid declaration"><h3>pure nothrow  this(long <i>n</i>);
+<hr><div class="row-fluid declaration"><h3>pure nothrow this(long <i>n</i>);
 </h3></div>
 <div class="declaration-content"><dl><p>Construct a Rational from an integer.</p>
 
 </dl>
 </div>
-<hr><div class="row-fluid declaration"><h3>pure nothrow  this(Rational <i>f</i>);
+<hr><div class="row-fluid declaration"><h3>pure nothrow this(Rational <i>f</i>);
 </h3></div>
 <div class="declaration-content"><dl><p>Construct a Rational from another Rational.</p>
 
 </dl>
 </div>
-<hr><div class="row-fluid declaration"><h3>pure nothrow  this(long <i>numerator</i>, long <i>denominator</i>);
+<hr><div class="row-fluid declaration"><h3>pure nothrow this(long <i>numerator</i>, long <i>denominator</i>);
 </h3></div>
 <div class="declaration-content"><dl><p>Construct a Rational from <i>numerator</i> and <i>denominator</i>.</p>
 
@@ -294,13 +292,13 @@
 
 </dl>
 </div>
-<hr><div class="row-fluid declaration"><h3>pure nothrow Rational <span class="symbol-target" id="opAssign">&nbsp;</span><a class="symbol-link" href="#opAssign">opAssign</a>(T)(T <i>other</i>) if (is(Unqual!T == Rational));
+<hr><div class="row-fluid declaration"><h3>pure nothrow ref Rational <span class="symbol-target" id="opAssign">&nbsp;</span><a class="symbol-link" href="#opAssign">opAssign</a>(T)(T <i>other</i>) if (is(Unqual!T == Rational));
 </h3></div>
 <div class="declaration-content"><dl><p>Assign with another Rational.</p>
 
 </dl>
 </div>
-<hr><div class="row-fluid declaration"><h3>pure nothrow Rational <span class="symbol-target" id="opAssign">&nbsp;</span><a class="symbol-link" href="#opAssign">opAssign</a>(T)(T <i>n</i>) if (isIntegral!T);
+<hr><div class="row-fluid declaration"><h3>pure nothrow ref Rational <span class="symbol-target" id="opAssign">&nbsp;</span><a class="symbol-link" href="#opAssign">opAssign</a>(T)(T <i>n</i>) if (isIntegral!T);
 </h3></div>
 <div class="declaration-content"><dl><p>Assign with an integer.</p>
 

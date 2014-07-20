@@ -62,7 +62,6 @@
 	<li class="sidebar-list-entry tree-leaf"><a href="gfm.core.log.html" title="gfm.core.log"><i class="icon-th"></i>gfm.core.log</a></li>
     <li class="sidebar-list-entry tree-leaf"><a href="gfm.core.queue.html" title="gfm.core.queue"><i class="icon-th"></i>gfm.core.queue</a></li>
     <li class="sidebar-list-entry tree-leaf"><a href="gfm.core.memory.html" title="gfm.core.memory"><i class="icon-th"></i>gfm.core.memory</a></li>
-    <li class="sidebar-list-entry tree-leaf"><a href="gfm.core.ini.html" title="gfm.core.ini"><i class="icon-th"></i>gfm.core.ini</a></li>
     <li class="sidebar-list-entry tree-leaf"><a href="gfm.core.text.html" title="gfm.core.text"><i class="icon-th"></i>gfm.core.text</a></li>    
     <li class="sidebar-list-entry tree-leaf"><a href="gfm.core.alignedbuffer.html" title="gfm.core.alignedbuffer"><i class="icon-th"></i>gfm.core.alignedbuffer</a></li>
 
@@ -162,7 +161,6 @@
 	<li class="sidebar-list-entry tree-leaf"><a href="gfm.core.log.html" title="gfm.core.log"><i class="icon-th"></i>gfm.core.log</a></li>
     <li class="sidebar-list-entry tree-leaf"><a href="gfm.core.queue.html" title="gfm.core.queue"><i class="icon-th"></i>gfm.core.queue</a></li>
     <li class="sidebar-list-entry tree-leaf"><a href="gfm.core.memory.html" title="gfm.core.memory"><i class="icon-th"></i>gfm.core.memory</a></li>
-    <li class="sidebar-list-entry tree-leaf"><a href="gfm.core.ini.html" title="gfm.core.ini"><i class="icon-th"></i>gfm.core.ini</a></li>
     <li class="sidebar-list-entry tree-leaf"><a href="gfm.core.text.html" title="gfm.core.text"><i class="icon-th"></i>gfm.core.text</a></li>    
     <li class="sidebar-list-entry tree-leaf"><a href="gfm.core.alignedbuffer.html" title="gfm.core.alignedbuffer"><i class="icon-th"></i>gfm.core.alignedbuffer</a></li>
 
@@ -250,22 +248,24 @@
 <div class="declaration-content"><dl><p>SDL Renderer wrapper.</p>
 
 </dl>
-<div class="offset1 member-list"><hr><div class="row-fluid declaration"><h3> this(SDL2Window <i>window</i>, int <i>flags</i>);
+<div class="offset1 member-list"><hr><div class="row-fluid declaration"><h3>this(SDL2Window <i>window</i>, int <i>flags</i>);
 </h3></div>
 <div class="declaration-content"><dl><p>Creates a SDL renderer which targets a <i>window</i>.
 </p>
 
 <dt>See Also</dt><dd><a href="http://wiki.libsdl.org/SDL_CreateRenderer">http://wiki.libsdl.org/SDL_CreateRenderer</a>
+
 </dd>
 <dt>Throws</dt><dd><span class="inlinecode">SDL2Exception</span> on error.</dd>
 </dl>
 </div>
-<hr><div class="row-fluid declaration"><h3> this(SDL2Surface <i>surface</i>);
+<hr><div class="row-fluid declaration"><h3>this(SDL2Surface <i>surface</i>);
 </h3></div>
 <div class="declaration-content"><dl><p>Create a software renderer which targets a <i>surface</i>.
 </p>
 
 <dt>See Also</dt><dd><a href="http://wiki.libsdl.org/SDL_CreateSoftwareRenderer">http://wiki.libsdl.org/SDL_CreateSoftwareRenderer</a>
+
 </dd>
 <dt>Throws</dt><dd><span class="inlinecode">SDL2Exception</span> on error.</dd>
 </dl>
@@ -284,6 +284,7 @@
 </p>
 
 <dt>See Also</dt><dd><a href="http://wiki.libsdl.org/SDL_RenderClear">http://wiki.libsdl.org/SDL_RenderClear</a>
+
 </dd>
 <dt>Throws</dt><dd><span class="inlinecode">SDL2Exception</span> on error.</dd>
 </dl>
@@ -302,26 +303,51 @@
 </p>
 
 <dt>See Also</dt><dd><a href="http://wiki.libsdl.org/SDL_SetRenderDrawColor">http://wiki.libsdl.org/SDL_SetRenderDrawColor</a>
+
 </dd>
 <dt>Throws</dt><dd><span class="inlinecode">SDL2Exception</span> on error.</dd>
 </dl>
 </div>
-<hr><div class="row-fluid declaration"><h3>void <span class="symbol-target" id="setViewport">&nbsp;</span><a class="symbol-link" href="#setViewport">setViewport</a>(box2i <i>b</i>);
+<hr><div class="row-fluid declaration"><h3>void <span class="symbol-target" id="setViewport">&nbsp;</span><a class="symbol-link" href="#setViewport">setViewport</a>(int <i>x</i>, int <i>y</i>, int <i>w</i>, int <i>h</i>);
 </h3></div>
 <div class="declaration-content"><dl><p>Sets the window drawing area.
 </p>
 
 <dt>See Also</dt><dd><a href="http://wiki.libsdl.org/SDL_RenderSetViewport">http://wiki.libsdl.org/SDL_RenderSetViewport</a>
+
 </dd>
 <dt>Throws</dt><dd><span class="inlinecode">SDL2Exception</span> on error.</dd>
 </dl>
 </div>
 <hr><div class="row-fluid declaration"><h3>void <span class="symbol-target" id="setViewportFull">&nbsp;</span><a class="symbol-link" href="#setViewportFull">setViewportFull</a>();
 </h3></div>
-<div class="declaration-content"><dl><p>Sets the whole window as drawing area.        
+<div class="declaration-content"><dl><p>Sets the whole window as drawing area.
 </p>
 
 <dt>See Also</dt><dd><a href="http://wiki.libsdl.org/SDL_RenderSetViewport">http://wiki.libsdl.org/SDL_RenderSetViewport</a>
+
+</dd>
+<dt>Throws</dt><dd><span class="inlinecode">SDL2Exception</span> on error.</dd>
+</dl>
+</div>
+<hr><div class="row-fluid declaration"><h3>void <span class="symbol-target" id="setScale">&nbsp;</span><a class="symbol-link" href="#setScale">setScale</a>(float <i>x</i>, float <i>y</i>);
+</h3></div>
+<div class="declaration-content"><dl><p>Sets the scale of the renderer.
+</p>
+
+<dt>See Also</dt><dd><a href="http://wiki.libsdl.org/SDL_RenderSetScale">http://wiki.libsdl.org/SDL_RenderSetScale</a>
+
+</dd>
+<dt>Throws</dt><dd><span class="inlinecode">SDL2Exception</span> on error.</dd>
+</dl>
+</div>
+<hr><div class="row-fluid declaration"><h3>void <span class="symbol-target" id="setLogicalSize">&nbsp;</span><a class="symbol-link" href="#setLogicalSize">setLogicalSize</a>(int <i>w</i>, int <i>h</i>);
+</h3></div>
+<div class="declaration-content"><dl><p>Sets a device independent resolution of the renderer.
+</p>
+
+<dt>See Also</dt><dd><a href="http://wiki.libsdl.org/SDL_RenderSetLogicalSize">http://wiki.libsdl.org/SDL_RenderSetLogicalSize</a>
+
 </dd>
 <dt>Throws</dt><dd><span class="inlinecode">SDL2Exception</span> on error.</dd>
 </dl>
@@ -332,76 +358,84 @@
 </p>
 
 <dt>See Also</dt><dd><a href="http://wiki.libsdl.org/SDL_SetRenderDrawBlendMode">http://wiki.libsdl.org/SDL_SetRenderDrawBlendMode</a>
+
 </dd>
 <dt>Throws</dt><dd><span class="inlinecode">SDL2Exception</span> on error.</dd>
 </dl>
 </div>
-<hr><div class="row-fluid declaration"><h3>void <span class="symbol-target" id="drawLine">&nbsp;</span><a class="symbol-link" href="#drawLine">drawLine</a>(vec2i <i>a</i>, vec2i <i>b</i>);
+<hr><div class="row-fluid declaration"><h3>void <span class="symbol-target" id="drawLine">&nbsp;</span><a class="symbol-link" href="#drawLine">drawLine</a>(int <i>x1</i>, int <i>y1</i>, int <i>x2</i>, int <i>y2</i>);
 </h3></div>
-<div class="declaration-content"><dl><p>Draw <i>a</i> line.
+<div class="declaration-content"><dl><p>Draw a line.
 </p>
 
 <dt>See Also</dt><dd><a href="http://wiki.libsdl.org/SDL_RenderDrawLine">http://wiki.libsdl.org/SDL_RenderDrawLine</a>
+
 </dd>
 <dt>Throws</dt><dd><span class="inlinecode">SDL2Exception</span> on error.</dd>
 </dl>
 </div>
-<hr><div class="row-fluid declaration"><h3>void <span class="symbol-target" id="drawLines">&nbsp;</span><a class="symbol-link" href="#drawLines">drawLines</a>(vec2i[] <i>points</i>);
+<hr><div class="row-fluid declaration"><h3>void <span class="symbol-target" id="drawLines">&nbsp;</span><a class="symbol-link" href="#drawLines">drawLines</a>(SDL_Point[] <i>points</i>);
 </h3></div>
 <div class="declaration-content"><dl><p>Draw several lines at once.
 </p>
 
 <dt>See Also</dt><dd><a href="http://wiki.libsdl.org/SDL_RenderDrawLines">http://wiki.libsdl.org/SDL_RenderDrawLines</a>
+
 </dd>
 <dt>Throws</dt><dd><span class="inlinecode">SDL2Exception</span> on error.</dd>
 </dl>
 </div>
-<hr><div class="row-fluid declaration"><h3>void <span class="symbol-target" id="drawPoint">&nbsp;</span><a class="symbol-link" href="#drawPoint">drawPoint</a>(vec2i <i>point</i>);
+<hr><div class="row-fluid declaration"><h3>void <span class="symbol-target" id="drawPoint">&nbsp;</span><a class="symbol-link" href="#drawPoint">drawPoint</a>(int <i>x</i>, int <i>y</i>);
 </h3></div>
-<div class="declaration-content"><dl><p>Draw a <i>point</i>.
+<div class="declaration-content"><dl><p>Draw a point.
 </p>
 
 <dt>See Also</dt><dd><a href="http://wiki.libsdl.org/SDL_RenderDrawPoint">http://wiki.libsdl.org/SDL_RenderDrawPoint</a>
+
 </dd>
 <dt>Throws</dt><dd><span class="inlinecode">SDL2Exception</span> on error.</dd>
 </dl>
 </div>
-<hr><div class="row-fluid declaration"><h3>void <span class="symbol-target" id="drawPoints">&nbsp;</span><a class="symbol-link" href="#drawPoints">drawPoints</a>(vec2i[] <i>points</i>);
+<hr><div class="row-fluid declaration"><h3>void <span class="symbol-target" id="drawPoints">&nbsp;</span><a class="symbol-link" href="#drawPoints">drawPoints</a>(SDL_Point[] <i>points</i>);
 </h3></div>
 <div class="declaration-content"><dl><p>Draw several point at once.
 </p>
 
 <dt>See Also</dt><dd><a href="http://wiki.libsdl.org/SDL_RenderDrawPoints">http://wiki.libsdl.org/SDL_RenderDrawPoints</a>
+
 </dd>
 <dt>Throws</dt><dd><span class="inlinecode">SDL2Exception</span> on error.</dd>
 </dl>
 </div>
-<hr><div class="row-fluid declaration"><h3>void <span class="symbol-target" id="drawRect">&nbsp;</span><a class="symbol-link" href="#drawRect">drawRect</a>(box2i <i>rect</i>);
+<hr><div class="row-fluid declaration"><h3>void <span class="symbol-target" id="drawRect">&nbsp;</span><a class="symbol-link" href="#drawRect">drawRect</a>(int <i>x</i>, int <i>y</i>, int <i>width</i>, int <i>height</i>);
 </h3></div>
 <div class="declaration-content"><dl><p>Draw a rectangle outline.
 </p>
 
 <dt>See Also</dt><dd><a href="http://wiki.libsdl.org/SDL_RenderDrawRect">http://wiki.libsdl.org/SDL_RenderDrawRect</a>
+
 </dd>
 <dt>Throws</dt><dd><span class="inlinecode">SDL2Exception</span> on error.</dd>
 </dl>
 </div>
-<hr><div class="row-fluid declaration"><h3>void <span class="symbol-target" id="fillRect">&nbsp;</span><a class="symbol-link" href="#fillRect">fillRect</a>(box2i <i>rect</i>);
+<hr><div class="row-fluid declaration"><h3>void <span class="symbol-target" id="fillRect">&nbsp;</span><a class="symbol-link" href="#fillRect">fillRect</a>(int <i>x</i>, int <i>y</i>, int <i>width</i>, int <i>height</i>);
 </h3></div>
 <div class="declaration-content"><dl><p>Draw a filled rectangle.
 </p>
 
 <dt>See Also</dt><dd><a href="http://wiki.libsdl.org/SDL_RenderFillRect">http://wiki.libsdl.org/SDL_RenderFillRect</a>
+
 </dd>
 <dt>Throws</dt><dd><span class="inlinecode">SDL2Exception</span> on error.</dd>
 </dl>
 </div>
-<hr><div class="row-fluid declaration"><h3>void <span class="symbol-target" id="copy">&nbsp;</span><a class="symbol-link" href="#copy">copy</a>(SDL2Texture <i>texture</i>, box2i <i>srcRect</i>, box2i <i>dstRect</i>);
+<hr><div class="row-fluid declaration"><h3>void <span class="symbol-target" id="copy">&nbsp;</span><a class="symbol-link" href="#copy">copy</a>(SDL2Texture <i>texture</i>, SDL_Rect <i>srcRect</i>, SDL_Rect <i>dstRect</i>);
 </h3></div>
 <div class="declaration-content"><dl><p>Blit a rectangle from a <i>texture</i>.
 </p>
 
 <dt>See Also</dt><dd><a href="http://wiki.libsdl.org/SDL_RenderCopy">http://wiki.libsdl.org/SDL_RenderCopy</a>
+
 </dd>
 <dt>Throws</dt><dd><span class="inlinecode">SDL2Exception</span> on error.</dd>
 </dl>

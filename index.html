@@ -62,7 +62,6 @@
 	<li class="sidebar-list-entry tree-leaf"><a href="gfm.core.log.html" title="gfm.core.log"><i class="icon-th"></i>gfm.core.log</a></li>
     <li class="sidebar-list-entry tree-leaf"><a href="gfm.core.queue.html" title="gfm.core.queue"><i class="icon-th"></i>gfm.core.queue</a></li>
     <li class="sidebar-list-entry tree-leaf"><a href="gfm.core.memory.html" title="gfm.core.memory"><i class="icon-th"></i>gfm.core.memory</a></li>
-    <li class="sidebar-list-entry tree-leaf"><a href="gfm.core.ini.html" title="gfm.core.ini"><i class="icon-th"></i>gfm.core.ini</a></li>
     <li class="sidebar-list-entry tree-leaf"><a href="gfm.core.text.html" title="gfm.core.text"><i class="icon-th"></i>gfm.core.text</a></li>    
     <li class="sidebar-list-entry tree-leaf"><a href="gfm.core.alignedbuffer.html" title="gfm.core.alignedbuffer"><i class="icon-th"></i>gfm.core.alignedbuffer</a></li>
 
@@ -162,7 +161,6 @@
 	<li class="sidebar-list-entry tree-leaf"><a href="gfm.core.log.html" title="gfm.core.log"><i class="icon-th"></i>gfm.core.log</a></li>
     <li class="sidebar-list-entry tree-leaf"><a href="gfm.core.queue.html" title="gfm.core.queue"><i class="icon-th"></i>gfm.core.queue</a></li>
     <li class="sidebar-list-entry tree-leaf"><a href="gfm.core.memory.html" title="gfm.core.memory"><i class="icon-th"></i>gfm.core.memory</a></li>
-    <li class="sidebar-list-entry tree-leaf"><a href="gfm.core.ini.html" title="gfm.core.ini"><i class="icon-th"></i>gfm.core.ini</a></li>
     <li class="sidebar-list-entry tree-leaf"><a href="gfm.core.text.html" title="gfm.core.text"><i class="icon-th"></i>gfm.core.text</a></li>    
     <li class="sidebar-list-entry tree-leaf"><a href="gfm.core.alignedbuffer.html" title="gfm.core.alignedbuffer"><i class="icon-th"></i>gfm.core.alignedbuffer</a></li>
 
@@ -251,8 +249,10 @@
 
 <h3>Overview:</h3>
 
-<ul>    <p><li>gfm.core:
-        <ul>            <li><span class="inlinecode">log.d</span>: logging interface + implementations (HTML file, colored console output...).</li>
+<ul>
+    <p><li>gfm.core:
+        <ul>
+            <li><span class="inlinecode">log.d</span>: logging interface + implementations (HTML file, colored console output...).</li>
             <li><span class="inlinecode">queue.d</span>: a dead simple queue/fifo/stack/ring-buffer, with a range interface. Synchronized queue for threads.</li>
             <li><span class="inlinecode">memory.d</span>: aligned malloc/free/realloc.</li>
             <li><span class="inlinecode">alignedbuffer.d</span>: aligned array-like container.</li>
@@ -260,7 +260,8 @@
          </ul>
     </li></p>
     <p><li>gfm.math:
-        <ul>            <li><span class="inlinecode">vector.d</span>: small vectors for 2D and 3D.</li>
+        <ul>
+            <li><span class="inlinecode">vector.d</span>: small vectors for 2D and 3D.</li>
             <li><span class="inlinecode">matrix.d</span>: small matrices for 2D and 3D.</li>
             <li><span class="inlinecode">quaternion.d</span>: quaternions.</li>
             <li><span class="inlinecode">half.d</span>: 16-bit floating point type.</li>
@@ -276,7 +277,8 @@
          </ul>
     </li></p>
     <p><li>gfm.opengl:
-        <ul>            <li>OpenGL wrapper based on package derelict-gl3.</li>
+        <ul>
+            <li>OpenGL wrapper based on package derelict-gl3.</li>
             <li>makes easier to use the OpenGL API correctly.</li>
             <li>including a matrix stack to replace fixed pipeline.</li>
             <li>including compilation of a single source for multiple shaders.</li>
@@ -288,12 +290,14 @@
     </li></p>
 
     <p><li>gfm.net:
-        <ul>            <li><span class="inlinecode">uri.d</span>: URI parsing (RFC 3986).</li>
+        <ul>
+            <li><span class="inlinecode">uri.d</span>: URI parsing (RFC 3986).</li>
             <li><span class="inlinecode">httpclient.d</span>: HTTP client (RFC 2616).</li>
          </ul>
     </li></p>
     <p><li>gfm.sdl2:
-        <ul>            <li>SDL 2.0 wrapper based on package derelict-sdl2.</li>
+        <ul>
+            <li>SDL 2.0 wrapper based on package derelict-sdl2.</li>
             <li>including SDL_image and SDL_ttf wrappers.</li>
             <li>built-in SDL logging forwarding.</li>
             <li>framerate statistics.</li>
@@ -301,7 +305,8 @@
     </li></p>
 
     <p><li>gfm.image:
-        <ul>            <li><span class="inlinecode">image.d</span>: generic abstract image and software rendering routines.</li>
+        <ul>
+            <li><span class="inlinecode">image.d</span>: generic abstract image and software rendering routines.</li>
             <li><span class="inlinecode">bitmap.d</span>: planar and tile-based concrete images.</li>
             <li><span class="inlinecode">cie.d</span>: physical color computations.</li>
             <li><span class="inlinecode">hsv.d</span>: RGB &lt;-&gt; HSV conversions.</li>
@@ -310,17 +315,26 @@
     </li></p>
 
     <p><li>gfm.freeimage:
-        <ul>            <li>FreeImage wrapper based on package derelict-fi.</li>
+        <ul>
+            <li>FreeImage wrapper based on package derelict-fi.</li>
          </ul>
     </li></p>
     
     <p><li>gfm.assimp:
-        <ul>            <li>Assimp wrapper based on package derelict-assimp3.</li>
+        <ul>
+            <li>Assimp wrapper based on package derelict-assimp3.</li>
          </ul>
     </li></p>
 
     <p><li>gfm.enet:
-        <ul>            <li>ENet wrapper based on package derelict_extras-enet.</li>
+        <ul>
+            <li>ENet wrapper based on package derelict_extras-enet.</li>
+         </ul>
+    </li></p>
+
+    <p><li>gfm.bgfx:
+        <ul>
+            <li>bgfx wrapper based on package derelict_extras-bgfx.</li>
          </ul>
     </li></p>
 
@@ -352,7 +366,8 @@ you have to call close() methods manually before it's too late.
 
 <h4>How to deal with it:</h4>
 
-<ul>  <li>Call close() manually on resource classes.</li>
+<ul>
+  <li>Call close() manually on resource classes.</li>
   <li>A class with a close() method should have it called automatically by its destructor.</li>
   <li>Use such friendly resource classes with <span class="inlinecode">scoped!</span>, <span class="inlinecode">RefCounted</span>, <span class="inlinecode">scope(exit)</span>, 
     <span class="inlinecode">Unique!</span>, or any other deterministic destruction mechanisms.</li>

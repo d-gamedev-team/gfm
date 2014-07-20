@@ -62,7 +62,6 @@
 	<li class="sidebar-list-entry tree-leaf"><a href="gfm.core.log.html" title="gfm.core.log"><i class="icon-th"></i>gfm.core.log</a></li>
     <li class="sidebar-list-entry tree-leaf"><a href="gfm.core.queue.html" title="gfm.core.queue"><i class="icon-th"></i>gfm.core.queue</a></li>
     <li class="sidebar-list-entry tree-leaf"><a href="gfm.core.memory.html" title="gfm.core.memory"><i class="icon-th"></i>gfm.core.memory</a></li>
-    <li class="sidebar-list-entry tree-leaf"><a href="gfm.core.ini.html" title="gfm.core.ini"><i class="icon-th"></i>gfm.core.ini</a></li>
     <li class="sidebar-list-entry tree-leaf"><a href="gfm.core.text.html" title="gfm.core.text"><i class="icon-th"></i>gfm.core.text</a></li>    
     <li class="sidebar-list-entry tree-leaf"><a href="gfm.core.alignedbuffer.html" title="gfm.core.alignedbuffer"><i class="icon-th"></i>gfm.core.alignedbuffer</a></li>
 
@@ -162,7 +161,6 @@
 	<li class="sidebar-list-entry tree-leaf"><a href="gfm.core.log.html" title="gfm.core.log"><i class="icon-th"></i>gfm.core.log</a></li>
     <li class="sidebar-list-entry tree-leaf"><a href="gfm.core.queue.html" title="gfm.core.queue"><i class="icon-th"></i>gfm.core.queue</a></li>
     <li class="sidebar-list-entry tree-leaf"><a href="gfm.core.memory.html" title="gfm.core.memory"><i class="icon-th"></i>gfm.core.memory</a></li>
-    <li class="sidebar-list-entry tree-leaf"><a href="gfm.core.ini.html" title="gfm.core.ini"><i class="icon-th"></i>gfm.core.ini</a></li>
     <li class="sidebar-list-entry tree-leaf"><a href="gfm.core.text.html" title="gfm.core.text"><i class="icon-th"></i>gfm.core.text</a></li>    
     <li class="sidebar-list-entry tree-leaf"><a href="gfm.core.alignedbuffer.html" title="gfm.core.alignedbuffer"><i class="icon-th"></i>gfm.core.alignedbuffer</a></li>
 
@@ -255,22 +253,25 @@
 <hr><div class="row-fluid declaration"><h3>nothrow void* <span class="symbol-target" id="alignedMalloc">&nbsp;</span><a class="symbol-link" href="#alignedMalloc">alignedMalloc</a>(size_t <i>size</i>, size_t <i>alignment</i>);
 </h3></div>
 <div class="declaration-content"><dl><p>Allocates an aligned memory chunk.
- Functionally equivalent to Visual C++ aligned_malloc.</p>
+</p>
 
+<p>Functionally equivalent to Visual C++ aligned_malloc.</p>
 </dl>
 </div>
 <hr><div class="row-fluid declaration"><h3>nothrow void <span class="symbol-target" id="alignedFree">&nbsp;</span><a class="symbol-link" href="#alignedFree">alignedFree</a>(void* <i>aligned</i>);
 </h3></div>
 <div class="declaration-content"><dl><p>Frees <i>aligned</i> memory allocated by alignedMalloc or alignedRealloc.
- Functionally equivalent to Visual C++ aligned_free.</p>
+</p>
 
+<p>Functionally equivalent to Visual C++ aligned_free.</p>
 </dl>
 </div>
 <hr><div class="row-fluid declaration"><h3>nothrow void* <span class="symbol-target" id="alignedRealloc">&nbsp;</span><a class="symbol-link" href="#alignedRealloc">alignedRealloc</a>(void* <i>aligned</i>, size_t <i>size</i>, size_t <i>alignment</i>);
 </h3></div>
 <div class="declaration-content"><dl><p>Reallocates an <i>aligned</i> memory chunk allocated by alignedMalloc or <span class="symbol-target" id="alignedRealloc">&nbsp;</span><a class="symbol-link" href="#alignedRealloc">alignedRealloc</a>.
- Functionally equivalent to Visual C++ aligned_realloc.</p>
+</p>
 
+<p>Functionally equivalent to Visual C++ aligned_realloc.</p>
 </dl>
 </div>
 

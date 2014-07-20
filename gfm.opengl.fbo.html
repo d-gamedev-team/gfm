@@ -62,7 +62,6 @@
 	<li class="sidebar-list-entry tree-leaf"><a href="gfm.core.log.html" title="gfm.core.log"><i class="icon-th"></i>gfm.core.log</a></li>
     <li class="sidebar-list-entry tree-leaf"><a href="gfm.core.queue.html" title="gfm.core.queue"><i class="icon-th"></i>gfm.core.queue</a></li>
     <li class="sidebar-list-entry tree-leaf"><a href="gfm.core.memory.html" title="gfm.core.memory"><i class="icon-th"></i>gfm.core.memory</a></li>
-    <li class="sidebar-list-entry tree-leaf"><a href="gfm.core.ini.html" title="gfm.core.ini"><i class="icon-th"></i>gfm.core.ini</a></li>
     <li class="sidebar-list-entry tree-leaf"><a href="gfm.core.text.html" title="gfm.core.text"><i class="icon-th"></i>gfm.core.text</a></li>    
     <li class="sidebar-list-entry tree-leaf"><a href="gfm.core.alignedbuffer.html" title="gfm.core.alignedbuffer"><i class="icon-th"></i>gfm.core.alignedbuffer</a></li>
 
@@ -162,7 +161,6 @@
 	<li class="sidebar-list-entry tree-leaf"><a href="gfm.core.log.html" title="gfm.core.log"><i class="icon-th"></i>gfm.core.log</a></li>
     <li class="sidebar-list-entry tree-leaf"><a href="gfm.core.queue.html" title="gfm.core.queue"><i class="icon-th"></i>gfm.core.queue</a></li>
     <li class="sidebar-list-entry tree-leaf"><a href="gfm.core.memory.html" title="gfm.core.memory"><i class="icon-th"></i>gfm.core.memory</a></li>
-    <li class="sidebar-list-entry tree-leaf"><a href="gfm.core.ini.html" title="gfm.core.ini"><i class="icon-th"></i>gfm.core.ini</a></li>
     <li class="sidebar-list-entry tree-leaf"><a href="gfm.core.text.html" title="gfm.core.text"><i class="icon-th"></i>gfm.core.text</a></li>    
     <li class="sidebar-list-entry tree-leaf"><a href="gfm.core.alignedbuffer.html" title="gfm.core.alignedbuffer"><i class="icon-th"></i>gfm.core.alignedbuffer</a></li>
 
@@ -268,12 +266,14 @@
 </div>
 
 </div>
-<hr><div class="row-fluid declaration"><h3> this(OpenGL <i>gl</i>, Usage <i>usage</i> = Usage.DRAW);
+<hr><div class="row-fluid declaration"><h3>this(OpenGL <i>gl</i>, Usage <i>usage</i> = Usage.DRAW);
 </h3></div>
 <div class="declaration-content"><dl><p>Creates one FBO, with specified <i>usage</i>. OpenGL must have been loaded.
- <span class="inlinecode">EXT_framebuffer_object</span> is used as a fallback if <span class="inlinecode">ARB_framebuffer_object</span> is missing.
 </p>
 
+<p><span class="inlinecode">EXT_framebuffer_object</span> is used as a fallback if <span class="inlinecode">ARB_framebuffer_object</span> is missing.
+
+</p>
 <dt>Throws</dt><dd><span class="inlinecode">OpenGLException</span> on error.</dd>
 </dl>
 </div>
@@ -302,6 +302,7 @@
 <hr><div class="row-fluid declaration"><h3>GLFBOAttachment <span class="symbol-target" id="color">&nbsp;</span><a class="symbol-link" href="#color">color</a>(int <i>i</i>);
 </h3></div>
 <div class="declaration-content"><dl><dt>Returns</dt><dd>A FBO <span class="symbol-target" id="color">&nbsp;</span><a class="symbol-link" href="#color">color</a> attachment.
+
 </dd>
 <dt>Parameters</dt><dd><table class="table table-condensed table-bordered"><tr><td>int <i>i</i></td>
 <td>Index of <span class="symbol-target" id="color">&nbsp;</span><a class="symbol-link" href="#color">color</a> attachment.</td>

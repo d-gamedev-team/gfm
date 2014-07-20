@@ -62,7 +62,6 @@
 	<li class="sidebar-list-entry tree-leaf"><a href="gfm.core.log.html" title="gfm.core.log"><i class="icon-th"></i>gfm.core.log</a></li>
     <li class="sidebar-list-entry tree-leaf"><a href="gfm.core.queue.html" title="gfm.core.queue"><i class="icon-th"></i>gfm.core.queue</a></li>
     <li class="sidebar-list-entry tree-leaf"><a href="gfm.core.memory.html" title="gfm.core.memory"><i class="icon-th"></i>gfm.core.memory</a></li>
-    <li class="sidebar-list-entry tree-leaf"><a href="gfm.core.ini.html" title="gfm.core.ini"><i class="icon-th"></i>gfm.core.ini</a></li>
     <li class="sidebar-list-entry tree-leaf"><a href="gfm.core.text.html" title="gfm.core.text"><i class="icon-th"></i>gfm.core.text</a></li>    
     <li class="sidebar-list-entry tree-leaf"><a href="gfm.core.alignedbuffer.html" title="gfm.core.alignedbuffer"><i class="icon-th"></i>gfm.core.alignedbuffer</a></li>
 
@@ -162,7 +161,6 @@
 	<li class="sidebar-list-entry tree-leaf"><a href="gfm.core.log.html" title="gfm.core.log"><i class="icon-th"></i>gfm.core.log</a></li>
     <li class="sidebar-list-entry tree-leaf"><a href="gfm.core.queue.html" title="gfm.core.queue"><i class="icon-th"></i>gfm.core.queue</a></li>
     <li class="sidebar-list-entry tree-leaf"><a href="gfm.core.memory.html" title="gfm.core.memory"><i class="icon-th"></i>gfm.core.memory</a></li>
-    <li class="sidebar-list-entry tree-leaf"><a href="gfm.core.ini.html" title="gfm.core.ini"><i class="icon-th"></i>gfm.core.ini</a></li>
     <li class="sidebar-list-entry tree-leaf"><a href="gfm.core.text.html" title="gfm.core.text"><i class="icon-th"></i>gfm.core.text</a></li>    
     <li class="sidebar-list-entry tree-leaf"><a href="gfm.core.alignedbuffer.html" title="gfm.core.alignedbuffer"><i class="icon-th"></i>gfm.core.alignedbuffer</a></li>
 
@@ -255,9 +253,11 @@
 <div class="offset1 member-list"><hr><div class="row-fluid declaration"><h3>void <span class="symbol-target" id="send">&nbsp;</span><a class="symbol-link" href="#send">send</a>(Packet <i>packet</i>, ubyte <i>channelID</i> = 0);
 </h3></div>
 <div class="declaration-content"><dl><p>Queues a Packet's internal ENetPacket to be sent. Dirties the sent
- <i>packet</i>, meaning it cannot be changed.
 </p>
 
+<p><i>packet</i>, meaning it cannot be changed.
+
+</p>
 <dt>Throws</dt><dd>ENetException if enet_peer_send fails</dd>
 </dl>
 </div>
@@ -291,8 +291,9 @@
 <hr><div class="row-fluid declaration"><h3>void <span class="symbol-target" id="disconnectLater">&nbsp;</span><a class="symbol-link" href="#disconnectLater">disconnectLater</a>(uint <i>data</i> = 0);
 </h3></div>
 <div class="declaration-content"><dl><p>Request a disconnection from a peer, but only after all queued
- outgoing packets are sent.</p>
+</p>
 
+<p>outgoing packets are sent.</p>
 </dl>
 </div>
 <hr><div class="row-fluid declaration"><h3>void <span class="symbol-target" id="ping">&nbsp;</span><a class="symbol-link" href="#ping">ping</a>();
@@ -310,14 +311,17 @@
 <hr><div class="row-fluid declaration"><h3>void <span class="symbol-target" id="throttleConfigure">&nbsp;</span><a class="symbol-link" href="#throttleConfigure">throttleConfigure</a>(uint <i>interval</i>, uint <i>accel</i>, uint <i>decel</i>);
 </h3></div>
 <div class="declaration-content"><dl><p>Sets the throttle parameters for a peer. The throttle represents a
- probability that an unreliable packet should not be dropped and thus
- sent by ENet to the peer.</p>
+</p>
 
+<p>probability that an unreliable packet should not be dropped and thus
+<br><br>
+
+sent by ENet to the peer.</p>
 </dl>
 </div>
 <hr><div class="row-fluid declaration"><h3>const pure nothrow ENetAddress <span class="symbol-target" id="address">&nbsp;</span><a class="symbol-link" href="#address">address</a>();
 </h3></div>
-<div class="declaration-content"><dl><p>Trivial getters for ENetPeer struct.    </p>
+<div class="declaration-content"><dl><p>Trivial getters for ENetPeer struct.</p>
 
 </dl>
 </div>

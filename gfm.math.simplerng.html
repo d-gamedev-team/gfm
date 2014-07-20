@@ -62,7 +62,6 @@
 	<li class="sidebar-list-entry tree-leaf"><a href="gfm.core.log.html" title="gfm.core.log"><i class="icon-th"></i>gfm.core.log</a></li>
     <li class="sidebar-list-entry tree-leaf"><a href="gfm.core.queue.html" title="gfm.core.queue"><i class="icon-th"></i>gfm.core.queue</a></li>
     <li class="sidebar-list-entry tree-leaf"><a href="gfm.core.memory.html" title="gfm.core.memory"><i class="icon-th"></i>gfm.core.memory</a></li>
-    <li class="sidebar-list-entry tree-leaf"><a href="gfm.core.ini.html" title="gfm.core.ini"><i class="icon-th"></i>gfm.core.ini</a></li>
     <li class="sidebar-list-entry tree-leaf"><a href="gfm.core.text.html" title="gfm.core.text"><i class="icon-th"></i>gfm.core.text</a></li>    
     <li class="sidebar-list-entry tree-leaf"><a href="gfm.core.alignedbuffer.html" title="gfm.core.alignedbuffer"><i class="icon-th"></i>gfm.core.alignedbuffer</a></li>
 
@@ -162,7 +161,6 @@
 	<li class="sidebar-list-entry tree-leaf"><a href="gfm.core.log.html" title="gfm.core.log"><i class="icon-th"></i>gfm.core.log</a></li>
     <li class="sidebar-list-entry tree-leaf"><a href="gfm.core.queue.html" title="gfm.core.queue"><i class="icon-th"></i>gfm.core.queue</a></li>
     <li class="sidebar-list-entry tree-leaf"><a href="gfm.core.memory.html" title="gfm.core.memory"><i class="icon-th"></i>gfm.core.memory</a></li>
-    <li class="sidebar-list-entry tree-leaf"><a href="gfm.core.ini.html" title="gfm.core.ini"><i class="icon-th"></i>gfm.core.ini</a></li>
     <li class="sidebar-list-entry tree-leaf"><a href="gfm.core.text.html" title="gfm.core.text"><i class="icon-th"></i>gfm.core.text</a></li>    
     <li class="sidebar-list-entry tree-leaf"><a href="gfm.core.alignedbuffer.html" title="gfm.core.alignedbuffer"><i class="icon-th"></i>gfm.core.alignedbuffer</a></li>
 
@@ -256,6 +254,7 @@
 <hr><div class="row-fluid declaration"><h3>double <span class="symbol-target" id="randNormal">&nbsp;</span><a class="symbol-link" href="#randNormal">randNormal</a>(RNG)(ref RNG <i>rng</i>, double <i>mean</i> = 0.000000, double <i>standardDeviation</i> = 1.00000);
 </h3></div>
 <div class="declaration-content"><dl><dt>Returns</dt><dd>Normal (Gaussian) random sample.
+
 </dd>
 <dt>See Also</dt><dd>Box-Muller algorithm.</dd>
 </dl>
@@ -268,10 +267,15 @@
 <hr><div class="row-fluid declaration"><h3>double <span class="symbol-target" id="randGamma">&nbsp;</span><a class="symbol-link" href="#randGamma">randGamma</a>(RNG)(ref RNG <i>rng</i>, double <i>shape</i>, double <i>scale</i>);
 </h3></div>
 <div class="declaration-content"><dl><dt>Returns</dt><dd>Gamma random sample.
+
 </dd>
 <dt>See Also</dt><dd>"A Simple Method for Generating Gamma Variables"
- by George Marsaglia and Wai Wan Tsang.  ACM Transactions on Mathematical Software
- Vol 26, No 3, September 2000, pages 363-372.</dd>
+<br><br>
+
+by George Marsaglia and Wai Wan Tsang.  ACM Transactions on Mathematical Software
+<br><br>
+
+Vol 26, No 3, September 2000, pages 363-372.</dd>
 </dl>
 </div>
 <hr><div class="row-fluid declaration"><h3>double <span class="symbol-target" id="randChiSquare">&nbsp;</span><a class="symbol-link" href="#randChiSquare">randChiSquare</a>(RNG)(ref RNG <i>rng</i>, double <i>degreesOfFreedom</i>);
@@ -297,6 +301,7 @@
 <hr><div class="row-fluid declaration"><h3>double <span class="symbol-target" id="randStudentT">&nbsp;</span><a class="symbol-link" href="#randStudentT">randStudentT</a>(RNG)(ref RNG <i>rng</i>, double <i>degreesOfFreedom</i>);
 </h3></div>
 <div class="declaration-content"><dl><dt>Returns</dt><dd>Student-t sample.
+
 </dd>
 <dt>See Also</dt><dd>Seminumerical Algorithms by Knuth.</dd>
 </dl>

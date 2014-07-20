@@ -3,7 +3,6 @@ MODULES =
 	$(MODULE gfm.core.log, logging)
     $(MODULE gfm.core.queue, queue/fifo/stack/ring-buffer)
     $(MODULE gfm.core.memory, aligned malloc/free/realloc)
-    $(MODULE gfm.core.ini, INI parser/writer)
     $(MODULE gfm.core.text, string utilities)    
     $(MODULE gfm.core.alignedbuffer, aligned buffer)
 

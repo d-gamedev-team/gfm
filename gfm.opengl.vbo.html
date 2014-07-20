@@ -62,7 +62,6 @@
 	<li class="sidebar-list-entry tree-leaf"><a href="gfm.core.log.html" title="gfm.core.log"><i class="icon-th"></i>gfm.core.log</a></li>
     <li class="sidebar-list-entry tree-leaf"><a href="gfm.core.queue.html" title="gfm.core.queue"><i class="icon-th"></i>gfm.core.queue</a></li>
     <li class="sidebar-list-entry tree-leaf"><a href="gfm.core.memory.html" title="gfm.core.memory"><i class="icon-th"></i>gfm.core.memory</a></li>
-    <li class="sidebar-list-entry tree-leaf"><a href="gfm.core.ini.html" title="gfm.core.ini"><i class="icon-th"></i>gfm.core.ini</a></li>
     <li class="sidebar-list-entry tree-leaf"><a href="gfm.core.text.html" title="gfm.core.text"><i class="icon-th"></i>gfm.core.text</a></li>    
     <li class="sidebar-list-entry tree-leaf"><a href="gfm.core.alignedbuffer.html" title="gfm.core.alignedbuffer"><i class="icon-th"></i>gfm.core.alignedbuffer</a></li>
 
@@ -162,7 +161,6 @@
 	<li class="sidebar-list-entry tree-leaf"><a href="gfm.core.log.html" title="gfm.core.log"><i class="icon-th"></i>gfm.core.log</a></li>
     <li class="sidebar-list-entry tree-leaf"><a href="gfm.core.queue.html" title="gfm.core.queue"><i class="icon-th"></i>gfm.core.queue</a></li>
     <li class="sidebar-list-entry tree-leaf"><a href="gfm.core.memory.html" title="gfm.core.memory"><i class="icon-th"></i>gfm.core.memory</a></li>
-    <li class="sidebar-list-entry tree-leaf"><a href="gfm.core.ini.html" title="gfm.core.ini"><i class="icon-th"></i>gfm.core.ini</a></li>
     <li class="sidebar-list-entry tree-leaf"><a href="gfm.core.text.html" title="gfm.core.text"><i class="icon-th"></i>gfm.core.text</a></li>    
     <li class="sidebar-list-entry tree-leaf"><a href="gfm.core.alignedbuffer.html" title="gfm.core.alignedbuffer"><i class="icon-th"></i>gfm.core.alignedbuffer</a></li>
 
@@ -257,7 +255,7 @@
 <dt>TODO:</dt><dd>
 Extract vertex specification from a struct at compile-time.</dd>
 </dl>
-<div class="offset1 member-list"><hr><div class="row-fluid declaration"><h3> this(OpenGL <i>gl</i>);
+<div class="offset1 member-list"><hr><div class="row-fluid declaration"><h3>this(OpenGL <i>gl</i>);
 </h3></div>
 <div class="declaration-content"><dl><p>Creates a vertex specification.</p>
 
@@ -272,19 +270,25 @@ Extract vertex specification from a struct at compile-time.</dd>
 <hr><div class="row-fluid declaration"><h3>void <span class="symbol-target" id="use">&nbsp;</span><a class="symbol-link" href="#use">use</a>(GLProgram <i>program</i>);
 </h3></div>
 <div class="declaration-content"><dl><p>Use this vertex specification.
- Re-loads all the attribute locations before actually using it
 </p>
 
+<p>Re-loads all the attribute locations before actually using it
+
+</p>
 <dt>Throws</dt><dd><span class="inlinecode">OpenGLException</span> on error.</dd>
 </dl>
 </div>
 <hr><div class="row-fluid declaration"><h3>void <span class="symbol-target" id="use">&nbsp;</span><a class="symbol-link" href="#use">use</a>();
 </h3></div>
 <div class="declaration-content"><dl><p>Use this vertex specification.
- You should only call this function after a call on
- locateAttributes() or <span class="symbol-target" id="use">&nbsp;</span><a class="symbol-link" href="#use">use</a>(GLProgram).
 </p>
 
+<p>You should only call this function after a call on
+<br><br>
+
+locateAttributes() or <span class="symbol-target" id="use">&nbsp;</span><a class="symbol-link" href="#use">use</a>(GLProgram).
+
+</p>
 <dt>Throws</dt><dd><span class="inlinecode">OpenGLException</span> on error.</dd>
 </dl>
 </div>
@@ -300,16 +304,18 @@ Extract vertex specification from a struct at compile-time.</dd>
 <br>pure nothrow @property GLBuffer <span class="symbol-target" id="VBO">&nbsp;</span><a class="symbol-link" href="#VBO">VBO</a>(GLBuffer <i>vbo</i>);
 </h3></div>
 <div class="declaration-content"><dl><p>This property allows the user to set/unset the used <span class="symbol-target" id="VBO">&nbsp;</span><a class="symbol-link" href="#VBO">VBO</a>.
- You can't select another <span class="symbol-target" id="VBO">&nbsp;</span><a class="symbol-link" href="#VBO">VBO</a> while this VertexSpecification is being used.</p>
+</p>
 
+<p>You can't select another <span class="symbol-target" id="VBO">&nbsp;</span><a class="symbol-link" href="#VBO">VBO</a> while this VertexSpecification is being used.</p>
 </dl>
 </div>
 <hr><div class="row-fluid declaration"><h3>pure nothrow @property GLBuffer <span class="symbol-target" id="IBO">&nbsp;</span><a class="symbol-link" href="#IBO">IBO</a>();
 <br>pure nothrow @property GLBuffer <span class="symbol-target" id="IBO">&nbsp;</span><a class="symbol-link" href="#IBO">IBO</a>(GLBuffer <i>ibo</i>);
 </h3></div>
 <div class="declaration-content"><dl><p>This property allows the user to set/unset the used <span class="symbol-target" id="IBO">&nbsp;</span><a class="symbol-link" href="#IBO">IBO</a>.
- You can't select another <span class="symbol-target" id="IBO">&nbsp;</span><a class="symbol-link" href="#IBO">IBO</a> while this VertexSpecification is being used.</p>
+</p>
 
+<p>You can't select another <span class="symbol-target" id="IBO">&nbsp;</span><a class="symbol-link" href="#IBO">IBO</a> while this VertexSpecification is being used.</p>
 </dl>
 </div>
 <hr><div class="row-fluid declaration"><h3>void <span class="symbol-target" id="addLegacy">&nbsp;</span><a class="symbol-link" href="#addLegacy">addLegacy</a>(VertexAttribute.Role <i>role</i>, GLenum <i>glType</i>, int <i>n</i>);
@@ -322,7 +328,9 @@ Extract vertex specification from a struct at compile-time.</dd>
 </tr>
 <tr><td>int <i>n</i></td>
 <td>1, 2, 3 or 4, is the number of components of the attribute;
- For compatibility, you should not define more than 16 attributes</td>
+<br><br>
+
+For compatibility, you should not define more than 16 attributes</td>
 </tr>
 </table></dd>
 </dl>
@@ -337,7 +345,9 @@ Extract vertex specification from a struct at compile-time.</dd>
 </tr>
 <tr><td>int <i>n</i></td>
 <td>1, 2, 3 or 4, is the number of components of the attribute;
- For compatibility, you should not define more than 16 attributes</td>
+<br><br>
+
+For compatibility, you should not define more than 16 attributes</td>
 </tr>
 </table></dd>
 </dl>
@@ -352,7 +362,9 @@ Extract vertex specification from a struct at compile-time.</dd>
 </tr>
 <tr><td>int <i>n</i></td>
 <td>1, 2, 3 or 4, is the number of components of the attribute;
- For compatibility, you should not define more than 16 attributes</td>
+<br><br>
+
+For compatibility, you should not define more than 16 attributes</td>
 </tr>
 </table></dd>
 </dl>
@@ -360,15 +372,17 @@ Extract vertex specification from a struct at compile-time.</dd>
 <hr><div class="row-fluid declaration"><h3>void <span class="symbol-target" id="addDummyBytes">&nbsp;</span><a class="symbol-link" href="#addDummyBytes">addDummyBytes</a>(int <i>nBytes</i>);
 </h3></div>
 <div class="declaration-content"><dl><p>Adds padding space to the vertex specification.
- This is useful for alignment. TODO: clarify</p>
+</p>
 
+<p>This is useful for alignment. TODO: clarify</p>
 </dl>
 </div>
 <hr><div class="row-fluid declaration"><h3>deprecated alias <span class="symbol-target" id="getVertexSize">&nbsp;</span><a class="symbol-link" href="#getVertexSize">getVertexSize</a> = vertexSize;
 </h3></div>
 <div class="declaration-content"><dl><p>Returns the size of the Vertex; this size can be computer
- after you added all your attributes</p>
+</p>
 
+<p>after you added all your attributes</p>
 </dl>
 </div>
 </div>

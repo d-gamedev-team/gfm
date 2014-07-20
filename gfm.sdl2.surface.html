@@ -62,7 +62,6 @@
 	<li class="sidebar-list-entry tree-leaf"><a href="gfm.core.log.html" title="gfm.core.log"><i class="icon-th"></i>gfm.core.log</a></li>
     <li class="sidebar-list-entry tree-leaf"><a href="gfm.core.queue.html" title="gfm.core.queue"><i class="icon-th"></i>gfm.core.queue</a></li>
     <li class="sidebar-list-entry tree-leaf"><a href="gfm.core.memory.html" title="gfm.core.memory"><i class="icon-th"></i>gfm.core.memory</a></li>
-    <li class="sidebar-list-entry tree-leaf"><a href="gfm.core.ini.html" title="gfm.core.ini"><i class="icon-th"></i>gfm.core.ini</a></li>
     <li class="sidebar-list-entry tree-leaf"><a href="gfm.core.text.html" title="gfm.core.text"><i class="icon-th"></i>gfm.core.text</a></li>    
     <li class="sidebar-list-entry tree-leaf"><a href="gfm.core.alignedbuffer.html" title="gfm.core.alignedbuffer"><i class="icon-th"></i>gfm.core.alignedbuffer</a></li>
 
@@ -162,7 +161,6 @@
 	<li class="sidebar-list-entry tree-leaf"><a href="gfm.core.log.html" title="gfm.core.log"><i class="icon-th"></i>gfm.core.log</a></li>
     <li class="sidebar-list-entry tree-leaf"><a href="gfm.core.queue.html" title="gfm.core.queue"><i class="icon-th"></i>gfm.core.queue</a></li>
     <li class="sidebar-list-entry tree-leaf"><a href="gfm.core.memory.html" title="gfm.core.memory"><i class="icon-th"></i>gfm.core.memory</a></li>
-    <li class="sidebar-list-entry tree-leaf"><a href="gfm.core.ini.html" title="gfm.core.ini"><i class="icon-th"></i>gfm.core.ini</a></li>
     <li class="sidebar-list-entry tree-leaf"><a href="gfm.core.text.html" title="gfm.core.text"><i class="icon-th"></i>gfm.core.text</a></li>    
     <li class="sidebar-list-entry tree-leaf"><a href="gfm.core.alignedbuffer.html" title="gfm.core.alignedbuffer"><i class="icon-th"></i>gfm.core.alignedbuffer</a></li>
 
@@ -248,8 +246,9 @@
 <hr><div class="row-fluid declaration"><h3>class <span class="symbol-target" id="SDL2Surface">&nbsp;</span><a class="symbol-link" href="#SDL2Surface">SDL2Surface</a>;
 </h3></div>
 <div class="declaration-content"><dl><p>SDL Surface wrapper.
- A <span class="symbol-target" id="SDL2Surface">&nbsp;</span><a class="symbol-link" href="#SDL2Surface">SDL2Surface</a> might own the SDL_Surface* handle or not.</p>
+</p>
 
+<p>A <span class="symbol-target" id="SDL2Surface">&nbsp;</span><a class="symbol-link" href="#SDL2Surface">SDL2Surface</a> might own the SDL_Surface* handle or not.</p>
 </dl>
 <div class="offset1 member-list"><hr><div class="row-fluid declaration"><h3>enum <span class="symbol-target" id="Owned">&nbsp;</span><a class="symbol-link" href="#Owned">Owned</a>: int;
 </h3></div>
@@ -257,13 +256,13 @@
 
 </dl>
 </div>
-<hr><div class="row-fluid declaration"><h3> this(SDL2 <i>sdl2</i>, SDL_Surface* <i>surface</i>, Owned <i>owned</i>);
+<hr><div class="row-fluid declaration"><h3>this(SDL2 <i>sdl2</i>, SDL_Surface* <i>surface</i>, Owned <i>owned</i>);
 </h3></div>
 <div class="declaration-content"><dl><p>Create from an existing SDL_Surface* handle.</p>
 
 </dl>
 </div>
-<hr><div class="row-fluid declaration"><h3> this(SDL2 <i>sdl2</i>, int <i>width</i>, int <i>height</i>, int <i>depth</i>, uint <i>Rmask</i>, uint <i>Gmask</i>, uint <i>Bmask</i>, uint <i>Amask</i>);
+<hr><div class="row-fluid declaration"><h3>this(SDL2 <i>sdl2</i>, int <i>width</i>, int <i>height</i>, int <i>depth</i>, uint <i>Rmask</i>, uint <i>Gmask</i>, uint <i>Bmask</i>, uint <i>Amask</i>);
 </h3></div>
 <div class="declaration-content"><dl><p>Create a new RGBA surface. Both pixels data and handle are owned.
 </p>
@@ -271,12 +270,13 @@
 <dt>Throws</dt><dd><span class="inlinecode">SDL2Exception</span> on error.</dd>
 </dl>
 </div>
-<hr><div class="row-fluid declaration"><h3> this(SDL2 <i>sdl2</i>, void* <i>pixels</i>, int <i>width</i>, int <i>height</i>, int <i>depth</i>, int <i>pitch</i>, uint <i>Rmask</i>, uint <i>Gmask</i>, uint <i>Bmask</i>, uint <i>Amask</i>);
+<hr><div class="row-fluid declaration"><h3>this(SDL2 <i>sdl2</i>, void* <i>pixels</i>, int <i>width</i>, int <i>height</i>, int <i>depth</i>, int <i>pitch</i>, uint <i>Rmask</i>, uint <i>Gmask</i>, uint <i>Bmask</i>, uint <i>Amask</i>);
 </h3></div>
 <div class="declaration-content"><dl><p>Create surface from RGBA data. Pixels data is <b>not</b> and not owned.
 </p>
 
 <dt>See Also</dt><dd>clone, <a href="http://wiki.libsdl.org/SDL_CreateRGBSurfaceFrom">SDL_CreateRGBSurfaceFrom</a>
+
 </dd>
 <dt>Throws</dt><dd><span class="inlinecode">SDL2Exception</span> on error.</dd>
 </dl>
@@ -298,6 +298,7 @@
 <hr><div class="row-fluid declaration"><h3>SDL2Surface <span class="symbol-target" id="clone">&nbsp;</span><a class="symbol-link" href="#clone">clone</a>();
 </h3></div>
 <div class="declaration-content"><dl><dt>Returns</dt><dd>A copy of the surface, useful for taking ownership of not-owned pixel data.
+
 </dd>
 <dt>See Also</dt><dd>$WEB(wiki.libsdl.org/SDL_CreateRGBSurfaceFrom,SDL_CreateRGBSurfaceFrom)</dd>
 </dl>
@@ -315,7 +316,9 @@
 <hr><div class="row-fluid declaration"><h3>ubyte* <span class="symbol-target" id="pixels">&nbsp;</span><a class="symbol-link" href="#pixels">pixels</a>();
 </h3></div>
 <div class="declaration-content"><dl><dt>Returns</dt><dd>Pointer to surface data.
- You must lock the surface before accessng it.</dd>
+<br><br>
+
+You must lock the surface before accessng it.</dd>
 </dl>
 </div>
 <hr><div class="row-fluid declaration"><h3>size_t <span class="symbol-target" id="pitch">&nbsp;</span><a class="symbol-link" href="#pitch">pitch</a>();
@@ -348,7 +351,7 @@
 <div class="declaration-content"><dl><dt>Returns</dt><dd>SDL_PixelFormat which describe the surface.</dd>
 </dl>
 </div>
-<hr><div class="row-fluid declaration"><h3>vec4ub <span class="symbol-target" id="getRGBA">&nbsp;</span><a class="symbol-link" href="#getRGBA">getRGBA</a>(int <i>x</i>, int <i>y</i>);
+<hr><div class="row-fluid declaration"><h3>RGBA <span class="symbol-target" id="getRGBA">&nbsp;</span><a class="symbol-link" href="#getRGBA">getRGBA</a>(int <i>x</i>, int <i>y</i>);
 </h3></div>
 <div class="declaration-content"><dl><p>Get a surface pixel color.
 </p>

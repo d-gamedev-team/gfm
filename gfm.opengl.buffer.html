@@ -62,7 +62,6 @@
 	<li class="sidebar-list-entry tree-leaf"><a href="gfm.core.log.html" title="gfm.core.log"><i class="icon-th"></i>gfm.core.log</a></li>
     <li class="sidebar-list-entry tree-leaf"><a href="gfm.core.queue.html" title="gfm.core.queue"><i class="icon-th"></i>gfm.core.queue</a></li>
     <li class="sidebar-list-entry tree-leaf"><a href="gfm.core.memory.html" title="gfm.core.memory"><i class="icon-th"></i>gfm.core.memory</a></li>
-    <li class="sidebar-list-entry tree-leaf"><a href="gfm.core.ini.html" title="gfm.core.ini"><i class="icon-th"></i>gfm.core.ini</a></li>
     <li class="sidebar-list-entry tree-leaf"><a href="gfm.core.text.html" title="gfm.core.text"><i class="icon-th"></i>gfm.core.text</a></li>    
     <li class="sidebar-list-entry tree-leaf"><a href="gfm.core.alignedbuffer.html" title="gfm.core.alignedbuffer"><i class="icon-th"></i>gfm.core.alignedbuffer</a></li>
 
@@ -162,7 +161,6 @@
 	<li class="sidebar-list-entry tree-leaf"><a href="gfm.core.log.html" title="gfm.core.log"><i class="icon-th"></i>gfm.core.log</a></li>
     <li class="sidebar-list-entry tree-leaf"><a href="gfm.core.queue.html" title="gfm.core.queue"><i class="icon-th"></i>gfm.core.queue</a></li>
     <li class="sidebar-list-entry tree-leaf"><a href="gfm.core.memory.html" title="gfm.core.memory"><i class="icon-th"></i>gfm.core.memory</a></li>
-    <li class="sidebar-list-entry tree-leaf"><a href="gfm.core.ini.html" title="gfm.core.ini"><i class="icon-th"></i>gfm.core.ini</a></li>
     <li class="sidebar-list-entry tree-leaf"><a href="gfm.core.text.html" title="gfm.core.text"><i class="icon-th"></i>gfm.core.text</a></li>    
     <li class="sidebar-list-entry tree-leaf"><a href="gfm.core.alignedbuffer.html" title="gfm.core.alignedbuffer"><i class="icon-th"></i>gfm.core.alignedbuffer</a></li>
 
@@ -250,7 +248,7 @@
 <div class="declaration-content"><dl><p>OpenGL Buffer wrapper.</p>
 
 </dl>
-<div class="offset1 member-list"><hr><div class="row-fluid declaration"><h3> this(OpenGL <i>gl</i>, GLuint <i>target</i>, GLuint <i>usage</i>);
+<div class="offset1 member-list"><hr><div class="row-fluid declaration"><h3>this(OpenGL <i>gl</i>, GLuint <i>target</i>, GLuint <i>usage</i>);
 </h3></div>
 <div class="declaration-content"><dl><p>Creates an empty buffer.
 </p>
@@ -258,7 +256,7 @@
 <dt>Throws</dt><dd><span class="inlinecode">OpenGLException</span> on error.</dd>
 </dl>
 </div>
-<hr><div class="row-fluid declaration"><h3> this(T)(OpenGL <i>gl</i>, GLuint <i>target</i>, GLuint <i>usage</i>, T[] <i>buffer</i>);
+<hr><div class="row-fluid declaration"><h3>this(T)(OpenGL <i>gl</i>, GLuint <i>target</i>, GLuint <i>usage</i>, T[] <i>buffer</i>);
 </h3></div>
 <div class="declaration-content"><dl><p>Creates a buffer already filled with data.
 </p>
@@ -280,6 +278,7 @@
 <hr><div class="row-fluid declaration"><h3>void <span class="symbol-target" id="setData">&nbsp;</span><a class="symbol-link" href="#setData">setData</a>(T)(T[] <i>buffer</i>);
 </h3></div>
 <div class="declaration-content"><dl><dt>Returns</dt><dd>Copy bytes to the buffer.
+
 </dd>
 <dt>Throws</dt><dd><span class="inlinecode">OpenGLException</span> on error.</dd>
 </dl>
@@ -287,6 +286,7 @@
 <hr><div class="row-fluid declaration"><h3>void <span class="symbol-target" id="setData">&nbsp;</span><a class="symbol-link" href="#setData">setData</a>(size_t <i>size</i>, void* <i>data</i>);
 </h3></div>
 <div class="declaration-content"><dl><dt>Returns</dt><dd>Copy bytes to the buffer.
+
 </dd>
 <dt>Throws</dt><dd><span class="inlinecode">OpenGLException</span> on error.</dd>
 </dl>
@@ -310,9 +310,11 @@
 <hr><div class="row-fluid declaration"><h3>ubyte[] <span class="symbol-target" id="getBytes">&nbsp;</span><a class="symbol-link" href="#getBytes">getBytes</a>();
 </h3></div>
 <div class="declaration-content"><dl><p>Gets the whole buffer content in a newly allocated array.
- <b>This is intended for debugging purposes.</b>
 </p>
 
+<p><b>This is intended for debugging purposes.</b>
+
+</p>
 <dt>Throws</dt><dd><span class="inlinecode">OpenGLException</span> on error.</dd>
 </dl>
 </div>

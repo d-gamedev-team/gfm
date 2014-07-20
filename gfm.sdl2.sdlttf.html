@@ -62,7 +62,6 @@
 	<li class="sidebar-list-entry tree-leaf"><a href="gfm.core.log.html" title="gfm.core.log"><i class="icon-th"></i>gfm.core.log</a></li>
     <li class="sidebar-list-entry tree-leaf"><a href="gfm.core.queue.html" title="gfm.core.queue"><i class="icon-th"></i>gfm.core.queue</a></li>
     <li class="sidebar-list-entry tree-leaf"><a href="gfm.core.memory.html" title="gfm.core.memory"><i class="icon-th"></i>gfm.core.memory</a></li>
-    <li class="sidebar-list-entry tree-leaf"><a href="gfm.core.ini.html" title="gfm.core.ini"><i class="icon-th"></i>gfm.core.ini</a></li>
     <li class="sidebar-list-entry tree-leaf"><a href="gfm.core.text.html" title="gfm.core.text"><i class="icon-th"></i>gfm.core.text</a></li>    
     <li class="sidebar-list-entry tree-leaf"><a href="gfm.core.alignedbuffer.html" title="gfm.core.alignedbuffer"><i class="icon-th"></i>gfm.core.alignedbuffer</a></li>
 
@@ -162,7 +161,6 @@
 	<li class="sidebar-list-entry tree-leaf"><a href="gfm.core.log.html" title="gfm.core.log"><i class="icon-th"></i>gfm.core.log</a></li>
     <li class="sidebar-list-entry tree-leaf"><a href="gfm.core.queue.html" title="gfm.core.queue"><i class="icon-th"></i>gfm.core.queue</a></li>
     <li class="sidebar-list-entry tree-leaf"><a href="gfm.core.memory.html" title="gfm.core.memory"><i class="icon-th"></i>gfm.core.memory</a></li>
-    <li class="sidebar-list-entry tree-leaf"><a href="gfm.core.ini.html" title="gfm.core.ini"><i class="icon-th"></i>gfm.core.ini</a></li>
     <li class="sidebar-list-entry tree-leaf"><a href="gfm.core.text.html" title="gfm.core.text"><i class="icon-th"></i>gfm.core.text</a></li>    
     <li class="sidebar-list-entry tree-leaf"><a href="gfm.core.alignedbuffer.html" title="gfm.core.alignedbuffer"><i class="icon-th"></i>gfm.core.alignedbuffer</a></li>
 
@@ -250,7 +248,7 @@
 <div class="declaration-content"><dl><p>SDL_ttf library wrapper.</p>
 
 </dl>
-<div class="offset1 member-list"><hr><div class="row-fluid declaration"><h3> this(SDL2 <i>sdl2</i>);
+<div class="offset1 member-list"><hr><div class="row-fluid declaration"><h3>this(SDL2 <i>sdl2</i>);
 </h3></div>
 <div class="declaration-content"><dl><p>Loads the SDL_ttf library.
 </p>
@@ -271,7 +269,7 @@
 <div class="declaration-content"><dl><p>SDL_ttf loaded font wrapper.</p>
 
 </dl>
-<div class="offset1 member-list"><hr><div class="row-fluid declaration"><h3> this(SDLTTF <i>sdlttf</i>, string <i>filename</i>, int <i>ptSize</i>);
+<div class="offset1 member-list"><hr><div class="row-fluid declaration"><h3>this(SDLTTF <i>sdlttf</i>, string <i>filename</i>, int <i>ptSize</i>);
 </h3></div>
 <div class="declaration-content"><dl><p>Loads a font from a file.
 </p>
@@ -353,35 +351,55 @@
 <div class="declaration-content"><dl><dt>Returns</dt><dd>Line skip, the recommended pixel interval between two lines.</dd>
 </dl>
 </div>
-<hr><div class="row-fluid declaration"><h3>vec2i <span class="symbol-target" id="measureText">&nbsp;</span><a class="symbol-link" href="#measureText">measureText</a>(string <i>text</i>);
+<hr><div class="row-fluid declaration"><h3>SDL_Point <span class="symbol-target" id="measureText">&nbsp;</span><a class="symbol-link" href="#measureText">measureText</a>(string <i>text</i>);
 </h3></div>
 <div class="declaration-content"><dl><dt>Returns</dt><dd>Size of <i>text</i> in pixels if rendered with this font.</dd>
 </dl>
 </div>
 <hr><div class="row-fluid declaration"><h3>SDL2Surface <span class="symbol-target" id="renderTextBlended">&nbsp;</span><a class="symbol-link" href="#renderTextBlended">renderTextBlended</a>(string <i>text</i>, SDL_Color <i>color</i>);
 </h3></div>
-<div class="declaration-content"><dl><p>Create a 32-bit ARGB surface and render the given <i>text</i> at high quality, 
- using alpha blending to dither the font with the given <i>color</i>.
+<div class="declaration-content"><dl><p>Create a 32-bit ARGB surface and render the given <i>text</i> at high quality,
 </p>
 
+<p>using alpha blending to dither the font with the given <i>color</i>.
+
+</p>
 <dt>Throws</dt><dd><span class="inlinecode">SDL2Exception</span> on error.</dd>
 </dl>
 </div>
 <hr><div class="row-fluid declaration"><h3>SDL2Surface <span class="symbol-target" id="renderTextSolid">&nbsp;</span><a class="symbol-link" href="#renderTextSolid">renderTextSolid</a>(string <i>text</i>, SDL_Color <i>color</i>);
 </h3></div>
-<div class="declaration-content"><dl><p>Create an 8-bit palettized surface and render the given <i>text</i> at fast 
- quality with the given font and <i>color</i>.
+<div class="declaration-content"><dl><p>Create an 8-bit palettized surface and render the given <i>text</i> at fast
 </p>
 
+<p>quality with the given font and <i>color</i>.
+
+</p>
 <dt>Throws</dt><dd><span class="inlinecode">SDL2Exception</span> on error.</dd>
 </dl>
 </div>
 <hr><div class="row-fluid declaration"><h3>SDL2Surface <span class="symbol-target" id="renderTextShaded">&nbsp;</span><a class="symbol-link" href="#renderTextShaded">renderTextShaded</a>(string <i>text</i>, SDL_Color <i>fg</i>, SDL_Color <i>bg</i>);
 </h3></div>
-<div class="declaration-content"><dl><p>Create an 8-bit palettized surface and render the given <i>text</i> at high 
- quality with the given font and colors.
+<div class="declaration-content"><dl><p>Create an 8-bit palettized surface and render the given <i>text</i> at high
 </p>
 
+<p>quality with the given font and colors.
+
+</p>
+<dt>Throws</dt><dd><span class="inlinecode">SDL2Exception</span> on error.</dd>
+</dl>
+</div>
+<hr><div class="row-fluid declaration"><h3>SDL2Surface <span class="symbol-target" id="renderTextBlendedWrapped">&nbsp;</span><a class="symbol-link" href="#renderTextBlendedWrapped">renderTextBlendedWrapped</a>(string <i>text</i>, SDL_Color <i>color</i>, uint <i>wrapLength</i>);
+</h3></div>
+<div class="declaration-content"><dl><p>Create a 32-bit ARGB surface and render the given <i>text</i> at high quality,
+</p>
+
+<p>using alpha blending to dither the font with the given <i>color</i>.
+<br><br>
+
+Uses multi-line <i>text</i> wrapping.
+
+</p>
 <dt>Throws</dt><dd><span class="inlinecode">SDL2Exception</span> on error.</dd>
 </dl>
 </div>
