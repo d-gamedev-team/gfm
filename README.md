@@ -1,6 +1,6 @@
 # What's this?
 
-GFM is a feature-rich library to ease the creation of video games / multimedia applications with the D programming language. Pick what you need.
+GFM is a feature-rich library to ease the creation of video games / multimedia applications with the D programming language.
 
 Documentation and overview can be found here: http://d-gamedev-team.github.io/gfm/
 
@@ -23,6 +23,13 @@ Add the sub-package you are interested in in your `dub.json`:
 ```
 
 See the examples/ directory, or https://github.com/p0nce/aliasthis as an example of a game.
+
+
+## Dependencies
+
+You absolutely don't need to use the whole of GFM. Pick just what you need to minimize the amount of dependencies.
+
+![GFM dependencies](/deps/deps.png)
 
 
 ## Design goals

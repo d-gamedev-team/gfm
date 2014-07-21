@@ -1,0 +1,57 @@
+<html><head>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8"></head><body>
+<script src="jquery.js"></script>
+<script src="springy.js"></script>
+<script src="springyui.js"></script>
+<script>
+var graph = new Springy.Graph();
+
+var logger = graph.newNode({label: 'logger'});
+var ae_graphics = graph.newNode({label: 'ae-graphics'});
+var derelict_enet = graph.newNode({label: 'derelict-enet'});
+var derelict_gl3 = graph.newNode({label: 'derelict-gl3'});
+var derelict_assimp3 = graph.newNode({label: 'derelict-assimp3'});
+var derelict_fi = graph.newNode({label: 'derelict-fi'});
+var derelict_sdl2 = graph.newNode({label: 'derelict_sdl2'});
+
+var gfm_core = graph.newNode({label: 'gfm:core'});
+var gfm_math = graph.newNode({label: 'gfm:math'});
+var gfm_net = graph.newNode({label: 'gfm:net'});
+var gfm_enet = graph.newNode({label: 'gfm:enet'});
+var gfm_image = graph.newNode({label: 'gfm:image'});
+var gfm_assimp = graph.newNode({label: 'gfm:assimp'});
+var gfm_freeimage = graph.newNode({label: 'gfm:freeimage'});
+var gfm_opengl = graph.newNode({label: 'gfm:opengl'});
+var gfm_sdl2 = graph.newNode({label: 'gfm:sdl2'});
+
+graph.newEdge(gfm_core, logger, {color: '#4168EB'});
+graph.newEdge(gfm_image, gfm_math, {color: '#EB6841'});
+graph.newEdge(gfm_image, gfm_core, {color: '#EB6841'});
+graph.newEdge(gfm_image, ae_graphics, {color: '#4168EB'});
+graph.newEdge(gfm_enet, logger, {color: '#4168EB'});
+graph.newEdge(gfm_enet, derelict_enet, {color: '#4168EB'});
+graph.newEdge(gfm_opengl, logger, {color: '#4168EB'});
+graph.newEdge(gfm_opengl, gfm_core, {color: '#EB6841'});
+graph.newEdge(gfm_opengl, gfm_math, {color: '#EB6841'});
+graph.newEdge(gfm_opengl, derelict_gl3, {color: '#4168EB'});
+graph.newEdge(gfm_sdl2, logger, {color: '#4168EB'});
+graph.newEdge(gfm_sdl2, gfm_core, {color: '#EB6841'});
+graph.newEdge(gfm_sdl2, derelict_sdl2, {color: '#4168EB'});
+graph.newEdge(gfm_freeimage, logger, {color: '#4168EB'});
+graph.newEdge(gfm_freeimage, gfm_core, {color: '#EB6841'});
+graph.newEdge(gfm_freeimage, derelict_fi, {color: '#4168EB'});
+graph.newEdge(gfm_assimp, logger, {color: '#4168EB'});
+graph.newEdge(gfm_assimp, gfm_core, {color: '#EB6841'});
+graph.newEdge(gfm_assimp, derelict_assimp3, {color: '#4168EB'});
+
+jQuery(function(){
+  var springy = window.springy = jQuery('#springydemo').springy({
+    graph: graph
+  });
+});
+</script>
+
+<canvas id="springydemo" width="640" height="480">
+
+
+</canvas></body></html>
