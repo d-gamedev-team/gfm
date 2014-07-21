@@ -84,13 +84,13 @@ $(UL
 
     <p>$(LI gfm.enet:
         $(UL
-            $(LI ENet wrapper based on package derelict_extras-enet.)
+            $(LI ENet wrapper based on package derelict-enet.)
          )
     )</p>
 
     <p>$(LI gfm.bgfx:
         $(UL
-            $(LI bgfx wrapper based on package derelict_extras-bgfx.)
+            $(LI bgfx wrapper based on package derelict-bgfx.)
          )
     )</p>
 
