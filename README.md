@@ -13,13 +13,22 @@ Public Domain (Unlicense).
 
 ## How to use GFM?
 
+Add the sub-package you are interested in in your `dub.json`:
+```d
+   {
+      "dependencies": {
+        "gfm:math": ">=1.1.6"
+      }
+   }
+```
+
 See the examples/ directory, or https://github.com/p0nce/aliasthis as an example of a game.
 
 
 ## Design goals
 
   * Give more power to the library user providing code that will probably need to be written anyway.
-  * Each module / sub-package is maximally decoupled (the major pain point right now is the lack of a standard logging facility).
+  * Each module / sub-package is maximally decoupled.
   * Logging interface for everything which need to output messages.
   * Correctness and functionality are favoured over speed.
   * Wrappers are lightweight layers that expose the C libraries objects, turn every error code into an D exception and makes it easier to use the library correctly.
