@@ -24,12 +24,16 @@ Add the sub-package you are interested in in your `dub.json`:
 
 See the examples/ directory, or https://github.com/p0nce/aliasthis as an example of a game.
 
+**Warning: you need at least DUB 0.9.22-rc1 to use GFM**
+
 
 ## Dependencies
 
 You absolutely don't need to use the whole of GFM. Pick just what you need to minimize the amount of dependencies.
 
 ![GFM dependencies](/deps/deps.png)
+
+There is an ongoing work to reduce package dependencies and delete things in GFM that exist elsewhere but better.
 
 
 ## Design goals
