@@ -105,7 +105,7 @@ align(1) struct Box(T, size_t N)
         bool contains(bound_t point) pure const nothrow
         {
             for(size_t i = 0; i < N; ++i)
-                if ((point[i] < min[i]) || (point[i] >= max[i]))
+                if ( !(point[i] >= min[i] && point[i] < max[i]) )
                     return false;
 
             return true;
