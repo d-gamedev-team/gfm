@@ -146,20 +146,20 @@ align(1) struct Box(T, size_t N)
             return sqrt(squaredDistance(point));
         }
 
-        static if (N == 2u)
+        Box intersection(ref const(Box) o) pure const nothrow
         {
-            Box intersect(ref const(Box) o) pure const nothrow
+            assert(isSorted());
+            assert(o.isSorted());
+            Box result;
+            for (size_t i = 0; i < N; ++i)
             {
-                assert(isSorted());
-                assert(o.isSorted());
-                auto xmin = .max(min.x, o.min.x);
-                auto ymin = .max(min.y, o.min.y);
-                auto xmax = .min(max.x, o.max.x);
-                auto ymax = .min(max.y, o.max.y);
-                return Box(xmin, ymin, xmax, ymax);
+                result.min.v[i] = .max(min.v[i], o.min.v[i]);
+                result.max.v[i] = .min(min.v[i], o.min.v[i]);
             }
+            return result;
         }
 
+        deprecated("Renamed to intersection") alias intersect = intersection;
 
         /// Extends the area of this Box.
         Box grow(bound_t space) pure const nothrow
