@@ -104,6 +104,7 @@ align(1) struct Box(T, size_t N)
         /// Returns: true if it contains point.
         bool contains(bound_t point) pure const nothrow
         {
+            assert(isSorted());
             for(size_t i = 0; i < N; ++i)
                 if ( !(point[i] >= min[i] && point[i] < max[i]) )
                     return false;
@@ -127,6 +128,7 @@ align(1) struct Box(T, size_t N)
         /// See_also: Numerical Recipes Third Edition (2007)
         double squaredDistance(bound_t point) pure const nothrow
         {
+            assert(isSorted());
             double distanceSquared = 0;
             for (size_t i = 0; i < N; ++i)
             {
@@ -143,6 +145,7 @@ align(1) struct Box(T, size_t N)
         /// See_also: squaredDistance.
         double distance(bound_t point)
         {
+            assert(isSorted());
             return sqrt(squaredDistance(point));
         }
 
