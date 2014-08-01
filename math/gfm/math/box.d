@@ -146,7 +146,9 @@ align(1) struct Box(T, size_t N)
             return sqrt(squaredDistance(point));
         }
 
-        Box intersection(ref const(Box) o) pure const nothrow
+        /// Assumes sorted boxes.
+        /// Returns: Intersection of two boxes.
+        Box intersection(Box o) pure const nothrow
         {
             assert(isSorted());
             assert(o.isSorted());
@@ -154,12 +156,20 @@ align(1) struct Box(T, size_t N)
             for (size_t i = 0; i < N; ++i)
             {
                 result.min.v[i] = .max(min.v[i], o.min.v[i]);
-                result.max.v[i] = .min(min.v[i], o.min.v[i]);
+                result.max.v[i] = .min(max.v[i], o.max.v[i]);
             }
             return result;
         }
 
         deprecated("Renamed to intersection") alias intersect = intersection;
+
+        /// Assumes sorted boxes.
+        /// Returns: true if boxes overlap.
+        bool intersects(Box other)
+        {
+            Box inter = this.intersection(other);
+            return inter.isSorted() && inter.volume() != 0;
+        }
 
         /// Extends the area of this Box.
         Box grow(bound_t space) pure const nothrow
