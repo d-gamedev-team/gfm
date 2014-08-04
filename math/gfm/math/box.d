@@ -143,10 +143,34 @@ align(1) struct Box(T, size_t N)
 
         /// Euclidean distance from a point.
         /// See_also: squaredDistance.
-        double distance(bound_t point)
+        double distance(bound_t point) pure const nothrow
+        {
+            return sqrt(squaredDistance(point));
+        }
+
+        /// Euclidean squared distance from another box.
+        /// See_also: Numerical Recipes Third Edition (2007)
+        double squaredDistance(Box o) pure const nothrow
         {
             assert(isSorted());
-            return sqrt(squaredDistance(point));
+            assert(o.isSorted());
+            double distanceSquared = 0;
+            for (size_t i = 0; i < N; ++i)
+            {
+                if (o.max[i] < min[i])
+                    distanceSquared += (o.max[i] - min[i]) ^^ 2;
+
+                if (o.min[i] > max[i])
+                    distanceSquared += (o.min[i] - max[i]) ^^ 2;
+            }
+            return distanceSquared;
+        }
+
+        /// Euclidean distance from another box.
+        /// See_also: squaredDistance.
+        double distance(Box o) pure const nothrow
+        {
+            return sqrt(squaredDistance(o));
         }
 
         /// Assumes sorted boxes.
@@ -183,7 +207,7 @@ align(1) struct Box(T, size_t N)
             return res;
         }
 
-        /// Shrink the area of this Box.
+        /// Shrink the area of this Box. The box might became unsorted.
         Box shrink(bound_t space) pure const nothrow
         {
             return grow(-space);
