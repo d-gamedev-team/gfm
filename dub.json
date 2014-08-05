@@ -51,7 +51,7 @@
             "dependencies": {
                 "gfm:core": "*",
                 "gfm:math": "*",
-                "ae-graphics": "==0.0.2"
+                "ae-graphics": "==0.0.3"
             }
         },
         {
