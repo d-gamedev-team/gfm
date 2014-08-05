@@ -1,15 +1,10 @@
 module gfm.core.log;
 
 import std.stream,
-       std.stdio,
        std.string;
 
 import std.logger;
-
-version(Windows)
-{
-    import core.sys.windows.windows;
-}
+import colorize;
 
 // Because default std.logger logger is a bit verbose, and lacks colors.
 class ConsoleLogger : Logger
@@ -19,79 +14,53 @@ class ConsoleLogger : Logger
         this()
         {
             super("", LogLevel.info);
-
-            version(Windows)
-            {
-                _console = GetStdHandle(STD_OUTPUT_HANDLE);
-
-                // saves console attributes
-                _savedInitialColor = (0 != GetConsoleScreenBufferInfo(_console, &consoleInfo));
-            }
         }
 
         override void writeLogMsg(ref LoggerPayload payload) @trusted
         {
             LogLevel logLevel;
+            
             synchronized(this)
             {
-                version(Windows)
+                auto foregroundColor = fg.white;
+                switch(payload.logLevel)
                 {
-                    switch(payload.logLevel)
-                    {
-                        case LogLevel.info:
-                            SetConsoleTextAttribute(_console, 15);
-                            break;
+                    case LogLevel.info:
+                        foregroundColor = fg.light_white;
+                        break;
 
-                        case LogLevel.warning:
-                            SetConsoleTextAttribute(_console, 14);
-                            break;
+                    case LogLevel.warning:
+                        foregroundColor = fg.light_yellow;
+                        break;
 
-                        case LogLevel.error:
-                        case LogLevel.critical:
-                        case LogLevel.fatal:
-                            SetConsoleTextAttribute(_console, 12);
-                            break;
+                    case LogLevel.error:
+                    case LogLevel.critical:
+                    case LogLevel.fatal:
+                        foregroundColor = fg.light_red;
+                        break;
 
-                        case LogLevel.unspecific:
-                        case LogLevel.trace:
-                        default:
-                            SetConsoleTextAttribute(_console, 11); 
-                    }
+                    case LogLevel.unspecific:
+                    case LogLevel.trace:
+                    default:
+                        foregroundColor = fg.white;
                 }
 
-                import std.stdio;
-                writefln("%s: %s", logLevelToString(payload.logLevel), payload.msg);
+                import colorize.cwrite;
+                cwritefln( color("%s: %s", foregroundColor), logLevelToString(payload.logLevel), payload.msg);
             }
         }
 
         ~this()
         {
-            close();
         }
 
-        void close()
+        deprecated("No need to call close() on ConsoleLogger anymore") void close()
         {
-            version(Windows)
-            {
-                // restore initial console attributes
-                if (_savedInitialColor)
-                {
-                    SetConsoleTextAttribute(_console, consoleInfo.wAttributes);
-                    _savedInitialColor = false;
-                }
-            }
         }
     }
 
     private
     {
-        version(Windows)
-        {
-            HANDLE _console;
-            bool _savedInitialColor;
-            CONSOLE_SCREEN_BUFFER_INFO consoleInfo;
-        }
-
         static pure string logLevelToString(const LogLevel lv)
         {
             switch(lv)

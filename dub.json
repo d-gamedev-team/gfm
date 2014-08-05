@@ -35,7 +35,8 @@
             "sourcePaths": [ "core/gfm/core" ],
             "importPaths": [ "core" ],
             "dependencies": {
-                "logger": "==0.1.0"
+                "logger": "==0.1.0",
+                "colorize": "==1.0.4"
             }
         },
         {
