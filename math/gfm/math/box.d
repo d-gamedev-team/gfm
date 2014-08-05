@@ -182,8 +182,10 @@ align(1) struct Box(T, size_t N)
             Box result;
             for (size_t i = 0; i < N; ++i)
             {
-                result.min.v[i] = .max(min.v[i], o.min.v[i]);
-                result.max.v[i] = .min(max.v[i], o.max.v[i]);
+                T maxOfMins = (min.v[i] > o.min.v[i]) ? min.v[i] : o.min.v[i];
+                T minOfMaxs = (max.v[i] < o.max.v[i]) ? max.v[i] : o.max.v[i];
+                result.min.v[i] = maxOfMins;
+                result.max.v[i] = minOfMaxs;
             }
             return result;
         }
