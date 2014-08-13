@@ -16,8 +16,9 @@ class SDL2Window
 {
     public
     {
-        /// Initially invisible.
-        /// Accepts the same constants as the SDL2 function.
+        /// Creates a SDL window which targets a window.
+        /// See_also: $(LINK http://wiki.libsdl.org/SDL_CreateWindow)
+        /// Throws: $(D SDL2Exception) on error.
         this(SDL2 sdl2, int x, int y, int width, int height, int flags)
         {
             _sdl2 = sdl2;
@@ -58,6 +59,7 @@ class SDL2Window
         }
 
         /// Releases the SDL resource.
+        /// See_also: $(LINK http://wiki.libsdl.org/SDL_DestroyWindow)
         final void close()
         {
             if (_glContext !is null)
@@ -74,26 +76,32 @@ class SDL2Window
             }
         }
 
+        ///
         ~this()
         {
             close();
         }
 
-        final void setFullscreen(bool activated)
+        /// See_also: $(LINK http://wiki.libsdl.org/SDL_SetWindowFullscreen)
+        final void setFullscreen(bool fullscreen)
         {
-            SDL_SetWindowFullscreen(_window, activated ? SDL_WINDOW_FULLSCREEN : 0);
+            SDL_SetWindowFullscreen(_window, fullscreen ? SDL_WINDOW_FULLSCREEN : 0);
         }
 
+        /// See_also: $(LINK http://wiki.libsdl.org/SDL_SetWindowPosition)
         final void setPosition(int positionX, int positionY)
         {
             SDL_SetWindowPosition(_window, positionX, positionY);
         }
 
+        /// See_also: $(LINK http://wiki.libsdl.org/SDL_SetWindowSize)
         final void setSize(int width, int height)
         {
             SDL_SetWindowSize(_window, width, height);
         }
 
+        /// See_also: $(LINK http://wiki.libsdl.org/SDL_GetWindowSize)
+        /// Returns: Window size in pixels.
         final SDL_Point getSize()
         {
             int w, h;
@@ -101,6 +109,8 @@ class SDL2Window
             return SDL_Point(w, h);
         }
 
+        /// See_also: $(LINK http://wiki.libsdl.org/SDL_GetWindowSize)
+        /// Returns: Window width in pixels.
         final int getWidth()
         {
             int w, h;
@@ -108,6 +118,8 @@ class SDL2Window
             return w;
         }
 
+        /// See_also: $(LINK http://wiki.libsdl.org/SDL_GetWindowSize)
+        /// Returns: Window height in pixels.
         final int getHeight()
         {
             int w, h;
@@ -115,31 +127,39 @@ class SDL2Window
             return h;
         }
 
+        /// See_also: $(LINK http://wiki.libsdl.org/SDL_SetWindowTitle)
         final void setTitle(string title)
         {
             SDL_SetWindowTitle(_window, toStringz(title));
         }
 
+        /// See_also: $(LINK http://wiki.libsdl.org/SDL_ShowWindow)
         final void show()
         {
             SDL_ShowWindow(_window);
         }
 
+        /// See_also: $(LINK http://wiki.libsdl.org/SDL_HideWindow)
         final void hide()
         {
             SDL_HideWindow(_window);
         }
 
+        /// See_also: $(LINK http://wiki.libsdl.org/SDL_MinimizeWindow)
         final void minimize()
         {
             SDL_MinimizeWindow(_window);
         }
 
+        /// See_also: $(LINK http://wiki.libsdl.org/SDL_MaximizeWindow)
         final void maximize()
         {
             SDL_MaximizeWindow(_window);
         }
 
+        /// Returns: Window surface.
+        /// See_also: $(LINK http://wiki.libsdl.org/SDL_GetWindowSurface)
+        /// Throws: $(D SDL2Exception) on error.
         final SDL2Surface surface()
         {
             if (!hasValidSurface())
@@ -155,6 +175,9 @@ class SDL2Window
             return _surface;
         }
 
+        /// Submit changes to the window surface.
+        /// See_also: $(LINK http://wiki.libsdl.org/SDL_UpdateWindowSurface)
+        /// Throws: $(D SDL2Exception) on error.
         final void updateSurface()
         {
             if (!hasValidSurface())
@@ -166,11 +189,16 @@ class SDL2Window
             
         }
 
+        /// Returns: Window ID.
+        /// See_also: $(LINK http://wiki.libsdl.org/SDL_GetWindowID)
         final int id()
         {
             return _id;
         }
 
+        /// Returns: System-specific window information, useful to use a third-party rendering library.
+        /// See_also: $(LINK http://wiki.libsdl.org/SDL_GetWindowWMInfo)
+        /// Throws: $(D SDL2Exception) on error.
         SDL_SysWMinfo getWindowInfo()
         {
             SDL_SysWMinfo info;
@@ -182,67 +210,84 @@ class SDL2Window
 
         // override these function, they are event callbacks
 
+        ///
         void onShow()
         {
         }
 
+        ///
         void onHide()
         {
         }
 
+        ///
         void onExposed()
         {
             _surfaceMustBeRenewed = true;
         }
 
+        ///
         void onMove(int x, int y)
         {        
         }
         
+        ///
         void onResized(int width, int height)
         {
             _surfaceMustBeRenewed = true;
         }
 
+        ///
         void onSizeChanged()
         {
             _surfaceMustBeRenewed = true;
         }
 
+        ///
         void onMinimized()
         {
             _surfaceMustBeRenewed = true;
         }
 
+        ///
         void onMaximized()
         {
             _surfaceMustBeRenewed = true;
         }
 
+        ///
         void onRestored()
         {            
         }
 
+        ///
         void onEnter()
         {
         }
         
+        ///
         void onLeave()
         {
         }
-        
+
+        ///
         void onFocusGained()
         {
         }
 
+        ///
         void onFocusLost()
         {
         }
         
+        ///
         void onClose()
         {
         }
 
+        /// Swap OpenGL buffers.
+        /// See_also: $(LINK http://wiki.libsdl.org/SDL_GL_SwapWindow)
+        /// Throws: $(D SDL2Exception) on error.
         void swapBuffers()
         {
             if (_glContext is null)
@@ -273,11 +318,12 @@ class SDL2Window
     }
 }
 
-/// SDL OpenGL context wrapper.
+/// SDL OpenGL context wrapper. You probably don't need to use it directly.
 final class SDL2GLContext
 {
     public
     {
+        /// Creates for a given SDL window. 
         this(SDL2Window window)
         {
             _window = window;
@@ -290,6 +336,7 @@ final class SDL2GLContext
             close();
         }
 
+        /// Release the associated SDL ressource.
         void close()
         {
             if (_initialized)
@@ -303,6 +350,8 @@ final class SDL2GLContext
             }
         }
 
+        /// Makes this OpenGL context current.
+        /// Throws: $(D SDL2Exception) on error.
         void makeCurrent()
         {
             if (0 != SDL_GL_MakeCurrent(_window._window, _context))
