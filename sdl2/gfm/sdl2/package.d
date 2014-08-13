@@ -6,6 +6,7 @@ public
 {
     import derelict.sdl2.sdl,
            derelict.sdl2.image;
+           derelict.sdl2.ttf;
 
     import gfm.sdl2.sdl,
            gfm.sdl2.surface,
@@ -13,6 +14,7 @@ public
            gfm.sdl2.keyboard,
            gfm.sdl2.renderer,
            gfm.sdl2.texture,
+           gfm.sdl2.sdlttf,
            gfm.sdl2.framecounter,
            gfm.sdl2.sdlimage;
 }
