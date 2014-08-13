@@ -255,7 +255,7 @@
 <dt>TODO:</dt><dd>
 Extract vertex specification from a struct at compile-time.</dd>
 </dl>
-<div class="offset1 member-list"><hr><div class="row-fluid declaration"><h3>this(OpenGL <i>gl</i>);
+<div class="offset1 member-list"><hr><div class="row-fluid declaration"><h3> this(OpenGL <i>gl</i>);
 </h3></div>
 <div class="declaration-content"><dl><p>Creates a vertex specification.</p>
 
@@ -270,25 +270,19 @@ Extract vertex specification from a struct at compile-time.</dd>
 <hr><div class="row-fluid declaration"><h3>void <span class="symbol-target" id="use">&nbsp;</span><a class="symbol-link" href="#use">use</a>(GLProgram <i>program</i>);
 </h3></div>
 <div class="declaration-content"><dl><p>Use this vertex specification.
+ Re-loads all the attribute locations before actually using it
 </p>
 
-<p>Re-loads all the attribute locations before actually using it
-
-</p>
 <dt>Throws</dt><dd><span class="inlinecode">OpenGLException</span> on error.</dd>
 </dl>
 </div>
 <hr><div class="row-fluid declaration"><h3>void <span class="symbol-target" id="use">&nbsp;</span><a class="symbol-link" href="#use">use</a>();
 </h3></div>
 <div class="declaration-content"><dl><p>Use this vertex specification.
+ You should only call this function after a call on
+ locateAttributes() or <span class="symbol-target" id="use">&nbsp;</span><a class="symbol-link" href="#use">use</a>(GLProgram).
 </p>
 
-<p>You should only call this function after a call on
-<br><br>
-
-locateAttributes() or <span class="symbol-target" id="use">&nbsp;</span><a class="symbol-link" href="#use">use</a>(GLProgram).
-
-</p>
 <dt>Throws</dt><dd><span class="inlinecode">OpenGLException</span> on error.</dd>
 </dl>
 </div>
@@ -304,18 +298,16 @@ locateAttributes() or <span class="symbol-target" id="use">&nbsp;</span><a class
 <br>pure nothrow @property GLBuffer <span class="symbol-target" id="VBO">&nbsp;</span><a class="symbol-link" href="#VBO">VBO</a>(GLBuffer <i>vbo</i>);
 </h3></div>
 <div class="declaration-content"><dl><p>This property allows the user to set/unset the used <span class="symbol-target" id="VBO">&nbsp;</span><a class="symbol-link" href="#VBO">VBO</a>.
-</p>
+ You can't select another <span class="symbol-target" id="VBO">&nbsp;</span><a class="symbol-link" href="#VBO">VBO</a> while this VertexSpecification is being used.</p>
 
-<p>You can't select another <span class="symbol-target" id="VBO">&nbsp;</span><a class="symbol-link" href="#VBO">VBO</a> while this VertexSpecification is being used.</p>
 </dl>
 </div>
 <hr><div class="row-fluid declaration"><h3>pure nothrow @property GLBuffer <span class="symbol-target" id="IBO">&nbsp;</span><a class="symbol-link" href="#IBO">IBO</a>();
 <br>pure nothrow @property GLBuffer <span class="symbol-target" id="IBO">&nbsp;</span><a class="symbol-link" href="#IBO">IBO</a>(GLBuffer <i>ibo</i>);
 </h3></div>
 <div class="declaration-content"><dl><p>This property allows the user to set/unset the used <span class="symbol-target" id="IBO">&nbsp;</span><a class="symbol-link" href="#IBO">IBO</a>.
-</p>
+ You can't select another <span class="symbol-target" id="IBO">&nbsp;</span><a class="symbol-link" href="#IBO">IBO</a> while this VertexSpecification is being used.</p>
 
-<p>You can't select another <span class="symbol-target" id="IBO">&nbsp;</span><a class="symbol-link" href="#IBO">IBO</a> while this VertexSpecification is being used.</p>
 </dl>
 </div>
 <hr><div class="row-fluid declaration"><h3>void <span class="symbol-target" id="addLegacy">&nbsp;</span><a class="symbol-link" href="#addLegacy">addLegacy</a>(VertexAttribute.Role <i>role</i>, GLenum <i>glType</i>, int <i>n</i>);
@@ -328,9 +320,7 @@ locateAttributes() or <span class="symbol-target" id="use">&nbsp;</span><a class
 </tr>
 <tr><td>int <i>n</i></td>
 <td>1, 2, 3 or 4, is the number of components of the attribute;
-<br><br>
-
-For compatibility, you should not define more than 16 attributes</td>
+ For compatibility, you should not define more than 16 attributes</td>
 </tr>
 </table></dd>
 </dl>
@@ -345,9 +335,7 @@ For compatibility, you should not define more than 16 attributes</td>
 </tr>
 <tr><td>int <i>n</i></td>
 <td>1, 2, 3 or 4, is the number of components of the attribute;
-<br><br>
-
-For compatibility, you should not define more than 16 attributes</td>
+ For compatibility, you should not define more than 16 attributes</td>
 </tr>
 </table></dd>
 </dl>
@@ -362,9 +350,7 @@ For compatibility, you should not define more than 16 attributes</td>
 </tr>
 <tr><td>int <i>n</i></td>
 <td>1, 2, 3 or 4, is the number of components of the attribute;
-<br><br>
-
-For compatibility, you should not define more than 16 attributes</td>
+ For compatibility, you should not define more than 16 attributes</td>
 </tr>
 </table></dd>
 </dl>
@@ -372,17 +358,15 @@ For compatibility, you should not define more than 16 attributes</td>
 <hr><div class="row-fluid declaration"><h3>void <span class="symbol-target" id="addDummyBytes">&nbsp;</span><a class="symbol-link" href="#addDummyBytes">addDummyBytes</a>(int <i>nBytes</i>);
 </h3></div>
 <div class="declaration-content"><dl><p>Adds padding space to the vertex specification.
-</p>
+ This is useful for alignment. TODO: clarify</p>
 
-<p>This is useful for alignment. TODO: clarify</p>
 </dl>
 </div>
 <hr><div class="row-fluid declaration"><h3>deprecated alias <span class="symbol-target" id="getVertexSize">&nbsp;</span><a class="symbol-link" href="#getVertexSize">getVertexSize</a> = vertexSize;
 </h3></div>
 <div class="declaration-content"><dl><p>Returns the size of the Vertex; this size can be computer
-</p>
+ after you added all your attributes</p>
 
-<p>after you added all your attributes</p>
 </dl>
 </div>
 </div>

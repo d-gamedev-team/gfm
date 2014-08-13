@@ -246,29 +246,28 @@
 <hr><div class="row-fluid declaration"><h3>struct <span class="symbol-target" id="Quaternion">&nbsp;</span><a class="symbol-link" href="#Quaternion">Quaternion</a>(T);
 </h3></div>
 <div class="declaration-content"><dl><p><span class="symbol-target" id="Quaternion">&nbsp;</span><a class="symbol-link" href="#Quaternion">Quaternion</a> implementation.
-</p>
+ Holds a rotation + angle in a proper but wild space.</p>
 
-<p>Holds a rotation + angle in a proper but wild space.</p>
 </dl>
-<div class="offset1 member-list"><hr><div class="row-fluid declaration"><h3>pure nothrow this(U)(U <i>x</i>) if (isAssignable!U);
+<div class="offset1 member-list"><hr><div class="row-fluid declaration"><h3>pure nothrow  this(U)(U <i>x</i>) if (isAssignable!U);
 </h3></div>
 <div class="declaration-content"><dl><p>Construct a Quaternion from a value.</p>
 
 </dl>
 </div>
-<hr><div class="row-fluid declaration"><h3>static pure nothrow Quaternion <span class="symbol-target" id="fromAxis">&nbsp;</span><a class="symbol-link" href="#fromAxis">fromAxis</a>(Vector!(T, 3u) <i>axis</i>, T <i>angle</i>);
+<hr><div class="row-fluid declaration"><h3>pure nothrow Quaternion <span class="symbol-target" id="fromAxis">&nbsp;</span><a class="symbol-link" href="#fromAxis">fromAxis</a>(Vector!(T, 3u) <i>axis</i>, T <i>angle</i>);
 </h3></div>
 <div class="declaration-content"><dl><p>Constructs a Quaternion from <i>axis</i> + <i>angle</i>.</p>
 
 </dl>
 </div>
-<hr><div class="row-fluid declaration"><h3>pure nothrow ref Quaternion <span class="symbol-target" id="opAssign">&nbsp;</span><a class="symbol-link" href="#opAssign">opAssign</a>(U)(U <i>u</i>) if (is(typeof(U._isQuaternion)) &amp;&amp; is(U._T : T));
+<hr><div class="row-fluid declaration"><h3>pure nothrow Quaternion <span class="symbol-target" id="opAssign">&nbsp;</span><a class="symbol-link" href="#opAssign">opAssign</a>(U)(U <i>u</i>) if (is(typeof(U._isQuaternion)) &amp;&amp; is(U._T : T));
 </h3></div>
 <div class="declaration-content"><dl><p>Assign from another Quaternion.</p>
 
 </dl>
 </div>
-<hr><div class="row-fluid declaration"><h3>pure nothrow ref Quaternion <span class="symbol-target" id="opAssign">&nbsp;</span><a class="symbol-link" href="#opAssign">opAssign</a>(U)(U <i>u</i>) if (is(U : Vector!(T, 4<i>u</i>)));
+<hr><div class="row-fluid declaration"><h3>pure nothrow Quaternion <span class="symbol-target" id="opAssign">&nbsp;</span><a class="symbol-link" href="#opAssign">opAssign</a>(U)(U <i>u</i>) if (is(U : Vector!(T, 4<i>u</i>)));
 </h3></div>
 <div class="declaration-content"><dl><p>Assign from a vector of 4 elements.</p>
 
@@ -342,7 +341,6 @@ check out why we can't do is(Unqual!U == mat3!T)</dd>
 <hr><div class="row-fluid declaration"><h3>pure nothrow Quaternion!T <span class="symbol-target" id="Nlerp">&nbsp;</span><a class="symbol-link" href="#Nlerp">Nlerp</a>(T)(Quaternion!T <i>a</i>, Quaternion!T <i>b</i>, float <i>t</i>);
 </h3></div>
 <div class="declaration-content"><dl><dt>Returns</dt><dd><span class="symbol-target" id="Nlerp">&nbsp;</span><a class="symbol-link" href="#Nlerp">Nlerp</a> of quaternions.
-
 </dd>
 <dt>See Also</dt><dd><a href="http://keithmaggio.wordpress.com/2011/02/15/math-magician-lerp-slerp-and-nlerp/">Math Magician – Lerp</a></dd>
 </dl>
@@ -350,7 +348,6 @@ check out why we can't do is(Unqual!U == mat3!T)</dd>
 <hr><div class="row-fluid declaration"><h3>pure nothrow Quaternion!T <span class="symbol-target" id="slerp">&nbsp;</span><a class="symbol-link" href="#slerp">slerp</a>(T)(Quaternion!T <i>a</i>, Quaternion!T <i>b</i>, T <i>t</i>);
 </h3></div>
 <div class="declaration-content"><dl><dt>Returns</dt><dd>Slerp of quaternions. Slerp is more expensive than Nlerp.
-
 </dd>
 <dt>See Also</dt><dd>"Understanding Slerp, Then Not Using It"</dd>
 </dl>

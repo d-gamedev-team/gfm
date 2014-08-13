@@ -251,24 +251,16 @@
 </p>
 
 <dt>TODO:</dt><dd>
-<ul><br><br>
-
-<li>Support partial updates.</li>
-<br><br>
-
-<li>Support glStorage through pseudo-code given in OpenGL specification.</li>
-<br><br>
-
-</ul></dd>
+<ul>    <li>Support partial updates.</li>
+     <li>Support glStorage through pseudo-code given in OpenGL specification.</li>
+  </ul></dd>
 </dl>
-<div class="offset1 member-list"><hr><div class="row-fluid declaration"><h3>this(OpenGL <i>gl</i>, GLuint <i>target</i>);
+<div class="offset1 member-list"><hr><div class="row-fluid declaration"><h3> this(OpenGL <i>gl</i>, GLuint <i>target</i>);
 </h3></div>
 <div class="declaration-content"><dl><p>Creates a texture. You should create a child class instead of calling
+ this constructor directly.
 </p>
 
-<p>this constructor directly.
-
-</p>
 <dt>Throws</dt><dd><span class="inlinecode">OpenGLException</span> on error.</dd>
 </dl>
 </div>
@@ -298,31 +290,23 @@
 <hr><div class="row-fluid declaration"><h3>final int <span class="symbol-target" id="getParam">&nbsp;</span><a class="symbol-link" href="#getParam">getParam</a>(GLenum <i>paramName</i>);
 </h3></div>
 <div class="declaration-content"><dl><dt>Returns</dt><dd>Requested texture parameter.
-
 </dd>
 <dt>Throws</dt><dd><span class="inlinecode">OpenGLException</span> on error.
-
 </dd>
 <dt>Warning:</dt><dd>
 Calling <span class="inlinecode">glGetTexParameteriv</span> is generally not recommended
-<br><br>
-
-since it could stall the OpenGL pipeline.</dd>
+          since it could stall the OpenGL pipeline.</dd>
 </dl>
 </div>
 <hr><div class="row-fluid declaration"><h3>final int <span class="symbol-target" id="getLevelParam">&nbsp;</span><a class="symbol-link" href="#getLevelParam">getLevelParam</a>(GLenum <i>paramName</i>, int <i>level</i>);
 </h3></div>
 <div class="declaration-content"><dl><dt>Returns</dt><dd>Requested texture <i>level</i> parameter.
-
 </dd>
 <dt>Throws</dt><dd><span class="inlinecode">OpenGLException</span> on error.
-
 </dd>
 <dt>Warning:</dt><dd>
 Calling <span class="inlinecode">glGetTexLevelParameteriv</span> is generally not recommended
-<br><br>
-
-since it could stall the OpenGL pipeline.</dd>
+          since it could stall the OpenGL pipeline.</dd>
 </dl>
 </div>
 <hr><div class="row-fluid declaration"><h3>final void <span class="symbol-target" id="setBaseLevel">&nbsp;</span><a class="symbol-link" href="#setBaseLevel">setBaseLevel</a>(int <i>level</i>);
@@ -408,11 +392,9 @@ since it could stall the OpenGL pipeline.</dd>
 <hr><div class="row-fluid declaration"><h3>final void <span class="symbol-target" id="setMaxAnisotropy">&nbsp;</span><a class="symbol-link" href="#setMaxAnisotropy">setMaxAnisotropy</a>(float <i>f</i>);
 </h3></div>
 <div class="declaration-content"><dl><p>Sets the texture anisotropic filter level.
+ If texture anisotropy isn't supported, fail silently.
 </p>
 
-<p>If texture anisotropy isn't supported, fail silently.
-
-</p>
 <dt>Throws</dt><dd><span class="inlinecode">OpenGLException</span> on error.</dd>
 </dl>
 </div>
@@ -439,12 +421,12 @@ since it could stall the OpenGL pipeline.</dd>
 </div>
 </div>
 </div>
-<hr><div class="row-fluid declaration"><h3>class <span class="symbol-target" id="GLTexture1D">&nbsp;</span><a class="symbol-link" href="#GLTexture1D">GLTexture1D</a>: <u>gfm.opengl.texture.GLTexture</u>;
+<hr><div class="row-fluid declaration"><h3>class <span class="symbol-target" id="GLTexture1D">&nbsp;</span><a class="symbol-link" href="#GLTexture1D">GLTexture1D</a>: gfm.opengl.texture.GLTexture;
 </h3></div>
 <div class="declaration-content"><dl><p>Wrapper for 1D texture.</p>
 
 </dl>
-<div class="offset1 member-list"><hr><div class="row-fluid declaration"><h3>this(OpenGL <i>gl</i>);
+<div class="offset1 member-list"><hr><div class="row-fluid declaration"><h3> this(OpenGL <i>gl</i>);
 </h3></div>
 <div class="declaration-content"><dl><p>Creates a 1D texture.
 </p>
@@ -462,12 +444,12 @@ since it could stall the OpenGL pipeline.</dd>
 </div>
 </div>
 </div>
-<hr><div class="row-fluid declaration"><h3>class <span class="symbol-target" id="GLTexture2D">&nbsp;</span><a class="symbol-link" href="#GLTexture2D">GLTexture2D</a>: <u>gfm.opengl.texture.GLTexture</u>;
+<hr><div class="row-fluid declaration"><h3>class <span class="symbol-target" id="GLTexture2D">&nbsp;</span><a class="symbol-link" href="#GLTexture2D">GLTexture2D</a>: gfm.opengl.texture.GLTexture;
 </h3></div>
 <div class="declaration-content"><dl><p>Wrapper for 2D texture.</p>
 
 </dl>
-<div class="offset1 member-list"><hr><div class="row-fluid declaration"><h3>this(OpenGL <i>gl</i>);
+<div class="offset1 member-list"><hr><div class="row-fluid declaration"><h3> this(OpenGL <i>gl</i>);
 </h3></div>
 <div class="declaration-content"><dl><p>Creates a 2D texture.
 </p>
@@ -485,12 +467,12 @@ since it could stall the OpenGL pipeline.</dd>
 </div>
 </div>
 </div>
-<hr><div class="row-fluid declaration"><h3>class <span class="symbol-target" id="GLTexture3D">&nbsp;</span><a class="symbol-link" href="#GLTexture3D">GLTexture3D</a>: <u>gfm.opengl.texture.GLTexture</u>;
+<hr><div class="row-fluid declaration"><h3>class <span class="symbol-target" id="GLTexture3D">&nbsp;</span><a class="symbol-link" href="#GLTexture3D">GLTexture3D</a>: gfm.opengl.texture.GLTexture;
 </h3></div>
 <div class="declaration-content"><dl><p>Wrapper for 3D texture.</p>
 
 </dl>
-<div class="offset1 member-list"><hr><div class="row-fluid declaration"><h3>this(OpenGL <i>gl</i>);
+<div class="offset1 member-list"><hr><div class="row-fluid declaration"><h3> this(OpenGL <i>gl</i>);
 </h3></div>
 <div class="declaration-content"><dl><p>Creates a 3D texture.
 </p>
@@ -508,12 +490,12 @@ since it could stall the OpenGL pipeline.</dd>
 </div>
 </div>
 </div>
-<hr><div class="row-fluid declaration"><h3>class <span class="symbol-target" id="GLTexture1DArray">&nbsp;</span><a class="symbol-link" href="#GLTexture1DArray">GLTexture1DArray</a>: <u>gfm.opengl.texture.GLTexture</u>;
+<hr><div class="row-fluid declaration"><h3>class <span class="symbol-target" id="GLTexture1DArray">&nbsp;</span><a class="symbol-link" href="#GLTexture1DArray">GLTexture1DArray</a>: gfm.opengl.texture.GLTexture;
 </h3></div>
 <div class="declaration-content"><dl><p>Wrapper for 1D texture array.</p>
 
 </dl>
-<div class="offset1 member-list"><hr><div class="row-fluid declaration"><h3>this(OpenGL <i>gl</i>);
+<div class="offset1 member-list"><hr><div class="row-fluid declaration"><h3> this(OpenGL <i>gl</i>);
 </h3></div>
 <div class="declaration-content"><dl><p>Creates a 1D texture array.
 </p>
@@ -531,12 +513,12 @@ since it could stall the OpenGL pipeline.</dd>
 </div>
 </div>
 </div>
-<hr><div class="row-fluid declaration"><h3>class <span class="symbol-target" id="GLTexture2DArray">&nbsp;</span><a class="symbol-link" href="#GLTexture2DArray">GLTexture2DArray</a>: <u>gfm.opengl.texture.GLTexture</u>;
+<hr><div class="row-fluid declaration"><h3>class <span class="symbol-target" id="GLTexture2DArray">&nbsp;</span><a class="symbol-link" href="#GLTexture2DArray">GLTexture2DArray</a>: gfm.opengl.texture.GLTexture;
 </h3></div>
 <div class="declaration-content"><dl><p>Wrapper for 2D texture array.</p>
 
 </dl>
-<div class="offset1 member-list"><hr><div class="row-fluid declaration"><h3>this(OpenGL <i>gl</i>);
+<div class="offset1 member-list"><hr><div class="row-fluid declaration"><h3> this(OpenGL <i>gl</i>);
 </h3></div>
 <div class="declaration-content"><dl><p>Creates a 2D texture array.
 </p>
@@ -562,17 +544,17 @@ since it could stall the OpenGL pipeline.</dd>
 </div>
 </div>
 </div>
-<hr><div class="row-fluid declaration"><h3>class <span class="symbol-target" id="GLTextureRectangle">&nbsp;</span><a class="symbol-link" href="#GLTextureRectangle">GLTextureRectangle</a>: <u>gfm.opengl.texture.GLTexture</u>;
+<hr><div class="row-fluid declaration"><h3>class <span class="symbol-target" id="GLTextureRectangle">&nbsp;</span><a class="symbol-link" href="#GLTextureRectangle">GLTextureRectangle</a>: gfm.opengl.texture.GLTexture;
 </h3></div>
 <div class="declaration-content"><dl><p>Wrapper for texture rectangle.</p>
 
 </dl>
-<div class="offset1 member-list"><hr><div class="row-fluid declaration"><h3>this(OpenGL <i>gl</i>);
+<div class="offset1 member-list"><hr><div class="row-fluid declaration"><h3> this(OpenGL <i>gl</i>);
 </h3></div>
 <div class="declaration-content"><dl><p>Creates a texture rectangle.
 </p>
 
-<dt>Throws</dt><dd><span class="inlinecode">OpenGLException</span> on error.</dd>
+<dt>Throws</dt><dd><span class="inlinecode">OpenGLException</span> on error.        </dd>
 </dl>
 </div>
 <hr><div class="row-fluid declaration"><h3>void <span class="symbol-target" id="setImage">&nbsp;</span><a class="symbol-link" href="#setImage">setImage</a>(int <i>level</i>, GLint <i>internalFormat</i>, int <i>width</i>, int <i>height</i>, int <i>border</i>, GLenum <i>format</i>, GLenum <i>type</i>, void* <i>data</i>);
@@ -585,12 +567,12 @@ since it could stall the OpenGL pipeline.</dd>
 </div>
 </div>
 </div>
-<hr><div class="row-fluid declaration"><h3>class <span class="symbol-target" id="GLTexture2DMultisample">&nbsp;</span><a class="symbol-link" href="#GLTexture2DMultisample">GLTexture2DMultisample</a>: <u>gfm.opengl.texture.GLTexture</u>;
+<hr><div class="row-fluid declaration"><h3>class <span class="symbol-target" id="GLTexture2DMultisample">&nbsp;</span><a class="symbol-link" href="#GLTexture2DMultisample">GLTexture2DMultisample</a>: gfm.opengl.texture.GLTexture;
 </h3></div>
 <div class="declaration-content"><dl><p>Wrapper for 2D multisampled texture.</p>
 
 </dl>
-<div class="offset1 member-list"><hr><div class="row-fluid declaration"><h3>this(OpenGL <i>gl</i>);
+<div class="offset1 member-list"><hr><div class="row-fluid declaration"><h3> this(OpenGL <i>gl</i>);
 </h3></div>
 <div class="declaration-content"><dl><p>Creates a 2D multisampled texture.
 </p>
@@ -608,12 +590,12 @@ since it could stall the OpenGL pipeline.</dd>
 </div>
 </div>
 </div>
-<hr><div class="row-fluid declaration"><h3>class <span class="symbol-target" id="GLTexture2DMultisampleArray">&nbsp;</span><a class="symbol-link" href="#GLTexture2DMultisampleArray">GLTexture2DMultisampleArray</a>: <u>gfm.opengl.texture.GLTexture</u>;
+<hr><div class="row-fluid declaration"><h3>class <span class="symbol-target" id="GLTexture2DMultisampleArray">&nbsp;</span><a class="symbol-link" href="#GLTexture2DMultisampleArray">GLTexture2DMultisampleArray</a>: gfm.opengl.texture.GLTexture;
 </h3></div>
 <div class="declaration-content"><dl><p>Wrapper for 2D multisampled texture array.</p>
 
 </dl>
-<div class="offset1 member-list"><hr><div class="row-fluid declaration"><h3>this(OpenGL <i>gl</i>);
+<div class="offset1 member-list"><hr><div class="row-fluid declaration"><h3> this(OpenGL <i>gl</i>);
 </h3></div>
 <div class="declaration-content"><dl><p>Creates a 2D multisampled texture array.
 </p>

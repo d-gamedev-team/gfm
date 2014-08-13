@@ -248,7 +248,7 @@
 <div class="declaration-content"><dl><p>N-dimensional half-open interval [a, b[.</p>
 
 </dl>
-<div class="offset1 member-list"><hr><div class="row-fluid declaration"><h3>pure nothrow this(bound_t <i>min_</i>, bound_t <i>max_</i>);
+<div class="offset1 member-list"><hr><div class="row-fluid declaration"><h3>pure nothrow  this(bound_t <i>min_</i>, bound_t <i>max_</i>);
 </h3></div>
 <div class="declaration-content"><dl><p>Construct a box which extends between 2 points.
 </p>
@@ -305,12 +305,44 @@ min is inside the box, max is just outside.</dd>
 <dt>See Also</dt><dd>Numerical Recipes Third Edition (2007)</dd>
 </dl>
 </div>
-<hr><div class="row-fluid declaration"><h3>double <span class="symbol-target" id="distance">&nbsp;</span><a class="symbol-link" href="#distance">distance</a>(bound_t <i>point</i>);
+<hr><div class="row-fluid declaration"><h3>const pure nothrow double <span class="symbol-target" id="distance">&nbsp;</span><a class="symbol-link" href="#distance">distance</a>(bound_t <i>point</i>);
 </h3></div>
 <div class="declaration-content"><dl><p>Euclidean <span class="symbol-target" id="distance">&nbsp;</span><a class="symbol-link" href="#distance">distance</a> from a <i>point</i>.
 </p>
 
 <dt>See Also</dt><dd>squaredDistance.</dd>
+</dl>
+</div>
+<hr><div class="row-fluid declaration"><h3>const pure nothrow double <span class="symbol-target" id="squaredDistance">&nbsp;</span><a class="symbol-link" href="#squaredDistance">squaredDistance</a>(Box <i>o</i>);
+</h3></div>
+<div class="declaration-content"><dl><p>Euclidean squared distance from another box.
+</p>
+
+<dt>See Also</dt><dd>Numerical Recipes Third Edition (2007)</dd>
+</dl>
+</div>
+<hr><div class="row-fluid declaration"><h3>const pure nothrow double <span class="symbol-target" id="distance">&nbsp;</span><a class="symbol-link" href="#distance">distance</a>(Box <i>o</i>);
+</h3></div>
+<div class="declaration-content"><dl><p>Euclidean <span class="symbol-target" id="distance">&nbsp;</span><a class="symbol-link" href="#distance">distance</a> from another box.
+</p>
+
+<dt>See Also</dt><dd>squaredDistance.</dd>
+</dl>
+</div>
+<hr><div class="row-fluid declaration"><h3>const pure nothrow Box <span class="symbol-target" id="intersection">&nbsp;</span><a class="symbol-link" href="#intersection">intersection</a>(Box <i>o</i>);
+</h3></div>
+<div class="declaration-content"><dl><p>Assumes sorted boxes.
+</p>
+
+<dt>Returns</dt><dd>Intersection of two boxes.</dd>
+</dl>
+</div>
+<hr><div class="row-fluid declaration"><h3>bool <span class="symbol-target" id="intersects">&nbsp;</span><a class="symbol-link" href="#intersects">intersects</a>(Box <i>other</i>);
+</h3></div>
+<div class="declaration-content"><dl><p>Assumes sorted boxes.
+</p>
+
+<dt>Returns</dt><dd><span class="d_keyword">true</span> if boxes overlap.</dd>
 </dl>
 </div>
 <hr><div class="row-fluid declaration"><h3>const pure nothrow Box <span class="symbol-target" id="grow">&nbsp;</span><a class="symbol-link" href="#grow">grow</a>(bound_t <i>space</i>);
@@ -321,7 +353,7 @@ min is inside the box, max is just outside.</dd>
 </div>
 <hr><div class="row-fluid declaration"><h3>const pure nothrow Box <span class="symbol-target" id="shrink">&nbsp;</span><a class="symbol-link" href="#shrink">shrink</a>(bound_t <i>space</i>);
 </h3></div>
-<div class="declaration-content"><dl><p>Shrink the area of this Box.</p>
+<div class="declaration-content"><dl><p>Shrink the area of this Box. The box might became unsorted.</p>
 
 </dl>
 </div>
@@ -342,7 +374,7 @@ min is inside the box, max is just outside.</dd>
 <div class="declaration-content"><dl><dt>Returns</dt><dd><span class="d_keyword">true</span> if each dimension of the box is &gt;= 0.</dd>
 </dl>
 </div>
-<hr><div class="row-fluid declaration"><h3>nothrow ref Box <span class="symbol-target" id="opAssign">&nbsp;</span><a class="symbol-link" href="#opAssign">opAssign</a>(U)(U <i>x</i>) if (is(typeof(<i>x</i>.isBox)));
+<hr><div class="row-fluid declaration"><h3>nothrow Box <span class="symbol-target" id="opAssign">&nbsp;</span><a class="symbol-link" href="#opAssign">opAssign</a>(U)(U <i>x</i>) if (is(typeof(<i>x</i>.isBox)));
 </h3></div>
 <div class="declaration-content"><dl><p>Assign with another box.</p>
 

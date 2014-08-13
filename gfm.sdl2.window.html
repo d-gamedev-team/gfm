@@ -246,34 +246,218 @@
 <hr><div class="row-fluid declaration"><h3>class <span class="symbol-target" id="SDL2Window">&nbsp;</span><a class="symbol-link" href="#SDL2Window">SDL2Window</a>;
 </h3></div>
 <div class="declaration-content"><dl><p>SDL Window wrapper.
-</p>
+ There is two ways to receive events, either by polling a SDL2 object, 
+ or by overriding the event callbacks.</p>
 
-<p>There is two ways to receive events, either by polling a SDL2 object,
-<br><br>
-
-or by overriding the event callbacks.</p>
 </dl>
-<div class="offset1 member-list"><hr><div class="row-fluid declaration"><h3>this(SDL2 <i>sdl2</i>, int <i>x</i>, int <i>y</i>, int <i>width</i>, int <i>height</i>, int <i>flags</i>);
+<div class="offset1 member-list"><hr><div class="row-fluid declaration"><h3> this(SDL2 <i>sdl2</i>, int <i>x</i>, int <i>y</i>, int <i>width</i>, int <i>height</i>, int <i>flags</i>);
 </h3></div>
-<div class="declaration-content"><dl><p>Initially invisible.
+<div class="declaration-content"><dl><p>Creates a SDL window which targets a window.
 </p>
 
-<p>Accepts the same constants as the SDL2 function.</p>
+<dt>See Also</dt><dd><a href="http://wiki.libsdl.org/SDL_CreateWindow">http://wiki.libsdl.org/SDL_CreateWindow</a>
+</dd>
+<dt>Throws</dt><dd><span class="inlinecode">SDL2Exception</span> on error.</dd>
 </dl>
 </div>
 <hr><div class="row-fluid declaration"><h3>final void <span class="symbol-target" id="close">&nbsp;</span><a class="symbol-link" href="#close">close</a>();
 </h3></div>
-<div class="declaration-content"><dl><p>Releases the SDL resource.</p>
+<div class="declaration-content"><dl><p>Releases the SDL resource.
+</p>
 
+<dt>See Also</dt><dd><a href="http://wiki.libsdl.org/SDL_DestroyWindow">http://wiki.libsdl.org/SDL_DestroyWindow</a></dd>
+</dl>
+</div>
+<hr><div class="row-fluid declaration"><h3>final void <span class="symbol-target" id="setFullscreen">&nbsp;</span><a class="symbol-link" href="#setFullscreen">setFullscreen</a>(bool <i>fullscreen</i>);
+</h3></div>
+<div class="declaration-content"><dl><dt>See Also</dt><dd><a href="http://wiki.libsdl.org/SDL_SetWindowFullscreen">http://wiki.libsdl.org/SDL_SetWindowFullscreen</a></dd>
+</dl>
+</div>
+<hr><div class="row-fluid declaration"><h3>final void <span class="symbol-target" id="setPosition">&nbsp;</span><a class="symbol-link" href="#setPosition">setPosition</a>(int <i>positionX</i>, int <i>positionY</i>);
+</h3></div>
+<div class="declaration-content"><dl><dt>See Also</dt><dd><a href="http://wiki.libsdl.org/SDL_SetWindowPosition">http://wiki.libsdl.org/SDL_SetWindowPosition</a></dd>
+</dl>
+</div>
+<hr><div class="row-fluid declaration"><h3>final void <span class="symbol-target" id="setSize">&nbsp;</span><a class="symbol-link" href="#setSize">setSize</a>(int <i>width</i>, int <i>height</i>);
+</h3></div>
+<div class="declaration-content"><dl><dt>See Also</dt><dd><a href="http://wiki.libsdl.org/SDL_SetWindowSize">http://wiki.libsdl.org/SDL_SetWindowSize</a></dd>
+</dl>
+</div>
+<hr><div class="row-fluid declaration"><h3>final SDL_Point <span class="symbol-target" id="getSize">&nbsp;</span><a class="symbol-link" href="#getSize">getSize</a>();
+</h3></div>
+<div class="declaration-content"><dl><dt>See Also</dt><dd><a href="http://wiki.libsdl.org/SDL_GetWindowSize">http://wiki.libsdl.org/SDL_GetWindowSize</a>
+</dd>
+<dt>Returns</dt><dd>Window size in pixels.</dd>
+</dl>
+</div>
+<hr><div class="row-fluid declaration"><h3>final int <span class="symbol-target" id="getWidth">&nbsp;</span><a class="symbol-link" href="#getWidth">getWidth</a>();
+</h3></div>
+<div class="declaration-content"><dl><dt>See Also</dt><dd><a href="http://wiki.libsdl.org/SDL_GetWindowSize">http://wiki.libsdl.org/SDL_GetWindowSize</a>
+</dd>
+<dt>Returns</dt><dd>Window width in pixels.</dd>
+</dl>
+</div>
+<hr><div class="row-fluid declaration"><h3>final int <span class="symbol-target" id="getHeight">&nbsp;</span><a class="symbol-link" href="#getHeight">getHeight</a>();
+</h3></div>
+<div class="declaration-content"><dl><dt>See Also</dt><dd><a href="http://wiki.libsdl.org/SDL_GetWindowSize">http://wiki.libsdl.org/SDL_GetWindowSize</a>
+</dd>
+<dt>Returns</dt><dd>Window height in pixels.</dd>
+</dl>
+</div>
+<hr><div class="row-fluid declaration"><h3>final void <span class="symbol-target" id="setTitle">&nbsp;</span><a class="symbol-link" href="#setTitle">setTitle</a>(string <i>title</i>);
+</h3></div>
+<div class="declaration-content"><dl><dt>See Also</dt><dd><a href="http://wiki.libsdl.org/SDL_SetWindowTitle">http://wiki.libsdl.org/SDL_SetWindowTitle</a></dd>
+</dl>
+</div>
+<hr><div class="row-fluid declaration"><h3>final void <span class="symbol-target" id="show">&nbsp;</span><a class="symbol-link" href="#show">show</a>();
+</h3></div>
+<div class="declaration-content"><dl><dt>See Also</dt><dd><a href="http://wiki.libsdl.org/SDL_ShowWindow">http://wiki.libsdl.org/SDL_ShowWindow</a></dd>
+</dl>
+</div>
+<hr><div class="row-fluid declaration"><h3>final void <span class="symbol-target" id="hide">&nbsp;</span><a class="symbol-link" href="#hide">hide</a>();
+</h3></div>
+<div class="declaration-content"><dl><dt>See Also</dt><dd><a href="http://wiki.libsdl.org/SDL_HideWindow">http://wiki.libsdl.org/SDL_HideWindow</a></dd>
+</dl>
+</div>
+<hr><div class="row-fluid declaration"><h3>final void <span class="symbol-target" id="minimize">&nbsp;</span><a class="symbol-link" href="#minimize">minimize</a>();
+</h3></div>
+<div class="declaration-content"><dl><dt>See Also</dt><dd><a href="http://wiki.libsdl.org/SDL_MinimizeWindow">http://wiki.libsdl.org/SDL_MinimizeWindow</a></dd>
+</dl>
+</div>
+<hr><div class="row-fluid declaration"><h3>final void <span class="symbol-target" id="maximize">&nbsp;</span><a class="symbol-link" href="#maximize">maximize</a>();
+</h3></div>
+<div class="declaration-content"><dl><dt>See Also</dt><dd><a href="http://wiki.libsdl.org/SDL_MaximizeWindow">http://wiki.libsdl.org/SDL_MaximizeWindow</a></dd>
+</dl>
+</div>
+<hr><div class="row-fluid declaration"><h3>final SDL2Surface <span class="symbol-target" id="surface">&nbsp;</span><a class="symbol-link" href="#surface">surface</a>();
+</h3></div>
+<div class="declaration-content"><dl><dt>Returns</dt><dd>Window <span class="symbol-target" id="surface">&nbsp;</span><a class="symbol-link" href="#surface">surface</a>.
+</dd>
+<dt>See Also</dt><dd><a href="http://wiki.libsdl.org/SDL_GetWindowSurface">http://wiki.libsdl.org/SDL_GetWindowSurface</a>
+</dd>
+<dt>Throws</dt><dd><span class="inlinecode">SDL2Exception</span> on error.</dd>
+</dl>
+</div>
+<hr><div class="row-fluid declaration"><h3>final void <span class="symbol-target" id="updateSurface">&nbsp;</span><a class="symbol-link" href="#updateSurface">updateSurface</a>();
+</h3></div>
+<div class="declaration-content"><dl><p>Submit changes to the window surface.
+</p>
+
+<dt>See Also</dt><dd><a href="http://wiki.libsdl.org/SDL_UpdateWindowSurface">http://wiki.libsdl.org/SDL_UpdateWindowSurface</a>
+</dd>
+<dt>Throws</dt><dd><span class="inlinecode">SDL2Exception</span> on error.</dd>
+</dl>
+</div>
+<hr><div class="row-fluid declaration"><h3>final int <span class="symbol-target" id="id">&nbsp;</span><a class="symbol-link" href="#id">id</a>();
+</h3></div>
+<div class="declaration-content"><dl><dt>Returns</dt><dd>Window ID.
+</dd>
+<dt>See Also</dt><dd><a href="http://wiki.libsdl.org/SDL_GetWindowID">http://wiki.libsdl.org/SDL_GetWindowID</a></dd>
+</dl>
+</div>
+<hr><div class="row-fluid declaration"><h3>SDL_SysWMinfo <span class="symbol-target" id="getWindowInfo">&nbsp;</span><a class="symbol-link" href="#getWindowInfo">getWindowInfo</a>();
+</h3></div>
+<div class="declaration-content"><dl><dt>Returns</dt><dd>System-specific window information, useful to use a third-party rendering library.
+</dd>
+<dt>See Also</dt><dd><a href="http://wiki.libsdl.org/SDL_GetWindowWMInfo">http://wiki.libsdl.org/SDL_GetWindowWMInfo</a>
+</dd>
+<dt>Throws</dt><dd><span class="inlinecode">SDL2Exception</span> on error.</dd>
+</dl>
+</div>
+<hr><div class="row-fluid declaration"><h3>void <span class="symbol-target" id="onShow">&nbsp;</span><a class="symbol-link" href="#onShow">onShow</a>();
+</h3></div>
+<div class="declaration-content"><br><br>
+</div>
+<hr><div class="row-fluid declaration"><h3>void <span class="symbol-target" id="onHide">&nbsp;</span><a class="symbol-link" href="#onHide">onHide</a>();
+</h3></div>
+<div class="declaration-content"><br><br>
+</div>
+<hr><div class="row-fluid declaration"><h3>void <span class="symbol-target" id="onExposed">&nbsp;</span><a class="symbol-link" href="#onExposed">onExposed</a>();
+</h3></div>
+<div class="declaration-content"><br><br>
+</div>
+<hr><div class="row-fluid declaration"><h3>void <span class="symbol-target" id="onMove">&nbsp;</span><a class="symbol-link" href="#onMove">onMove</a>(int <i>x</i>, int <i>y</i>);
+</h3></div>
+<div class="declaration-content"><br><br>
+</div>
+<hr><div class="row-fluid declaration"><h3>void <span class="symbol-target" id="onResized">&nbsp;</span><a class="symbol-link" href="#onResized">onResized</a>(int <i>width</i>, int <i>height</i>);
+</h3></div>
+<div class="declaration-content"><br><br>
+</div>
+<hr><div class="row-fluid declaration"><h3>void <span class="symbol-target" id="onSizeChanged">&nbsp;</span><a class="symbol-link" href="#onSizeChanged">onSizeChanged</a>();
+</h3></div>
+<div class="declaration-content"><br><br>
+</div>
+<hr><div class="row-fluid declaration"><h3>void <span class="symbol-target" id="onMinimized">&nbsp;</span><a class="symbol-link" href="#onMinimized">onMinimized</a>();
+</h3></div>
+<div class="declaration-content"><br><br>
+</div>
+<hr><div class="row-fluid declaration"><h3>void <span class="symbol-target" id="onMaximized">&nbsp;</span><a class="symbol-link" href="#onMaximized">onMaximized</a>();
+</h3></div>
+<div class="declaration-content"><br><br>
+</div>
+<hr><div class="row-fluid declaration"><h3>void <span class="symbol-target" id="onRestored">&nbsp;</span><a class="symbol-link" href="#onRestored">onRestored</a>();
+</h3></div>
+<div class="declaration-content"><br><br>
+</div>
+<hr><div class="row-fluid declaration"><h3>void <span class="symbol-target" id="onEnter">&nbsp;</span><a class="symbol-link" href="#onEnter">onEnter</a>();
+</h3></div>
+<div class="declaration-content"><br><br>
+</div>
+<hr><div class="row-fluid declaration"><h3>void <span class="symbol-target" id="onLeave">&nbsp;</span><a class="symbol-link" href="#onLeave">onLeave</a>();
+</h3></div>
+<div class="declaration-content"><br><br>
+</div>
+<hr><div class="row-fluid declaration"><h3>void <span class="symbol-target" id="onFocusGained">&nbsp;</span><a class="symbol-link" href="#onFocusGained">onFocusGained</a>();
+</h3></div>
+<div class="declaration-content"><br><br>
+</div>
+<hr><div class="row-fluid declaration"><h3>void <span class="symbol-target" id="onFocusLost">&nbsp;</span><a class="symbol-link" href="#onFocusLost">onFocusLost</a>();
+</h3></div>
+<div class="declaration-content"><br><br>
+</div>
+<hr><div class="row-fluid declaration"><h3>void <span class="symbol-target" id="onClose">&nbsp;</span><a class="symbol-link" href="#onClose">onClose</a>();
+</h3></div>
+<div class="declaration-content"><br><br>
+</div>
+<hr><div class="row-fluid declaration"><h3>void <span class="symbol-target" id="swapBuffers">&nbsp;</span><a class="symbol-link" href="#swapBuffers">swapBuffers</a>();
+</h3></div>
+<div class="declaration-content"><dl><p>Swap OpenGL buffers.
+</p>
+
+<dt>See Also</dt><dd><a href="http://wiki.libsdl.org/SDL_GL_SwapWindow">http://wiki.libsdl.org/SDL_GL_SwapWindow</a>
+</dd>
+<dt>Throws</dt><dd><span class="inlinecode">SDL2Exception</span> on error.</dd>
 </dl>
 </div>
 </div>
 </div>
 <hr><div class="row-fluid declaration"><h3>class <span class="symbol-target" id="SDL2GLContext">&nbsp;</span><a class="symbol-link" href="#SDL2GLContext">SDL2GLContext</a>;
 </h3></div>
-<div class="declaration-content"><dl><p>SDL OpenGL context wrapper.</p>
+<div class="declaration-content"><dl><p>SDL OpenGL context wrapper. You probably don't need to use it directly.</p>
 
 </dl>
+<div class="offset1 member-list"><hr><div class="row-fluid declaration"><h3> this(SDL2Window <i>window</i>);
+</h3></div>
+<div class="declaration-content"><dl><p>Creates for a given SDL <i>window</i>. </p>
+
+</dl>
+</div>
+<hr><div class="row-fluid declaration"><h3>void <span class="symbol-target" id="close">&nbsp;</span><a class="symbol-link" href="#close">close</a>();
+</h3></div>
+<div class="declaration-content"><dl><p>Release the associated SDL ressource.</p>
+
+</dl>
+</div>
+<hr><div class="row-fluid declaration"><h3>void <span class="symbol-target" id="makeCurrent">&nbsp;</span><a class="symbol-link" href="#makeCurrent">makeCurrent</a>();
+</h3></div>
+<div class="declaration-content"><dl><p>Makes this OpenGL context current.
+</p>
+
+<dt>Throws</dt><dd><span class="inlinecode">SDL2Exception</span> on error.</dd>
+</dl>
+</div>
+</div>
 </div>
 
 

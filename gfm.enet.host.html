@@ -245,7 +245,7 @@
 <dl><p>Provides the Host, Server, and Client classes.</p>
 
 </dl>
-<hr><div class="row-fluid declaration"><h3>class <span class="symbol-target" id="Client">&nbsp;</span><a class="symbol-link" href="#Client">Client</a>: <u>gfm.enet.host.Host</u>;
+<hr><div class="row-fluid declaration"><h3>class <span class="symbol-target" id="Client">&nbsp;</span><a class="symbol-link" href="#Client">Client</a>: gfm.enet.host.Host;
 </h3></div>
 <div class="declaration-content"><dl><p>A subclass of Host that exists to concisely create a client-oriented Host
 </p>
@@ -256,7 +256,7 @@
 </p>
 <dt>See Also</dt><dd>Host, <span class="symbol-target" id="Client">&nbsp;</span><a class="symbol-link" href="#Client">Client</a></dd>
 </dl>
-<div class="offset1 member-list"><hr><div class="row-fluid declaration"><h3>this(ENet <i>enet</i>, size_t <i>peerCount</i>, size_t <i>channelLimit</i>, uint <i>incomingBandwidth</i> = 0, uint <i>outgoingBandwidth</i> = 0);
+<div class="offset1 member-list"><hr><div class="row-fluid declaration"><h3> this(ENet <i>enet</i>, size_t <i>peerCount</i>, size_t <i>channelLimit</i>, uint <i>incomingBandwidth</i> = 0, uint <i>outgoingBandwidth</i> = 0);
 </h3></div>
 <div class="declaration-content"><dl><p>Creates a new Client, a subclass of Host
 </p>
@@ -283,7 +283,7 @@
 <dt>Throws</dt><dd>ENetException if enet_create_host fails</dd>
 </dl>
 </div>
-<hr><div class="row-fluid declaration"><h3>this(ENet <i>enet</i>, size_t <i>channelLimit</i>, uint[2] <i>bandwidthLimits</i> = [0, 0]);
+<hr><div class="row-fluid declaration"><h3> this(ENet <i>enet</i>, size_t <i>channelLimit</i>, uint[2] <i>bandwidthLimits</i> = [0, 0]);
 </h3></div>
 <div class="declaration-content"><dl><p>Creates a new Client, a subclass of Host
 </p>
@@ -308,7 +308,7 @@
 </div>
 </div>
 </div>
-<hr><div class="row-fluid declaration"><h3>class <span class="symbol-target" id="Server">&nbsp;</span><a class="symbol-link" href="#Server">Server</a>: <u>gfm.enet.host.Host</u>;
+<hr><div class="row-fluid declaration"><h3>class <span class="symbol-target" id="Server">&nbsp;</span><a class="symbol-link" href="#Server">Server</a>: gfm.enet.host.Host;
 </h3></div>
 <div class="declaration-content"><dl><p>A subclass of Host that exists to concisely create a server-oriented Host
 </p>
@@ -319,7 +319,7 @@
 </p>
 <dt>See Also</dt><dd>Host, Client</dd>
 </dl>
-<div class="offset1 member-list"><hr><div class="row-fluid declaration"><h3>this(ENet <i>enet</i>, ushort <i>port</i>, size_t <i>peerCount</i>, size_t <i>channelLimit</i> = 0, uint <i>incomingBandwidth</i> = 0, uint <i>outgoingBandwidth</i> = 0);
+<div class="offset1 member-list"><hr><div class="row-fluid declaration"><h3> this(ENet <i>enet</i>, ushort <i>port</i>, size_t <i>peerCount</i>, size_t <i>channelLimit</i> = 0, uint <i>incomingBandwidth</i> = 0, uint <i>outgoingBandwidth</i> = 0);
 </h3></div>
 <div class="declaration-content"><dl><p>Creates a new Server, which is a type of Host.
 </p>
@@ -359,7 +359,7 @@
 
 <dt>See Also</dt><dd>Client, Server</dd>
 </dl>
-<div class="offset1 member-list"><hr><div class="row-fluid declaration"><h3>this(ENet <i>enet</i>, Address* <i>address</i>, size_t <i>peerCount</i>, size_t <i>channelLimit</i>, uint <i>incomingBandwidth</i> = 0, uint <i>outgoingBandwidth</i> = 0);
+<div class="offset1 member-list"><hr><div class="row-fluid declaration"><h3> this(ENet <i>enet</i>, Address* <i>address</i>, size_t <i>peerCount</i>, size_t <i>channelLimit</i>, uint <i>incomingBandwidth</i> = 0, uint <i>outgoingBandwidth</i> = 0);
 </h3></div>
 <div class="declaration-content"><dl><p>Creates a new Host
 </p>
@@ -456,9 +456,8 @@
 <hr><div class="row-fluid declaration"><h3>void <span class="symbol-target" id="compressWithRangeCoder">&nbsp;</span><a class="symbol-link" href="#compressWithRangeCoder">compressWithRangeCoder</a>();
 </h3></div>
 <div class="declaration-content"><dl><p>Sets the packet compressor the host should use to the default range
-</p>
+ coder</p>
 
-<p>coder</p>
 </dl>
 </div>
 <hr><div class="row-fluid declaration"><h3>void <span class="symbol-target" id="disableRangeCoder">&nbsp;</span><a class="symbol-link" href="#disableRangeCoder">disableRangeCoder</a>();

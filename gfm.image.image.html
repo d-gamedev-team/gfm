@@ -254,7 +254,7 @@
 </p>
 
 <p>An image has the following features:
- <ul> <li>defines element_t as the type of elements (eg. pixels).</li>
+ <ul><li>defines element_t as the type of elements (eg. pixels).</li>
  <li>has a dimension of type vec2i.</li>
  <li>has getter/setter for individual elements.</li>
  </ul></p>
@@ -301,10 +301,8 @@
 </div>
 <hr><div class="row-fluid declaration"><h3>I.element_t <span class="symbol-target" id="getPixel">&nbsp;</span><a class="symbol-link" href="#getPixel">getPixel</a>(I)(I <i>img</i>, int <i>x</i>, int <i>y</i>, EdgeMode <i>em</i>);
 </h3></div>
-<div class="declaration-content"><dl><dt>Returns</dt><dd>pixel of an Image at position (x, y).
-<br><br>
-
-At boundaries, what happens depends on em.</dd>
+<div class="declaration-content"><dl><dt>Returns</dt><dd>pixel of an Image at position (x, y). 
+ At boundaries, what happens depends on em.</dd>
 </dl>
 </div>
 <hr><div class="row-fluid declaration"><h3>void <span class="symbol-target" id="drawRect">&nbsp;</span><a class="symbol-link" href="#drawRect">drawRect</a>(I, P)(I <i>img</i>, int <i>x</i>, int <i>y</i>, int <i>width</i>, int <i>height</i>, P <i>e</i>) if (isImage!I &amp;&amp; is(P : I.element_t));

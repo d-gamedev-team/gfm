@@ -309,9 +309,8 @@
 <hr><div class="row-fluid declaration"><h3>pure nothrow T <span class="symbol-target" id="step">&nbsp;</span><a class="symbol-link" href="#step">step</a>(T)(T <i>edge</i>, T <i>x</i>);
 </h3></div>
 <div class="declaration-content"><dl><p>Same as GLSL <span class="symbol-target" id="step">&nbsp;</span><a class="symbol-link" href="#step">step</a> function.
-</p>
+ 0.0 is returned if x &lt; edge, and 1.0 is returned otherwise.</p>
 
-<p>0.0 is returned if x &lt; edge, and 1.0 is returned otherwise.</p>
 </dl>
 </div>
 <hr><div class="row-fluid declaration"><h3>pure nothrow T <span class="symbol-target" id="smoothStep">&nbsp;</span><a class="symbol-link" href="#smoothStep">smoothStep</a>(T)(T <i>a</i>, T <i>b</i>, T <i>t</i>);
@@ -365,9 +364,8 @@ use bt intrinsics</dd>
 <hr><div class="row-fluid declaration"><h3>pure nothrow T <span class="symbol-target" id="moduloWrap">&nbsp;</span><a class="symbol-link" href="#moduloWrap">moduloWrap</a>(T)(T <i>a</i>, T <i>b</i>) if (isSigned!T);
 </h3></div>
 <div class="declaration-content"><dl><p>Signed integer modulo a/b where the remainder is guaranteed to be in [0..b[,
-</p>
+ even if a is negative. Only support positive dividers.</p>
 
-<p>even if a is negative. Only support positive dividers.</p>
 </dl>
 </div>
 <hr><div class="row-fluid declaration"><h3>pure nothrow size_t <span class="symbol-target" id="solveLinear">&nbsp;</span><a class="symbol-link" href="#solveLinear">solveLinear</a>(T)(T <i>a</i>, T <i>b</i>, out T <i>root</i>) if (isFloatingPoint!T);

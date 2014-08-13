@@ -280,31 +280,31 @@ add literals.</dd>
 <div class="declaration-content"><dl><p>Recursive 2^n integer implementation.</p>
 
 </dl>
-<div class="offset1 member-list"><hr><div class="row-fluid declaration"><h3>pure nothrow this(T)(T <i>x</i>);
+<div class="offset1 member-list"><hr><div class="row-fluid declaration"><h3>pure nothrow  this(T)(T <i>x</i>);
 </h3></div>
 <div class="declaration-content"><dl><p>Construct from a value.</p>
 
 </dl>
 </div>
-<hr><div class="row-fluid declaration"><h3>pure nothrow ref self <span class="symbol-target" id="opAssign">&nbsp;</span><a class="symbol-link" href="#opAssign">opAssign</a>(T)(T <i>n</i>) if (isIntegral!T &amp;&amp; isUnsigned!T);
+<hr><div class="row-fluid declaration"><h3>pure nothrow self <span class="symbol-target" id="opAssign">&nbsp;</span><a class="symbol-link" href="#opAssign">opAssign</a>(T)(T <i>n</i>) if (isIntegral!T &amp;&amp; isUnsigned!T);
 </h3></div>
 <div class="declaration-content"><dl><p>Assign with a smaller unsigned type.</p>
 
 </dl>
 </div>
-<hr><div class="row-fluid declaration"><h3>pure nothrow ref self <span class="symbol-target" id="opAssign">&nbsp;</span><a class="symbol-link" href="#opAssign">opAssign</a>(T)(T <i>n</i>) if (isIntegral!T &amp;&amp; isSigned!T);
+<hr><div class="row-fluid declaration"><h3>pure nothrow self <span class="symbol-target" id="opAssign">&nbsp;</span><a class="symbol-link" href="#opAssign">opAssign</a>(T)(T <i>n</i>) if (isIntegral!T &amp;&amp; isSigned!T);
 </h3></div>
 <div class="declaration-content"><dl><p>Assign with a smaller signed type (sign is extended).</p>
 
 </dl>
 </div>
-<hr><div class="row-fluid declaration"><h3>pure nothrow ref self <span class="symbol-target" id="opAssign">&nbsp;</span><a class="symbol-link" href="#opAssign">opAssign</a>(T)(T <i>n</i>) if (is(typeof(T._isWideIntImpl)) &amp;&amp; T._bits == bits);
+<hr><div class="row-fluid declaration"><h3>pure nothrow self <span class="symbol-target" id="opAssign">&nbsp;</span><a class="symbol-link" href="#opAssign">opAssign</a>(T)(T <i>n</i>) if (is(typeof(T._isWideIntImpl)) &amp;&amp; T._bits == bits);
 </h3></div>
 <div class="declaration-content"><dl><p>Assign with a wide integer of the same size (sign is lost).</p>
 
 </dl>
 </div>
-<hr><div class="row-fluid declaration"><h3>pure nothrow ref self <span class="symbol-target" id="opAssign">&nbsp;</span><a class="symbol-link" href="#opAssign">opAssign</a>(T)(T <i>n</i>) if (is(typeof(T._isWideIntImpl)) &amp;&amp; T._bits &lt; bits);
+<hr><div class="row-fluid declaration"><h3>pure nothrow self <span class="symbol-target" id="opAssign">&nbsp;</span><a class="symbol-link" href="#opAssign">opAssign</a>(T)(T <i>n</i>) if (is(typeof(T._isWideIntImpl)) &amp;&amp; T._bits &lt; bits);
 </h3></div>
 <div class="declaration-content"><dl><p>Assign with a smaller wide integer (sign is extended accordingly).</p>
 
