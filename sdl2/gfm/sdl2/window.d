@@ -202,6 +202,7 @@ class SDL2Window
         SDL_SysWMinfo getWindowInfo()
         {
             SDL_SysWMinfo info;
+            SDL_VERSION(&info.version_);
             int res = SDL_GetWindowWMInfo(_window, &info);
             if (res != SDL_TRUE)
                 _sdl2.throwSDL2Exception("SDL_GetWindowWMInfo");
