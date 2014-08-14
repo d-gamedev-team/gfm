@@ -5,7 +5,7 @@ module gfm.sdl2;
 public
 {
     import derelict.sdl2.sdl,
-           derelict.sdl2.image;
+           derelict.sdl2.image,
            derelict.sdl2.ttf;
 
     import gfm.sdl2.sdl,
