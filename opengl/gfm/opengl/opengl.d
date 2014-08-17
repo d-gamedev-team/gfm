@@ -435,7 +435,6 @@ final class OpenGL
 extern(System) private
 {
     // This callback can be called from multiple threads
-    // TODO synchronization for Log objects
     nothrow void loggingCallbackOpenGL(GLenum source, GLenum type, GLuint id, GLenum severity, GLsizei length, const(GLchar)* message, GLvoid* userParam)
     {
         try
