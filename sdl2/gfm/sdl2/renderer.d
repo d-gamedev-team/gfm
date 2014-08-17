@@ -20,7 +20,7 @@ final class SDL2Renderer
         /// Creates a SDL renderer which targets a window.
         /// See_also: $(LINK http://wiki.libsdl.org/SDL_CreateRenderer)
         /// Throws: $(D SDL2Exception) on error.
-        this(SDL2Window window, int flags)
+        this(SDL2Window window, int flags = 0)
         {
             _sdl2 = window._sdl2;
             _renderer = SDL_CreateRenderer(window._window, -1, flags);
