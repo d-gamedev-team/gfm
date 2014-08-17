@@ -188,9 +188,19 @@ final class SDL2Renderer
         /// Throws: $(D SDL2Exception) on error.
         void copy(SDL2Texture texture, SDL_Rect srcRect, SDL_Rect dstRect)
         {
-            auto f = texture.format();
             if (0 != SDL_RenderCopy(_renderer, texture._handle, &srcRect, &dstRect))
                 _sdl2.throwSDL2Exception("SDL_RenderCopy");
+        }
+
+        /// Draws a whole texture.
+        /// See_also: $(LINK http://wiki.libsdl.org/SDL_RenderCopy)
+        /// Throws: $(D SDL2Exception) on error.
+        void copy(SDL2Texture texture, int x, int y)
+        {
+            int w = texture.width();
+            int h = texture.height();
+            SDL_Rect rect = SDL_Rect(0, 0, w, h);
+            copy(texture, rect, rect);
         }
     }
 
