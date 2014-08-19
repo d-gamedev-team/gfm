@@ -198,6 +198,14 @@ final class SDLFont
             return SDL_Point(w, h);
         }
 
+        /// Create a 32-bit ARGB surface and render the given character at high quality, 
+        /// using alpha blending to dither the font with the given color.
+        /// Throws: $(D SDL2Exception) on error.
+        SDL2Surface renderGlyphBlended(dchar ch, SDL_Color color)
+        {
+            return checkedSurface(TTF_RenderGlyph_Blended(_font, cast(ushort)ch, color));
+        }
+
         /// Create a 32-bit ARGB surface and render the given text at high quality, 
         /// using alpha blending to dither the font with the given color.
         /// Throws: $(D SDL2Exception) on error.
