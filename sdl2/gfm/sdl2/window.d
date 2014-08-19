@@ -83,9 +83,41 @@ class SDL2Window
         }
 
         /// See_also: $(LINK http://wiki.libsdl.org/SDL_SetWindowFullscreen)
-        final void setFullscreen(bool fullscreen)
+        /// Throws: $(D SDL2Exception) on error.
+        deprecated("Use setFullscreenSetting instead") final void setFullscreen(bool fullscreen)
         {
             SDL_SetWindowFullscreen(_window, fullscreen ? SDL_WINDOW_FULLSCREEN : 0);
+        }
+
+        /// See_also: $(LINK http://wiki.libsdl.org/SDL_SetWindowFullscreen)
+        /// Throws: $(D SDL2Exception) on error.
+        final void setFullscreenSetting(uint flags)
+        {
+            if (SDL_SetWindowFullscreen(_window, flags) != 0)
+                _sdl2.throwSDL2Exception("SDL_SetWindowFullscreen");
+        }
+
+        /// Returns: X window coordinate.
+        /// See_also: $(LINK http://wiki.libsdl.org/SDL_GetWindowPosition)
+        final int getX()
+        {
+            return getPosition().x;
+        }
+
+        /// Returns: Y window coordinate.
+        /// See_also: $(LINK http://wiki.libsdl.org/SDL_GetWindowPosition)
+        final int getY()
+        {
+            return getPosition().y;
+        }
+
+        /// Returns: Window coordinates.
+        /// See_also: $(LINK http://wiki.libsdl.org/SDL_GetWindowPosition)
+        final SDL_Point getPosition()
+        {
+            int x, y;
+            SDL_GetWindowPosition(_window, &x, &y);
+            return SDL_Point(x, y);
         }
 
         /// See_also: $(LINK http://wiki.libsdl.org/SDL_SetWindowPosition)
