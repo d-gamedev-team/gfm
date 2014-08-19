@@ -199,8 +199,9 @@ final class SDL2Renderer
         {
             int w = texture.width();
             int h = texture.height();
-            SDL_Rect rect = SDL_Rect(0, 0, w, h);
-            copy(texture, rect, rect);
+            SDL_Rect source = SDL_Rect(0, 0, w, h);
+            SDL_Rect dest = SDL_Rect(x, y, w, h);
+            copy(texture, source, dest);
         }
     }
 
