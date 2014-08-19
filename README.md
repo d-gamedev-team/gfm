@@ -17,7 +17,7 @@ Add the sub-package you are interested in in your `dub.json`:
 ```d
    {
       "dependencies": {
-        "gfm:math": "==1.1.6"
+        "gfm:math": "==1.1.8"
       }
    }
 ```
