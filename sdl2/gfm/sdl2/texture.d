@@ -59,17 +59,17 @@ final class SDL2Texture
 
         /// See_also: $(LINK http://wiki.libsdl.org/SDL_SetTextureColorMod)
         /// Throws: $(D SDL2Exception) on error.
-        void setColorMod(ubyte r, ubyte g, ubyte b)
+        void setColorMod(int r, int g, int b)
         {
-            if (SDL_SetTextureColorMod(_handle, r, g, b) != 0)
+            if (SDL_SetTextureColorMod(_handle, cast(ubyte)r, cast(ubyte)g, cast(ubyte)b) != 0)
                 _sdl2.throwSDL2Exception("SDL_SetTextureColorMod");
         }
 
         /// See_also: $(LINK http://wiki.libsdl.org/SDL_SetTextureAlphaMod)
         /// Throws: $(D SDL2Exception) on error.
-        void setAlphaMod(ubyte a)
+        void setAlphaMod(int a)
         {
-            if (SDL_SetTextureAlphaMod(_handle, a) != 0)
+            if (SDL_SetTextureAlphaMod(_handle, cast(ubyte)a) != 0)
                 _sdl2.throwSDL2Exception("SDL_SetTextureAlphaMod");
         }
 
