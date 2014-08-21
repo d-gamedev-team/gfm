@@ -558,7 +558,7 @@ Vector!(T, N) min(T, size_t N)(const Vector!(T, N) a, const Vector!(T, N) b) pur
 {
     Vector!(T, N) res = void;
     for(size_t i = 0; i < N; ++i)
-        res[i] = min(a[i], b[i]);
+        res[i] = min(a.v[i], b.v[i]);
     return res;
 }
 
@@ -567,7 +567,7 @@ Vector!(T, N) max(T, size_t N)(const Vector!(T, N) a, const Vector!(T, N) b) pur
 {
     Vector!(T, N) res = void;
     for(size_t i = 0; i < N; ++i)
-        res[i] = max(a[i], b[i]);
+        res[i] = max(a.v[i], b.v[i]);
     return res;
 }
 
@@ -576,9 +576,7 @@ T dot(T, size_t N)(const Vector!(T, N) a, const Vector!(T, N) b) pure nothrow
 {
     T sum = 0;
     for(size_t i = 0; i < N; ++i)
-    {
-        sum += a[i] * b[i];
-    }
+        sum += a.v[i] * b.v[i];
     return sum;
 }
 
