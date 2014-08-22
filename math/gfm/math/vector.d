@@ -556,6 +556,7 @@ mixin(definePostfixAliases("vec4"));
 /// Element-wise minimum.
 Vector!(T, N) min(T, size_t N)(const Vector!(T, N) a, const Vector!(T, N) b) pure nothrow
 {
+    import std.algorithm: min;
     Vector!(T, N) res = void;
     for(size_t i = 0; i < N; ++i)
         res[i] = min(a.v[i], b.v[i]);
@@ -565,6 +566,7 @@ Vector!(T, N) min(T, size_t N)(const Vector!(T, N) a, const Vector!(T, N) b) pur
 /// Element-wise maximum.
 Vector!(T, N) max(T, size_t N)(const Vector!(T, N) a, const Vector!(T, N) b) pure nothrow
 {
+    import std.algorithm: max;
     Vector!(T, N) res = void;
     for(size_t i = 0; i < N; ++i)
         res[i] = max(a.v[i], b.v[i]);

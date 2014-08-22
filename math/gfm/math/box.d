@@ -227,6 +227,13 @@ align(1) struct Box(T, size_t N)
             return shrink(bound_t(space));
         }
 
+        /// Expand the box to include point.
+        Box expand(bound_t point) pure const nothrow
+        {
+          import vector = gfm.math.vector;
+          return Box(vector.min(min, point), vector.max(max, point));
+        }
+
         /// Returns: true if each dimension of the box is >= 0.
         bool isSorted() pure const nothrow
         {
@@ -307,4 +314,6 @@ unittest
     assert(c.contains(vec2i(0, 0)));
     assert(!c.contains(vec2i(1, 1)));
     assert(b.contains(b));
+    box2i d = c.expand(vec2i(3, 3));
+    assert(d.contains(vec2i(2, 2)));
 }
