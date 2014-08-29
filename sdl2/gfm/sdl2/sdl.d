@@ -76,7 +76,6 @@ final class SDL2
             subSystemInit(SDL_INIT_AUDIO);
             subSystemInit(SDL_INIT_HAPTIC);
 
-            _logger.infof("Available drivers: %s", join(getVideoDrivers(), ", "));
             _logger.infof("Running using video driver: %s", sanitizeUTF8(SDL_GetCurrentVideoDriver(), _logger, "SDL_GetCurrentVideoDriver"));
 
             int numDisplays = SDL_GetNumVideoDisplays();
