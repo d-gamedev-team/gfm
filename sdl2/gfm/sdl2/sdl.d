@@ -68,7 +68,7 @@ final class SDL2
             if (0 != SDL_Init(0))
                 throwSDL2Exception("SDL_Init");
 
-            _logger.infof("Platform: %s, %s CPU, L1 cacheline size: %sb", getPlatform(), getCPUCount(), getL1LineSize());
+            _logger.infof("Platform: %s, %s CPU", getPlatform(), getCPUCount());
             
             subSystemInit(SDL_INIT_TIMER);
             subSystemInit(SDL_INIT_VIDEO);
