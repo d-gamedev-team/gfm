@@ -101,11 +101,8 @@ final class OpenGL
             getLimits(true);
             _textureUnits = new TextureUnits(this);
 
-            debug
-            {
-                // now that the context exists, pipe OpenGL output
-                pipeOpenGLDebugOutput();
-            }
+            // now that the context exists, pipe OpenGL output
+            pipeOpenGLDebugOutput();
         }
 
         /// Releases the OpenGL dynamic library.
