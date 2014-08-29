@@ -413,17 +413,16 @@ final class OpenGL
             }
         }
 
+        // Redirect OpenGL debug output to the provided Logger.
+        // You still has to use glDebugMessageControl to set which messages are emitted.
+        // For example, to enable all messages, use:
+        // glDebugMessageControl(GL_DONT_CARE, GL_DONT_CARE, GL_DONT_CARE, 0, null, GL_TRUE);
         void pipeOpenGLDebugOutput()
         {
             if (KHR_debug())
             {
                 glDebugMessageCallback(&loggingCallbackOpenGL, cast(void*)this);
-
-                // enable all messages
-                glDebugMessageControl(GL_DONT_CARE, GL_DONT_CARE, GL_DONT_CARE, 0, null, GL_TRUE);
-
                 glEnable(GL_DEBUG_OUTPUT);
-                //glEnable(GL_DEBUG_OUTPUT_SYNCHRONOUS);
             }
         }
     }
