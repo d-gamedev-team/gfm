@@ -96,8 +96,6 @@ final class OpenGL
             _extensions = std.array.split(getExtensionsString());
 
             _logger.infof("    Extensions: %s found", _extensions.length);
-            _logger.infof("    - EXT_texture_filter_anisotropic is%s supported", EXT_texture_filter_anisotropic() ? "": " not");
-            _logger.infof("    - EXT_framebuffer_object is%s supported", EXT_framebuffer_object() ? "": " not");
             getLimits(true);
             _textureUnits = new TextureUnits(this);
 
@@ -161,6 +159,7 @@ final class OpenGL
         string getString(GLenum name)
         {
             const(char)* sZ = glGetString(name);
+            runtimeCheck();
             if (sZ is null)
                 return "(unknown)";
             else
