@@ -289,6 +289,41 @@ final class SDL2
                 res = 1;
             return res;
         }
+
+        /// Returns whether specific mouse button
+        /// which defined by mask is pressed
+        /// Example:
+        /// --------------------
+        /// // Check if the left mouse button is pressed
+        /// if(_sdl2.isMouseButtonPressed(SDL_BUTTON_LMASK))
+        ///     ...
+        /// --------------------
+        bool isMouseButtonPressed(int mask) pure const nothrow
+        {
+            return (_mouseButtonState & mask) != 0;
+        }
+
+        /// Returns X coordinate of mouse pointer
+        int mouseX() pure const nothrow { return _mouseX; };
+        /// Returns Y coordinate of mouse pointer
+        int mouseY() pure const nothrow { return _mouseY; };
+        
+        /// Returns how much was scrolled by X coordinate from
+        /// the last call
+        int mouseWheelX() nothrow
+        {
+            auto value = _mouseWheelX;
+            _mouseWheelX = 0;
+            return value;
+        };
+        /// Returns how much was scrolled by Y coordinate from
+        /// the last call
+        int mouseWheelY() nothrow
+        {
+            auto value = _mouseWheelY;
+            _mouseWheelY = 0;
+            return value;
+        };
     }
 
     package
@@ -340,6 +375,13 @@ final class SDL2
 
         // hold keyboard state
         SDL2Keyboard _keyboard;
+
+		// the last state of mouse button
+        int _mouseButtonState;
+        // the last mouse coordinates
+        int _mouseX, _mouseY;
+        // mouse wheel scrolled amounts
+        int _mouseWheelX, _mouseWheelY;
 
         bool subSystemInitialized(int subSystem)
         {
@@ -442,6 +484,19 @@ final class SDL2
                     updateKeyboard(&event.key);
                     break;
 
+                case SDL_MOUSEMOTION:
+                    updateMouseMotion(&event.motion);
+                break;
+                
+                case SDL_MOUSEBUTTONUP:
+                case SDL_MOUSEBUTTONDOWN:
+                    updateMouseButton(&event.button);
+                break;
+
+                case SDL_MOUSEWHEEL:
+                    updateMouseWheel(&event.wheel);
+                break;
+
                 default:
                     break;
             }
@@ -469,6 +524,39 @@ final class SDL2
                 default:
                     break;
             }
+        }
+
+        void updateMouseMotion(const(SDL_MouseMotionEvent*) event)
+        {
+            // get mouse buttons state but ignore mouse coordinates
+            _mouseButtonState = SDL_GetMouseState(null, null);
+            // because get them from event data
+            _mouseX = event.x;
+            _mouseY = event.y;
+
+            // TODO call onMouseMove handler
+        }
+
+        void updateMouseButton(const(SDL_MouseButtonEvent*) event)
+        {
+            // get mouse buttons state but ignore mouse coordinates
+            _mouseButtonState = SDL_GetMouseState(null, null);
+            // because get them from event data
+            _mouseX = event.x;
+            _mouseY = event.y;
+
+            // TODO call onMouseButtonPressed or onMouseButtonReleased handlers
+        }
+
+        void updateMouseWheel(const(SDL_MouseWheelEvent*) event)
+        {        
+            // get mouse buttons state but ignore mouse coordinates
+            _mouseButtonState = SDL_GetMouseState(&_mouseX, &_mouseY);
+            // because get them from event data
+            _mouseWheelX += event.x;
+            _mouseWheelY += event.y;
+
+            // TODO call onMouseWheelUp or onMouseWheelDown handlers
         }
 
         // call callbacks that can be overriden by subclassing SDL2Window
