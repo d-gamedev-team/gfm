@@ -91,6 +91,7 @@
     <li class="sidebar-list-entry tree-leaf"><a href="gfm.sdl2.sdlttf.html" title="gfm.sdl2.sdlttf"><i class="icon-th"></i>gfm.sdl2.sdlttf</a></li>
     <li class="sidebar-list-entry tree-leaf"><a href="gfm.sdl2.keyboard.html" title="gfm.sdl2.keyboard"><i class="icon-th"></i>gfm.sdl2.keyboard</a></li>
     <li class="sidebar-list-entry tree-leaf"><a href="gfm.sdl2.framecounter.html" title="gfm.sdl2.framecounter"><i class="icon-th"></i>gfm.sdl2.framecounter</a></li>    
+    <li class="sidebar-list-entry tree-leaf"><a href="gfm.sdl2.mouse.html" title="gfm.sdl2.mouse"><i class="icon-th"></i>gfm.sdl2.mouse</a></li>
     
     <li class="sidebar-list-entry tree-leaf"><a href="gfm.opengl.opengl.html" title="gfm.opengl.opengl"><i class="icon-th"></i>gfm.opengl.opengl</a></li>
     <li class="sidebar-list-entry tree-leaf"><a href="gfm.opengl.matrixstack.html" title="gfm.opengl.matrixstack"><i class="icon-th"></i>gfm.opengl.matrixstack</a></li>
@@ -190,6 +191,7 @@
     <li class="sidebar-list-entry tree-leaf"><a href="gfm.sdl2.sdlttf.html" title="gfm.sdl2.sdlttf"><i class="icon-th"></i>gfm.sdl2.sdlttf</a></li>
     <li class="sidebar-list-entry tree-leaf"><a href="gfm.sdl2.keyboard.html" title="gfm.sdl2.keyboard"><i class="icon-th"></i>gfm.sdl2.keyboard</a></li>
     <li class="sidebar-list-entry tree-leaf"><a href="gfm.sdl2.framecounter.html" title="gfm.sdl2.framecounter"><i class="icon-th"></i>gfm.sdl2.framecounter</a></li>    
+    <li class="sidebar-list-entry tree-leaf"><a href="gfm.sdl2.mouse.html" title="gfm.sdl2.mouse"><i class="icon-th"></i>gfm.sdl2.mouse</a></li>
     
     <li class="sidebar-list-entry tree-leaf"><a href="gfm.opengl.opengl.html" title="gfm.opengl.opengl"><i class="icon-th"></i>gfm.opengl.opengl</a></li>
     <li class="sidebar-list-entry tree-leaf"><a href="gfm.opengl.matrixstack.html" title="gfm.opengl.matrixstack"><i class="icon-th"></i>gfm.opengl.matrixstack</a></li>
@@ -266,12 +268,14 @@
 </div>
 
 </div>
-<hr><div class="row-fluid declaration"><h3> this(OpenGL <i>gl</i>, Usage <i>usage</i> = Usage.DRAW);
+<hr><div class="row-fluid declaration"><h3>this(OpenGL <i>gl</i>, Usage <i>usage</i> = Usage.DRAW);
 </h3></div>
 <div class="declaration-content"><dl><p>Creates one FBO, with specified <i>usage</i>. OpenGL must have been loaded.
- <span class="inlinecode">EXT_framebuffer_object</span> is used as a fallback if <span class="inlinecode">ARB_framebuffer_object</span> is missing.
 </p>
 
+<p><span class="inlinecode">EXT_framebuffer_object</span> is used as a fallback if <span class="inlinecode">ARB_framebuffer_object</span> is missing.
+
+</p>
 <dt>Throws</dt><dd><span class="inlinecode">OpenGLException</span> on error.</dd>
 </dl>
 </div>
@@ -300,6 +304,7 @@
 <hr><div class="row-fluid declaration"><h3>GLFBOAttachment <span class="symbol-target" id="color">&nbsp;</span><a class="symbol-link" href="#color">color</a>(int <i>i</i>);
 </h3></div>
 <div class="declaration-content"><dl><dt>Returns</dt><dd>A FBO <span class="symbol-target" id="color">&nbsp;</span><a class="symbol-link" href="#color">color</a> attachment.
+
 </dd>
 <dt>Parameters</dt><dd><table class="table table-condensed table-bordered"><tr><td>int <i>i</i></td>
 <td>Index of <span class="symbol-target" id="color">&nbsp;</span><a class="symbol-link" href="#color">color</a> attachment.</td>

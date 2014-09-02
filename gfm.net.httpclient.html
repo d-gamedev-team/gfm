@@ -91,6 +91,7 @@
     <li class="sidebar-list-entry tree-leaf"><a href="gfm.sdl2.sdlttf.html" title="gfm.sdl2.sdlttf"><i class="icon-th"></i>gfm.sdl2.sdlttf</a></li>
     <li class="sidebar-list-entry tree-leaf"><a href="gfm.sdl2.keyboard.html" title="gfm.sdl2.keyboard"><i class="icon-th"></i>gfm.sdl2.keyboard</a></li>
     <li class="sidebar-list-entry tree-leaf"><a href="gfm.sdl2.framecounter.html" title="gfm.sdl2.framecounter"><i class="icon-th"></i>gfm.sdl2.framecounter</a></li>    
+    <li class="sidebar-list-entry tree-leaf"><a href="gfm.sdl2.mouse.html" title="gfm.sdl2.mouse"><i class="icon-th"></i>gfm.sdl2.mouse</a></li>
     
     <li class="sidebar-list-entry tree-leaf"><a href="gfm.opengl.opengl.html" title="gfm.opengl.opengl"><i class="icon-th"></i>gfm.opengl.opengl</a></li>
     <li class="sidebar-list-entry tree-leaf"><a href="gfm.opengl.matrixstack.html" title="gfm.opengl.matrixstack"><i class="icon-th"></i>gfm.opengl.matrixstack</a></li>
@@ -190,6 +191,7 @@
     <li class="sidebar-list-entry tree-leaf"><a href="gfm.sdl2.sdlttf.html" title="gfm.sdl2.sdlttf"><i class="icon-th"></i>gfm.sdl2.sdlttf</a></li>
     <li class="sidebar-list-entry tree-leaf"><a href="gfm.sdl2.keyboard.html" title="gfm.sdl2.keyboard"><i class="icon-th"></i>gfm.sdl2.keyboard</a></li>
     <li class="sidebar-list-entry tree-leaf"><a href="gfm.sdl2.framecounter.html" title="gfm.sdl2.framecounter"><i class="icon-th"></i>gfm.sdl2.framecounter</a></li>    
+    <li class="sidebar-list-entry tree-leaf"><a href="gfm.sdl2.mouse.html" title="gfm.sdl2.mouse"><i class="icon-th"></i>gfm.sdl2.mouse</a></li>
     
     <li class="sidebar-list-entry tree-leaf"><a href="gfm.opengl.opengl.html" title="gfm.opengl.opengl"><i class="icon-th"></i>gfm.opengl.opengl</a></li>
     <li class="sidebar-list-entry tree-leaf"><a href="gfm.opengl.matrixstack.html" title="gfm.opengl.matrixstack"><i class="icon-th"></i>gfm.opengl.matrixstack</a></li>
@@ -247,7 +249,7 @@
 
 <p>Consider using <a href="http://vibed.org">vibe.d</a> if you need something better.</p>
 </dl>
-<hr><div class="row-fluid declaration"><h3>class <span class="symbol-target" id="HTTPException">&nbsp;</span><a class="symbol-link" href="#HTTPException">HTTPException</a>: object.Exception;
+<hr><div class="row-fluid declaration"><h3>class <span class="symbol-target" id="HTTPException">&nbsp;</span><a class="symbol-link" href="#HTTPException">HTTPException</a>: <u>object.Exception</u>;
 </h3></div>
 <div class="declaration-content"><dl><p>The exception type for HTTP errors.</p>
 
@@ -287,7 +289,7 @@
 
 <dt>Known Bugs</dt><dd>We might need to pool TCP connections later on.</dd>
 </dl>
-<div class="offset1 member-list"><hr><div class="row-fluid declaration"><h3> this(string <i>userAgent</i> = "gfm-http-client");
+<div class="offset1 member-list"><hr><div class="row-fluid declaration"><h3>this(string <i>userAgent</i> = "gfm-http-client");
 </h3></div>
 <div class="declaration-content"><dl><p>Creates a HTTP client with user-specified User-Agent.</p>
 
@@ -308,10 +310,14 @@
 <hr><div class="row-fluid declaration"><h3>HTTPResponse <span class="symbol-target" id="request">&nbsp;</span><a class="symbol-link" href="#request">request</a>(HTTPMethod <i>method</i>, URI <i>uri</i>, string[string] <i>headers</i>);
 </h3></div>
 <div class="declaration-content"><dl><p>Performs a HTTP <span class="symbol-target" id="request">&nbsp;</span><a class="symbol-link" href="#request">request</a>.
- Requested URI can be "*", an absolute URI, an absolute path, or an authority
- depending on the <i>method</i>.
 </p>
 
+<p>Requested URI can be "*", an absolute URI, an absolute path, or an authority
+<br><br>
+
+depending on the <i>method</i>.
+
+</p>
 <dt>Throws</dt><dd><span class="inlinecode">HTTPException</span> on error.</dd>
 </dl>
 </div>

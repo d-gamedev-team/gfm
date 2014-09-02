@@ -32,6 +32,7 @@ MODULES =
     $(MODULE gfm.sdl2.sdlttf, SDL_ttf wrapper)
     $(MODULE gfm.sdl2.keyboard, keyboard state)
     $(MODULE gfm.sdl2.framecounter, framecounter)    
+    $(MODULE gfm.sdl2.mouse, mouse)
     
     $(MODULE gfm.opengl.opengl, OpenGL context wrapper)
     $(MODULE gfm.opengl.matrixstack, stack of matrices)

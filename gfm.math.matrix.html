@@ -91,6 +91,7 @@
     <li class="sidebar-list-entry tree-leaf"><a href="gfm.sdl2.sdlttf.html" title="gfm.sdl2.sdlttf"><i class="icon-th"></i>gfm.sdl2.sdlttf</a></li>
     <li class="sidebar-list-entry tree-leaf"><a href="gfm.sdl2.keyboard.html" title="gfm.sdl2.keyboard"><i class="icon-th"></i>gfm.sdl2.keyboard</a></li>
     <li class="sidebar-list-entry tree-leaf"><a href="gfm.sdl2.framecounter.html" title="gfm.sdl2.framecounter"><i class="icon-th"></i>gfm.sdl2.framecounter</a></li>    
+    <li class="sidebar-list-entry tree-leaf"><a href="gfm.sdl2.mouse.html" title="gfm.sdl2.mouse"><i class="icon-th"></i>gfm.sdl2.mouse</a></li>
     
     <li class="sidebar-list-entry tree-leaf"><a href="gfm.opengl.opengl.html" title="gfm.opengl.opengl"><i class="icon-th"></i>gfm.opengl.opengl</a></li>
     <li class="sidebar-list-entry tree-leaf"><a href="gfm.opengl.matrixstack.html" title="gfm.opengl.matrixstack"><i class="icon-th"></i>gfm.opengl.matrixstack</a></li>
@@ -190,6 +191,7 @@
     <li class="sidebar-list-entry tree-leaf"><a href="gfm.sdl2.sdlttf.html" title="gfm.sdl2.sdlttf"><i class="icon-th"></i>gfm.sdl2.sdlttf</a></li>
     <li class="sidebar-list-entry tree-leaf"><a href="gfm.sdl2.keyboard.html" title="gfm.sdl2.keyboard"><i class="icon-th"></i>gfm.sdl2.keyboard</a></li>
     <li class="sidebar-list-entry tree-leaf"><a href="gfm.sdl2.framecounter.html" title="gfm.sdl2.framecounter"><i class="icon-th"></i>gfm.sdl2.framecounter</a></li>    
+    <li class="sidebar-list-entry tree-leaf"><a href="gfm.sdl2.mouse.html" title="gfm.sdl2.mouse"><i class="icon-th"></i>gfm.sdl2.mouse</a></li>
     
     <li class="sidebar-list-entry tree-leaf"><a href="gfm.opengl.opengl.html" title="gfm.opengl.opengl"><i class="icon-th"></i>gfm.opengl.opengl</a></li>
     <li class="sidebar-list-entry tree-leaf"><a href="gfm.opengl.matrixstack.html" title="gfm.opengl.matrixstack"><i class="icon-th"></i>gfm.opengl.matrixstack</a></li>
@@ -246,11 +248,14 @@
 <hr><div class="row-fluid declaration"><h3>struct <span class="symbol-target" id="Matrix">&nbsp;</span><a class="symbol-link" href="#Matrix">Matrix</a>(T, size_t R, size_t C);
 </h3></div>
 <div class="declaration-content"><dl><p>Generic non-resizeable matrix with R rows and C columns.
- Intended for 3D use (size 3x3 and 4x4).
 </p>
 
+<p>Intended for 3D use (size 3x3 and 4x4).
+
+</p>
 <dt>Important:</dt><dd>
 <b>Matrices here are in row-major order whereas OpenGL is column-major.</b>
+
 </dd>
 <dt>Parameters</dt><dd><table class="table table-condensed table-bordered"><tr><td>T</td>
 <td>type of elements</td>
@@ -263,43 +268,43 @@
 </tr>
 </table></dd>
 </dl>
-<div class="offset1 member-list"><hr><div class="row-fluid declaration"><h3>pure nothrow Matrix <span class="symbol-target" id="fromColumns">&nbsp;</span><a class="symbol-link" href="#fromColumns">fromColumns</a>(column_t[] <i>columns</i>);
+<div class="offset1 member-list"><hr><div class="row-fluid declaration"><h3>static pure nothrow Matrix <span class="symbol-target" id="fromColumns">&nbsp;</span><a class="symbol-link" href="#fromColumns">fromColumns</a>(column_t[] <i>columns</i>);
 </h3></div>
 <div class="declaration-content"><dl><p>Construct a matrix from <i>columns</i>.</p>
 
 </dl>
 </div>
-<hr><div class="row-fluid declaration"><h3>pure nothrow Matrix <span class="symbol-target" id="fromRows">&nbsp;</span><a class="symbol-link" href="#fromRows">fromRows</a>(row_t[] <i>rows</i>);
+<hr><div class="row-fluid declaration"><h3>static pure nothrow Matrix <span class="symbol-target" id="fromRows">&nbsp;</span><a class="symbol-link" href="#fromRows">fromRows</a>(row_t[] <i>rows</i>);
 </h3></div>
 <div class="declaration-content"><dl><p>Construct a matrix from <i>rows</i>.</p>
 
 </dl>
 </div>
-<hr><div class="row-fluid declaration"><h3> this(U)(T <i>x</i>);
+<hr><div class="row-fluid declaration"><h3>this(U)(T <i>x</i>);
 </h3></div>
 <div class="declaration-content"><dl><p>Construct matrix with a scalar.</p>
 
 </dl>
 </div>
-<hr><div class="row-fluid declaration"><h3>pure nothrow Matrix <span class="symbol-target" id="opAssign">&nbsp;</span><a class="symbol-link" href="#opAssign">opAssign</a>(U : Matrix)(U <i>x</i>);
+<hr><div class="row-fluid declaration"><h3>pure nothrow ref Matrix <span class="symbol-target" id="opAssign">&nbsp;</span><a class="symbol-link" href="#opAssign">opAssign</a>(U : Matrix)(U <i>x</i>);
 </h3></div>
 <div class="declaration-content"><dl><p>Assign with a samey matrice.</p>
 
 </dl>
 </div>
-<hr><div class="row-fluid declaration"><h3>pure nothrow Matrix <span class="symbol-target" id="opAssign">&nbsp;</span><a class="symbol-link" href="#opAssign">opAssign</a>(U)(U <i>x</i>) if (is(typeof(U._isMatrix)) &amp;&amp; is(U._T : _T) &amp;&amp; !is(U : Matrix) &amp;&amp; U._R == R &amp;&amp; U._C == C);
+<hr><div class="row-fluid declaration"><h3>pure nothrow ref Matrix <span class="symbol-target" id="opAssign">&nbsp;</span><a class="symbol-link" href="#opAssign">opAssign</a>(U)(U <i>x</i>) if (is(typeof(U._isMatrix)) &amp;&amp; is(U._T : _T) &amp;&amp; !is(U : Matrix) &amp;&amp; U._R == R &amp;&amp; U._C == C);
 </h3></div>
 <div class="declaration-content"><dl><p>Assign from other small matrices (same size, compatible type).</p>
 
 </dl>
 </div>
-<hr><div class="row-fluid declaration"><h3>pure nothrow Matrix <span class="symbol-target" id="opAssign">&nbsp;</span><a class="symbol-link" href="#opAssign">opAssign</a>(U)(U <i>x</i>) if (isStaticArray!U &amp;&amp; is(typeof(<i>x</i>[0]) : T) &amp;&amp; U.length == R * C);
+<hr><div class="row-fluid declaration"><h3>pure nothrow ref Matrix <span class="symbol-target" id="opAssign">&nbsp;</span><a class="symbol-link" href="#opAssign">opAssign</a>(U)(U <i>x</i>) if (isStaticArray!U &amp;&amp; is(typeof(<i>x</i>[0]) : T) &amp;&amp; U.length == R * C);
 </h3></div>
 <div class="declaration-content"><dl><p>Assign with a static array of size R * C.</p>
 
 </dl>
 </div>
-<hr><div class="row-fluid declaration"><h3>pure nothrow Matrix <span class="symbol-target" id="opAssign">&nbsp;</span><a class="symbol-link" href="#opAssign">opAssign</a>(U)(U <i>x</i>) if (isDynamicArray!U &amp;&amp; is(typeof(<i>x</i>[0]) : T));
+<hr><div class="row-fluid declaration"><h3>pure nothrow ref Matrix <span class="symbol-target" id="opAssign">&nbsp;</span><a class="symbol-link" href="#opAssign">opAssign</a>(U)(U <i>x</i>) if (isDynamicArray!U &amp;&amp; is(typeof(<i>x</i>[0]) : T));
 </h3></div>
 <div class="declaration-content"><dl><p>Assign with a dynamic array of size R * C.</p>
 
@@ -342,9 +347,12 @@
 <hr><div class="row-fluid declaration"><h3>const pure nothrow U <span class="symbol-target" id="opCast">&nbsp;</span><a class="symbol-link" href="#opCast">opCast</a>(U)() if (is(typeof(U._isMatrix)));
 </h3></div>
 <div class="declaration-content"><dl><p>Cast to other matrix types.
- If the size are different, the result matrix is truncated 
- and/or filled with identity coefficients.</p>
+</p>
 
+<p>If the size are different, the result matrix is truncated
+<br><br>
+
+and/or filled with identity coefficients.</p>
 </dl>
 </div>
 <hr><div class="row-fluid declaration"><h3>const pure nothrow U <span class="symbol-target" id="opCast">&nbsp;</span><a class="symbol-link" href="#opCast">opCast</a>(U)() if (is(typeof(U._isQuaternion)) &amp;&amp; is(U._T : _T) &amp;&amp; _R == 3 &amp;&amp; _C == 3);
@@ -364,7 +372,9 @@
 <hr><div class="row-fluid declaration"><h3>const pure nothrow Matrix <span class="symbol-target" id="inverse">&nbsp;</span><a class="symbol-link" href="#inverse">inverse</a>();
 </h3></div>
 <div class="declaration-content"><dl><dt>Returns</dt><dd><span class="symbol-target" id="inverse">&nbsp;</span><a class="symbol-link" href="#inverse">inverse</a> of matrix.
- Matrix inversion is provided for 2x2, 3x3 and 4x4 floating point matrices.</dd>
+<br><br>
+
+Matrix inversion is provided for 2x2, 3x3 and 4x4 floating point matrices.</dd>
 </dl>
 </div>
 <hr><div class="row-fluid declaration"><h3>const pure nothrow Matrix <span class="symbol-target" id="inverse">&nbsp;</span><a class="symbol-link" href="#inverse">inverse</a>();
@@ -388,7 +398,7 @@
 
 </dl>
 </div>
-<hr><div class="row-fluid declaration"><h3>pure nothrow Matrix <span class="symbol-target" id="translation">&nbsp;</span><a class="symbol-link" href="#translation">translation</a>(Vector!(T, R - 1) <i>v</i>);
+<hr><div class="row-fluid declaration"><h3>static pure nothrow Matrix <span class="symbol-target" id="translation">&nbsp;</span><a class="symbol-link" href="#translation">translation</a>(Vector!(T, R - 1) <i>v</i>);
 </h3></div>
 <div class="declaration-content"><dl><p>Make a <span class="symbol-target" id="translation">&nbsp;</span><a class="symbol-link" href="#translation">translation</a> matrix.</p>
 
@@ -400,7 +410,7 @@
 
 </dl>
 </div>
-<hr><div class="row-fluid declaration"><h3>pure nothrow Matrix <span class="symbol-target" id="scaling">&nbsp;</span><a class="symbol-link" href="#scaling">scaling</a>(Vector!(T, R - 1) <i>v</i>);
+<hr><div class="row-fluid declaration"><h3>static pure nothrow Matrix <span class="symbol-target" id="scaling">&nbsp;</span><a class="symbol-link" href="#scaling">scaling</a>(Vector!(T, R - 1) <i>v</i>);
 </h3></div>
 <div class="declaration-content"><dl><p>Make a <span class="symbol-target" id="scaling">&nbsp;</span><a class="symbol-link" href="#scaling">scaling</a> matrix.</p>
 
@@ -421,7 +431,7 @@
 <div class="declaration-content"><dl><dt>Returns</dt><dd>rotation matrix along axis Z</dd>
 </dl>
 </div>
-<hr><div class="row-fluid declaration"><h3>pure nothrow Matrix <span class="symbol-target" id="rotation">&nbsp;</span><a class="symbol-link" href="#rotation">rotation</a>(T <i>angle</i>, vec3!T <i>axis</i>);
+<hr><div class="row-fluid declaration"><h3>static pure nothrow Matrix <span class="symbol-target" id="rotation">&nbsp;</span><a class="symbol-link" href="#rotation">rotation</a>(T <i>angle</i>, vec3!T <i>axis</i>);
 </h3></div>
 <div class="declaration-content"><dl><p>Similar to the glRotate matrix, however the <i>angle</i> is expressed in radians
 </p>
@@ -429,20 +439,22 @@
 <dt>See Also</dt><dd><a href="http://www.cs.rutgers.edu/~decarlo/428/gl_man/rotate.html">http://www.cs.rutgers.edu/~decarlo/428/gl_man/rotate.html</a></dd>
 </dl>
 </div>
-<hr><div class="row-fluid declaration"><h3>pure nothrow Matrix <span class="symbol-target" id="orthographic">&nbsp;</span><a class="symbol-link" href="#orthographic">orthographic</a>(T <i>left</i>, T <i>right</i>, T <i>bottom</i>, T <i>top</i>, T <i>near</i>, T <i>far</i>);
+<hr><div class="row-fluid declaration"><h3>static pure nothrow Matrix <span class="symbol-target" id="orthographic">&nbsp;</span><a class="symbol-link" href="#orthographic">orthographic</a>(T <i>left</i>, T <i>right</i>, T <i>bottom</i>, T <i>top</i>, T <i>near</i>, T <i>far</i>);
 </h3></div>
 <div class="declaration-content"><dl><dt>Returns</dt><dd><span class="symbol-target" id="orthographic">&nbsp;</span><a class="symbol-link" href="#orthographic">orthographic</a> projection.</dd>
 </dl>
 </div>
-<hr><div class="row-fluid declaration"><h3>pure nothrow Matrix <span class="symbol-target" id="perspective">&nbsp;</span><a class="symbol-link" href="#perspective">perspective</a>(T <i>FOVInRadians</i>, T <i>aspect</i>, T <i>zNear</i>, T <i>zFar</i>);
+<hr><div class="row-fluid declaration"><h3>static pure nothrow Matrix <span class="symbol-target" id="perspective">&nbsp;</span><a class="symbol-link" href="#perspective">perspective</a>(T <i>FOVInRadians</i>, T <i>aspect</i>, T <i>zNear</i>, T <i>zFar</i>);
 </h3></div>
 <div class="declaration-content"><dl><dt>Returns</dt><dd><span class="symbol-target" id="perspective">&nbsp;</span><a class="symbol-link" href="#perspective">perspective</a> projection.</dd>
 </dl>
 </div>
-<hr><div class="row-fluid declaration"><h3>pure nothrow Matrix <span class="symbol-target" id="lookAt">&nbsp;</span><a class="symbol-link" href="#lookAt">lookAt</a>(vec3!T <i>eye</i>, vec3!T <i>target</i>, vec3!T <i>up</i>);
+<hr><div class="row-fluid declaration"><h3>static pure nothrow Matrix <span class="symbol-target" id="lookAt">&nbsp;</span><a class="symbol-link" href="#lookAt">lookAt</a>(vec3!T <i>eye</i>, vec3!T <i>target</i>, vec3!T <i>up</i>);
 </h3></div>
 <div class="declaration-content"><dl><dt>Returns</dt><dd>"<span class="symbol-target" id="lookAt">&nbsp;</span><a class="symbol-link" href="#lookAt">lookAt</a>" projection.
- Thanks to vuaru for corrections.</dd>
+<br><br>
+
+Thanks to vuaru for corrections.</dd>
 </dl>
 </div>
 <hr><div class="row-fluid declaration"><h3>const pure nothrow Frustum!T <span class="symbol-target" id="frustum">&nbsp;</span><a class="symbol-link" href="#frustum">frustum</a>();
@@ -451,13 +463,16 @@
 
 </dl>
 </div>
-<hr><div class="row-fluid declaration"><h3>pure nothrow Matrix <span class="symbol-target" id="identity">&nbsp;</span><a class="symbol-link" href="#identity">identity</a>();
+<hr><div class="row-fluid declaration"><h3>static pure nothrow Matrix <span class="symbol-target" id="identity">&nbsp;</span><a class="symbol-link" href="#identity">identity</a>();
 </h3></div>
 <div class="declaration-content"><dl><dt>Returns</dt><dd>an <span class="symbol-target" id="identity">&nbsp;</span><a class="symbol-link" href="#identity">identity</a> matrice.
+
 </dd>
 <dt>Note:</dt><dd>
-the <span class="symbol-target" id="identity">&nbsp;</span><a class="symbol-link" href="#identity">identity</a> matrix, while only meaningful for square matrices, 
- is also defined for non-square ones.</dd>
+the <span class="symbol-target" id="identity">&nbsp;</span><a class="symbol-link" href="#identity">identity</a> matrix, while only meaningful for square matrices,
+<br><br>
+
+is also defined for non-square ones.</dd>
 </dl>
 </div>
 <hr><div class="row-fluid declaration"><h3>pure nothrow Matrix <span class="symbol-target" id="constant">&nbsp;</span><a class="symbol-link" href="#constant">constant</a>(U)(U <i>x</i>);

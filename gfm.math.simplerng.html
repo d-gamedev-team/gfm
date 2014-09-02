@@ -91,6 +91,7 @@
     <li class="sidebar-list-entry tree-leaf"><a href="gfm.sdl2.sdlttf.html" title="gfm.sdl2.sdlttf"><i class="icon-th"></i>gfm.sdl2.sdlttf</a></li>
     <li class="sidebar-list-entry tree-leaf"><a href="gfm.sdl2.keyboard.html" title="gfm.sdl2.keyboard"><i class="icon-th"></i>gfm.sdl2.keyboard</a></li>
     <li class="sidebar-list-entry tree-leaf"><a href="gfm.sdl2.framecounter.html" title="gfm.sdl2.framecounter"><i class="icon-th"></i>gfm.sdl2.framecounter</a></li>    
+    <li class="sidebar-list-entry tree-leaf"><a href="gfm.sdl2.mouse.html" title="gfm.sdl2.mouse"><i class="icon-th"></i>gfm.sdl2.mouse</a></li>
     
     <li class="sidebar-list-entry tree-leaf"><a href="gfm.opengl.opengl.html" title="gfm.opengl.opengl"><i class="icon-th"></i>gfm.opengl.opengl</a></li>
     <li class="sidebar-list-entry tree-leaf"><a href="gfm.opengl.matrixstack.html" title="gfm.opengl.matrixstack"><i class="icon-th"></i>gfm.opengl.matrixstack</a></li>
@@ -190,6 +191,7 @@
     <li class="sidebar-list-entry tree-leaf"><a href="gfm.sdl2.sdlttf.html" title="gfm.sdl2.sdlttf"><i class="icon-th"></i>gfm.sdl2.sdlttf</a></li>
     <li class="sidebar-list-entry tree-leaf"><a href="gfm.sdl2.keyboard.html" title="gfm.sdl2.keyboard"><i class="icon-th"></i>gfm.sdl2.keyboard</a></li>
     <li class="sidebar-list-entry tree-leaf"><a href="gfm.sdl2.framecounter.html" title="gfm.sdl2.framecounter"><i class="icon-th"></i>gfm.sdl2.framecounter</a></li>    
+    <li class="sidebar-list-entry tree-leaf"><a href="gfm.sdl2.mouse.html" title="gfm.sdl2.mouse"><i class="icon-th"></i>gfm.sdl2.mouse</a></li>
     
     <li class="sidebar-list-entry tree-leaf"><a href="gfm.opengl.opengl.html" title="gfm.opengl.opengl"><i class="icon-th"></i>gfm.opengl.opengl</a></li>
     <li class="sidebar-list-entry tree-leaf"><a href="gfm.opengl.matrixstack.html" title="gfm.opengl.matrixstack"><i class="icon-th"></i>gfm.opengl.matrixstack</a></li>
@@ -254,6 +256,7 @@
 <hr><div class="row-fluid declaration"><h3>double <span class="symbol-target" id="randNormal">&nbsp;</span><a class="symbol-link" href="#randNormal">randNormal</a>(RNG)(ref RNG <i>rng</i>, double <i>mean</i> = 0.000000, double <i>standardDeviation</i> = 1.00000);
 </h3></div>
 <div class="declaration-content"><dl><dt>Returns</dt><dd>Normal (Gaussian) random sample.
+
 </dd>
 <dt>See Also</dt><dd>Box-Muller algorithm.</dd>
 </dl>
@@ -266,10 +269,15 @@
 <hr><div class="row-fluid declaration"><h3>double <span class="symbol-target" id="randGamma">&nbsp;</span><a class="symbol-link" href="#randGamma">randGamma</a>(RNG)(ref RNG <i>rng</i>, double <i>shape</i>, double <i>scale</i>);
 </h3></div>
 <div class="declaration-content"><dl><dt>Returns</dt><dd>Gamma random sample.
+
 </dd>
 <dt>See Also</dt><dd>"A Simple Method for Generating Gamma Variables"
- by George Marsaglia and Wai Wan Tsang.  ACM Transactions on Mathematical Software
- Vol 26, No 3, September 2000, pages 363-372.</dd>
+<br><br>
+
+by George Marsaglia and Wai Wan Tsang.  ACM Transactions on Mathematical Software
+<br><br>
+
+Vol 26, No 3, September 2000, pages 363-372.</dd>
 </dl>
 </div>
 <hr><div class="row-fluid declaration"><h3>double <span class="symbol-target" id="randChiSquare">&nbsp;</span><a class="symbol-link" href="#randChiSquare">randChiSquare</a>(RNG)(ref RNG <i>rng</i>, double <i>degreesOfFreedom</i>);
@@ -295,6 +303,7 @@
 <hr><div class="row-fluid declaration"><h3>double <span class="symbol-target" id="randStudentT">&nbsp;</span><a class="symbol-link" href="#randStudentT">randStudentT</a>(RNG)(ref RNG <i>rng</i>, double <i>degreesOfFreedom</i>);
 </h3></div>
 <div class="declaration-content"><dl><dt>Returns</dt><dd>Student-t sample.
+
 </dd>
 <dt>See Also</dt><dd>Seminumerical Algorithms by Knuth.</dd>
 </dl>

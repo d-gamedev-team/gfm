@@ -91,6 +91,7 @@
     <li class="sidebar-list-entry tree-leaf"><a href="gfm.sdl2.sdlttf.html" title="gfm.sdl2.sdlttf"><i class="icon-th"></i>gfm.sdl2.sdlttf</a></li>
     <li class="sidebar-list-entry tree-leaf"><a href="gfm.sdl2.keyboard.html" title="gfm.sdl2.keyboard"><i class="icon-th"></i>gfm.sdl2.keyboard</a></li>
     <li class="sidebar-list-entry tree-leaf"><a href="gfm.sdl2.framecounter.html" title="gfm.sdl2.framecounter"><i class="icon-th"></i>gfm.sdl2.framecounter</a></li>    
+    <li class="sidebar-list-entry tree-leaf"><a href="gfm.sdl2.mouse.html" title="gfm.sdl2.mouse"><i class="icon-th"></i>gfm.sdl2.mouse</a></li>
     
     <li class="sidebar-list-entry tree-leaf"><a href="gfm.opengl.opengl.html" title="gfm.opengl.opengl"><i class="icon-th"></i>gfm.opengl.opengl</a></li>
     <li class="sidebar-list-entry tree-leaf"><a href="gfm.opengl.matrixstack.html" title="gfm.opengl.matrixstack"><i class="icon-th"></i>gfm.opengl.matrixstack</a></li>
@@ -190,6 +191,7 @@
     <li class="sidebar-list-entry tree-leaf"><a href="gfm.sdl2.sdlttf.html" title="gfm.sdl2.sdlttf"><i class="icon-th"></i>gfm.sdl2.sdlttf</a></li>
     <li class="sidebar-list-entry tree-leaf"><a href="gfm.sdl2.keyboard.html" title="gfm.sdl2.keyboard"><i class="icon-th"></i>gfm.sdl2.keyboard</a></li>
     <li class="sidebar-list-entry tree-leaf"><a href="gfm.sdl2.framecounter.html" title="gfm.sdl2.framecounter"><i class="icon-th"></i>gfm.sdl2.framecounter</a></li>    
+    <li class="sidebar-list-entry tree-leaf"><a href="gfm.sdl2.mouse.html" title="gfm.sdl2.mouse"><i class="icon-th"></i>gfm.sdl2.mouse</a></li>
     
     <li class="sidebar-list-entry tree-leaf"><a href="gfm.opengl.opengl.html" title="gfm.opengl.opengl"><i class="icon-th"></i>gfm.opengl.opengl</a></li>
     <li class="sidebar-list-entry tree-leaf"><a href="gfm.opengl.matrixstack.html" title="gfm.opengl.matrixstack"><i class="icon-th"></i>gfm.opengl.matrixstack</a></li>
@@ -246,8 +248,9 @@
 <hr><div class="row-fluid declaration"><h3>class <span class="symbol-target" id="MatrixStack">&nbsp;</span><a class="symbol-link" href="#MatrixStack">MatrixStack</a>(size_t R, T) if (R == 3 || R == 4);
 </h3></div>
 <div class="declaration-content"><dl><p>A matrix stack designed to replace fixed-pipeline matrix stacks.
- This stack always expose both the top element and its inverse.</p>
+</p>
 
+<p>This stack always expose both the top element and its inverse.</p>
 </dl>
 <div class="offset1 member-list"><hr><div class="row-fluid declaration"><h3>alias <span class="symbol-target" id="matrix_t">&nbsp;</span><a class="symbol-link" href="#matrix_t">matrix_t</a> = Matrix!(T, R, R);
 </h3></div>
@@ -255,11 +258,12 @@
 
 </dl>
 </div>
-<hr><div class="row-fluid declaration"><h3>nothrow  this(size_t <i>depth</i> = 32);
+<hr><div class="row-fluid declaration"><h3>nothrow this(size_t <i>depth</i> = 32);
 </h3></div>
 <div class="declaration-content"><dl><p>Creates a matrix stack.
- The stack is initialized with one element, an identity matrix.</p>
+</p>
 
+<p>The stack is initialized with one element, an identity matrix.</p>
 </dl>
 </div>
 <hr><div class="row-fluid declaration"><h3>void <span class="symbol-target" id="close">&nbsp;</span><a class="symbol-link" href="#close">close</a>();
@@ -289,7 +293,9 @@
 <hr><div class="row-fluid declaration"><h3>const pure nothrow matrix_t <span class="symbol-target" id="top">&nbsp;</span><a class="symbol-link" href="#top">top</a>();
 </h3></div>
 <div class="declaration-content"><dl><dt>Returns</dt><dd>Top matrix.
- Replaces <span class="inlinecode">glLoadMatrix</span>.</dd>
+<br><br>
+
+Replaces <span class="inlinecode">glLoadMatrix</span>.</dd>
 </dl>
 </div>
 <hr><div class="row-fluid declaration"><h3>const pure nothrow matrix_t <span class="symbol-target" id="invTop">&nbsp;</span><a class="symbol-link" href="#invTop">invTop</a>();
@@ -300,8 +306,9 @@
 <hr><div class="row-fluid declaration"><h3>pure nothrow void <span class="symbol-target" id="setTop">&nbsp;</span><a class="symbol-link" href="#setTop">setTop</a>(matrix_t <i>m</i>);
 </h3></div>
 <div class="declaration-content"><dl><p>Sets top matrix.
- Replaces <span class="inlinecode">glLoadMatrix</span>.</p>
+</p>
 
+<p>Replaces <span class="inlinecode">glLoadMatrix</span>.</p>
 </dl>
 </div>
 <hr><div class="row-fluid declaration"><h3>pure nothrow void <span class="symbol-target" id="mult">&nbsp;</span><a class="symbol-link" href="#mult">mult</a>(matrix_t <i>m</i>);

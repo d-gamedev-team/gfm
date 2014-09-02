@@ -91,6 +91,7 @@
     <li class="sidebar-list-entry tree-leaf"><a href="gfm.sdl2.sdlttf.html" title="gfm.sdl2.sdlttf"><i class="icon-th"></i>gfm.sdl2.sdlttf</a></li>
     <li class="sidebar-list-entry tree-leaf"><a href="gfm.sdl2.keyboard.html" title="gfm.sdl2.keyboard"><i class="icon-th"></i>gfm.sdl2.keyboard</a></li>
     <li class="sidebar-list-entry tree-leaf"><a href="gfm.sdl2.framecounter.html" title="gfm.sdl2.framecounter"><i class="icon-th"></i>gfm.sdl2.framecounter</a></li>    
+    <li class="sidebar-list-entry tree-leaf"><a href="gfm.sdl2.mouse.html" title="gfm.sdl2.mouse"><i class="icon-th"></i>gfm.sdl2.mouse</a></li>
     
     <li class="sidebar-list-entry tree-leaf"><a href="gfm.opengl.opengl.html" title="gfm.opengl.opengl"><i class="icon-th"></i>gfm.opengl.opengl</a></li>
     <li class="sidebar-list-entry tree-leaf"><a href="gfm.opengl.matrixstack.html" title="gfm.opengl.matrixstack"><i class="icon-th"></i>gfm.opengl.matrixstack</a></li>
@@ -190,6 +191,7 @@
     <li class="sidebar-list-entry tree-leaf"><a href="gfm.sdl2.sdlttf.html" title="gfm.sdl2.sdlttf"><i class="icon-th"></i>gfm.sdl2.sdlttf</a></li>
     <li class="sidebar-list-entry tree-leaf"><a href="gfm.sdl2.keyboard.html" title="gfm.sdl2.keyboard"><i class="icon-th"></i>gfm.sdl2.keyboard</a></li>
     <li class="sidebar-list-entry tree-leaf"><a href="gfm.sdl2.framecounter.html" title="gfm.sdl2.framecounter"><i class="icon-th"></i>gfm.sdl2.framecounter</a></li>    
+    <li class="sidebar-list-entry tree-leaf"><a href="gfm.sdl2.mouse.html" title="gfm.sdl2.mouse"><i class="icon-th"></i>gfm.sdl2.mouse</a></li>
     
     <li class="sidebar-list-entry tree-leaf"><a href="gfm.opengl.opengl.html" title="gfm.opengl.opengl"><i class="icon-th"></i>gfm.opengl.opengl</a></li>
     <li class="sidebar-list-entry tree-leaf"><a href="gfm.opengl.matrixstack.html" title="gfm.opengl.matrixstack"><i class="icon-th"></i>gfm.opengl.matrixstack</a></li>
@@ -248,22 +250,24 @@
 <div class="declaration-content"><dl><p>SDL Renderer wrapper.</p>
 
 </dl>
-<div class="offset1 member-list"><hr><div class="row-fluid declaration"><h3> this(SDL2Window <i>window</i>, int <i>flags</i>);
+<div class="offset1 member-list"><hr><div class="row-fluid declaration"><h3>this(SDL2Window <i>window</i>, int <i>flags</i> = 0);
 </h3></div>
 <div class="declaration-content"><dl><p>Creates a SDL renderer which targets a <i>window</i>.
 </p>
 
 <dt>See Also</dt><dd><a href="http://wiki.libsdl.org/SDL_CreateRenderer">http://wiki.libsdl.org/SDL_CreateRenderer</a>
+
 </dd>
 <dt>Throws</dt><dd><span class="inlinecode">SDL2Exception</span> on error.</dd>
 </dl>
 </div>
-<hr><div class="row-fluid declaration"><h3> this(SDL2Surface <i>surface</i>);
+<hr><div class="row-fluid declaration"><h3>this(SDL2Surface <i>surface</i>);
 </h3></div>
 <div class="declaration-content"><dl><p>Create a software renderer which targets a <i>surface</i>.
 </p>
 
 <dt>See Also</dt><dd><a href="http://wiki.libsdl.org/SDL_CreateSoftwareRenderer">http://wiki.libsdl.org/SDL_CreateSoftwareRenderer</a>
+
 </dd>
 <dt>Throws</dt><dd><span class="inlinecode">SDL2Exception</span> on error.</dd>
 </dl>
@@ -282,6 +286,7 @@
 </p>
 
 <dt>See Also</dt><dd><a href="http://wiki.libsdl.org/SDL_RenderClear">http://wiki.libsdl.org/SDL_RenderClear</a>
+
 </dd>
 <dt>Throws</dt><dd><span class="inlinecode">SDL2Exception</span> on error.</dd>
 </dl>
@@ -300,6 +305,7 @@
 </p>
 
 <dt>See Also</dt><dd><a href="http://wiki.libsdl.org/SDL_SetRenderDrawColor">http://wiki.libsdl.org/SDL_SetRenderDrawColor</a>
+
 </dd>
 <dt>Throws</dt><dd><span class="inlinecode">SDL2Exception</span> on error.</dd>
 </dl>
@@ -310,16 +316,18 @@
 </p>
 
 <dt>See Also</dt><dd><a href="http://wiki.libsdl.org/SDL_RenderSetViewport">http://wiki.libsdl.org/SDL_RenderSetViewport</a>
+
 </dd>
 <dt>Throws</dt><dd><span class="inlinecode">SDL2Exception</span> on error.</dd>
 </dl>
 </div>
 <hr><div class="row-fluid declaration"><h3>void <span class="symbol-target" id="setViewportFull">&nbsp;</span><a class="symbol-link" href="#setViewportFull">setViewportFull</a>();
 </h3></div>
-<div class="declaration-content"><dl><p>Sets the whole window as drawing area.        
+<div class="declaration-content"><dl><p>Sets the whole window as drawing area.
 </p>
 
 <dt>See Also</dt><dd><a href="http://wiki.libsdl.org/SDL_RenderSetViewport">http://wiki.libsdl.org/SDL_RenderSetViewport</a>
+
 </dd>
 <dt>Throws</dt><dd><span class="inlinecode">SDL2Exception</span> on error.</dd>
 </dl>
@@ -330,6 +338,7 @@
 </p>
 
 <dt>See Also</dt><dd><a href="http://wiki.libsdl.org/SDL_RenderSetScale">http://wiki.libsdl.org/SDL_RenderSetScale</a>
+
 </dd>
 <dt>Throws</dt><dd><span class="inlinecode">SDL2Exception</span> on error.</dd>
 </dl>
@@ -340,6 +349,7 @@
 </p>
 
 <dt>See Also</dt><dd><a href="http://wiki.libsdl.org/SDL_RenderSetLogicalSize">http://wiki.libsdl.org/SDL_RenderSetLogicalSize</a>
+
 </dd>
 <dt>Throws</dt><dd><span class="inlinecode">SDL2Exception</span> on error.</dd>
 </dl>
@@ -350,6 +360,7 @@
 </p>
 
 <dt>See Also</dt><dd><a href="http://wiki.libsdl.org/SDL_SetRenderDrawBlendMode">http://wiki.libsdl.org/SDL_SetRenderDrawBlendMode</a>
+
 </dd>
 <dt>Throws</dt><dd><span class="inlinecode">SDL2Exception</span> on error.</dd>
 </dl>
@@ -360,6 +371,7 @@
 </p>
 
 <dt>See Also</dt><dd><a href="http://wiki.libsdl.org/SDL_RenderDrawLine">http://wiki.libsdl.org/SDL_RenderDrawLine</a>
+
 </dd>
 <dt>Throws</dt><dd><span class="inlinecode">SDL2Exception</span> on error.</dd>
 </dl>
@@ -370,6 +382,7 @@
 </p>
 
 <dt>See Also</dt><dd><a href="http://wiki.libsdl.org/SDL_RenderDrawLines">http://wiki.libsdl.org/SDL_RenderDrawLines</a>
+
 </dd>
 <dt>Throws</dt><dd><span class="inlinecode">SDL2Exception</span> on error.</dd>
 </dl>
@@ -380,6 +393,7 @@
 </p>
 
 <dt>See Also</dt><dd><a href="http://wiki.libsdl.org/SDL_RenderDrawPoint">http://wiki.libsdl.org/SDL_RenderDrawPoint</a>
+
 </dd>
 <dt>Throws</dt><dd><span class="inlinecode">SDL2Exception</span> on error.</dd>
 </dl>
@@ -390,6 +404,7 @@
 </p>
 
 <dt>See Also</dt><dd><a href="http://wiki.libsdl.org/SDL_RenderDrawPoints">http://wiki.libsdl.org/SDL_RenderDrawPoints</a>
+
 </dd>
 <dt>Throws</dt><dd><span class="inlinecode">SDL2Exception</span> on error.</dd>
 </dl>
@@ -400,6 +415,7 @@
 </p>
 
 <dt>See Also</dt><dd><a href="http://wiki.libsdl.org/SDL_RenderDrawRect">http://wiki.libsdl.org/SDL_RenderDrawRect</a>
+
 </dd>
 <dt>Throws</dt><dd><span class="inlinecode">SDL2Exception</span> on error.</dd>
 </dl>
@@ -410,6 +426,7 @@
 </p>
 
 <dt>See Also</dt><dd><a href="http://wiki.libsdl.org/SDL_RenderFillRect">http://wiki.libsdl.org/SDL_RenderFillRect</a>
+
 </dd>
 <dt>Throws</dt><dd><span class="inlinecode">SDL2Exception</span> on error.</dd>
 </dl>
@@ -420,6 +437,18 @@
 </p>
 
 <dt>See Also</dt><dd><a href="http://wiki.libsdl.org/SDL_RenderCopy">http://wiki.libsdl.org/SDL_RenderCopy</a>
+
+</dd>
+<dt>Throws</dt><dd><span class="inlinecode">SDL2Exception</span> on error.</dd>
+</dl>
+</div>
+<hr><div class="row-fluid declaration"><h3>void <span class="symbol-target" id="copy">&nbsp;</span><a class="symbol-link" href="#copy">copy</a>(SDL2Texture <i>texture</i>, int <i>x</i>, int <i>y</i>);
+</h3></div>
+<div class="declaration-content"><dl><p>Draws a whole <i>texture</i>.
+</p>
+
+<dt>See Also</dt><dd><a href="http://wiki.libsdl.org/SDL_RenderCopy">http://wiki.libsdl.org/SDL_RenderCopy</a>
+
 </dd>
 <dt>Throws</dt><dd><span class="inlinecode">SDL2Exception</span> on error.</dd>
 </dl>
