@@ -83,7 +83,8 @@ final class SDL2
             
             _logger.infof("%s video display(s) detected.", numDisplays);
 
-            _keyboard = new SDL2Keyboard(this);            
+            _keyboard = new SDL2Keyboard(this);
+            _mouse = new SDL2Mouse(this);
         }
 
         /// Releases the SDL library and all resources.
