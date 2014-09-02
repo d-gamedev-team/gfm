@@ -17,7 +17,7 @@ final class SDL2Mouse
         /// --------------------
         bool isButtonPressed(int mask) pure const nothrow
         {
-            return (_mouseButtonState & mask) != 0;
+            return (_buttonState & mask) != 0;
         }
 
         /// Returns: X coordinate of mouse pointer.
@@ -66,7 +66,7 @@ final class SDL2Mouse
         {
             // Get mouse buttons state but ignore mouse coordinates
             // because we get them from event data
-            _mouseButtonState = SDL_GetMouseState(null, null);
+            _buttonState = SDL_GetMouseState(null, null);
             _x = event.x;
             _y = event.y;
         }
@@ -75,14 +75,14 @@ final class SDL2Mouse
         {
             // get mouse buttons state but ignore mouse coordinates
             // because we get them from event data
-            _mouseButtonState = SDL_GetMouseState(null, null);
+            _buttonState = SDL_GetMouseState(null, null);
             _x = event.x;
             _y = event.y;
         }
 
         void updateWheel(const(SDL_MouseWheelEvent)* event)
         {
-            _mouseButtonState = SDL_GetMouseState(&_x, &_y);
+            _buttonState = SDL_GetMouseState(&_x, &_y);
             _wheelX += event.x;
             _wheelY += event.y;
         }
@@ -93,7 +93,7 @@ final class SDL2Mouse
         SDL2 _sdl2;
 
         // Last button state
-        int _mouseButtonState;
+        int _buttonState;
         
         // Last mouse coordinates
         int _x = 0, 
