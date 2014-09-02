@@ -12,7 +12,7 @@ final class SDL2Mouse
         /// Example:
         /// --------------------
         /// // Check if the left mouse button is pressed
-        /// if(_sdl2.isMouseButtonPressed(SDL_BUTTON_LMASK))
+        /// if(_sdl2.mouse.isButtonPressed(SDL_BUTTON_LMASK))
         ///     ...
         /// --------------------
         bool isButtonPressed(int mask) pure const nothrow
