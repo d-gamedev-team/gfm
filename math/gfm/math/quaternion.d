@@ -30,6 +30,16 @@ align(1) struct Quaternion(T)
             opAssign!U(x);
         }
 
+        /// Constructs a Quaternion from coordinates.
+        /// Warning: order of coordinates is different from storage.
+        this(T qw, T qx, T qy, T qz) pure nothrow
+        {
+            x = qx;
+            y = qy;
+            z = qz;
+            w = qw;
+        }
+
         /// Constructs a Quaternion from axis + angle.
         static Quaternion fromAxis(Vector!(T, 3u) axis, T angle) pure nothrow
         {
@@ -81,7 +91,7 @@ align(1) struct Quaternion(T)
             return res;
         }
 
-        /// Inverse a quaternion.
+        /// Inverses a quaternion in-place.
         void inverse() pure nothrow
         {
             x = -x;
@@ -89,7 +99,7 @@ align(1) struct Quaternion(T)
             z = -z;
         }
 
-        /// Returns: Inversed quaternion.
+        /// Returns: Inverse of quaternion.
         Quaternion inversed() pure const nothrow
         {
             Quaternion res = void;
@@ -202,8 +212,11 @@ align(1) struct Quaternion(T)
     }
 }
 
-alias Quaternion!float quaternionf;
-alias Quaternion!double quaterniond;
+alias Quaternion!float quatf;
+alias Quaternion!double quatd;
+
+deprecated("quaternionf was renamed to quatf") alias quaternionf = quatf;
+deprecated("quaterniond was renamed to quatd") alias quaterniond = quatd;
 
 /// Linear interpolation, for quaternions.
 Quaternion!T lerp(T)(Quaternion!T a, Quaternion!T b, float t) pure nothrow
@@ -262,11 +275,12 @@ Quaternion!T slerp(T)(Quaternion!T a, Quaternion!T b, T t) pure nothrow
 
 unittest
 {
-    quaternionf a = quaternionf.fromAxis(vec3f(1, 0, 0), 1);
-    quaternionf b = quaternionf.fromAxis(vec3f(0, 1, 0), 0);
+    quatf a = quatf.fromAxis(vec3f(1, 0, 0), 1);
+    quatf b = quatf.fromAxis(vec3f(0, 1, 0), 0);
     a = a * b;
 
-    quaternionf c = lerp(a, b, 0.5f);
-    quaternionf d = Nlerp(a, b, 0.1f);
-    quaternionf e = slerp(a, b, 0.0f);
+    quatf c = lerp(a, b, 0.5f);
+    quatf d = Nlerp(a, b, 0.1f);
+    quatf e = slerp(a, b, 0.0f);
+    quatd f = quatd(1.0, 4, 5.0, 6.0);
 }
