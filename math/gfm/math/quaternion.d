@@ -54,7 +54,7 @@ align(1) struct Quaternion(T)
             return q; // should be normalized
         }
 
-        /// Constructs a Quaternion from euler angles.
+        /// Constructs a Quaternion from Euler angles.
         /// All paramers given in radians.
         /// Pitch->X axis, Yaw->Y axis, Roll->Z axis
         /// See_also: $(LINK https://www.cs.princeton.edu/~gewang/projects/darth/stuff/quat_faq.html)
@@ -74,6 +74,30 @@ align(1) struct Quaternion(T)
             q.z = cosRoll * cosPitch * sinYaw - sinRoll * sinPitch * cosYaw;
             q.w = cosRoll * cosPitchCosYaw    + sinRoll * sinPitchSinYaw;
             return q;
+        }
+
+        /// Converts a quaternion to Euler angles.
+        /// TODO: adds a EulerAngles type.
+        /// Returns: A vector which contains pitch-yaw-roll as x-y-z.
+        vec3!T toEulerAngles() pure const nothrow
+        {
+            mat3!T m = cast(mat3!T)(this);
+
+            T pitch, yaw, roll;
+            T s = sqrt(m.c[0][0] * m.c[0][0] + m.c[1][0] * m.c[1][0]);
+            if (s > T.epsilon)
+            {
+                pitch = - atan2(m.c[2][0], s);
+                yaw = atan2(m.c[1][0], m.c[0][0]);
+                roll = atan2(m.c[2][1], m.c[2][2]);
+            }
+            else
+            {
+                pitch = m.c[2][0] < 0.0f ? PI /2 : -PI / 2;
+                yaw = -atan2(m.c[0][1], m.c[1][1]);
+                roll = 0.0f;
+            }
+            return vec3!T(pitch, yaw, roll);
         }
 
         /// Assign from another Quaternion.
@@ -307,5 +331,6 @@ unittest
     quatf d = Nlerp(a, b, 0.1f);
     quatf e = slerp(a, b, 0.0f);
     quatd f = quatd(1.0, 4, 5.0, 6.0);
-    quatf g = quatf.fromEulerAngles(1.0f, 4.0f, 5.0f);
+    quatf g = quatf.fromEulerAngles(-0.1f, 1.2f, -0.3f);
+    vec3f ga = g.toEulerAngles();    
 }
