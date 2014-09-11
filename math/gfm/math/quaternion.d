@@ -180,13 +180,15 @@ align(1) struct Quaternion(T)
         }
 
         // Workaround Vector not being constructable through CTFE
-        static Quaternion IDENTITY() pure nothrow @property
+        static Quaternion identity() pure nothrow @property
         {
             Quaternion q;
             q.x = q.y = q.z = 0;
             q.w = 1;
             return q;
         }
+
+        deprecated("IDENTITY was renamed to identity") alias IDENTITY = identity;
     }
 
     private
