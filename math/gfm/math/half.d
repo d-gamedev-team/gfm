@@ -147,7 +147,7 @@ private
 {
     // build tables through CTFE
 
-    enum mantissatable =
+    static immutable uint[2048] mantissatable =
     (){
         uint[2048] t;
         t[0] = 0;
@@ -172,7 +172,7 @@ private
         return t;
     }();
 
-    enum exponenttable =
+    static immutable uint[64] exponenttable =
     (){
         uint[64] t;
         t[0] = 0;
@@ -187,7 +187,7 @@ private
         return t;
     }();
 
-    enum offsettable =
+    static immutable ushort[64] offsettable =
     (){
         ushort[64] t;
         t[] = 1024;
@@ -195,7 +195,7 @@ private
         return t;
     }();
 
-    enum basetable =
+    static immutable ushort[512] basetable =
     (){
         ushort[512] t;
         for (uint i = 0; i < 256; ++i)
@@ -225,7 +225,7 @@ private
         return t;
     }();
 
-    enum shifttable =
+    static immutable ubyte[512] shifttable =
     (){
         ubyte[512] t;
 
