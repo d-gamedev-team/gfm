@@ -298,6 +298,25 @@ final class SDL2
                 res = 1;
             return res;
         }
+
+        /// Returns: A path suitable for writing configuration files, saved games, etc...
+        /// See_also: $(LINK http://wiki.libsdl.org/SDL_GetPrefPath)
+        /// Throws: $(D SDL2Exception) on error.
+        string getPrefPath(string orgName, string applicationName)
+        {
+            char* basePath = SDL_GetPrefPath(toStringz(orgName), toStringz(applicationName));
+            if (basePath != null) 
+            {
+                string result = sanitizeUTF8(basePath, _logger, "SDL pref path");
+                SDL_free(basePath);
+                return result;
+            } 
+            else
+            {
+                throwSDL2Exception("SDL_GetPrefPath");
+                return null; // unreachable
+            }
+        }
     }
 
     package
