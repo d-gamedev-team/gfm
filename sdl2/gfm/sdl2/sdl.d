@@ -466,7 +466,7 @@ final class SDL2
                     const (SDL_MouseButtonEvent*) mbEvent = &event.button;
                     SDL2Window* window = (mbEvent.windowID in _knownWindows);
                     if (event.type == SDL_MOUSEBUTTONDOWN)
-                        window.onMouseButtonPressed(mbEvent.timestamp, _mouse, mbEvent.which, mbEvent.clicks > 1);
+                        window.onMouseButtonPressed(mbEvent.timestamp, _mouse, mbEvent.button, mbEvent.clicks > 1);
                     else
                         window.onMouseButtonReleased(mbEvent.timestamp, _mouse, mbEvent.button);
                     break;
