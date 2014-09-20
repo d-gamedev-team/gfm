@@ -2,6 +2,7 @@ module gfm.sdl2.mouse;
 
 import derelict.sdl2.sdl;
 import gfm.sdl2.sdl;
+import gfm.sdl2.surface;
 
 /// Holds SDL mouse state.
 final class SDL2Mouse
@@ -125,5 +126,67 @@ final class SDL2Mouse
 
         int _lastDeltaX = 0,
             _lastDeltaY = 0;
+    }
+}
+
+
+/// Mouse cursor, can be created from custom bitmap or from system defaults.
+final class SDL2Cursor
+{
+    public
+    {
+        /// Creates a cursor from a SDL surface.
+        /// The surface should outlive this cursor, its ownership will not be taken.
+        /// See_also: $(LINK http://wiki.libsdl.org/SDL_CreateColorCursor)
+        /// Throws: $(D SDL2Exception) on error.
+        this(SDL2 sdl2, SDL2Surface surface, int hotspotX, int hotspotY)
+        {
+            _sdl2 = sdl2;
+            _handle = SDL_CreateColorCursor(surface.handle(), hotspotX, hotspotY);
+            if(_handle is null)
+                _sdl2.throwSDL2Exception("SDL_CreateColorCursor");
+        }
+
+        /// Creates a system cursor.
+        /// See_also: $(LINK http://wiki.libsdl.org/SDL_CreateSystemCursor)
+        /// Throws: $(D SDL2Exception) on error.
+        this(SDL2 sdl2, SDL_SystemCursor id)
+        {
+            _sdl2 = sdl2;
+            _handle = SDL_CreateSystemCursor(id);
+            if(_handle is null)
+                _sdl2.throwSDL2Exception("SDL_CreateSystemCursor");
+        }
+
+        ~this()
+        {
+            close();
+        }
+
+        /// Returns: SDL handle.
+        SDL_Cursor* handle()
+        {
+            return _handle;
+        }
+
+        void close()
+        {
+            if (_handle !is null)
+            {
+                SDL_FreeCursor(_handle);
+            }
+        }
+
+        void setCurrent()
+        {
+            SDL_SetCursor(_handle);
+        }
+    }
+
+    private
+    {
+        SDL2 _sdl2;
+        SDL_Cursor* _handle;
+        SDL2Surface _surface;
     }
 }
