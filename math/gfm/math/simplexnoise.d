@@ -5,7 +5,7 @@ import std.math,
 
 /// Simplex noise in 2D, 3D and 4D.
 /// Translated from "Simplex noise demystified", Stefan Gustavson
-class SimplexNoise(UniformRNG) if (isUniformRNG!UniformRNG)
+deprecated("SimplexNoise to be removed, use libnoise-d instead") class SimplexNoise(UniformRNG) if (isUniformRNG!UniformRNG)
 {    
     public
     {
