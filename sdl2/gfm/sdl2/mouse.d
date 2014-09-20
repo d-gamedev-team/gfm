@@ -145,6 +145,7 @@ final class SDL2Cursor
             _handle = SDL_CreateColorCursor(surface.handle(), hotspotX, hotspotY);
             if(_handle is null)
                 _sdl2.throwSDL2Exception("SDL_CreateColorCursor");
+            _owned = true;
         }
 
         /// Creates a system cursor.
@@ -156,6 +157,35 @@ final class SDL2Cursor
             _handle = SDL_CreateSystemCursor(id);
             if(_handle is null)
                 _sdl2.throwSDL2Exception("SDL_CreateSystemCursor");
+            _owned = true;
+        }
+
+        // TODO uncomment when Derelict has SDL_GetDefaultCursor
+        /*
+        /// Returns: Default cursor.
+        /// See_also: $(LINK http://wiki.libsdl.org/SDL_GetDefaultCursor)
+        /// Throws: $(D SDL2Exception) on error.
+        static SDL2Cursor getDefault(SDL2 sdl2)
+        {
+            SDL_Cursor* handle = SDL_GetDefaultCursor();
+            if(handle is null)
+                sdl2.throwSDL2Exception("SDL_GetDefaultCursor");
+
+            return new SDL2Cursor(sdl2, handle);
+
+        }
+        */
+
+        /// Returns: Current cursor.
+        /// See_also: $(LINK http://wiki.libsdl.org/SDL_GetCursor)
+        /// Throws: $(D SDL2Exception) on error.
+        static SDL2Cursor getCurrent(SDL2 sdl2)
+        {
+            SDL_Cursor* handle = SDL_GetCursor();
+            if(handle is null)
+                sdl2.throwSDL2Exception("SDL_GetCursor");
+
+            return new SDL2Cursor(sdl2, handle);
         }
 
         ~this()
@@ -171,9 +201,10 @@ final class SDL2Cursor
 
         void close()
         {
-            if (_handle !is null)
+            if (_owned && _handle !is null)
             {
                 SDL_FreeCursor(_handle);
+                _handle = null;
             }
         }
 
@@ -188,5 +219,14 @@ final class SDL2Cursor
         SDL2 _sdl2;
         SDL_Cursor* _handle;
         SDL2Surface _surface;
+        bool _owned;
+
+        // Create with specified handle.
+        this(SDL2 sdl2, SDL_Cursor* handle)
+        {
+            _sdl2 = sdl2;
+            _handle = handle;
+            _owned = false;
+        }
     }
 }
