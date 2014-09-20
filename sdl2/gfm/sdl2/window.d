@@ -366,6 +366,7 @@ class SDL2Window : KeyboardListener, MouseListener
 
         override void onMouseWheel(uint timestamp, SDL2Mouse mouseState, int wheelDeltaX, int wheelDeltaY)
         {
+            // do nothing by default
         }
 
         // Keybard event callbacks
