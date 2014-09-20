@@ -11,10 +11,37 @@ import gfm.sdl2.sdl,
        gfm.sdl2.mouse,
        gfm.sdl2.keyboard;
 
+
+/// An interface for mouse events.
+interface KeyboardListener
+{
+    /// Called whenever a keyboard button is pressed.
+    void onKeyDown(uint timestamp, SDL2Keyboard keyboard, SDL_Keycode key);
+
+    /// Called whenever a keyboard button is released.
+    void onKeyUp(uint timestamp, SDL2Keyboard keyboard, SDL_Keycode key);
+}
+
+/// An interface for mouse events.
+interface MouseListener
+{
+    /// Called whenever the mouse moves.
+    void onMouseMove(uint timestamp, SDL2Mouse mouseState);
+
+    /// Called whenever a mouse button is pressed.
+    void onMouseButtonPressed(uint timestamp, SDL2Mouse mouseState, int button, bool isDoubleClick);
+
+    /// Called whenever a mouse button is released.
+    void onMouseButtonReleased(uint timestamp, SDL2Mouse mouseState, int button);
+
+    /// Called whenever the mouse wheel is scrolled.
+    void onMouseWheel(uint timestamp, SDL2Mouse mouseState, int wheelDeltaX, int wheelDeltaY);
+}
+
 /// SDL Window wrapper.
 /// There is two ways to receive events, either by polling a SDL2 object, 
 /// or by overriding the event callbacks.
-class SDL2Window
+class SDL2Window : KeyboardListener, MouseListener
 {
     public
     {
@@ -322,36 +349,35 @@ class SDL2Window
 
         // Mouse event callbacks
 
-        ///
-        void onMouseMove(uint timestamp, SDL2Mouse mouseState)
+        override void onMouseMove(uint timestamp, SDL2Mouse mouseState)
         {
+            // do nothing by default
         }
 
-        ///
-        void onMouseButtonPressed(uint timestamp, SDL2Mouse mouseState, int button, bool isDoubleClick)
+        override void onMouseButtonPressed(uint timestamp, SDL2Mouse mouseState, int button, bool isDoubleClick)
         {
+            // do nothing by default
         }
 
-        ///
-        void onMouseButtonReleased(uint timestamp, SDL2Mouse mouseState, int button)
+        override void onMouseButtonReleased(uint timestamp, SDL2Mouse mouseState, int button)
         {
+            // do nothing by default
         }
 
-        ///
-        void onMouseWheel(uint timestamp, SDL2Mouse mouseState, int wheelDeltaX, int wheelDeltaY)
+        override void onMouseWheel(uint timestamp, SDL2Mouse mouseState, int wheelDeltaX, int wheelDeltaY)
         {
         }
 
         // Keybard event callbacks
 
-        ///
-        void onKeyDown(uint timestamp, SDL2Keyboard keyboard, SDL_Keycode key)
+        override void onKeyDown(uint timestamp, SDL2Keyboard keyboard, SDL_Keycode key)
         {
+            // do nothing by default
         }
 
-        ///
-        void onKeyUp(uint timestamp, SDL2Keyboard keyboard, SDL_Keycode key)
+        override void onKeyUp(uint timestamp, SDL2Keyboard keyboard, SDL_Keycode key)
         {
+            // do nothing by default
         }
 
         /// Swap OpenGL buffers.
