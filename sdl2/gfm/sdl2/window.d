@@ -7,7 +7,9 @@ import derelict.sdl2.sdl;
 import std.logger;
 
 import gfm.sdl2.sdl,
-       gfm.sdl2.surface;
+       gfm.sdl2.surface,
+       gfm.sdl2.mouse,
+       gfm.sdl2.keyboard;
 
 /// SDL Window wrapper.
 /// There is two ways to receive events, either by polling a SDL2 object, 
@@ -315,6 +317,40 @@ class SDL2Window
         
         ///
         void onClose()
+        {
+        }
+
+        // Mouse event callbacks
+
+        ///
+        void onMouseMove(uint timestamp, SDL2Mouse mouseState)
+        {
+        }
+
+        ///
+        void onMouseButtonPressed(uint timestamp, SDL2Mouse mouseState, int button, bool isDoubleClick)
+        {
+        }
+
+        ///
+        void onMouseButtonReleased(uint timestamp, SDL2Mouse mouseState, int button)
+        {
+        }
+
+        ///
+        void onMouseWheel(uint timestamp, SDL2Mouse mouseState, int wheelDeltaX, int wheelDeltaY)
+        {
+        }
+
+        // Keybard event callbacks
+
+        ///
+        void onKeyDown(uint timestamp, SDL2Keyboard keyboard, SDL_Keycode key)
+        {
+        }
+
+        ///
+        void onKeyUp(uint timestamp, SDL2Keyboard keyboard, SDL_Keycode key)
         {
         }
 

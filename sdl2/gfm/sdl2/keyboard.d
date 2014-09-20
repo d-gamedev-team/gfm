@@ -17,7 +17,7 @@ final class SDL2Keyboard
         }      
 
         /// Returns: true if a key is pressed.
-        bool isPressed(int key)
+        bool isPressed(SDL_Keycode key)
         {
             SDL_Scancode scan = SDL_GetScancodeFromKey(key);
             return (_state[scan] == PRESSED);
@@ -25,7 +25,7 @@ final class SDL2Keyboard
 
         /// Mark a key as unpressed.
         /// Returns: true if a key was pressed.
-        bool testAndRelease(int key)
+        bool testAndRelease(SDL_Keycode key)
         {
             SDL_Scancode scan = SDL_GetScancodeFromKey(key);
             return markKeyAsReleased(key);

@@ -32,10 +32,28 @@ final class SDL2Mouse
             return _y;
         }
 
+        /// Returns: X relative movement on last motion event.
+        int lastDeltaX() pure const nothrow
+        {
+            return _lastDeltaX;
+        }
+
+        /// Returns: Y relative movement on last motion event.
+        int lastDeltaY() pure const nothrow
+        {
+            return _lastDeltaY;
+        }
+
         /// Returns: Coordinates of mouse pointer.
         SDL_Point position() pure const nothrow
         {
             return SDL_Point(_x, _y);
+        }
+
+        /// Returns: Previous coordinates of mouse pointer. Useful in onMouseMove event callback.
+        SDL_Point previousPosition() pure const nothrow
+        {
+            return SDL_Point(_x - _lastDeltaX, _y - _lastDeltaY);
         }
 
         /// Returns: How much was scrolled by X coordinate since the last call.
@@ -69,6 +87,8 @@ final class SDL2Mouse
             _buttonState = SDL_GetMouseState(null, null);
             _x = event.x;
             _y = event.y;
+            _lastDeltaX = event.xrel;
+            _lastDeltaY = event.yrel;
         }
 
         void updateButtons(const(SDL_MouseButtonEvent)* event)
@@ -101,8 +121,9 @@ final class SDL2Mouse
 
         // mouse wheel scrolled amounts
         int _wheelX = 0, 
-            _wheelY =0;
+            _wheelY = 0;
 
+        int _lastDeltaX = 0,
+            _lastDeltaY = 0;
     }
-
 }
