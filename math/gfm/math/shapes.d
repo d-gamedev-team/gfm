@@ -373,7 +373,7 @@ align(1) struct Frustum(T) if (isFloatingPoint!T)
 
             for (size_t i = 0; i < 2; ++i)
                 for (size_t j = 0; j < 2; ++j)
-                    for (size_t k = 0; k < 2; ++j)
+                    for (size_t k = 0; k < 2; ++k)
                     {
                         auto x = i == 0 ? box.min.x : box.max.x;
                         auto y = i == 0 ? box.min.y : box.max.y;
