@@ -4,37 +4,37 @@ import std.math,
        std.traits;
 
 /// Returns: minimum of a and b.
-T min(T)(T a, T b) pure nothrow
+T min(T)(T a, T b) pure nothrow @nogc
 {
     return a < b ? a : b;
 }
 
 /// Returns: maximum of a and b.
-T max(T)(T a, T b) pure nothrow
+T max(T)(T a, T b) pure nothrow @nogc
 {
     return a > b ? a : b;
 }
 
 /// Convert from radians to degrees.
-T degrees(T)(T x) pure if (!isIntegral!T)
+T degrees(T)(T x) pure nothrow @nogc if (!isIntegral!T)
 {
     return x * (180 / PI);
 }
 
 /// Convert from degrees to radians.
-T radians(T)(T x) pure nothrow if (!isIntegral!T)
+T radians(T)(T x) pure nothrow @nogc if (!isIntegral!T)
 {
     return x * (PI / 180);
 }
 
 /// Linear interpolation, akin to GLSL's mix.
-S lerp(S, T)(S a, S b, T t) pure nothrow
+S lerp(S, T)(S a, S b, T t) pure nothrow @nogc
 {
     return t * b + (1 - t) * a;
 }
 
 /// Clamp x in [min, max], akin to GLSL's clamp.
-T clamp(T)(T x, T min, T max) pure nothrow
+T clamp(T)(T x, T min, T max) pure nothrow @nogc
 {
     if (x < min)
         return min;
@@ -45,45 +45,45 @@ T clamp(T)(T x, T min, T max) pure nothrow
 }
 
 /// Integer truncation.
-long ltrunc(real x) nothrow // may be pure but trunc isn't pure
+long ltrunc(real x) nothrow @nogc // may be pure but trunc isn't pure
 {
     return cast(long)(trunc(x));
 }
 
 /// Integer flooring.
-long lfloor(real x) nothrow // may be pure but floor isn't pure
+long lfloor(real x) nothrow @nogc // may be pure but floor isn't pure
 {
     return cast(long)(floor(x));
 }
 
 /// Returns: Fractional part of x.
-T fract(T)(real x) nothrow
+T fract(T)(real x) nothrow @nogc
 {
     return x - lfloor(x);
 }
 
 /// Safe asin: input clamped to [-1, 1]
-T safeAsin(T)(T x) pure nothrow
+T safeAsin(T)(T x) pure nothrow @nogc
 {
     return asin(clamp!T(x, -1, 1));
 }
 
 /// Safe acos: input clamped to [-1, 1]
-T safeAcos(T)(T x) pure nothrow
+T safeAcos(T)(T x) pure nothrow @nogc
 {
     return acos(clamp!T(x, -1, 1));
 }
 
 /// Same as GLSL step function.
 /// 0.0 is returned if x < edge, and 1.0 is returned otherwise.
-T step(T)(T edge, T x) pure nothrow
+T step(T)(T edge, T x) pure nothrow @nogc
 {
     return (x < edge) ? 0 : 1;
 }
 
 /// Same as GLSL smoothstep function.
 /// See: http://en.wikipedia.org/wiki/Smoothstep
-T smoothStep(T)(T a, T b, T t) pure nothrow
+T smoothStep(T)(T a, T b, T t) pure nothrow @nogc
 {
     if (t <= a) 
         return 0;
@@ -97,7 +97,7 @@ T smoothStep(T)(T a, T b, T t) pure nothrow
 }
 
 /// Returns: true of i is a power of 2.
-bool isPowerOf2(T)(T i) nothrow if (isIntegral!T)
+bool isPowerOf2(T)(T i) pure nothrow @nogc if (isIntegral!T)
 {
     assert(i >= 0);
     return (i != 0) && ((i & (i - 1)) == 0);
@@ -105,7 +105,7 @@ bool isPowerOf2(T)(T i) nothrow if (isIntegral!T)
 
 /// Integer log2
 /// TODO: use bt intrinsics
-int ilog2(T)(T i) nothrow if (isIntegral!T)
+int ilog2(T)(T i) nothrow @nogc if (isIntegral!T)
 {
     assert(i > 0);
     assert(isPowerOf2(i));
@@ -119,7 +119,7 @@ int ilog2(T)(T i) nothrow if (isIntegral!T)
 }
 
 /// Computes next power of 2.
-int nextPowerOf2(int i) nothrow
+int nextPowerOf2(int i) pure nothrow @nogc
 {
     int v = i - 1;
     v |= v >> 1;
@@ -133,7 +133,7 @@ int nextPowerOf2(int i) nothrow
 }
 
 /// Computes next power of 2.
-long nextPowerOf2(long i) nothrow
+long nextPowerOf2(long i) pure nothrow @nogc
 {
     long v = i - 1;
     v |= v >> 1;
@@ -149,7 +149,7 @@ long nextPowerOf2(long i) nothrow
 
 /// Computes sin(x)/x accurately.
 /// See: http://www.plunk.org/~hatch/rightway.php
-T sinOverX(T)(T x)
+T sinOverX(T)(T x) pure nothrow @nogc
 {
     if (1 + x * x == 1)
         return 1;
@@ -160,7 +160,7 @@ T sinOverX(T)(T x)
 
 /// Signed integer modulo a/b where the remainder is guaranteed to be in [0..b[,
 /// even if a is negative. Only support positive dividers.
-T moduloWrap(T)(T a, T b) pure nothrow if (isSigned!T)
+T moduloWrap(T)(T a, T b) pure nothrow @nogc if (isSigned!T)
 in
 {
     assert(b > 0);
@@ -188,7 +188,7 @@ unittest
  * Find the root of a linear polynomial a + b x = 0
  * Returns: Number of roots.
  */
-size_t solveLinear(T)(T a, T b, out T root) pure nothrow if (isFloatingPoint!T)
+size_t solveLinear(T)(T a, T b, out T root) pure nothrow @nogc if (isFloatingPoint!T)
 {
     if (b == 0)
     {
@@ -208,7 +208,7 @@ size_t solveLinear(T)(T a, T b, out T root) pure nothrow if (isFloatingPoint!T)
  *     outRoots = array of root results, should have room for at least 2 elements.
  * Returns: Number of roots in outRoots.
  */
-size_t solveQuadratic(T)(T a, T b, T c, T[] outRoots) pure nothrow if (isFloatingPoint!T)
+size_t solveQuadratic(T)(T a, T b, T c, T[] outRoots) pure nothrow @nogc if (isFloatingPoint!T)
 {
     assert(outRoots.length >= 2);
     if (c == 0)
@@ -234,7 +234,7 @@ size_t solveQuadratic(T)(T a, T b, T c, T[] outRoots) pure nothrow if (isFloatin
  * Returns: Number of roots in outRoots.
  * See_also: $(WEB www.codeguru.com/forum/archive/index.php/t-265551.html)
  */
-size_t solveCubic(T)(T a, T b, T c, T d, T[] outRoots) pure nothrow if (isFloatingPoint!T)
+size_t solveCubic(T)(T a, T b, T c, T d, T[] outRoots) pure nothrow @nogc if (isFloatingPoint!T)
 {
     assert(outRoots.length >= 3);
     if (d == 0)
@@ -285,7 +285,7 @@ size_t solveCubic(T)(T a, T b, T c, T d, T[] outRoots) pure nothrow if (isFloati
  * Bugs: doesn't pass unit-test!
  * See_also: $(WEB mathworld.wolfram.com/QuarticEquation.html)
  */
-size_t solveQuartic(T)(T a, T b, T c, T d, T e, T[] roots) pure nothrow if (isFloatingPoint!T)
+size_t solveQuartic(T)(T a, T b, T c, T d, T e, T[] roots) pure nothrow @nogc if (isFloatingPoint!T)
 {
     assert(roots.length >= 4);
 

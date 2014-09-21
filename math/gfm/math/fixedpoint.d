@@ -28,43 +28,43 @@ align(1) struct FixedPoint(int M, int N)
         alias TypeNeeded!(N + M) value_t;
 
         /// Construct with an assignable value.
-        this(U)(U x) pure nothrow
+        this(U)(U x) pure nothrow @nogc
         {
             opAssign!U(x);
         }
 
         /// Construct with an assignable value.
-        ref FixedPoint opAssign(U)(U x) pure nothrow if (is(U: FixedPoint))
+        ref FixedPoint opAssign(U)(U x) pure nothrow @nogc if (is(U: FixedPoint))
         {
             value = x.value;
             return this;
         }
 
-        ref FixedPoint opAssign(U)(U x) pure nothrow if (isIntegral!U)
+        ref FixedPoint opAssign(U)(U x) pure nothrow @nogc if (isIntegral!U)
         {
             value = x * ONE;                // exact
             return this;
         }
 
-        ref FixedPoint opAssign(U)(U x) pure nothrow if (isFloatingPoint!U)
+        ref FixedPoint opAssign(U)(U x) pure nothrow @nogc if (isFloatingPoint!U)
         {
             value = cast(value_t)(x * ONE); // truncation
             return this;
         }
 
         // casting to float
-        U opCast(U)() pure const nothrow if (isFloatingPoint!U)
+        U opCast(U)() pure const nothrow @nogc if (isFloatingPoint!U)
         {
             return cast(U)(value) / ONE;
         }
 
         // casting to integer (truncation)
-        U opCast(U)() pure const nothrow if (isIntegral!U)
+        U opCast(U)() pure const nothrow @nogc if (isIntegral!U)
         {
             return cast(U)(value) >> N;
         }
 
-        ref FixedPoint opOpAssign(string op, U)(U x) pure nothrow if (is(U: FixedPoint))
+        ref FixedPoint opOpAssign(string op, U)(U x) pure nothrow @nogc if (is(U: FixedPoint))
         {
             static if (op == "+")
             {
@@ -95,36 +95,36 @@ align(1) struct FixedPoint(int M, int N)
             }
         }
 
-        ref FixedPoint opOpAssign(string op, U)(U x) pure nothrow if (isConvertible!U)
+        ref FixedPoint opOpAssign(string op, U)(U x) pure nothrow @nogc if (isConvertible!U)
         {
             FixedPoint conv = x;
             return opOpAssign!op(conv);
         }
 
-        FixedPoint opBinary(string op, U)(U x) pure const nothrow if (is(U: FixedPoint) || (isConvertible!U))
+        FixedPoint opBinary(string op, U)(U x) pure const nothrow @nogc if (is(U: FixedPoint) || (isConvertible!U))
         {
             FixedPoint temp = this;
             return temp.opOpAssign!op(x);
         }
 
-        FixedPoint opBinaryRight(string op, U)(U x) pure const nothrow if (isConvertible!U)
+        FixedPoint opBinaryRight(string op, U)(U x) pure const nothrow @nogc if (isConvertible!U)
         {
             FixedPoint temp = x;
             return temp.opOpAssign!op(this);
         }
 
-        bool opEquals(U)(U other) pure const nothrow if (is(U : FixedPoint))
+        bool opEquals(U)(U other) pure const nothrow @nogc if (is(U : FixedPoint))
         {
             return value == other.value;
         }
 
-        bool opEquals(U)(U other) pure const nothrow if (isConvertible!U)
+        bool opEquals(U)(U other) pure const nothrow @nogc if (isConvertible!U)
         {
             FixedPoint conv = other;
             return opEquals(conv);
         }
 
-        int opCmp(in FixedPoint other) pure const nothrow
+        int opCmp(in FixedPoint other) pure const nothrow @nogc
         {
             if (value > other.value)
                 return 1;
@@ -134,12 +134,12 @@ align(1) struct FixedPoint(int M, int N)
                 return 0;
         }
 
-        FixedPoint opUnary(string op)() pure const nothrow if (op == "+")
+        FixedPoint opUnary(string op)() pure const nothrow @nogc if (op == "+")
         {
             return this;
         }
 
-        FixedPoint opUnary(string op)() pure const nothrow if (op == "-")
+        FixedPoint opUnary(string op)() pure const nothrow @nogc if (op == "-")
         {
             FixedPoint res = void;
             res.value = -value;
@@ -185,7 +185,7 @@ private template TypeNeeded(int numBits)
 }
 
 /// abs() function for fixed-point numbers.
-FixedPoint!(M, N) abs(int M, int N)(FixedPoint!(M, N) x) pure nothrow
+FixedPoint!(M, N) abs(int M, int N)(FixedPoint!(M, N) x) pure nothrow @nogc
 {
     FixedPoint!(M, N) res = void;
     res.value = ((x.value >= 0) ? x.value : -x.value);

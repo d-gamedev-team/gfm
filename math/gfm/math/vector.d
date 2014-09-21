@@ -52,7 +52,7 @@ nothrow:
         static if (N == 2u)
         {
             /// Creates a vector of 2 elements.
-            this(X : T, Y : T)(X x_, Y y_) pure nothrow
+            this(X : T, Y : T)(X x_, Y y_) pure nothrow @nogc
             {
                 x = x_;
                 y = y_;
@@ -61,7 +61,7 @@ nothrow:
         else static if (N == 3u)
         {
             /// Creates a vector of 3 elements.
-            this(X : T, Y : T, Z : T)(X x_, Y y_, Z z_) pure nothrow
+            this(X : T, Y : T, Z : T)(X x_, Y y_, Z z_) pure nothrow @nogc
             {
                 x = x_;
                 y = y_;
@@ -69,7 +69,7 @@ nothrow:
             }
 
             /// Creates a vector of 3 elements.
-            this(X : T, Y : T)(Vector!(X, 2u) xy_, Y z_) pure nothrow
+            this(X : T, Y : T)(Vector!(X, 2u) xy_, Y z_) pure nothrow @nogc
             {
                 x = xy_.x;
                 y = xy_.y;
@@ -77,7 +77,7 @@ nothrow:
             }
 
             /// Creates a vector of 3 elements.
-            this(X : T, Y : T)(X x_, Vector!(Y, 2u) yz_) pure nothrow
+            this(X : T, Y : T)(X x_, Vector!(Y, 2u) yz_) pure nothrow @nogc
             {
                 x = x_;
                 y = yz_.x;
@@ -87,7 +87,7 @@ nothrow:
         else static if (N == 4u)
         {
             /// Creates a vector of 4 elements.
-            this(X : T, Y : T, Z : T, W : T)(X x_, Y y_, Z z_, W w_) pure nothrow
+            this(X : T, Y : T, Z : T, W : T)(X x_, Y y_, Z z_, W w_) pure nothrow @nogc
             {
                 x = x_;
                 y = y_;
@@ -96,7 +96,7 @@ nothrow:
             }
 
             /// Creates a vector of 4 elements.
-            this(X : T, Y : T)(Vector!(X, 2u) xy_, Vector!(Y, 2u)zw_) pure nothrow
+            this(X : T, Y : T)(Vector!(X, 2u) xy_, Vector!(Y, 2u)zw_) pure nothrow @nogc
             {
                 x = xy_.x;
                 y = xy_.y;
@@ -105,7 +105,7 @@ nothrow:
             }
 
             /// Creates a vector of 4 elements.
-            this(X : T, Y : T, Z : T)(Vector!(X, 2u) xy_, Y z_, Z w_) pure nothrow
+            this(X : T, Y : T, Z : T)(Vector!(X, 2u) xy_, Y z_, Z w_) pure nothrow @nogc
             {
                 x = xy_.x;
                 y = xy_.y;
@@ -114,7 +114,7 @@ nothrow:
             }
 
             /// Creates a vector of 4 elements.
-            this(X : T, Y : T)(Vector!(X, 3u) xyz_, Y w_) pure nothrow
+            this(X : T, Y : T)(Vector!(X, 3u) xyz_, Y w_) pure nothrow @nogc
             {
                 x = xyz_.x;
                 y = xyz_.y;
@@ -123,7 +123,7 @@ nothrow:
             }
 
             /// Creates a vector of 4 elements.
-            this(X : T, Y : T)(X x_, Vector!(X, 3u) yzw_) pure nothrow
+            this(X : T, Y : T)(X x_, Vector!(X, 3u) yzw_) pure nothrow @nogc
             {
                 x = x_;
                 y = yzw_.x;
@@ -133,20 +133,20 @@ nothrow:
         }
 
         /// Construct a Vector from a value.
-        this(U)(U x) pure nothrow
+        this(U)(U x) pure nothrow @nogc
         {
             opAssign!U(x);
         }
 
         /// Assign a Vector from a compatible type.
-        ref Vector opAssign(U)(U x) pure nothrow if (is(U: T))
+        ref Vector opAssign(U)(U x) pure nothrow @nogc if (is(U: T))
         {
             v[] = x; // copy to each component
             return this;
         }
 
         /// Assign a Vector with a static array type.
-        ref Vector opAssign(U)(U arr) pure nothrow if ((isStaticArray!(U) && is(typeof(arr[0]) : T) && (arr.length == N)))
+        ref Vector opAssign(U)(U arr) pure nothrow @nogc if ((isStaticArray!(U) && is(typeof(arr[0]) : T) && (arr.length == N)))
         {
             for (size_t i = 0; i < N; ++i)
                 v[i] = arr[i];
@@ -155,7 +155,7 @@ nothrow:
 
         /// Assign with a dynamic array.
         /// Size is checked in debug-mode.
-        ref Vector opAssign(U)(U arr) pure nothrow if (isDynamicArray!(U) && is(typeof(arr[0]) : T))
+        ref Vector opAssign(U)(U arr) pure nothrow @nogc if (isDynamicArray!(U) && is(typeof(arr[0]) : T))
         {
             assert(arr.length == N);
             for (size_t i = 0; i < N; ++i)
@@ -164,7 +164,7 @@ nothrow:
         }
 
         /// Assign from a samey Vector.
-        ref Vector opAssign(U)(U u) pure nothrow if (is(U : Vector))
+        ref Vector opAssign(U)(U u) pure nothrow @nogc if (is(U : Vector))
         {
             static if (N <= 4u)
             {
@@ -184,10 +184,10 @@ nothrow:
         }
 
         /// Assign from other vectors types (same size, compatible type).
-        ref Vector opAssign(U)(U x) pure nothrow if (is(typeof(U._isVector))
-                                                 && is(U._T : T)
-                                                 && (!is(U: Vector))
-                                                 && (U._N == _N))
+        ref Vector opAssign(U)(U x) pure nothrow @nogc if (is(typeof(U._isVector))
+                                                       && is(U._T : T)
+                                                       && (!is(U: Vector))
+                                                       && (U._N == _N))
         {
             for (size_t i = 0; i < N; ++i)
                 v[i] = x.v[i];
@@ -195,7 +195,7 @@ nothrow:
         }
 
         /// Returns: a pointer to content.
-        inout(T)* ptr() pure inout nothrow @property
+        inout(T)* ptr() pure inout nothrow @property @nogc
         {
             return v.ptr;
         }
@@ -209,7 +209,7 @@ nothrow:
                 assert(false); // should not happen since format is right
         }
 
-        bool opEquals(U)(U other) pure const nothrow
+        bool opEquals(U)(U other) pure const nothrow @nogc
             if (is(U : Vector))
         {
             for (size_t i = 0; i < N; ++i)
@@ -222,14 +222,14 @@ nothrow:
             return true;
         }
 
-        bool opEquals(U)(U other) pure const nothrow
+        bool opEquals(U)(U other) pure const nothrow @nogc
             if (isConvertible!U)
         {
             Vector conv = other;
             return opEquals(conv);
         }
 
-        Vector opUnary(string op)() pure const nothrow
+        Vector opUnary(string op)() pure const nothrow @nogc
             if (op == "+" || op == "-" || op == "~" || op == "!")
         {
             Vector res = void;
@@ -240,7 +240,7 @@ nothrow:
             return res;
         }
 
-        ref Vector opOpAssign(string op, U)(U operand) pure nothrow
+        ref Vector opOpAssign(string op, U)(U operand) pure nothrow @nogc
             if (is(U : Vector))
         {
             for (size_t i = 0; i < N; ++i)
@@ -250,36 +250,36 @@ nothrow:
             return this;
         }
 
-        ref Vector opOpAssign(string op, U)(U operand) pure nothrow if (isConvertible!U)
+        ref Vector opOpAssign(string op, U)(U operand) pure nothrow @nogc if (isConvertible!U)
         {
             Vector conv = operand;
             return opOpAssign!op(conv);
         }
 
-        Vector opBinary(string op, U)(U operand) pure const nothrow
+        Vector opBinary(string op, U)(U operand) pure const nothrow @nogc
             if (is(U: Vector) || (isConvertible!U))
         {
             Vector temp = this;
             return temp.opOpAssign!op(operand);
         }
 
-        Vector opBinaryRight(string op, U)(U operand) pure const nothrow if (isConvertible!U)
+        Vector opBinaryRight(string op, U)(U operand) pure const nothrow @nogc if (isConvertible!U)
         {
             Vector temp = operand;
             return temp.opOpAssign!op(this);
         }
 
-        ref T opIndex(size_t i) pure nothrow
+        ref T opIndex(size_t i) pure nothrow @nogc
         {
             return v[i];
         }
 
-        ref const(T) opIndex(size_t i) pure const nothrow
+        ref const(T) opIndex(size_t i) pure const nothrow @nogc
         {
             return v[i];
         }
 
-        T opIndexAssign(U : T)(U x, size_t i) pure nothrow
+        T opIndexAssign(U : T)(U x, size_t i) pure nothrow @nogc
         {
             return v[i] = x;
         }
@@ -292,7 +292,7 @@ nothrow:
         /// vec4i vi = [4, 1, 83, 10];
         /// assert(vi.zxxyw == [83, 4, 4, 1, 10]);
         /// ---
-        @property auto opDispatch(string op, U = void)() pure const nothrow if (isValidSwizzle!(op))
+        @property auto opDispatch(string op, U = void)() pure const nothrow @nogc if (isValidSwizzle!(op))
         {
             alias Vector!(T, op.length) returnType;
             returnType res = void;
@@ -310,7 +310,7 @@ nothrow:
         /// v.yz = v.zx;
         /// assert(v == [0, 2, 0]);
         /// ---
-        @property void opDispatch(string op, U)(U x) pure
+        @property void opDispatch(string op, U)(U x) pure @nogc
             if ((op.length >= 2)
                 && (isValidSwizzleUnique!op)                   // v.xyy will be rejected
                 && is(typeof(Vector!(T, op.length)(x)))) // can be converted to a small vector of the right size
@@ -327,7 +327,7 @@ nothrow:
         /// vec4f vf;
         /// vec4d vd = cast!(vec4d)vf;
         /// ---
-        U opCast(U)() pure const nothrow if (is(typeof(U._isVector)) && (U._N == _N))
+        U opCast(U)() pure const nothrow @nogc if (is(typeof(U._isVector)) && (U._N == _N))
         {
             U res = void;
             for (size_t i = 0; i < N; ++i)
@@ -340,25 +340,25 @@ nothrow:
         /// Implement slices operator overloading.
         /// Allows to go back to slice world.
         /// Returns: length.
-        size_t opDollar() pure const nothrow
+        size_t opDollar() pure const nothrow @nogc
         {
             return N;
         }
 
         /// Returns: a slice which covers the whole Vector.
-        T[] opSlice() pure nothrow
+        T[] opSlice() pure nothrow @nogc
         {
             return v[];
         }
 
         // vec[a..b]
-        T[] opSlice(int a, int b) pure nothrow
+        T[] opSlice(int a, int b) pure nothrow @nogc
         {
             return v[a..b];
         }
 
         /// Returns: squared length.
-        T squaredLength() pure const nothrow
+        T squaredLength() pure const nothrow @nogc
         {
             T sumSquares = 0;
             for (size_t i = 0; i < N; ++i)
@@ -369,7 +369,7 @@ nothrow:
         }
 
         // Returns: squared Euclidean distance.
-        T squaredDistanceTo(Vector v) pure const nothrow
+        T squaredDistanceTo(Vector v) pure const nothrow @nogc
         {
             return (v - this).squaredLength();
         }
@@ -377,19 +377,19 @@ nothrow:
         static if (isFloatingPoint!T)
         {
             /// Returns: Euclidean length
-            T length() pure const nothrow
+            T length() pure const nothrow @nogc
             {
                 return sqrt(squaredLength());
             }
 
             /// Returns: Euclidean distance between this and other.
-            T distanceTo(Vector other) pure const nothrow
+            T distanceTo(Vector other) pure const nothrow @nogc
             {
                 return (other - this).length();
             }
 
             /// In-place normalization.
-            void normalize() pure nothrow
+            void normalize() pure nothrow @nogc
             {
                 auto invLength = 1 / length();
                 for (size_t i = 0; i < N; ++i)
@@ -399,7 +399,7 @@ nothrow:
             }
 
             /// Returns: Normalized vector.
-            Vector normalized() pure const nothrow
+            Vector normalized() pure const nothrow @nogc
             {
                 Vector res = this;
                 res.normalize();
@@ -412,7 +412,7 @@ nothrow:
                 /// Doesn’t normalise the output.
                 /// Authors: Sam Hocevar
                 /// See_also: Source at $(WEB lolengine.net/blog/2013/09/21/picking-orthogonal-vector-combing-coconuts).
-                Vector getOrthogonalVector()
+                Vector getOrthogonalVector() pure const nothrow @nogc
                 {
                     return abs(x) > abs(z) ? Vector(-y, x, 0.0) : Vector(0.0, -z, y);
                 }
@@ -554,7 +554,7 @@ mixin(definePostfixAliases("vec4"));
 
 
 /// Element-wise minimum.
-Vector!(T, N) min(T, size_t N)(const Vector!(T, N) a, const Vector!(T, N) b) pure nothrow
+Vector!(T, N) min(T, size_t N)(const Vector!(T, N) a, const Vector!(T, N) b) pure nothrow @nogc
 {
     import std.algorithm: min;
     Vector!(T, N) res = void;
@@ -564,7 +564,7 @@ Vector!(T, N) min(T, size_t N)(const Vector!(T, N) a, const Vector!(T, N) b) pur
 }
 
 /// Element-wise maximum.
-Vector!(T, N) max(T, size_t N)(const Vector!(T, N) a, const Vector!(T, N) b) pure nothrow
+Vector!(T, N) max(T, size_t N)(const Vector!(T, N) a, const Vector!(T, N) b) pure nothrow @nogc
 {
     import std.algorithm: max;
     Vector!(T, N) res = void;
@@ -574,7 +574,7 @@ Vector!(T, N) max(T, size_t N)(const Vector!(T, N) a, const Vector!(T, N) b) pur
 }
 
 /// Returns: Dot product.
-T dot(T, size_t N)(const Vector!(T, N) a, const Vector!(T, N) b) pure nothrow
+T dot(T, size_t N)(const Vector!(T, N) a, const Vector!(T, N) b) pure nothrow @nogc
 {
     T sum = 0;
     for(size_t i = 0; i < N; ++i)
@@ -584,7 +584,7 @@ T dot(T, size_t N)(const Vector!(T, N) a, const Vector!(T, N) b) pure nothrow
 
 /// Returns: 3D cross product.
 /// Thanks to vuaru for corrections.
-Vector!(T, 3u) cross(T)(const Vector!(T, 3u) a, const Vector!(T, 3u) b) pure nothrow
+Vector!(T, 3u) cross(T)(const Vector!(T, 3u) a, const Vector!(T, 3u) b) pure nothrow @nogc
 {
     return Vector!(T, 3u)(a.y * b.z - a.z * b.y,
                           a.z * b.x - a.x * b.z,
@@ -593,7 +593,7 @@ Vector!(T, 3u) cross(T)(const Vector!(T, 3u) a, const Vector!(T, 3u) b) pure not
 
 /// 3D reflect, like the GLSL function.
 /// Returns: a reflected by normal b.
-Vector!(T, 3u) reflect(T)(const Vector!(T, 3u) a, const Vector!(T, 3u) b) pure nothrow
+Vector!(T, 3u) reflect(T)(const Vector!(T, 3u) a, const Vector!(T, 3u) b) pure nothrow @nogc
 {
     return a - (2 * dot(b, a)) * b;
 }
@@ -601,7 +601,7 @@ Vector!(T, 3u) reflect(T)(const Vector!(T, 3u) a, const Vector!(T, 3u) b) pure n
 
 /// Returns: angle between vectors.
 /// See_also: "The Right Way to Calculate Stuff" at $(WEB www.plunk.org/~hatch/rightway.php)
-T angleBetween(T, size_t N)(const Vector!(T, N) a, const Vector!(T, N) b) pure nothrow
+T angleBetween(T, size_t N)(const Vector!(T, N) a, const Vector!(T, N) b) pure nothrow @nogc
 {
     auto aN = a.normalized();
     auto bN = b.normalized();

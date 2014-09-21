@@ -19,19 +19,19 @@ align(1) struct Rational
         long denom; /// Denominator.
 
         /// Construct a Rational from an integer.
-        this(long n) pure nothrow
+        this(long n) pure nothrow @nogc 
         {
             opAssign!long(n);
         }
 
         /// Construct a Rational from another Rational.
-        this(Rational f) pure nothrow
+        this(Rational f) pure nothrow @nogc 
         {
             opAssign!Rational(f);
         }
 
         /// Construct a Rational from numerator and denominator.
-        this(long numerator, long denominator) pure nothrow
+        this(long numerator, long denominator) pure nothrow @nogc 
         {
             num = numerator;
             denom = denominator;
@@ -39,19 +39,19 @@ align(1) struct Rational
         }
 
         /// Converts to pretty string.
-        string toString() const
+        string toString() const 
         {
             return format("%s/%s", num, denom);
         }
 
         /// Cast to floating point.
-        T opCast(T)() pure const nothrow if (isFloatingPoint!T)
+        T opCast(T)() pure const nothrow @nogc if (isFloatingPoint!T)
         {
             return cast(T)num / cast(T)denom;
         }
 
         /// Assign with another Rational.
-        ref Rational opAssign(T)(T other) pure nothrow if (is(Unqual!T == Rational))
+        ref Rational opAssign(T)(T other) pure nothrow @nogc if (is(Unqual!T == Rational))
         {
             num = other.num;
             denom = other.denom;
@@ -59,27 +59,27 @@ align(1) struct Rational
         }
 
         /// Assign with an integer.
-        ref Rational opAssign(T)(T n) pure nothrow if (isIntegral!T)
+        ref Rational opAssign(T)(T n) pure nothrow @nogc if (isIntegral!T)
         {
             num = n;
             denom = 1;
             return this;
         }
 
-        Rational opBinary(string op, T)(T o) pure const nothrow
+        Rational opBinary(string op, T)(T o) pure const nothrow @nogc 
         {
             Rational r = this;
             Rational y = o;
             return r.opOpAssign!(op)(y);
         }
 
-        ref Rational opOpAssign(string op, T)(T o) pure nothrow if (!is(Unqual!T == Rational))
+        ref Rational opOpAssign(string op, T)(T o) pure nothrow @nogc if (!is(Unqual!T == Rational))
         {
             const(self) o = y;
             return opOpAssign!(op)(o);
         }
 
-        ref Rational opOpAssign(string op, T)(T o) pure nothrow if (is(Unqual!T == Rational))
+        ref Rational opOpAssign(string op, T)(T o) pure nothrow @nogc if (is(Unqual!T == Rational))
         {
             static if (op == "+")
             {
@@ -109,7 +109,7 @@ align(1) struct Rational
         }
 
         // const unary operations
-        Rational opUnary(string op)() pure const nothrow if (op == "+" || op == "-")
+        Rational opUnary(string op)() pure const nothrow @nogc if (op == "+" || op == "-")
         {
             static if (op == "-")
             {
@@ -122,7 +122,7 @@ align(1) struct Rational
         }
 
         // non-const unary operations
-        Rational opUnary(string op)() pure nothrow if (op=="++" || op=="--")
+        Rational opUnary(string op)() pure nothrow @nogc if (op=="++" || op=="--")
         {
             static if (op=="++")
             {
@@ -137,23 +137,23 @@ align(1) struct Rational
             return this;
         }
 
-        bool opEquals(T)(T y) pure const if (!is(Unqual!T == Rational))
+        bool opEquals(T)(T y) pure const nothrow @nogc if (!is(Unqual!T == Rational))
         {
             return this == Rational(y);
         }
 
-        bool opEquals(T)(T o) pure const if (is(Unqual!T == Rational))
+        bool opEquals(T)(T o) pure const nothrow @nogc if (is(Unqual!T == Rational))
         {
             // invariants ensures two equal Rationals have equal representations
             return num == o.num && denom == o.denom;
         }
 
-        int opCmp(T)(T o) pure const if (!is(Unqual!T == Rational))
+        int opCmp(T)(T o) pure const @nogc if (!is(Unqual!T == Rational))
         {
             return opCmp(Rational(o));
         }
 
-        int opCmp(T)(T o) pure const if (is(Unqual!T == Rational))
+        int opCmp(T)(T o) pure const nothrow @nogc if (is(Unqual!T == Rational))
         {
             assert(denom > 0);
             assert(o.denom > 0);
@@ -167,7 +167,7 @@ align(1) struct Rational
         }
 
         /// Returns: Inverse of this rational number.
-        Rational inverse() pure const nothrow
+        Rational inverse() pure const nothrow @nogc
         {
             return Rational(denom, num);
         }
@@ -176,7 +176,7 @@ align(1) struct Rational
     private
     {
         // FIXME: be consistent with regards to sign
-        static long GCD(long a, long b) pure nothrow
+        static long GCD(long a, long b) pure nothrow @nogc
         {
             if (b == 0)
                 return a;
@@ -184,7 +184,7 @@ align(1) struct Rational
                 return GCD(b, a % b);
         }
 
-        void reduce() pure nothrow
+        void reduce() pure nothrow @nogc
         {
             const(long) gcd = GCD(num, denom);
             num /= gcd;
@@ -197,7 +197,7 @@ align(1) struct Rational
             debug checkInvariant();
         }
 
-        void checkInvariant() pure nothrow // can't do this in invariant() because of opAssign
+        void checkInvariant() pure nothrow @nogc // can't do this in invariant() because of opAssign
         {
             assert(denom > 0);
             auto gcd = GCD(num, denom);

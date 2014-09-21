@@ -47,13 +47,13 @@ align(1) struct Triangle(T, size_t N)
         static if (N == 2u)
         {
             /// Returns: Area of a 2D triangle.
-            T area() pure const nothrow 
+            T area() pure const nothrow @nogc
             {
                 return abs(signedArea());
             }
 
             /// Returns: Signed area of a 2D triangle.
-            T signedArea() pure const nothrow
+            T signedArea() pure const nothrow @nogc
             {
                 return ((b.x * a.y - a.x * b.y)
                       + (c.x * b.y - b.x * c.y)
@@ -64,7 +64,7 @@ align(1) struct Triangle(T, size_t N)
         static if (N == 3u)
         {
             /// Returns: Triangle normal.
-            Vector!(T, 3u) computeNormal() pure const nothrow
+            Vector!(T, 3u) computeNormal() pure const nothrow @nogc
             {
                 return cross(b - a, c - a).normalized();
             }
@@ -88,7 +88,7 @@ align(1) struct Sphere(T, size_t N)
         T radius;
 
         /// Creates a sphere from a point and a radius.
-        this(in point_t center_, T radius_) pure nothrow
+        this(in point_t center_, T radius_) pure nothrow @nogc
         {
             center = center_;
             radius = radius_;
@@ -96,7 +96,7 @@ align(1) struct Sphere(T, size_t N)
 
         /// Sphere contains point test.
         /// Returns: true if the point is inside the sphere.
-        bool contains(in Sphere s) pure const nothrow
+        bool contains(in Sphere s) pure const nothrow @nogc
         {
             if (s.radius > radius)
                 return false;
@@ -106,14 +106,14 @@ align(1) struct Sphere(T, size_t N)
         }
 
         /// Sphere vs point Euclidean distance squared.
-        T squaredDistanceTo(point_t p) pure const nothrow
+        T squaredDistanceTo(point_t p) pure const nothrow @nogc
         {
             return center.squaredDistanceTo(p);
         }
 
         /// Sphere vs sphere intersection.
         /// Returns: true if the spheres intersect.
-        bool intersects(Sphere s) pure const nothrow
+        bool intersects(Sphere s) pure const nothrow @nogc
         {
             T outerRadius = radius + s.radius;
             return squaredDistanceTo(s.center) < outerRadius * outerRadius;
@@ -122,7 +122,7 @@ align(1) struct Sphere(T, size_t N)
         static if (isFloatingPoint!T)
         {
             /// Sphere vs point Euclidean distance.
-            T distanceTo(point_t p) pure const nothrow
+            T distanceTo(point_t p) pure const nothrow @nogc
             {
                 return center.distanceTo(p);
             }
@@ -130,7 +130,7 @@ align(1) struct Sphere(T, size_t N)
             static if(N == 2u)
             {
                 /// Returns: Circle area.
-                T area() pure const nothrow
+                T area() pure const nothrow @nogc
                 {
                     return PI * (radius * radius);
                 }
@@ -157,7 +157,7 @@ nothrow:
         point_t dir;
 
         /// Returns: A point further along the ray direction.
-        point_t progress(T t) pure const
+        point_t progress(T t) pure const nothrow @nogc
         {
             return orig + dir * t;
         }
@@ -167,7 +167,7 @@ nothrow:
             /// Ray vs triangle intersection.
             /// See_also: "Fast, Minimum Storage Ray/Triangle intersection", Mommer & Trumbore (1997)
             /// Returns: Barycentric coordinates, the intersection point is at $(D (1 - u - v) * A + u * B + v * C).
-            bool intersect(Triangle!(T, 3u) triangle, out T t, out T u, out T v)
+            bool intersect(Triangle!(T, 3u) triangle, out T t, out T u, out T v) pure const nothrow @nogc
             {
                 point_t edge1 = triangle.b - triangle.a;
                 point_t edge2 = triangle.c - triangle.a;
@@ -218,27 +218,27 @@ align(1) struct Plane(T) if (isFloatingPoint!T)
         T d;
 
         /// Create from four coordinates.
-        this(vec4!T abcd) pure nothrow
+        this(vec4!T abcd) pure nothrow @nogc
         {
             n = vec3!T(abcd.x, abcd.y, abcd.z).normalized();
             d = abcd.z;
         }
 
         /// Create from a point and a normal.
-        this(vec3!T origin, vec3!T normal) pure nothrow
+        this(vec3!T origin, vec3!T normal) pure nothrow @nogc
         {
             n = normal.normalized();
             d = -dot(origin, n);
         }
 
         /// Create from 3 non-aligned points.
-        this(vec3!T A, vec3!T B, vec3!T C) pure nothrow
+        this(vec3!T A, vec3!T B, vec3!T C) pure nothrow @nogc
         {
             this(C, cross(B - A, C - A));
         }
 
         /// Assign a plane with another plane.
-        ref Plane opAssign(Plane other) pure nothrow
+        ref Plane opAssign(Plane other) pure nothrow @nogc
         {
             n = other.n;
             d = other.d;
@@ -246,31 +246,31 @@ align(1) struct Plane(T) if (isFloatingPoint!T)
         }
 
         /// Returns: signed distance between a point and the plane.
-        T signedDistanceTo(vec3!T point) pure const nothrow
+        T signedDistanceTo(vec3!T point) pure const nothrow @nogc
         {
             return dot(n, point) + d;
         }
 
         /// Returns: absolute distance between a point and the plane.
-        T distanceTo(vec3!T point) pure const nothrow
+        T distanceTo(vec3!T point) pure const nothrow @nogc
         {
             return abs(signedDistanceTo(point));
         }
 
         /// Returns: true if the point is in front of the plane.
-        bool isFront(vec3!T point) pure const nothrow
+        bool isFront(vec3!T point) pure const nothrow @nogc
         {
             return signedDistanceTo(point) >= 0;
         }
 
         /// Returns: true if the point is in the back of the plane.
-        bool isBack(vec3!T point) pure const nothrow
+        bool isBack(vec3!T point) pure const nothrow @nogc
         {
             return signedDistanceTo(point) < 0;
         }
 
         /// Returns: true if the point is on the plane, with a given epsilon.
-        bool isOn(vec3!T point, T epsilon) pure const nothrow
+        bool isOn(vec3!T point, T epsilon) pure const nothrow @nogc
         {
             T sd = signedDistanceTo(point);
             return (-epsilon < sd) && (sd < epsilon);
@@ -313,7 +313,7 @@ align(1) struct Frustum(T) if (isFloatingPoint!T)
         Plane!T[6] planes;
 
         /// Create a frustum from 6 planes.
-        this(Plane!T left, Plane!T right, Plane!T top, Plane!T bottom, Plane!T near, Plane!T far) pure nothrow
+        this(Plane!T left, Plane!T right, Plane!T top, Plane!T bottom, Plane!T near, Plane!T far) pure nothrow @nogc
         {
             planes[LEFT] = left;
             planes[RIGHT] = right;
@@ -331,7 +331,7 @@ align(1) struct Frustum(T) if (isFloatingPoint!T)
         }
 
         /// Point vs frustum intersection.
-        bool contains(vec3!T point) pure const nothrow
+        bool contains(vec3!T point) pure const nothrow @nogc
         {
             for(size_t i = 0; i < 6; ++i) 
             {
@@ -345,7 +345,7 @@ align(1) struct Frustum(T) if (isFloatingPoint!T)
 
         /// Sphere vs frustum intersection.
         /// Returns: Frustum.OUTSIDE, Frustum.INTERSECT or Frustum.INSIDE.
-        int contains(Sphere!(T, 3u) sphere) pure const nothrow
+        int contains(Sphere!(T, 3u) sphere) pure const nothrow @nogc
         {
             // calculate our distances to each of the planes
             for(size_t i = 0; i < 6; ++i) 
@@ -366,7 +366,7 @@ align(1) struct Frustum(T) if (isFloatingPoint!T)
 
         /// AABB vs frustum intersection.
         /// Returns: Frustum.OUTSIDE, Frustum.INTERSECT or Frustum.INSIDE.
-        int contains(box3!T box) pure const nothrow
+        int contains(box3!T box) pure const nothrow @nogc
         {
             vec3!T corners[8];
             size_t totalIn = 0;
