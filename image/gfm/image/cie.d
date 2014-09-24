@@ -2,7 +2,7 @@
   This module performs various color computation and conversions.
   See_also: $(WEB http://www.brucelindbloom.com)
   Bugs: Invalid assumptions are made about the XYZ space. It is actually not dependent on some RGB space.
-  Warning: <b>This module is alpha-quality</b>.
+  Warning: <b>This module is alpha-quality and scheduled for deprecation. You probably didn't need it anyway.</b>.
 */
 module gfm.image.cie;
 
@@ -59,7 +59,7 @@ alias Vector!(float, 107u) SpectralDistribution;
 alias Vector!(float, 107u) SpectralReflectance;
 
 /// Converts spectral color into a XYZ space (parameterized by an illuminant)
-vec3f spectralToXYZColor(SpectralReflectance c, ReferenceWhite illuminant) pure nothrow
+deprecated("gfm.image.cie will be removed in near future") vec3f spectralToXYZColor(SpectralReflectance c, ReferenceWhite illuminant) pure nothrow
 {
     Vector!(float, 107u) c_lit = c * refWhiteToSpectralDistribution(illuminant);
     return vec3f(dot(CIE_OBS_X2, c_lit),
@@ -69,7 +69,7 @@ vec3f spectralToXYZColor(SpectralReflectance c, ReferenceWhite illuminant) pure 
 
 /// Converts from companded RGB to uncompanded RGB.
 /// Input and output should be in the [0..1] range.
-vec3f toLinearRGB(RGBSpace space)(vec3f compandedRGB)
+deprecated("gfm.image.cie will be removed in near future") vec3f toLinearRGB(RGBSpace space)(vec3f compandedRGB)
 {
     alias compandedRGB c;
     final switch (getRGBSettings(space).companding)
@@ -109,7 +109,7 @@ vec3f toLinearRGB(RGBSpace space)(vec3f compandedRGB)
 
 /// Converts from uncompanded RGB to companded RGB.
 /// Input and output should be in the [0..1] range.
-vec3f toCompandedRGB(RGBSpace space)(vec3f compandedRGB)
+deprecated("gfm.image.cie will be removed in near future") vec3f toCompandedRGB(RGBSpace space)(vec3f compandedRGB)
 {
     alias compandedRGB c;
     final switch (getRGBSettings(space).companding)
@@ -148,7 +148,7 @@ vec3f toCompandedRGB(RGBSpace space)(vec3f compandedRGB)
 }
 
 /// Converts linear RGB to XYZ.
-vec3f linearRGBToXYZ(RGBSpace space)(vec3f rgb)
+deprecated("gfm.image.cie will be removed in near future") vec3f linearRGBToXYZ(RGBSpace space)(vec3f rgb)
 {
     // TODO: make M compile-time
     auto M = getRGBSettings(space).makeRGBToXYZMatrix();
@@ -156,7 +156,7 @@ vec3f linearRGBToXYZ(RGBSpace space)(vec3f rgb)
 }
 
 /// Converts XYZ to linear RGB.
-vec3f XYZToLinearRGB(RGBSpace space)(vec3f xyz)
+deprecated("gfm.image.cie will be removed in near future") vec3f XYZToLinearRGB(RGBSpace space)(vec3f xyz)
 {
     // TODO: make M compile-time
     auto M = getRGBSettings(space).makeXYZToRGBMatrix();
@@ -165,7 +165,7 @@ vec3f XYZToLinearRGB(RGBSpace space)(vec3f xyz)
 
 /// Converts from such a XYZ space back to spectral reflectance.
 /// Both spaces being parameterized by the same Illuminant.
-SpectralReflectance XYZToSpectralColor(vec3f XYZ) pure nothrow
+deprecated("gfm.image.cie will be removed in near future") SpectralReflectance XYZToSpectralColor(vec3f XYZ) pure nothrow
 {
     return CIE_OBS_X2 * XYZ.x + CIE_OBS_Y2 * XYZ.y + CIE_OBS_Z2 * XYZ.z;
 }
@@ -470,12 +470,3 @@ private
     }
 }
 
-unittest
-{
-    vec3f white = vec3f(1.0f);
-
-    vec3f XYZ = linearRGBToXYZ!(RGBSpace.sRGB)(toLinearRGB!(RGBSpace.sRGB)(white));
-    vec3f rgb = toCompandedRGB!(RGBSpace.sRGB)(XYZToLinearRGB!(RGBSpace.sRGB)(XYZ));
-
-    assert(white.distanceTo(rgb) < 1e-3f);
-}
