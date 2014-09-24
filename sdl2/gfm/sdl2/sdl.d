@@ -455,32 +455,40 @@ final class SDL2
                 case SDL_KEYUP:
                     const (SDL_KeyboardEvent*) keyboardEvent = &event.key;
                     SDL2Window* window = (keyboardEvent.windowID in _knownWindows);
-                    if (event.type == SDL_KEYDOWN)
-                        window.onKeyDown(keyboardEvent.timestamp, _keyboard, keyboardEvent.keysym.sym);
-                    else
-                        window.onKeyUp(keyboardEvent.timestamp, _keyboard, keyboardEvent.keysym.sym);
+                    if (window !is null)
+                    {
+                        if (event.type == SDL_KEYDOWN)
+                            window.onKeyDown(keyboardEvent.timestamp, _keyboard, keyboardEvent.keysym.sym);
+                        else
+                            window.onKeyUp(keyboardEvent.timestamp, _keyboard, keyboardEvent.keysym.sym);
+                    }
                     break;
 
                 case SDL_MOUSEBUTTONUP:
                 case SDL_MOUSEBUTTONDOWN:
                     const (SDL_MouseButtonEvent*) mbEvent = &event.button;
                     SDL2Window* window = (mbEvent.windowID in _knownWindows);
-                    if (event.type == SDL_MOUSEBUTTONDOWN)
-                        window.onMouseButtonPressed(mbEvent.timestamp, _mouse, mbEvent.button, mbEvent.clicks > 1);
-                    else
-                        window.onMouseButtonReleased(mbEvent.timestamp, _mouse, mbEvent.button);
+                    if (window !is null)
+                    {
+                        if (event.type == SDL_MOUSEBUTTONDOWN)
+                            window.onMouseButtonPressed(mbEvent.timestamp, _mouse, mbEvent.button, mbEvent.clicks > 1);
+                        else
+                            window.onMouseButtonReleased(mbEvent.timestamp, _mouse, mbEvent.button);
+                    }
                     break;
 
                 case SDL_MOUSEWHEEL:
                     const (SDL_MouseWheelEvent*) wheelEvent = &event.wheel;
                     SDL2Window* window = (wheelEvent.windowID in _knownWindows);
-                    window.onMouseWheel(wheelEvent.timestamp, _mouse, wheelEvent.x, wheelEvent.y);
+                    if (window !is null)
+                        window.onMouseWheel(wheelEvent.timestamp, _mouse, wheelEvent.x, wheelEvent.y);
                     break;
 
                 case SDL_MOUSEMOTION:
                     const (SDL_MouseMotionEvent*) motionEvent = &event.motion;
                     SDL2Window* window = (motionEvent.windowID in _knownWindows);
-                    window.onMouseMove(motionEvent.timestamp, _mouse);
+                    if (window !is null)
+                        window.onMouseMove(motionEvent.timestamp, _mouse);
                     break;
 
                 default:
