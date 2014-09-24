@@ -12,7 +12,7 @@ import std.traits,
  */
 align(1) struct Rational
 {
-    align(1):    
+    align(1):
     public
     {
         long num;   /// Numerator.
@@ -127,12 +127,10 @@ align(1) struct Rational
             static if (op=="++")
             {
                 num += denom;
-                debug checkInvariant(); // should still be reduced
             }
             else static if (op=="--")
             {
                 num -= denom;
-                debug checkInvariant(); // should still be reduced
             }
             return this;
         }
@@ -194,14 +192,6 @@ align(1) struct Rational
                 num = -num;
                 denom = -denom;
             }
-            debug checkInvariant();
-        }
-
-        void checkInvariant() pure nothrow @nogc // can't do this in invariant() because of opAssign
-        {
-            assert(denom > 0);
-            auto gcd = GCD(num, denom);
-            assert(gcd == 1 || gcd == -1);
         }
     }
 }
