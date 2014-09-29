@@ -24,8 +24,6 @@ Add the sub-package you are interested in in your `dub.json`:
 
 See the examples/ directory, or https://github.com/p0nce/aliasthis as an example of a game.
 
-**Warning: you need at least DUB 0.9.22-rc1 to use GFM**
-
 
 ## Dependencies
 
