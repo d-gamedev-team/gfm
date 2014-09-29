@@ -10,7 +10,7 @@ import derelict.sdl2.sdl,
        derelict.sdl2.image,
        derelict.util.exception;
 
-import std.logger;
+import std.experimental.logger;
 
 import gfm.core.text,
        gfm.sdl2.renderer,

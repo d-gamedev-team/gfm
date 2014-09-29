@@ -10,7 +10,7 @@ import std.string,
 import derelict.opengl3.gl3,
        derelict.opengl3.gl;
 
-import std.logger;
+import std.experimental.logger;
 
 import gfm.core.log,
        gfm.core.text,
@@ -495,7 +495,7 @@ extern(System) private
                         break;
                 }
 
-                string text = sanitizeUTF8(message, log, "OpenGL debug output");
+                string text = sanitizeUTF8(message, logger, "OpenGL debug output");
 
                 if (level == LogLevel.info)
                     logger.infof("opengl: %s (id: %s, source: %s, type: %s, severity: %s)", text, id, ssource, stype, sseverity);

@@ -4,7 +4,7 @@ import std.string;
 
 import derelict.sdl2.sdl;
 
-import std.logger;
+import std.experimental.logger;
 
 import gfm.sdl2.sdl,
        gfm.sdl2.surface,

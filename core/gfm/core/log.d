@@ -3,7 +3,7 @@ module gfm.core.log;
 import std.stream,
        std.string;
 
-import std.logger;
+import std.experimental.logger;
 import colorize;
 
 // Because default std.logger logger is a bit verbose, and lacks colors.
@@ -13,41 +13,37 @@ class ConsoleLogger : Logger
     {
         this()
         {
-            super("", LogLevel.info);
+            super(LogLevel.info);
         }
 
-        override void writeLogMsg(ref LoggerPayload payload) @trusted
+        override protected void writeLogMsg(ref LogEntry payload) @trusted
         {
             LogLevel logLevel;
             
-            synchronized(this)
+            auto foregroundColor = fg.white;
+            switch(payload.logLevel)
             {
-                auto foregroundColor = fg.white;
-                switch(payload.logLevel)
-                {
-                    case LogLevel.info:
-                        foregroundColor = fg.light_white;
-                        break;
+                case LogLevel.info:
+                    foregroundColor = fg.light_white;
+                    break;
 
-                    case LogLevel.warning:
-                        foregroundColor = fg.light_yellow;
-                        break;
+                case LogLevel.warning:
+                    foregroundColor = fg.light_yellow;
+                    break;
 
-                    case LogLevel.error:
-                    case LogLevel.critical:
-                    case LogLevel.fatal:
-                        foregroundColor = fg.light_red;
-                        break;
+                case LogLevel.error:
+                case LogLevel.critical:
+                case LogLevel.fatal:
+                    foregroundColor = fg.light_red;
+                    break;
 
-                    case LogLevel.unspecific:
-                    case LogLevel.trace:
-                    default:
-                        foregroundColor = fg.white;
-                }
-
-                import colorize.cwrite;
-                cwritefln( color("%s: %s", foregroundColor), logLevelToString(payload.logLevel), payload.msg);
+                case LogLevel.trace:
+                default:
+                    foregroundColor = fg.white;
             }
+
+            import colorize.cwrite;
+            cwritefln( color("%s: %s", foregroundColor), logLevelToString(payload.logLevel), payload.msg);
         }
 
         ~this()
@@ -65,8 +61,6 @@ class ConsoleLogger : Logger
         {
             switch(lv)
             {
-                case LogLevel.unspecific:
-                    return "";
                 case LogLevel.trace:
                     return "trace";
                 case LogLevel.info:

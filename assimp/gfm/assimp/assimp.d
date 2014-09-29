@@ -4,7 +4,7 @@ import std.conv,
        std.string,
        std.array : join;
 
-import std.logger;
+import std.experimental.logger;
 
 import gfm.core.text;
 
@@ -146,7 +146,7 @@ extern (C) private
         try
         {
             Logger logger = assimp._logger;
-            logger.infof("assimp: %s", sanitizeUTF8(message, log, "Assimp logging"));
+            logger.infof("assimp: %s", sanitizeUTF8(message, logger, "Assimp logging"));
         }
         catch(Exception e)
         {

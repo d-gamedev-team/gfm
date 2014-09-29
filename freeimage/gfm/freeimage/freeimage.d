@@ -6,7 +6,7 @@ import std.conv,
 import derelict.freeimage.freeimage,
        derelict.util.exception;
 
-import std.logger;
+import std.experimental.logger;
 
 import gfm.core.text;
 
