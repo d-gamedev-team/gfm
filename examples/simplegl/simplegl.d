@@ -1,7 +1,7 @@
 import std.math,
        std.typecons;
 
-import std.logger;
+import std.experimental.logger;
 
 import gfm.core,
        gfm.sdl2,
