@@ -72,6 +72,25 @@ final class SDL2Mouse
             _wheelY = 0;
             return value;
         }
+/+
+        /// Use this function to capture the mouse and to track input outside an SDL window.
+        /// See_also: $(LINK https://wiki.libsdl.org/SDL_CaptureMouse)
+        /// Throws: $(D SDL2Exception) on error.
+        void startCapture()
+        {
+            if (SDL_CaptureMouse(SDL_TRUE) != 0)
+                _sdl2.throwSDL2Exception("SDL_CaptureMouse");
+        }
+
+        /// Use this function to stop capturing the mouse.
+        /// See_also: $(LINK https://wiki.libsdl.org/SDL_CaptureMouse)
+        /// Throws: $(D SDL2Exception) on error.
+        void stopCapture()
+        {
+            if (SDL_CaptureMouse(SDL_FALSE) != 0)
+                _sdl2.throwSDL2Exception("SDL_CaptureMouse");
+        }
++/
     }
 
     package
