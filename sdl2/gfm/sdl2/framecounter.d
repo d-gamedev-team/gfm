@@ -7,10 +7,11 @@ import derelict.sdl2.sdl;
 import gfm.core.queue,
        gfm.sdl2.sdl;
 
-
 /// Utility class which gives time delta between frames, and 
 /// logs some framerate statistics.
 /// Useful for a variable timestep application.
+deprecated("FrameCounter is deprecated, it always felt out of place here."
+           " Use the tharsis-prof package or a stand-alone frame profiler instead.")
 final class FrameCounter
 {
     public
