@@ -17,5 +17,6 @@ public
            gfm.sdl2.sdlttf,
            gfm.sdl2.framecounter,
            gfm.sdl2.mouse,
+           gfm.sdl2.timer,
            gfm.sdl2.sdlimage;
 }
