@@ -93,7 +93,7 @@ final class OpenGL
             _logger.infof("    GLSL version: %s", getGLSLVersionString());
 
             // parse extensions
-            _extensions = std.array.split(getExtensionsString());
+            _extensions = array(getExtensions());
 
             _logger.infof("    Extensions: %s found", _extensions.length);
             getLimits(true);
@@ -166,6 +166,18 @@ final class OpenGL
                 return sanitizeUTF8(sZ, _logger, "OpenGL");
         }
 
+        /// Returns: OpenGL string returned by $(D glGetStringi)
+        /// See_also: $(WEB www.opengl.org/sdk.docs/man/xhtml/glGetString.xml)
+        string getString(GLenum name, GLuint index)
+        {
+            const(char)* sZ = glGetStringi(name, index);
+            runtimeCheck();
+            if (sZ is null)
+                return "(unknown)";
+            else
+                return sanitizeUTF8(sZ, _logger, "OpenGL");
+        }
+
         /// Returns: OpenGL version string, can be "major_number.minor_number" or 
         ///          "major_number.minor_number.release_number".
         string getVersionString()
@@ -219,6 +231,49 @@ final class OpenGL
         string getExtensionsString()
         {
             return getString(GL_EXTENSIONS);
+        }
+
+        /// Returns: An input range of all supported OpenGL extensions.
+        auto getExtensions()
+        {
+            struct Extensions
+            {
+                private
+                {
+                    uint current = 0;
+                    uint count = 0;
+                    OpenGL gl;
+                }
+
+                this(OpenGL gl)
+                {
+                    this.gl = gl;
+
+                    int numExtensions;
+
+                    if (gl.getInteger(GL_NUM_EXTENSIONS, numExtensions))
+                        this.count = numExtensions;
+                    else
+                        this.count = 0;
+                }
+
+                bool empty() @property
+                {
+                    return current >= count;
+                }
+
+                string front() @property
+                {
+                    return gl.getString(GL_EXTENSIONS, current);
+                }
+
+                void popFront()
+                {
+                    ++current;
+                }
+            }
+
+            return Extensions(this);
         }
 
         /// Calls $(D glGetIntegerv) and gives back the requested integer.
