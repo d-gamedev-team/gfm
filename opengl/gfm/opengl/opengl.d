@@ -92,11 +92,26 @@ final class OpenGL
             _logger.infof("    Vendor: %s", getVendorString());
             _logger.infof("    GLSL version: %s", getGLSLVersionString());
 
-            // parse extensions
-            _extensions = std.array.split(getExtensionsString());
+            getLimits(true);
+
+            // Get available extensions
+
+            if (_majorVersion < 3)
+            {
+                // Legacy way to get extensions
+                _extensions = std.array.split(getString(GL_EXTENSIONS));
+            }
+            else
+            {
+                // New way to get extensions
+                int numExtensions = getInteger(GL_NUM_EXTENSIONS, 0, true);
+                _extensions.length = 0;
+                for (int i = 0; i < numExtensions; ++i)
+                    _extensions ~= getString(GL_EXTENSIONS, i);
+            }
 
             _logger.infof("    Extensions: %s found", _extensions.length);
-            getLimits(true);
+
             _textureUnits = new TextureUnits(this);
 
             // now that the context exists, pipe OpenGL output
@@ -163,7 +178,31 @@ final class OpenGL
             if (sZ is null)
                 return "(unknown)";
             else
-                return sanitizeUTF8(sZ, _logger, "OpenGL");
+                return sanitizeUTF8(sZ, _logger, "glGetString");
+        }
+
+        /// Returns: OpenGL string returned by $(D glGetStringi)
+        /// See_also: $(WEB www.opengl.org/sdk.docs/man/xhtml/glGetString.xml)
+        string getString(GLenum name, GLuint index)
+        {
+            const(char)* sZ = glGetStringi(name, index);
+            runtimeCheck();
+            if (sZ is null)
+                return "(unknown)";
+            else
+                return sanitizeUTF8(sZ, _logger, "glGetStringi");
+        }
+
+        /// Returns: OpenGL major version.
+        int getMajorVersion() pure const nothrow @nogc
+        {
+            return _majorVersion;
+        }
+
+        /// Returns: OpenGL minor version.
+        int getMinorVersion() pure const nothrow @nogc
+        {
+            return _minorVersion;
         }
 
         /// Returns: OpenGL version string, can be "major_number.minor_number" or 
@@ -216,9 +255,15 @@ final class OpenGL
         }
 
         /// Returns: A huge space-separated list of OpenGL extensions.
-        string getExtensionsString()
+        deprecated("use getExtensions() instead") string getExtensionsString()
         {
-            return getString(GL_EXTENSIONS);
+            return std.array.join(_extensions, " ");
+        }
+
+        /// Returns: A slice made up of available extension names.
+        string[] getExtensions() pure nothrow @nogc
+        {
+            return _extensions;
         }
 
         /// Calls $(D glGetIntegerv) and gives back the requested integer.
@@ -379,8 +424,38 @@ final class OpenGL
 
         void getLimits(bool logging)
         {
-            _majorVersion = getInteger(GL_MAJOR_VERSION, 1, logging);
-            _minorVersion = getInteger(GL_MINOR_VERSION, 1, logging);
+            // parse GL_VERSION string
+            if (logging)
+            {
+                string verString = getVersionString();
+                string[] verParts = std.array.split(verString, ".");
+
+                if (verParts.length < 2)
+                {
+                    cant_parse:
+                    _logger.warning(format("Couldn't parse GL_VERSION string '%s', assuming OpenGL 1.1", verString));
+                    _majorVersion = 1;
+                    _minorVersion = 1;
+                }
+                else
+                {
+                    try
+                        _majorVersion = to!int(verParts[0]);
+                    catch (Exception e)
+                        goto cant_parse;
+                
+                    try
+                        _minorVersion = to!int(verParts[1]);
+                    catch (Exception e)
+                        goto cant_parse;
+                }
+            }
+            else
+            {
+                _majorVersion = 1;
+                _minorVersion = 1;
+            }
+
             _maxTextureSize = getInteger(GL_MAX_TEXTURE_SIZE, 512, logging);
             // For other textures, add calls to:
             // GL_MAX_ARRAY_TEXTURE_LAYERS​, GL_MAX_3D_TEXTURE_SIZE​
