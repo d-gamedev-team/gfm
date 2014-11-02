@@ -148,7 +148,7 @@ long nextPowerOf2(long i) pure nothrow @nogc
 }
 
 /// Computes sin(x)/x accurately.
-/// See: http://www.plunk.org/~hatch/rightway.php
+/// See_also: $(WEB www.plunk.org/~hatch/rightway.php)
 T sinOverX(T)(T x) pure nothrow @nogc
 {
     if (1 + x * x == 1)
