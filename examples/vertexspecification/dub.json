@@ -1,12 +1,6 @@
 {
-    "description": "GFM examples",
-    "homepage": "http://github.com/p0nce/gfm/",
-    "copyright": "none",
-    "license": "public domain",
-    "authors": [ "francesco" ],
     "targetType": "executable",
     "name": "vertexspecification",
-    "targetName": "vs_example",
     "sourcePaths": [ "." ],
     "importPaths": [ "." ],
     "mainSourceFile": "vertexspecification.d",
