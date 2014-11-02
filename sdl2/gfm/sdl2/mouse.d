@@ -134,13 +134,13 @@ final class SDL2Mouse
 
         // Last button state
         int _buttonState;
-        
+
         // Last mouse coordinates
-        int _x = 0, 
+        int _x = 0,
             _y = 0;
 
         // mouse wheel scrolled amounts
-        int _wheelX = 0, 
+        int _wheelX = 0,
             _wheelY = 0;
 
         int _lastDeltaX = 0,
@@ -179,8 +179,6 @@ final class SDL2Cursor
             _owned = true;
         }
 
-        // TODO uncomment when Derelict has SDL_GetDefaultCursor
-        /*
         /// Returns: Default cursor.
         /// See_also: $(LINK http://wiki.libsdl.org/SDL_GetDefaultCursor)
         /// Throws: $(D SDL2Exception) on error.
@@ -193,7 +191,6 @@ final class SDL2Cursor
             return new SDL2Cursor(sdl2, handle);
 
         }
-        */
 
         /// Returns: Current cursor.
         /// See_also: $(LINK http://wiki.libsdl.org/SDL_GetCursor)

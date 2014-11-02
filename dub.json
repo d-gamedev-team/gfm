@@ -12,7 +12,8 @@
         "Francesco Cattoglio: OpenGL wrapper improvements",
         "John D. Cook: SimpleRNG author",
         "Sam Hocevar: many bits of code",
-        "Daniel Cousens / RommelVR: GL fix"
+        "Daniel Cousens / RommelVR: GL fix",
+        "Daniele Bondi / maeriden: Euler angles fix"
     ],
 
     "targetType": "none",
@@ -95,7 +96,7 @@
             "sourcePaths": [ "sdl2/gfm/sdl2" ],
             "importPaths": [ "sdl2" ],
             "dependencies": {
-                "derelict-sdl2": "==1.2.7",
+                "derelict-sdl2": "==1.2.8",
                 "logger": "==0.3.0",
                 "gfm:core": "*"
             }
