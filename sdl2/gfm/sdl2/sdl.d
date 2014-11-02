@@ -191,7 +191,32 @@ final class SDL2
             }
             else
                 return false;
-        }   
+        }
+
+        /// Wait for next SDL event.
+        /// Input state gets updated and window callbacks are called too.
+        /// See_also: $(LINK http://wiki.libsdl.org/SDL_WaitEvent)
+        /// Throws: $(D SDL2Exception) on error.
+        void waitEvent(SDL_Event* event)
+        {
+            int res = SDL_WaitEvent(event);
+            if (res == 0)
+                throwSDL2Exception("SDL_WaitEvent");
+
+        }
+
+        /// Wait for next SDL event, with a timeout.
+        /// Input state gets updated and window callbacks are called too.
+        /// See_also: $(LINK http://wiki.libsdl.org/SDL_WaitEventTimeout)
+        /// Throws: $(D SDL2Exception) on error.
+        /// Returns: true if returned an event.
+        bool waitEventTimeout(SDL_Event* event, int timeoutMs)
+        {
+            //  "This also returns 0 if the timeout elapsed without an event arriving."
+            // => no way to separate errors from no event, error code is ignored
+            int res = SDL_WaitEventTimeout(event, timeoutMs);
+            return res == 1;
+        }
 
         /// Process all pending SDL events.
         /// Input state gets updated and window callbacks are called too.
