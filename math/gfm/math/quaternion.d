@@ -32,7 +32,7 @@ align(1) struct Quaternion(T)
 
         /// Constructs a Quaternion from coordinates.
         /// Warning: order of coordinates is different from storage.
-        this(T qw, T qx, T qy, T qz) pure nothrow @nogc 
+        this(T qw, T qx, T qy, T qz) pure nothrow @nogc
         {
             x = qx;
             y = qy;
@@ -41,7 +41,7 @@ align(1) struct Quaternion(T)
         }
 
         /// Constructs a Quaternion from axis + angle.
-        static Quaternion fromAxis(Vector!(T, 3u) axis, T angle) pure nothrow @nogc 
+        static Quaternion fromAxis(Vector!(T, 3u) axis, T angle) pure nothrow @nogc
         {
             Quaternion q = void;
             axis.normalize();
@@ -56,9 +56,9 @@ align(1) struct Quaternion(T)
 
         /// Constructs a Quaternion from Euler angles.
         /// All paramers given in radians.
-        /// Pitch->X axis, Yaw->Y axis, Roll->Z axis
+        /// Roll->X axis, Pitch->Y axis, Yaw->Z axis
         /// See_also: $(LINK https://www.cs.princeton.edu/~gewang/projects/darth/stuff/quat_faq.html)
-        static Quaternion fromEulerAngles(T pitch, T yaw, T roll) pure nothrow @nogc 
+        static Quaternion fromEulerAngles(T roll, T pitch, T yaw) pure nothrow @nogc
         {
             Quaternion q = void;
             T sinPitch = sin(pitch / 2);
@@ -78,8 +78,8 @@ align(1) struct Quaternion(T)
 
         /// Converts a quaternion to Euler angles.
         /// TODO: adds a EulerAngles type.
-        /// Returns: A vector which contains pitch-yaw-roll as x-y-z.
-        vec3!T toEulerAngles() pure const nothrow @nogc 
+        /// Returns: A vector which contains roll-pitch-yaw as x-y-z.
+        vec3!T toEulerAngles() pure const nothrow @nogc
         {
             mat3!T m = cast(mat3!T)(this);
 
@@ -97,7 +97,7 @@ align(1) struct Quaternion(T)
                 yaw = -atan2(m.c[0][1], m.c[1][1]);
                 roll = 0.0f;
             }
-            return vec3!T(pitch, yaw, roll);
+            return vec3!T(roll, pitch, yaw);
         }
 
         /// Assign from another Quaternion.
@@ -115,22 +115,22 @@ align(1) struct Quaternion(T)
         }
 
         /// Converts to a pretty string.
-        string toString() const nothrow 
+        string toString() const nothrow
         {
             try
                 return format("%s", v);
-            catch (Exception e) 
+            catch (Exception e)
                 assert(false); // should not happen since format is right
         }
 
         /// Normalizes a quaternion.
-        void normalize() pure nothrow @nogc 
+        void normalize() pure nothrow @nogc
         {
             v.normalize();
         }
 
         /// Returns: Normalized quaternion.
-        Quaternion normalized() pure const nothrow @nogc 
+        Quaternion normalized() pure const nothrow @nogc
         {
             Quaternion res = void;
             res.v = v.normalized();
@@ -138,7 +138,7 @@ align(1) struct Quaternion(T)
         }
 
         /// Inverses a quaternion in-place.
-        void inverse() pure nothrow @nogc 
+        void inverse() pure nothrow @nogc
         {
             x = -x;
             y = -y;
@@ -146,7 +146,7 @@ align(1) struct Quaternion(T)
         }
 
         /// Returns: Inverse of quaternion.
-        Quaternion inversed() pure const nothrow @nogc 
+        Quaternion inversed() pure const nothrow @nogc
         {
             Quaternion res = void;
             res.v = v;
@@ -154,7 +154,7 @@ align(1) struct Quaternion(T)
             return res;
         }
 
-        ref Quaternion opOpAssign(string op, U)(U q) pure nothrow @nogc 
+        ref Quaternion opOpAssign(string op, U)(U q) pure nothrow @nogc
             if (is(U : Quaternion) && (op == "*"))
         {
             T nx = w * q.x + x * q.w + y * q.z - z * q.y,
@@ -174,7 +174,7 @@ align(1) struct Quaternion(T)
             return opOpAssign!op(conv);
         }
 
-        Quaternion opBinary(string op, U)(U operand) pure const nothrow @nogc 
+        Quaternion opBinary(string op, U)(U operand) pure const nothrow @nogc
             if (is(U: Quaternion) || (isConvertible!U))
         {
             Quaternion temp = this;
@@ -279,7 +279,7 @@ Quaternion!T lerp(T)(Quaternion!T a, Quaternion!T b, float t) pure nothrow @nogc
 /// See_also: $(WEB keithmaggio.wordpress.com/2011/02/15/math-magician-lerp-slerp-and-nlerp/, Math Magician – Lerp, Slerp, and Nlerp)
 Quaternion!T Nlerp(T)(Quaternion!T a, Quaternion!T b, float t) pure nothrow @nogc
 {
-    assert(t >= 0 && t <= 1); // else probably doesn't make sense 
+    assert(t >= 0 && t <= 1); // else probably doesn't make sense
     Quaternion!T res = void;
     res.v = funcs.lerp(a.v, b.v, t);
     res.v.normalize();
@@ -290,7 +290,7 @@ Quaternion!T Nlerp(T)(Quaternion!T a, Quaternion!T b, float t) pure nothrow @nog
 /// See_also: "Understanding Slerp, Then Not Using It"
 Quaternion!T slerp(T)(Quaternion!T a, Quaternion!T b, T t) pure nothrow @nogc
 {
-    assert(t >= 0 && t <= 1); // else probably doesn't make sense 
+    assert(t >= 0 && t <= 1); // else probably doesn't make sense
 
     Quaternion!T res = void;
 
@@ -332,5 +332,6 @@ unittest
     quatf e = slerp(a, b, 0.0f);
     quatd f = quatd(1.0, 4, 5.0, 6.0);
     quatf g = quatf.fromEulerAngles(-0.1f, 1.2f, -0.3f);
-    vec3f ga = g.toEulerAngles();    
+    vec3f ga = g.toEulerAngles();
 }
+
