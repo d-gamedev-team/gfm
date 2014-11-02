@@ -14,7 +14,7 @@ import gfm.math.vector,
 /// Generic non-resizeable matrix with R rows and C columns.
 /// Intended for 3D use (size 3x3 and 4x4).
 /// Important: <b>Matrices here are in row-major order whereas OpenGL is column-major.</b>
-/// Params: 
+/// Params:
 ///   T = type of elements
 ///   R = number of rows
 ///   C = number of columns
@@ -151,7 +151,7 @@ align(1) struct Matrix(T, size_t R, size_t C)
         {
             try
                 return format("%s", v);
-            catch (Exception e) 
+            catch (Exception e)
                 assert(false); // should not happen since format is right
         }
 
@@ -190,6 +190,30 @@ align(1) struct Matrix(T, size_t R, size_t C)
             return result;
         }
 
+        /// Matrix add and substraction.
+        Matrix opBinary(string op, U)(U other) pure const nothrow @nogc
+            if (is(U : Matrix) && (op == "+" || op == "-"))
+        {
+            Matrix result = void;
+
+            for (size_t i = 0; i < R; ++i)
+            {
+                for (size_t j = 0; j < C; ++j)
+                {
+                    mixin("result.c[i][j] = c[i][j] " ~ op ~ " other.c[i][j];");
+                }
+            }
+            return result;
+        }
+
+        /// Assignment operator with another samey matrix.
+        ref Matrix opOpAssign(string op, U)(U operand) pure nothrow @nogc if (is(U : Matrix))
+        {
+            mixin("Matrix result = this " ~ op ~ " operand;");
+            return opAssign!Matrix(result);
+        }
+
+        /// Assignment operator with another samey matrix.
         ref Matrix opOpAssign(string op, U)(U operand) pure nothrow @nogc if (isConvertible!U)
         {
             Matrix conv = operand;
@@ -197,7 +221,7 @@ align(1) struct Matrix(T, size_t R, size_t C)
         }
 
         /// Cast to other matrix types.
-        /// If the size are different, the result matrix is truncated 
+        /// If the size are different, the resulting matrix is truncated
         /// and/or filled with identity coefficients.
         U opCast(U)() pure const nothrow @nogc if (is(typeof(U._isMatrix)))
         {
@@ -296,7 +320,7 @@ align(1) struct Matrix(T, size_t R, size_t C)
                     break;
 
                 default: // biggestIndex == 0
-                    quat.w = biggestVal; 
+                    quat.w = biggestVal;
                     quat.x = (c[1][2] - c[2][1]) * mult;
                     quat.y = (c[2][0] - c[0][2]) * mult;
                     quat.z = (c[0][1] - c[1][0]) * mult;
@@ -607,6 +631,11 @@ align(1) struct Matrix(T, size_t R, size_t C)
                 }()));
         }
 
+        template isConvertible(T)
+        {
+            enum bool isConvertible = (!is(T : Matrix)) && isAssignable!T;
+        }
+
         template isTConvertible(U)
         {
             enum bool isTConvertible = is(U : T);
@@ -626,7 +655,7 @@ align(1) struct Matrix(T, size_t R, size_t C)
     public
     {
         /// Returns: an identity matrice.
-        /// Note: the identity matrix, while only meaningful for square matrices, 
+        /// Note: the identity matrix, while only meaningful for square matrices,
         /// is also defined for non-square ones.
         static Matrix identity() pure nothrow @nogc
         {
@@ -641,7 +670,7 @@ align(1) struct Matrix(T, size_t R, size_t C)
         static Matrix constant(U)(U x) pure nothrow @nogc
         {
             Matrix res = void;
-            
+
             for (size_t i = 0; i < R * C; ++i)
                 res.v[i] = cast(T)x;
             return res;
@@ -722,6 +751,8 @@ unittest
     assert(vz == vec2i(1, 1));
 
     mat2f a = z;
+    mat2d ad = a;
+    ad += a;
     mat2f w = [4, 5, 6, 7];
     z = cast(mat2i)w;
     assert(w == z);
