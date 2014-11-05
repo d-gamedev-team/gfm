@@ -540,8 +540,7 @@ private string definePostfixAliases(string type)
          ~ "alias " ~ type ~ "!long "   ~ type ~ "l;\n"
          ~ "alias " ~ type ~ "!ulong "  ~ type ~ "ul;\n"
          ~ "alias " ~ type ~ "!float "  ~ type ~ "f;\n"
-         ~ "alias " ~ type ~ "!double " ~ type ~ "d;\n"
-         ~ "alias " ~ type ~ "!real "   ~ type ~ "L;\n";
+         ~ "alias " ~ type ~ "!double " ~ type ~ "d;\n";
 }
 
 template vec2(T) { alias Vector!(T, 2u) vec2; }
