@@ -1,9 +1,9 @@
-MODULES = 
+MODULES =
     $(MODULE index, Index)
 	$(MODULE gfm.core.log, logging)
     $(MODULE gfm.core.queue, queue/fifo/stack/ring-buffer)
     $(MODULE gfm.core.memory, aligned malloc/free/realloc)
-    $(MODULE gfm.core.text, string utilities)    
+    $(MODULE gfm.core.text, string utilities)
     $(MODULE gfm.core.alignedbuffer, aligned buffer)
 
     $(MODULE gfm.math.vector, small vectors)
@@ -14,7 +14,7 @@ MODULES =
     $(MODULE gfm.math.box, half-open intervals)
     $(MODULE gfm.math.statistics, statistical functions)
     $(MODULE gfm.math.fixedpoint, fixed-point numbers)
-    $(MODULE gfm.math.rational, rational numbers)    
+    $(MODULE gfm.math.rational, rational numbers)
     $(MODULE gfm.math.simplerng, random distributions)
     $(MODULE gfm.math.shapes, segment/triangla/sphere/ray)
     $(MODULE gfm.math.funcs, misc. real functions)
@@ -23,17 +23,18 @@ MODULES =
     $(MODULE gfm.net.uri, URI parsing)
     $(MODULE gfm.net.httpclient, very basic HTTP client)
 
-    $(MODULE gfm.sdl2.sdl, SDL wrapper)    
+    $(MODULE gfm.sdl2.sdl, SDL wrapper)
     $(MODULE gfm.sdl2.window, SDL_Window wrapper)
-    $(MODULE gfm.sdl2.surface, SDL_Surface wrapper)    
+    $(MODULE gfm.sdl2.surface, SDL_Surface wrapper)
     $(MODULE gfm.sdl2.renderer, SDL_Renderer wrapper)
     $(MODULE gfm.sdl2.texture, SDL_Texture wrapper)
     $(MODULE gfm.sdl2.sdlimage, SDL_image wrapper)
     $(MODULE gfm.sdl2.sdlttf, SDL_ttf wrapper)
     $(MODULE gfm.sdl2.keyboard, keyboard state)
-    $(MODULE gfm.sdl2.framecounter, framecounter)    
+    $(MODULE gfm.sdl2.framecounter, framecounter)
     $(MODULE gfm.sdl2.mouse, mouse)
-    
+    $(MODULE gfm.sdl2.timer, timer)
+
     $(MODULE gfm.opengl.opengl, OpenGL context wrapper)
     $(MODULE gfm.opengl.matrixstack, stack of matrices)
     $(MODULE gfm.opengl.texture, OpenGL texture wrapper)
@@ -42,7 +43,7 @@ MODULES =
     $(MODULE gfm.opengl.fbo, OpenGL FBO state)
     $(MODULE gfm.opengl.buffer, OpenGL buffer wrapper)
     $(MODULE gfm.opengl.program, OpenGL program wrapper)
-    $(MODULE gfm.opengl.shader, OpenGL shader wrapper)    
+    $(MODULE gfm.opengl.shader, OpenGL shader wrapper)
     $(MODULE gfm.opengl.vbo, OpenGL VBO wrapper)
     $(MODULE gfm.opengl.vao, OpenGL VAO wrapper)
 
