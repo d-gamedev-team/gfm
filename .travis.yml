@@ -29,3 +29,4 @@ script:
   - dub test gfm:assimp
   - dub test gfm:freeimage
   - dub test gfm:image
+  - dub test gfm:logger
