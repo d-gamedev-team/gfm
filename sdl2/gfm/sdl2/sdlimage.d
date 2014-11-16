@@ -98,7 +98,7 @@ final class SDLImage
 
         string getErrorString()
         {
-            return sanitizeUTF8(IMG_GetError(), _logger, "SDL_Image error string");
+            return sanitizeUTF8(IMG_GetError());
         }
     }
 }

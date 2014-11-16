@@ -281,7 +281,7 @@ final class GLProgram
                                        &type,
                                        buffer.ptr);
                     _gl.runtimeCheck();
-                    string name = sanitizeUTF8(buffer.ptr, _gl._logger, "OpenGL uniform name");
+                    string name = fromStringz(buffer.ptr).idup;
                    _activeUniforms[name] = new GLUniform(_gl, _program, type, name, size);
                 }
             }
@@ -303,7 +303,7 @@ final class GLProgram
                     GLsizei length;
                     glGetActiveAttrib(_program, cast(GLuint)i, cast(GLint)(buffer.length), &length, &size, &type, buffer.ptr);                    
                     _gl.runtimeCheck();
-                    string name = sanitizeUTF8(buffer.ptr, _gl._logger, "OpenGL attribute name");
+                    string name = fromStringz(buffer.ptr).idup;
                     GLint location = glGetAttribLocation(_program, buffer.ptr);
                     _gl.runtimeCheck();
 
@@ -350,7 +350,7 @@ final class GLProgram
             GLint dummy;
             glGetProgramInfoLog(_program, logLength, &dummy, log.ptr);
             _gl.runtimeCheck();
-            return sanitizeUTF8(log.ptr, _gl._logger, "shader link log");
+            return fromStringz(log.ptr).idup;
         }
 
         /// Gets an uniform by name.

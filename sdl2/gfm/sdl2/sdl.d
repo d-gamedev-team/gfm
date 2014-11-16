@@ -77,7 +77,7 @@ final class SDL2
             subSystemInit(SDL_INIT_AUDIO);
             subSystemInit(SDL_INIT_HAPTIC);
 
-            _logger.infof("Running using video driver: %s", sanitizeUTF8(SDL_GetCurrentVideoDriver(), _logger, "SDL_GetCurrentVideoDriver"));
+            _logger.infof("Running using video driver: %s", fromStringz(SDL_GetCurrentVideoDriver()).idup);
 
             int numDisplays = SDL_GetNumVideoDisplays();
             
@@ -284,7 +284,7 @@ final class SDL2
             if (s is null)
                 throwSDL2Exception("SDL_GetClipboardText");
 
-            return sanitizeUTF8(s, _logger, "SDL clipboard text");
+            return fromStringz(s).idup;
         }   
 
         /// Returns: Available SDL video drivers.
@@ -294,14 +294,14 @@ final class SDL2
             string[] res;
             res.length = numDrivers;
             for(int i = 0; i < numDrivers; ++i)
-                res[i] = sanitizeUTF8(SDL_GetVideoDriver(i), _logger, "SDL_GetVideoDriver");
+                res[i] = fromStringz(SDL_GetVideoDriver(i)).idup;
             return res;
         }
 
         /// Returns: Platform name.
         string getPlatform()
         {
-            return sanitizeUTF8(SDL_GetPlatform(), _logger, "SDL_GetPlatform");
+            return fromStringz(SDL_GetPlatform()).idup;
         }
 
         /// Returns: L1 cacheline size in bytes.
@@ -330,7 +330,7 @@ final class SDL2
             char* basePath = SDL_GetPrefPath(toStringz(orgName), toStringz(applicationName));
             if (basePath != null) 
             {
-                string result = sanitizeUTF8(basePath, _logger, "SDL pref path");
+                string result = fromStringz(basePath).idup;
                 SDL_free(basePath);
                 return result;
             } 
@@ -358,7 +358,7 @@ final class SDL2
         {
             const(char)* message = SDL_GetError();
             SDL_ClearError(); // clear error
-            return sanitizeUTF8(message, _logger, "SDL error string");
+            return fromStringz(message).idup;
         }
 
         void registerWindow(SDL2Window window)
@@ -445,7 +445,7 @@ final class SDL2
             string formattedMessage = format("SDL (category %s, priority %s): %s", 
                                              readableCategory(category), 
                                              readablePriority(priority), 
-                                             sanitizeUTF8(message, _logger, "SDL logging"));
+											 fromStringz(message));
 
             if (priority == SDL_LOG_PRIORITY_WARN)
                 _logger.warning(formattedMessage);

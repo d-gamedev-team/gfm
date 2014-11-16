@@ -227,7 +227,7 @@ final class SDL2RendererInfo
         /// Returns: Renderer name.
         string name()
         {
-            return sanitizeUTF8(_info.name, _logger, "SDL2 renderer name");
+            return fromStringz(_info.name).idup;
         }
 
         /// Returns: true if this renderer is software.

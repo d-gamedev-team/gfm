@@ -106,7 +106,7 @@ final class GLShader
             GLint dummy;
             glGetShaderInfoLog(_shader, logLength, &dummy, log.ptr);
             _gl.runtimeCheck();
-            return sanitizeUTF8(log.ptr);
+            return fromStringz(log.ptr).idup;
         }
     }
 

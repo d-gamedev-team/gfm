@@ -68,13 +68,13 @@ final class FreeImage
         string getVersion()
         {
             const(char)* versionZ = FreeImage_GetVersion();
-            return sanitizeUTF8(versionZ, _logger, "FreeImage_GetVersion");
+            return sanitizeUTF8(versionZ);
         }
 
         string getCopyrightMessage()
         {
             const(char)* copyrightZ = FreeImage_GetCopyrightMessage();
-            return sanitizeUTF8(copyrightZ, _logger, "FreeImage_GetCopyrightMessage");
+            return sanitizeUTF8(copyrightZ);
         }
     }
 

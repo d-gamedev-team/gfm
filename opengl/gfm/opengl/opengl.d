@@ -177,7 +177,7 @@ final class OpenGL
             if (sZ is null)
                 return "(unknown)";
             else
-                return sanitizeUTF8(sZ, _logger, "glGetString");
+                return fromStringz(sZ).idup;
         }
 
         /// Returns: OpenGL string returned by $(D glGetStringi)
@@ -189,7 +189,7 @@ final class OpenGL
             if (sZ is null)
                 return "(unknown)";
             else
-                return sanitizeUTF8(sZ, _logger, "glGetStringi");
+                return fromStringz(sZ).idup;
         }
 
         /// Returns: OpenGL major version.
@@ -563,7 +563,7 @@ extern(System) private
                         break;
                 }
 
-                string text = sanitizeUTF8(message, logger, "OpenGL debug output");
+                string text = fromStringz(message).idup;
 
                 if (level == LogLevel.info)
                     logger.infof("opengl: %s (id: %s, source: %s, type: %s, severity: %s)", text, id, ssource, stype, sseverity);

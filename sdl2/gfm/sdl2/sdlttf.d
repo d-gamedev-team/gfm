@@ -74,7 +74,7 @@ final class SDLTTF
 
         string getErrorString()
         {
-            return sanitizeUTF8(TTF_GetError(), _logger, "SDL_TTF error string");
+            return fromStringz(TTF_GetError()).idup;
         }
     }
 }
