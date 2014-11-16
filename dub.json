@@ -27,18 +27,15 @@
         "gfm:math": "*",
         "gfm:net": "*",
         "gfm:opengl": "*",
-        "gfm:sdl2": "*"
+        "gfm:sdl2": "*",
+        "gfm:logger": "*"
     },
 
     "subPackages": [
         {
             "name": "core",
             "sourcePaths": [ "core/gfm/core" ],
-            "importPaths": [ "core" ],
-            "dependencies": {
-                "logger": "~>0.3.0",
-                "colorize": "==1.0.5"
-            }
+            "importPaths": [ "core" ]
         },
         {
             "name": "math",
@@ -110,6 +107,15 @@
                 "gfm:core": "*",
                 "logger": "~>0.3.0"
             }
-        }
+        },
+        {
+            "name": "logger",
+            "sourcePaths": [ "logger/gfm/logger" ],
+            "importPaths": [ "logger" ],
+            "dependencies": {
+                "logger": "~>0.3.0",
+                "colorize": "==1.0.5"
+            }
+        },
     ]
 }

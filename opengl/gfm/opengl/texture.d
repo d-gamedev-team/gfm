@@ -5,8 +5,7 @@ import std.string;
 
 import derelict.opengl3.gl3;
 
-import gfm.core.log,
-       gfm.opengl.opengl, 
+import gfm.opengl.opengl, 
        gfm.opengl.textureunit;
 
 /// OpenGL Texture wrapper.

@@ -12,8 +12,7 @@ import derelict.opengl3.gl3,
 
 import std.experimental.logger;
 
-import gfm.core.log,
-       gfm.core.text,
+import gfm.core.text,
        gfm.opengl.textureunit;
 
 /// The one exception type thrown in this wrapper.

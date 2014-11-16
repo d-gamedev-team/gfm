@@ -4,8 +4,7 @@ import std.string;
 
 import derelict.opengl3.gl3;
 
-import gfm.core.log,
-       gfm.opengl.opengl;
+import gfm.opengl.opengl;
 
 /// OpenGL Vertex Array Object wrapper.
 final class VAO

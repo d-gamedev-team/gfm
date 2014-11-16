@@ -10,8 +10,7 @@ import derelict.opengl3.gl3,
        derelict.opengl3.deprecatedFunctions,
        derelict.opengl3.deprecatedConstants;
 
-import gfm.core.log,
-       gfm.opengl.opengl,
+import gfm.opengl.opengl,
        gfm.opengl.program,
        gfm.opengl.buffer;
 

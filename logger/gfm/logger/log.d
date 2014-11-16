@@ -1,4 +1,4 @@
-module gfm.core.log;
+module gfm.logger.log;
 
 import std.stream,
        std.string;
@@ -19,7 +19,7 @@ class ConsoleLogger : Logger
         override protected void writeLogMsg(ref LogEntry payload) @trusted
         {
             LogLevel logLevel;
-            
+
             auto foregroundColor = fg.white;
             switch(payload.logLevel)
             {
@@ -48,7 +48,7 @@ class ConsoleLogger : Logger
 
         ~this()
         {
-        }        
+        }
     }
 
     private

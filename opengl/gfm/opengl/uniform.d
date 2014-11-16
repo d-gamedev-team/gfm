@@ -6,8 +6,7 @@ import std.conv,
 
 import derelict.opengl3.gl3;
 
-import gfm.core.log,
-       gfm.math.vector, 
+import gfm.math.vector, 
        gfm.math.matrix,
        gfm.opengl.opengl;
 
