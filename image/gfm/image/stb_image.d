@@ -37,9 +37,8 @@ module gfm.image.stb_image;
 import core.stdc.stdlib;
 import core.stdc.string;
 
-import gfm.math.vector;
-
 import ae.utils.graphics.image;
+import ae.utils.graphics.color;
 
 enum STBI_VERSION = 1;
 
@@ -171,7 +170,7 @@ void stbi_image_free(void *retval_from_stbi_load)
 
 /// Load an image from memory and puts it in a ae.utils.graphics.image.Image.
 /// Throws: STBImageException on error.
-Image!vec4ub stbiLoadImageAE(void[] buffer)
+Image!RGBA stbiLoadImageAE(void[] buffer)
 {
     int width, height, components;
     ubyte* data = stbi_load_from_memory(buffer, width, height, components, 4);
@@ -180,9 +179,9 @@ Image!vec4ub stbiLoadImageAE(void[] buffer)
     if(components != 4)
         throw new STBImageException("Could't convert image to 4 components");
 
-    auto result = Image!vec4ub(width, height);
-    size_t length = width * height * vec4ub.sizeof;
-    result.pixels[] = cast(vec4ub[])(data[0..length]);
+    auto result = Image!RGBA(width, height);
+    size_t length = width * height * RGBA.sizeof;
+    result.pixels[] = cast(RGBA[])(data[0..length]);
     return result;
 }
 

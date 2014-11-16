@@ -6,8 +6,7 @@ import derelict.sdl2.sdl;
 
 import std.experimental.logger;
 
-import gfm.core.text,
-       gfm.sdl2.sdl,
+import gfm.sdl2.sdl,
        gfm.sdl2.window,
        gfm.sdl2.texture,
        gfm.sdl2.surface;

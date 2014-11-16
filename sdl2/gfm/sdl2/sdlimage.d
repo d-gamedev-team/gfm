@@ -8,8 +8,7 @@ import derelict.util.exception,
 
 import std.experimental.logger;
 
-import gfm.core.text,
-       gfm.sdl2.sdl, 
+import gfm.sdl2.sdl, 
        gfm.sdl2.surface;
 
 /// Load images using SDL_image, a SDL companion library able to load various image formats.
@@ -98,7 +97,7 @@ final class SDLImage
 
         string getErrorString()
         {
-            return sanitizeUTF8(IMG_GetError());
+            return fromStringz(IMG_GetError()).idup;
         }
     }
 }

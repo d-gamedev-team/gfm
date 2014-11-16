@@ -12,8 +12,7 @@ import derelict.sdl2.sdl,
 
 import std.experimental.logger;
 
-import gfm.core.text,
-       gfm.sdl2.renderer,
+import gfm.sdl2.renderer,
        gfm.sdl2.window,
        gfm.sdl2.keyboard,
        gfm.sdl2.mouse;

@@ -5,8 +5,7 @@ import std.string,
 
 import derelict.opengl3.gl3;
 
-import gfm.core.text,
-       gfm.opengl.opengl;
+import gfm.opengl.opengl;
 
 
 /// OpenGL Shader wrapper.
