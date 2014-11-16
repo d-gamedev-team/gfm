@@ -232,9 +232,7 @@ align(1) struct Quaternion(T)
             q.x = q.y = q.z = 0;
             q.w = 1;
             return q;
-        }
-
-        deprecated("IDENTITY was renamed to identity") alias IDENTITY = identity;
+        }        
     }
 
     private
@@ -262,9 +260,6 @@ align(1) struct Quaternion(T)
 
 alias Quaternion!float quatf;
 alias Quaternion!double quatd;
-
-deprecated("quaternionf was renamed to quatf") alias quaternionf = quatf;
-deprecated("quaterniond was renamed to quatd") alias quaterniond = quatd;
 
 /// Linear interpolation, for quaternions.
 Quaternion!T lerp(T)(Quaternion!T a, Quaternion!T b, float t) pure nothrow @nogc

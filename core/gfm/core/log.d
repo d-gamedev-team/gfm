@@ -48,11 +48,7 @@ class ConsoleLogger : Logger
 
         ~this()
         {
-        }
-
-        deprecated("No need to call close() on ConsoleLogger anymore") void close()
-        {
-        }
+        }        
     }
 
     private

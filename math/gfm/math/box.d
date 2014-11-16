@@ -190,8 +190,6 @@ align(1) struct Box(T, size_t N)
             return result;
         }
 
-        deprecated("Renamed to intersection") alias intersect = intersection;
-
         /// Assumes sorted boxes.
         /// Returns: true if boxes overlap.
         bool intersects(Box other)

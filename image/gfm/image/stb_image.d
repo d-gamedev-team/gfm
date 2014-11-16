@@ -37,8 +37,7 @@ module gfm.image.stb_image;
 import core.stdc.stdlib;
 import core.stdc.string;
 
-import gfm.math.vector,
-       gfm.image.bitmap;
+import gfm.math.vector;
 
 import ae.utils.graphics.image;
 
@@ -168,24 +167,6 @@ ubyte* stbi_load_from_memory(void[] buffer, out int width, out int height, out i
 void stbi_image_free(void *retval_from_stbi_load)
 {
     free(retval_from_stbi_load);
-}
-
-/// Load an image from memory and puts it in a Bitmap.
-/// See_also: Bitmap.
-/// Throws: STBImageException on error.
-deprecated("Use ae.utils.graphics instead")
-Bitmap!vec4ub stbiLoadImage(void[] buffer)
-{
-    int width, height, components;
-    ubyte* data = stbi_load_from_memory(buffer, width, height, components, 4);
-    scope(exit) stbi_image_free(data);
-
-    if(components != 4)
-        throw new STBImageException("Could't convert image to 4 components");
-
-    auto result = Bitmap!vec4ub(vec2i(width, height));
-    memcpy(result.ptr, data, width * height);
-    return result;
 }
 
 /// Load an image from memory and puts it in a ae.utils.graphics.image.Image.

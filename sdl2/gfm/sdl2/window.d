@@ -113,13 +113,6 @@ class SDL2Window : KeyboardListener, MouseListener
 
         /// See_also: $(LINK http://wiki.libsdl.org/SDL_SetWindowFullscreen)
         /// Throws: $(D SDL2Exception) on error.
-        deprecated("Use setFullscreenSetting instead") final void setFullscreen(bool fullscreen)
-        {
-            SDL_SetWindowFullscreen(_window, fullscreen ? SDL_WINDOW_FULLSCREEN : 0);
-        }
-
-        /// See_also: $(LINK http://wiki.libsdl.org/SDL_SetWindowFullscreen)
-        /// Throws: $(D SDL2Exception) on error.
         final void setFullscreenSetting(uint flags)
         {
             if (SDL_SetWindowFullscreen(_window, flags) != 0)

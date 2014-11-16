@@ -251,8 +251,6 @@ final class SDL2
             return _quitWasRequested;
         }        
 
-        deprecated alias wasQuitResquested = wasQuitRequested;
-
         /// Start text input.
         void startTextInput()
         {

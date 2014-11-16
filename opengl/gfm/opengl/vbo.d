@@ -172,7 +172,6 @@ class VertexSpecification
 
         /// Returns the size of the Vertex; this size can be computer
         /// after you added all your attributes
-        deprecated alias getVertexSize = vertexSize;
         size_t vertexSize() pure const nothrow
         {
             return _currentOffset;

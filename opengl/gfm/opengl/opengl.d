@@ -254,12 +254,6 @@ final class OpenGL
             return getString(GL_SHADING_LANGUAGE_VERSION);
         }
 
-        /// Returns: A huge space-separated list of OpenGL extensions.
-        deprecated("use getExtensions() instead") string getExtensionsString()
-        {
-            return std.array.join(_extensions, " ");
-        }
-
         /// Returns: A slice made up of available extension names.
         string[] getExtensions() pure nothrow @nogc
         {
