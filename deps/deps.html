@@ -7,6 +7,7 @@
 var graph = new Springy.Graph();
 
 var logger = graph.newNode({label: 'logger'});
+var colorize = graph.newNode({label: 'colorize'});
 var ae_graphics = graph.newNode({label: 'ae-graphics'});
 var derelict_enet = graph.newNode({label: 'derelict-enet'});
 var derelict_gl3 = graph.newNode({label: 'derelict-gl3'});
@@ -14,6 +15,7 @@ var derelict_assimp3 = graph.newNode({label: 'derelict-assimp3'});
 var derelict_fi = graph.newNode({label: 'derelict-fi'});
 var derelict_sdl2 = graph.newNode({label: 'derelict_sdl2'});
 
+var gfm_logger = graph.newNode({label: 'gfm:logger'});
 var gfm_core = graph.newNode({label: 'gfm:core'});
 var gfm_math = graph.newNode({label: 'gfm:math'});
 var gfm_net = graph.newNode({label: 'gfm:net'});
@@ -24,9 +26,8 @@ var gfm_freeimage = graph.newNode({label: 'gfm:freeimage'});
 var gfm_opengl = graph.newNode({label: 'gfm:opengl'});
 var gfm_sdl2 = graph.newNode({label: 'gfm:sdl2'});
 
-graph.newEdge(gfm_core, logger, {color: '#4168EB'});
-graph.newEdge(gfm_image, gfm_math, {color: '#EB6841'});
-graph.newEdge(gfm_image, gfm_core, {color: '#EB6841'});
+graph.newEdge(gfm_logger, logger, {color: '#4168EB'});
+graph.newEdge(gfm_logger, colorize, {color: '#4168EB'});
 graph.newEdge(gfm_image, ae_graphics, {color: '#4168EB'});
 graph.newEdge(gfm_enet, logger, {color: '#4168EB'});
 graph.newEdge(gfm_enet, derelict_enet, {color: '#4168EB'});
@@ -35,7 +36,6 @@ graph.newEdge(gfm_opengl, gfm_core, {color: '#EB6841'});
 graph.newEdge(gfm_opengl, gfm_math, {color: '#EB6841'});
 graph.newEdge(gfm_opengl, derelict_gl3, {color: '#4168EB'});
 graph.newEdge(gfm_sdl2, logger, {color: '#4168EB'});
-graph.newEdge(gfm_sdl2, gfm_core, {color: '#EB6841'});
 graph.newEdge(gfm_sdl2, derelict_sdl2, {color: '#4168EB'});
 graph.newEdge(gfm_freeimage, logger, {color: '#4168EB'});
 graph.newEdge(gfm_freeimage, gfm_core, {color: '#EB6841'});

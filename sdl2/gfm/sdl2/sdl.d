@@ -76,7 +76,7 @@ final class SDL2
             subSystemInit(SDL_INIT_AUDIO);
             subSystemInit(SDL_INIT_HAPTIC);
 
-            _logger.infof("Running using video driver: %s", fromStringz(SDL_GetCurrentVideoDriver()).idup);
+            _logger.infof("Running using video driver: %s", fromStringz(SDL_GetCurrentVideoDriver()));
 
             int numDisplays = SDL_GetNumVideoDisplays();
             
@@ -274,7 +274,7 @@ final class SDL2
 
         /// Returns: Clipboard content.
         /// Throws: $(D SDL2Exception) on error.
-        string getClipboard()
+        const(char)[] getClipboard()
         {
             if (SDL_HasClipboardText() == SDL_FALSE)
                 return null;
@@ -283,24 +283,24 @@ final class SDL2
             if (s is null)
                 throwSDL2Exception("SDL_GetClipboardText");
 
-            return fromStringz(s).idup;
+            return fromStringz(s);
         }   
 
         /// Returns: Available SDL video drivers.
-        string[] getVideoDrivers()
+        const(char)[][] getVideoDrivers()
         {
             const int numDrivers = SDL_GetNumVideoDrivers();
-            string[] res;
+            const(char)[][] res;
             res.length = numDrivers;
             for(int i = 0; i < numDrivers; ++i)
-                res[i] = fromStringz(SDL_GetVideoDriver(i)).idup;
+                res[i] = fromStringz(SDL_GetVideoDriver(i));
             return res;
         }
 
         /// Returns: Platform name.
-        string getPlatform()
+        const(char)[] getPlatform()
         {
-            return fromStringz(SDL_GetPlatform()).idup;
+            return fromStringz(SDL_GetPlatform());
         }
 
         /// Returns: L1 cacheline size in bytes.
@@ -324,12 +324,12 @@ final class SDL2
         /// Returns: A path suitable for writing configuration files, saved games, etc...
         /// See_also: $(LINK http://wiki.libsdl.org/SDL_GetPrefPath)
         /// Throws: $(D SDL2Exception) on error.
-        string getPrefPath(string orgName, string applicationName)
+        const(char)[] getPrefPath(string orgName, string applicationName)
         {
             char* basePath = SDL_GetPrefPath(toStringz(orgName), toStringz(applicationName));
             if (basePath != null) 
             {
-                string result = fromStringz(basePath).idup;
+                const(char)[] result = fromStringz(basePath);
                 SDL_free(basePath);
                 return result;
             } 
@@ -353,11 +353,11 @@ final class SDL2
         }
 
         // return last SDL error and clears it
-        string getErrorString()
+        const(char)[] getErrorString()
         {
             const(char)* message = SDL_GetError();
             SDL_ClearError(); // clear error
-            return fromStringz(message).idup;
+            return fromStringz(message);
         }
 
         void registerWindow(SDL2Window window)

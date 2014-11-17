@@ -95,9 +95,9 @@ final class SDLImage
             throw new SDL2Exception(message);
         }
 
-        string getErrorString()
+        const(char)[] getErrorString()
         {
-            return fromStringz(IMG_GetError()).idup;
+            return fromStringz(IMG_GetError());
         }
     }
 }

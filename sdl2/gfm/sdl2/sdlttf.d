@@ -71,9 +71,9 @@ final class SDLTTF
             throw new SDL2Exception(message);
         }
 
-        string getErrorString()
+        const(char)[] getErrorString()
         {
-            return fromStringz(TTF_GetError()).idup;
+            return fromStringz(TTF_GetError());
         }
     }
 }

@@ -224,9 +224,9 @@ final class SDL2RendererInfo
         }
 
         /// Returns: Renderer name.
-        string name()
+        const(char)[] name()
         {
-            return fromStringz(_info.name).idup;
+            return fromStringz(_info.name);
         }
 
         /// Returns: true if this renderer is software.

@@ -225,7 +225,7 @@ final class GLProgram
             glGetProgramiv(_program, GL_LINK_STATUS, &res);
             if (GL_TRUE != res)
             {
-                string linkLog = getLinkLog();
+                const(char)[] linkLog = getLinkLog();
                 if (linkLog != null)
                     _gl._logger.errorf("%s", linkLog);
                 throw new OpenGLException("Cannot link program");
@@ -280,8 +280,8 @@ final class GLProgram
                                        &type,
                                        buffer.ptr);
                     _gl.runtimeCheck();
-                    string name = fromStringz(buffer.ptr).idup;
-                   _activeUniforms[name] = new GLUniform(_gl, _program, type, name, size);
+                    const(char)[] name = fromStringz(buffer.ptr);
+                   _activeUniforms[name] = new GLUniform(_gl, _program, type, name.idup, size);
                 }
             }
 
@@ -302,11 +302,11 @@ final class GLProgram
                     GLsizei length;
                     glGetActiveAttrib(_program, cast(GLuint)i, cast(GLint)(buffer.length), &length, &size, &type, buffer.ptr);                    
                     _gl.runtimeCheck();
-                    string name = fromStringz(buffer.ptr).idup;
+                    const(char)[] name = fromStringz(buffer.ptr);
                     GLint location = glGetAttribLocation(_program, buffer.ptr);
                     _gl.runtimeCheck();
 
-                    _activeAttributes[name] = new GLAttribute(_gl, name, location, type, size);
+                    _activeAttributes[name] = new GLAttribute(_gl, name.idup, location, type, size);
                 }
             }
 
@@ -338,7 +338,7 @@ final class GLProgram
         /// Gets the linking report.
         /// Returns: Log output of the GLSL linker. Can return null!
         /// Throws: $(D OpenGLException) on error.
-        string getLinkLog()
+        const(char)[] getLinkLog()
         {
             GLint logLength;
             glGetProgramiv(_program, GL_INFO_LOG_LENGTH, &logLength);
@@ -349,7 +349,7 @@ final class GLProgram
             GLint dummy;
             glGetProgramInfoLog(_program, logLength, &dummy, log.ptr);
             _gl.runtimeCheck();
-            return fromStringz(log.ptr).idup;
+            return fromStringz(log.ptr);
         }
 
         /// Gets an uniform by name.

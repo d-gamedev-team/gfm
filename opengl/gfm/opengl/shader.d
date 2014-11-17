@@ -80,7 +80,7 @@ final class GLShader
             _gl.runtimeCheck();
 
             // print info log
-            string infoLog = getInfoLog();
+            const(char)[] infoLog = getInfoLog();
             if (infoLog != null)
                 _gl._logger.info(infoLog);
 
@@ -94,7 +94,7 @@ final class GLShader
         /// Gets the compiling report. 
         /// Returns: Log output of the GLSL compiler. Can return null!
         /// Throws: $(D OpenGLException) on error.
-        string getInfoLog()
+        const(char)[] getInfoLog()
         {
             GLint logLength;
             glGetShaderiv(_shader, GL_INFO_LOG_LENGTH, &logLength);
@@ -105,7 +105,7 @@ final class GLShader
             GLint dummy;
             glGetShaderInfoLog(_shader, logLength, &dummy, log.ptr);
             _gl.runtimeCheck();
-            return fromStringz(log.ptr).idup;
+            return fromStringz(log.ptr);
         }
     }
 

@@ -6,8 +6,6 @@ import std.conv,
 
 import std.experimental.logger;
 
-import gfm.core.text;
-
 import derelict.assimp3.assimp,
        derelict.util.exception;
 
@@ -106,10 +104,10 @@ final class Assimp
         }
 
         /// Returns: A string with legal copyright and licensing information about Assimp. 
-        string getLegalString()
+        const(char)[] getLegalString()
         {
             const(char)* legalZ = aiGetLegalString();
-            return sanitizeUTF8(legalZ);
+            return fromStringz(legalZ);
         }
     }
 
@@ -124,10 +122,10 @@ final class Assimp
             throw new AssimpException(message);
         }
 
-        string getErrorString()
+        const(char)[] getErrorString()
         {
             const(char)* errorZ = aiGetErrorString();
-            return sanitizeUTF8(errorZ);
+            return fromStringz(errorZ);
         }
     }
 

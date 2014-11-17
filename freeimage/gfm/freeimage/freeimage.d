@@ -8,8 +8,6 @@ import derelict.freeimage.freeimage,
 
 import std.experimental.logger;
 
-import gfm.core.text;
-
 /// The one exception type thrown in this wrapper.
 /// A failing FreeImage function should <b>always</b> throw an FreeImageException.
 class FreeImageException : Exception
@@ -65,16 +63,16 @@ final class FreeImage
             }
         }
 
-        string getVersion()
+        const(char)[] getVersion()
         {
             const(char)* versionZ = FreeImage_GetVersion();
-            return sanitizeUTF8(versionZ);
+            return fromStringz(versionZ);
         }
 
-        string getCopyrightMessage()
+        const(char)[] getCopyrightMessage()
         {
             const(char)* copyrightZ = FreeImage_GetCopyrightMessage();
-            return sanitizeUTF8(copyrightZ);
+            return fromStringz(copyrightZ);
         }
     }
 

@@ -76,7 +76,10 @@ class SDL2Window : KeyboardListener, MouseListener
 
             _window = SDL_CreateWindow(toStringz(""), x, y, width, height, flags);
             if (_window == null)
-                throw new SDL2Exception("SDL_CreateWindow failed: " ~ _sdl2.getErrorString());
+			{
+				string message = "SDL_CreateWindow failed: " ~ _sdl2.getErrorString().idup;
+                throw new SDL2Exception(message);
+			}
 
             _id = SDL_GetWindowID(_window);
 

@@ -1,5 +1,4 @@
 module gfm.core;
 
 public import gfm.core.memory,
-              gfm.core.queue,
-              gfm.core.text;
+              gfm.core.queue;

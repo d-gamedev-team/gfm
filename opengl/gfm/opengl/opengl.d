@@ -97,7 +97,7 @@ final class OpenGL
             if (_majorVersion < 3)
             {
                 // Legacy way to get extensions
-                _extensions = std.array.split(getString(GL_EXTENSIONS));
+                _extensions = std.array.split(getString(GL_EXTENSIONS).idup);
             }
             else
             {
@@ -105,7 +105,7 @@ final class OpenGL
                 int numExtensions = getInteger(GL_NUM_EXTENSIONS, 0, true);
                 _extensions.length = 0;
                 for (int i = 0; i < numExtensions; ++i)
-                    _extensions ~= getString(GL_EXTENSIONS, i);
+                    _extensions ~= getString(GL_EXTENSIONS, i).idup;
             }
 
             _logger.infof("    Extensions: %s found", _extensions.length);
@@ -169,26 +169,26 @@ final class OpenGL
 
         /// Returns: OpenGL string returned by $(D glGetString).
         /// See_also: $(WEB www.opengl.org/sdk/docs/man/xhtml/glGetString.xml)
-        string getString(GLenum name)
+        const(char)[] getString(GLenum name)
         {
             const(char)* sZ = glGetString(name);
             runtimeCheck();
             if (sZ is null)
                 return "(unknown)";
             else
-                return fromStringz(sZ).idup;
+                return fromStringz(sZ);
         }
 
         /// Returns: OpenGL string returned by $(D glGetStringi)
         /// See_also: $(WEB www.opengl.org/sdk.docs/man/xhtml/glGetString.xml)
-        string getString(GLenum name, GLuint index)
+        const(char)[] getString(GLenum name, GLuint index)
         {
             const(char)* sZ = glGetStringi(name, index);
             runtimeCheck();
             if (sZ is null)
                 return "(unknown)";
             else
-                return fromStringz(sZ).idup;
+                return fromStringz(sZ);
         }
 
         /// Returns: OpenGL major version.
@@ -205,14 +205,14 @@ final class OpenGL
 
         /// Returns: OpenGL version string, can be "major_number.minor_number" or 
         ///          "major_number.minor_number.release_number".
-        string getVersionString()
+        const(char)[] getVersionString()
         {
             return getString(GL_VERSION);
         }
 
         /// Returns: The company responsible for this OpenGL implementation, so
         ///          that you can plant a giant toxic mushroom below their office.
-        string getVendorString()
+        const(char)[] getVendorString()
         {
             return getString(GL_VENDOR);
         }
@@ -221,7 +221,7 @@ final class OpenGL
         /// Returns: Identified vendor.
         Vendor getVendor()
         {
-            string s = getVendorString();
+            const(char)[] s = getVendorString();
             if (canFind(s, "AMD") || canFind(s, "ATI") || canFind(s, "Advanced Micro Devices"))
                 return Vendor.AMD;
             else if (canFind(s, "NVIDIA") || canFind(s, "nouveau") || canFind(s, "Nouveau"))
@@ -240,14 +240,14 @@ final class OpenGL
 
         /// Returns: Name of the renderer. This name is typically specific 
         ///          to a particular configuration of a hardware platform.
-        string getRendererString()
+        const(char)[] getRendererString()
         {
             return getString(GL_RENDERER);
         }
 
         /// Returns: GLSL version string, can be "major_number.minor_number" or 
         ///          "major_number.minor_number.release_number".
-        string getGLSLVersionString()
+        const(char)[] getGLSLVersionString()
         {
             return getString(GL_SHADING_LANGUAGE_VERSION);
         }
@@ -419,8 +419,8 @@ final class OpenGL
             // parse GL_VERSION string
             if (logging)
             {
-                string verString = getVersionString();
-                string[] verParts = std.array.split(verString, ".");
+                const(char)[] verString = getVersionString();
+                const(char)[][] verParts = std.array.split(verString, ".");
 
                 if (verParts.length < 2)
                 {
@@ -562,7 +562,7 @@ extern(System) private
                         break;
                 }
 
-                string text = fromStringz(message).idup;
+                const(char)[] text = fromStringz(message);
 
                 if (level == LogLevel.info)
                     logger.infof("opengl: %s (id: %s, source: %s, type: %s, severity: %s)", text, id, ssource, stype, sseverity);
