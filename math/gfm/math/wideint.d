@@ -191,11 +191,11 @@ align(1) struct wideIntImpl(bool signed, int bits)
         string outbuff = "0x";
         enum hexdigits = bits / 8;
 
-        for (size_t i = 0; i < hexdigits; ++i)
+        for (int i = 0; i < hexdigits; ++i)
         {
             outbuff ~= hexDigits[cast(int)((hi >> ((15 - i) * 4)) & 15)];
         }
-        for (size_t i = 0; i < hexdigits; ++i)
+        for (int i = 0; i < hexdigits; ++i)
         {
             outbuff ~= hexDigits[cast(int)((lo >> ((15 - i) * 4)) & 15)];
         }
@@ -283,8 +283,8 @@ align(1) struct wideIntImpl(bool signed, int bits)
             sub_sub_uint_t[4] b = y.toParts();
 
             this = 0;
-            for(size_t i = 0; i < 4; ++i)
-                for(size_t j = 0; j < 4 - i; ++j)
+            for(int i = 0; i < 4; ++i)
+                for(int j = 0; j < 4 - i; ++j)
                     this += self(cast(sub_uint_t)(a[i]) * b[j]) << ((bits/4) * (i + j));
         }
         else static if (op == "&")

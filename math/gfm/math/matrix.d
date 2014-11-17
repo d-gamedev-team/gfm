@@ -18,12 +18,12 @@ import gfm.math.vector,
 ///   T = type of elements
 ///   R = number of rows
 ///   C = number of columns
-align(1) struct Matrix(T, size_t R, size_t C)
+align(1) struct Matrix(T, int R, int C)
 {
     align(1):
     public
     {
-        static assert(R >= 1u && C >= 1u);
+        static assert(R >= 1 && C >= 1);
 
         alias Vector!(T, C) row_t;
         alias Vector!(T, R) column_t;
@@ -59,8 +59,8 @@ align(1) struct Matrix(T, size_t R, size_t C)
         {
             assert(columns.length == C);
             Matrix res;
-            for (size_t i = 0; i < R; ++i)
-                for (size_t j = 0; j < C; ++j)
+            for (int i = 0; i < R; ++i)
+                for (int j = 0; j < C; ++j)
                 {
                    res.c[i][j] = columns[j][i];
                 }
@@ -79,14 +79,14 @@ align(1) struct Matrix(T, size_t R, size_t C)
         /// Construct matrix with a scalar.
         this(U)(T x) pure nothrow @nogc
         {
-            for (size_t i = 0; i < _N; ++i)
+            for (int i = 0; i < _N; ++i)
                 v[i] = x;
         }
 
         /// Assign with a samey matrice.
         ref Matrix opAssign(U : Matrix)(U x) pure nothrow @nogc
         {
-            for (size_t i = 0; i < R * C; ++i)
+            for (int i = 0; i < R * C; ++i)
                 v[i] = x.v[i];
             return this;
         }
@@ -98,7 +98,7 @@ align(1) struct Matrix(T, size_t R, size_t C)
                 && (!is(U: Matrix))
                 && (U._R == R) && (U._C == C))
         {
-            for (size_t i = 0; i < R * C; ++i)
+            for (int i = 0; i < R * C; ++i)
                 v[i] = x.v[i];
             return this;
         }
@@ -109,7 +109,7 @@ align(1) struct Matrix(T, size_t R, size_t C)
                 && is(typeof(x[0]) : T)
                 && (U.length == R * C))
         {
-            for (size_t i = 0; i < R * C; ++i)
+            for (int i = 0; i < R * C; ++i)
                 v[i] = x[i];
             return this;
         }
@@ -120,7 +120,7 @@ align(1) struct Matrix(T, size_t R, size_t C)
                 && is(typeof(x[0]) : T))
         {
             assert(x.length == R * C);
-            for (size_t i = 0; i < R * C; ++i)
+            for (int i = 0; i < R * C; ++i)
                 v[i] = x[i];
             return this;
         }
@@ -132,16 +132,16 @@ align(1) struct Matrix(T, size_t R, size_t C)
         }
 
         /// Returns: column j as a vector.
-        column_t column(size_t j) pure const nothrow @nogc
+        column_t column(int j) pure const nothrow @nogc
         {
             column_t res = void;
-            for (size_t i = 0; i < R; ++i)
+            for (int i = 0; i < R; ++i)
                 res.v[i] = c[i][j];
             return res;
         }
 
         /// Returns: row i as a vector.
-        row_t row(size_t i) pure const nothrow @nogc
+        row_t row(int i) pure const nothrow @nogc
         {
             return rows[i];
         }
@@ -159,10 +159,10 @@ align(1) struct Matrix(T, size_t R, size_t C)
         column_t opBinary(string op)(row_t x) pure const nothrow @nogc if (op == "*")
         {
             column_t res = void;
-            for (size_t i = 0; i < R; ++i)
+            for (int i = 0; i < R; ++i)
             {
                 T sum = 0;
-                for (size_t j = 0; j < C; ++j)
+                for (int j = 0; j < C; ++j)
                 {
                     sum += c[i][j] * x.v[j];
                 }
@@ -177,12 +177,12 @@ align(1) struct Matrix(T, size_t R, size_t C)
         {
             Matrix!(T, R, U._C) result = void;
 
-            for (size_t i = 0; i < R; ++i)
+            for (int i = 0; i < R; ++i)
             {
-                for (size_t j = 0; j < U._C; ++j)
+                for (int j = 0; j < U._C; ++j)
                 {
                     T sum = 0;
-                    for (size_t k = 0; k < C; ++k)
+                    for (int k = 0; k < C; ++k)
                         sum += c[i][k] * x.c[k][j];
                     result.c[i][j] = sum;
                 }
@@ -196,9 +196,9 @@ align(1) struct Matrix(T, size_t R, size_t C)
         {
             Matrix result = void;
 
-            for (size_t i = 0; i < R; ++i)
+            for (int i = 0; i < R; ++i)
             {
-                for (size_t j = 0; j < C; ++j)
+                for (int j = 0; j < C; ++j)
                 {
                     mixin("result.c[i][j] = c[i][j] " ~ op ~ " other.c[i][j];");
                 }
@@ -228,8 +228,8 @@ align(1) struct Matrix(T, size_t R, size_t C)
             U res = U.identity();
             enum minR = R < U._R ? R : U._R;
             enum minC = C < U._C ? C : U._C;
-            for (size_t i = 0; i < minR; ++i)
-                for (size_t j = 0; j < minC; ++j)
+            for (int i = 0; i < minR; ++i)
+                for (int j = 0; j < minC; ++j)
                 {
                     res.c[i][j] = cast(U._T)(c[i][j]);
                 }
@@ -238,7 +238,7 @@ align(1) struct Matrix(T, size_t R, size_t C)
 
         bool opEquals(U)(U other) pure const nothrow @nogc if (is(U : Matrix))
         {
-            for (size_t i = 0; i < R * C; ++i)
+            for (int i = 0; i < R * C; ++i)
                 if (v[i] != other.v[i])
                     return false;
             return true;
@@ -255,7 +255,7 @@ align(1) struct Matrix(T, size_t R, size_t C)
         Matrix opUnary(string op)() pure const nothrow @nogc if (op == "+" || op == "-" || op == "~" || op == "!")
         {
             Matrix res = void;
-            for (size_t i = 0; i < N; ++i)
+            for (int i = 0; i < N; ++i)
                 mixin("res.v[i] = " ~ op ~ "v[i];");
             return res;
         }
@@ -452,8 +452,8 @@ align(1) struct Matrix(T, size_t R, size_t C)
         Matrix!(T, C, R) transposed() pure const nothrow @nogc
         {
             Matrix!(T, C, R) res;
-            for (size_t i = 0; i < C; ++i)
-                for (size_t j = 0; j < R; ++j)
+            for (int i = 0; i < C; ++i)
+                for (int j = 0; j < R; ++j)
                     res.c[i][j] = c[j][i];
             return res;
         }
@@ -463,10 +463,10 @@ align(1) struct Matrix(T, size_t R, size_t C)
             /// In-place translate by (v, 1)
             void translate(Vector!(T, R-1) v) pure nothrow @nogc
             {
-                for (size_t i = 0; i < R; ++i)
+                for (int i = 0; i < R; ++i)
                 {
                     T dot = 0;
-                    for (size_t j = 0; j + 1 < C; ++j)
+                    for (int j = 0; j + 1 < C; ++j)
                         dot += v.v[j] * c[i][j];
 
                     c[i][C-1] += dot;
@@ -477,7 +477,7 @@ align(1) struct Matrix(T, size_t R, size_t C)
             static Matrix translation(Vector!(T, R-1) v) pure nothrow @nogc
             {
                 Matrix res = identity();
-                for (size_t i = 0; i + 1 < R; ++i)
+                for (int i = 0; i + 1 < R; ++i)
                     res.c[i][C-1] += v.v[i];
                 return res;
             }
@@ -485,8 +485,8 @@ align(1) struct Matrix(T, size_t R, size_t C)
             /// In-place matrix scaling.
             void scale(Vector!(T, R-1) v) pure nothrow
             {
-                for (size_t i = 0; i < R; ++i)
-                    for (size_t j = 0; j + 1 < C; ++j)
+                for (int i = 0; i < R; ++i)
+                    for (int j = 0; j + 1 < C; ++j)
                         c[i][j] *= v.v[j];
             }
 
@@ -494,7 +494,7 @@ align(1) struct Matrix(T, size_t R, size_t C)
             static Matrix scaling(Vector!(T, R-1) v) pure nothrow @nogc
             {
                 Matrix res = identity();
-                for (size_t i = 0; i + 1 < R; ++i)
+                for (int i = 0; i + 1 < R; ++i)
                     res.c[i][i] = v.v[i];
                 return res;
             }
@@ -503,7 +503,7 @@ align(1) struct Matrix(T, size_t R, size_t C)
         // rotations are implemented for 3x3 and 4x4 matrices.
         static if (isSquare && (R == 3 || R == 4) && isFloatingPoint!T)
         {
-            public static Matrix rotateAxis(size_t i, size_t j)(T angle) pure nothrow @nogc
+            public static Matrix rotateAxis(int i, int j)(T angle) pure nothrow @nogc
             {
                 Matrix res = identity();
                 const T cosa = cos(angle);
@@ -660,8 +660,8 @@ align(1) struct Matrix(T, size_t R, size_t C)
         static Matrix identity() pure nothrow @nogc
         {
             Matrix res = void;
-            for (size_t i = 0; i < R; ++i)
-                for (size_t j = 0; j < C; ++j)
+            for (int i = 0; i < R; ++i)
+                for (int j = 0; j < C; ++j)
                     res.c[i][j] = (i == j) ? 1 : 0;
             return res;
         }
@@ -671,7 +671,7 @@ align(1) struct Matrix(T, size_t R, size_t C)
         {
             Matrix res = void;
 
-            for (size_t i = 0; i < R * C; ++i)
+            for (int i = 0; i < R * C; ++i)
                 res.v[i] = cast(T)x;
             return res;
         }
@@ -680,19 +680,19 @@ align(1) struct Matrix(T, size_t R, size_t C)
 
 // GLSL is a big inspiration here
 // we defines types with more or less the same names
-template mat2x2(T) { alias Matrix!(T, 2u, 2u) mat2x2; }
-template mat3x3(T) { alias Matrix!(T, 3u, 3u) mat3x3; }
-template mat4x4(T) { alias Matrix!(T, 4u, 4u) mat4x4; }
+template mat2x2(T) { alias Matrix!(T, 2, 2) mat2x2; }
+template mat3x3(T) { alias Matrix!(T, 3, 3) mat3x3; }
+template mat4x4(T) { alias Matrix!(T, 4, 4) mat4x4; }
 
 // WARNING: in GLSL, first number is _columns_, second is rows
 // It is the opposite here: first number is rows, second is columns
 // With this convention mat2x3 * mat3x4 -> mat2x4.
-template mat2x3(T) { alias Matrix!(T, 2u, 3u) mat2x3; }
-template mat2x4(T) { alias Matrix!(T, 2u, 4u) mat2x4; }
-template mat3x2(T) { alias Matrix!(T, 3u, 2u) mat3x2; }
-template mat3x4(T) { alias Matrix!(T, 3u, 4u) mat3x4; }
-template mat4x2(T) { alias Matrix!(T, 4u, 2u) mat4x2; }
-template mat4x3(T) { alias Matrix!(T, 4u, 3u) mat4x3; }
+template mat2x3(T) { alias Matrix!(T, 2, 3) mat2x3; }
+template mat2x4(T) { alias Matrix!(T, 2, 4) mat2x4; }
+template mat3x2(T) { alias Matrix!(T, 3, 2) mat3x2; }
+template mat3x4(T) { alias Matrix!(T, 3, 4) mat3x4; }
+template mat4x2(T) { alias Matrix!(T, 4, 2) mat4x2; }
+template mat4x3(T) { alias Matrix!(T, 4, 3) mat4x3; }
 
 alias mat2x2 mat2;
 alias mat3x3 mat3;  // shorter names for most common matrices

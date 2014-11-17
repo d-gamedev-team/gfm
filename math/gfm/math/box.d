@@ -7,7 +7,7 @@ import gfm.math.vector,
        gfm.math.funcs;
 
 /// N-dimensional half-open interval [a, b[.
-align(1) struct Box(T, size_t N)
+align(1) struct Box(T, int N)
 {
     align(1):
     static assert(N > 0);
@@ -27,7 +27,7 @@ align(1) struct Box(T, size_t N)
             max = max_;
         }
 
-        static if (N == 1u)
+        static if (N == 1)
         {
             this(T min_, T max_) pure nothrow @nogc
             {
@@ -36,7 +36,7 @@ align(1) struct Box(T, size_t N)
             }
         }
 
-        static if (N == 2u)
+        static if (N == 2)
         {
             this(T min_x, T min_y, T max_x, T max_y) pure nothrow @nogc
             {
@@ -45,7 +45,7 @@ align(1) struct Box(T, size_t N)
             }
         }
 
-        static if (N == 3u)
+        static if (N == 3)
         {
             this(T min_x, T min_y, T min_z, T max_x, T max_y, T max_z) pure nothrow @nogc
             {
@@ -95,7 +95,7 @@ align(1) struct Box(T, size_t N)
             {
                 T res = 1;
                 bound_t size = size();
-                for(size_t i = 0; i < N; ++i)
+                for(int i = 0; i < N; ++i)
                     res *= size[i];
                 return res;
             }
@@ -105,7 +105,7 @@ align(1) struct Box(T, size_t N)
         bool contains(bound_t point) pure const nothrow @nogc
         {
             assert(isSorted());
-            for(size_t i = 0; i < N; ++i)
+            for(int i = 0; i < N; ++i)
                 if ( !(point[i] >= min[i] && point[i] < max[i]) )
                     return false;
 
@@ -118,7 +118,7 @@ align(1) struct Box(T, size_t N)
             assert(isSorted());
             assert(other.isSorted());
 
-            for(size_t i = 0; i < N; ++i)
+            for(int i = 0; i < N; ++i)
                 if (other.min[i] >= max[i] || other.max[i] < min[i])
                     return false;
             return true;
@@ -130,7 +130,7 @@ align(1) struct Box(T, size_t N)
         {
             assert(isSorted());
             double distanceSquared = 0;
-            for (size_t i = 0; i < N; ++i)
+            for (int i = 0; i < N; ++i)
             {
                 if (point[i] < min[i])
                     distanceSquared += (point[i] - min[i]) ^^ 2;
@@ -155,7 +155,7 @@ align(1) struct Box(T, size_t N)
             assert(isSorted());
             assert(o.isSorted());
             double distanceSquared = 0;
-            for (size_t i = 0; i < N; ++i)
+            for (int i = 0; i < N; ++i)
             {
                 if (o.max[i] < min[i])
                     distanceSquared += (o.max[i] - min[i]) ^^ 2;
@@ -180,7 +180,7 @@ align(1) struct Box(T, size_t N)
             assert(isSorted());
             assert(o.isSorted());
             Box result;
-            for (size_t i = 0; i < N; ++i)
+            for (int i = 0; i < N; ++i)
             {
                 T maxOfMins = (min.v[i] > o.min.v[i]) ? min.v[i] : o.min.v[i];
                 T minOfMaxs = (max.v[i] < o.max.v[i]) ? max.v[i] : o.max.v[i];
@@ -235,7 +235,7 @@ align(1) struct Box(T, size_t N)
         /// Returns: true if each dimension of the box is >= 0.
         bool isSorted() pure const nothrow @nogc
         {
-            for(size_t i = 0; i < N; ++i)
+            for(int i = 0; i < N; ++i)
             {
                 if (min[i] > max[i])
                     return false;
@@ -283,13 +283,13 @@ align(1) struct Box(T, size_t N)
 /// Instanciate to use a 2D box.
 template box2(T)
 {
-    alias Box!(T, 2u) box2;
+    alias Box!(T, 2) box2;
 }
 
 /// Instanciate to use a 3D box.
 template box3(T)
 {
-    alias Box!(T, 3u) box3;
+    alias Box!(T, 3) box3;
 }
 
 

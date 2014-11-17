@@ -41,7 +41,7 @@ align(1) struct Quaternion(T)
         }
 
         /// Constructs a Quaternion from axis + angle.
-        static Quaternion fromAxis(Vector!(T, 3u) axis, T angle) pure nothrow @nogc
+        static Quaternion fromAxis(Vector!(T, 3) axis, T angle) pure nothrow @nogc
         {
             Quaternion q = void;
             axis.normalize();

@@ -20,7 +20,7 @@ import gfm.math.vector,
 
 /// A Segment is 2 points.
 /// When considered like a vector, it represents the arrow from a to b.
-align(1) struct Segment(T, size_t N)
+align(1) struct Segment(T, int N)
 {
     align(1):
     public
@@ -30,13 +30,13 @@ align(1) struct Segment(T, size_t N)
     }
 }
 
-alias Segment!(float, 2u) seg2f;  /// 2D float segment.
-alias Segment!(float, 3u) seg3f;  /// 3D float segment.
-alias Segment!(double, 2u) seg2d; /// 2D double segment.
-alias Segment!(double, 3u) seg3d; /// 3D double segment.
+alias Segment!(float, 2) seg2f;  /// 2D float segment.
+alias Segment!(float, 3) seg3f;  /// 3D float segment.
+alias Segment!(double, 2) seg2d; /// 2D double segment.
+alias Segment!(double, 3) seg3d; /// 3D double segment.
 
 /// A Triangle is 3 points.
-align(1) struct Triangle(T, size_t N)
+align(1) struct Triangle(T, int N)
 {
     align(1):
     public
@@ -44,7 +44,7 @@ align(1) struct Triangle(T, size_t N)
         alias Vector!(T, N) point_t;
         point_t a, b, c;
 
-        static if (N == 2u)
+        static if (N == 2)
         {
             /// Returns: Area of a 2D triangle.
             T area() pure const nothrow @nogc
@@ -61,10 +61,10 @@ align(1) struct Triangle(T, size_t N)
             }
         }
 
-        static if (N == 3u)
+        static if (N == 3)
         {
             /// Returns: Triangle normal.
-            Vector!(T, 3u) computeNormal() pure const nothrow @nogc
+            Vector!(T, 3) computeNormal() pure const nothrow @nogc
             {
                 return cross(b - a, c - a).normalized();
             }
@@ -72,13 +72,13 @@ align(1) struct Triangle(T, size_t N)
     }
 }
 
-alias Triangle!(float, 2u) triangle2f;  /// 2D float triangle.
-alias Triangle!(float, 3u) triangle3f;  /// 3D float triangle.
-alias Triangle!(double, 2u) triangle2d; /// 2D double triangle.
-alias Triangle!(double, 3u) triangle3d; /// 3D double triangle.
+alias Triangle!(float, 2) triangle2f;  /// 2D float triangle.
+alias Triangle!(float, 3) triangle3f;  /// 3D float triangle.
+alias Triangle!(double, 2) triangle2d; /// 2D double triangle.
+alias Triangle!(double, 3) triangle3d; /// 3D double triangle.
 
 /// A Sphere is a point + a radius.
-align(1) struct Sphere(T, size_t N)
+align(1) struct Sphere(T, int N)
 {
     align(1):
     public nothrow
@@ -127,7 +127,7 @@ align(1) struct Sphere(T, size_t N)
                 return center.distanceTo(p);
             }
 
-            static if(N == 2u)
+            static if(N == 2)
             {
                 /// Returns: Circle area.
                 T area() pure const nothrow @nogc
@@ -139,14 +139,14 @@ align(1) struct Sphere(T, size_t N)
     }
 }
 
-alias Sphere!(float, 2u) sphere2f;  /// 2D float sphere (ie. a circle).
-alias Sphere!(float, 3u) sphere3f;  /// 3D float sphere.
-alias Sphere!(double, 2u) sphere2d; /// 2D double sphere (ie. a circle).
-alias Sphere!(double, 3u) sphere3d; /// 3D double sphere (ie. a circle).
+alias Sphere!(float, 2) sphere2f;  /// 2D float sphere (ie. a circle).
+alias Sphere!(float, 3) sphere3f;  /// 3D float sphere.
+alias Sphere!(double, 2) sphere2d; /// 2D double sphere (ie. a circle).
+alias Sphere!(double, 3) sphere3d; /// 3D double sphere (ie. a circle).
 
 
 /// A Ray ir a point + a direction.
-align(1) struct Ray(T, size_t N)
+align(1) struct Ray(T, int N)
 {
 align(1):
 nothrow:
@@ -162,12 +162,12 @@ nothrow:
             return orig + dir * t;
         }
 
-        static if (N == 3u)
+        static if (N == 3)
         {
             /// Ray vs triangle intersection.
             /// See_also: "Fast, Minimum Storage Ray/Triangle intersection", Mommer & Trumbore (1997)
             /// Returns: Barycentric coordinates, the intersection point is at $(D (1 - u - v) * A + u * B + v * C).
-            bool intersect(Triangle!(T, 3u) triangle, out T t, out T u, out T v) pure const nothrow @nogc
+            bool intersect(Triangle!(T, 3) triangle, out T t, out T u, out T v) pure const nothrow @nogc
             {
                 point_t edge1 = triangle.b - triangle.a;
                 point_t edge2 = triangle.c - triangle.a;
@@ -201,10 +201,10 @@ nothrow:
     }
 }
 
-alias Ray!(float, 2u) ray2f;  /// 2D float ray.
-alias Ray!(float, 3u) ray3f;  /// 3D float ray.
-alias Ray!(double, 2u) ray2d; /// 2D double ray.
-alias Ray!(double, 3u) ray3d; /// 3D double ray.
+alias Ray!(float, 2) ray2f;  /// 2D float ray.
+alias Ray!(float, 3) ray3f;  /// 3D float ray.
+alias Ray!(double, 2) ray2d; /// 2D double ray.
+alias Ray!(double, 3) ray3d; /// 3D double ray.
 
 
 /// 3D plane.
@@ -303,12 +303,12 @@ align(1) struct Frustum(T) if (isFloatingPoint!T)
     align(1):
     public
     {
-        enum size_t LEFT   = 0, 
-                    RIGHT  = 1,
-                    TOP    = 2,
-                    BOTTOM = 3,
-                    NEAR   = 4,
-                    FAR    = 5;
+        enum int LEFT   = 0, 
+                 RIGHT  = 1,
+                 TOP    = 2,
+                 BOTTOM = 3,
+                 NEAR   = 4,
+                 FAR    = 5;
 
         Plane!T[6] planes;
 
@@ -333,7 +333,7 @@ align(1) struct Frustum(T) if (isFloatingPoint!T)
         /// Point vs frustum intersection.
         bool contains(vec3!T point) pure const nothrow @nogc
         {
-            for(size_t i = 0; i < 6; ++i) 
+            for(int i = 0; i < 6; ++i) 
             {
                 T distance = planes[i].signedDistanceTo(point);
 
@@ -345,10 +345,10 @@ align(1) struct Frustum(T) if (isFloatingPoint!T)
 
         /// Sphere vs frustum intersection.
         /// Returns: Frustum.OUTSIDE, Frustum.INTERSECT or Frustum.INSIDE.
-        int contains(Sphere!(T, 3u) sphere) pure const nothrow @nogc
+        int contains(Sphere!(T, 3) sphere) pure const nothrow @nogc
         {
             // calculate our distances to each of the planes
-            for(size_t i = 0; i < 6; ++i) 
+            for(int i = 0; i < 6; ++i) 
             {
                 // find the distance to this plane
                 T distance = planes[i].signedDistanceTo(sphere.center);
@@ -369,11 +369,11 @@ align(1) struct Frustum(T) if (isFloatingPoint!T)
         int contains(box3!T box) pure const nothrow @nogc
         {
             vec3!T corners[8];
-            size_t totalIn = 0;
+            int totalIn = 0;
 
-            for (size_t i = 0; i < 2; ++i)
-                for (size_t j = 0; j < 2; ++j)
-                    for (size_t k = 0; k < 2; ++k)
+            for (int i = 0; i < 2; ++i)
+                for (int j = 0; j < 2; ++j)
+                    for (int k = 0; k < 2; ++k)
                     {
                         auto x = i == 0 ? box.min.x : box.max.x;
                         auto y = i == 0 ? box.min.y : box.max.y;
@@ -384,12 +384,12 @@ align(1) struct Frustum(T) if (isFloatingPoint!T)
             // test all 8 corners against the 6 sides
             // if all points are behind 1 specific plane, we are out
             // if we are in with all points, then we are fully in
-            for(size_t p = 0; p < 6; ++p)
+            for(int p = 0; p < 6; ++p)
             {
-                size_t inCount = 8;
-                size_t ptIn = 1;
+                int inCount = 8;
+                int ptIn = 1;
 
-                for(size_t i = 0; i < 8; ++i)
+                for(int i = 0; i < 8; ++i)
                 {
                     // test this point against the planes
                     if (planes[p].isBack(corners[i]))

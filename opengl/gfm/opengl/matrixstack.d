@@ -119,7 +119,7 @@ final class MatrixStack(size_t R, T) if (R == 3 || R == 4)
         {
             /// Replacement for $(D glRotate).
             /// Warning: Angle is given in radians, unlike the original API.
-            void rotate(T angle, Vector!(T, 3u) axis) pure nothrow
+            void rotate(T angle, Vector!(T, 3) axis) pure nothrow
             {
                 matrix_t rot = matrix_t.rotation(angle, axis);
                 mult(rot, rot.transposed()); // inversing a rotation matrix is tranposing

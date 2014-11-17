@@ -120,7 +120,7 @@ ushort floatToHalf(float f) pure nothrow @nogc
 {
     uint_float uf = void;
     uf.f = f;
-    size_t idx = (uf.ui >> 23) & 0x1ff;
+    uint idx = (uf.ui >> 23) & 0x1ff;
     return cast(ushort)(basetable[idx] + ((uf.ui & 0x007fffff) >> shifttable[idx]));
 }
 

@@ -15,7 +15,7 @@ double average(R)(R r) if (isInputRange!R)
         return double.nan;
 
     typeof(r.front()) sum = 0;
-    size_t count = 0;
+    long count = 0;
     foreach(e; r)
     {
         sum += e;
@@ -53,7 +53,7 @@ double variance(R)(R r) if (isForwardRange!R)
     auto avg = average(r.save); // getting the average
 
     typeof(avg) sum = 0;
-    size_t count = 0;
+    long count = 0;
     foreach(e; r)
     {
         sum += (e - avg) ^^ 2;

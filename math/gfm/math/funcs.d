@@ -188,7 +188,7 @@ unittest
  * Find the root of a linear polynomial a + b x = 0
  * Returns: Number of roots.
  */
-size_t solveLinear(T)(T a, T b, out T root) pure nothrow @nogc if (isFloatingPoint!T)
+int solveLinear(T)(T a, T b, out T root) pure nothrow @nogc if (isFloatingPoint!T)
 {
     if (b == 0)
     {
@@ -208,7 +208,7 @@ size_t solveLinear(T)(T a, T b, out T root) pure nothrow @nogc if (isFloatingPoi
  *     outRoots = array of root results, should have room for at least 2 elements.
  * Returns: Number of roots in outRoots.
  */
-size_t solveQuadratic(T)(T a, T b, T c, T[] outRoots) pure nothrow @nogc if (isFloatingPoint!T)
+int solveQuadratic(T)(T a, T b, T c, T[] outRoots) pure nothrow @nogc if (isFloatingPoint!T)
 {
     assert(outRoots.length >= 2);
     if (c == 0)
@@ -234,7 +234,7 @@ size_t solveQuadratic(T)(T a, T b, T c, T[] outRoots) pure nothrow @nogc if (isF
  * Returns: Number of roots in outRoots.
  * See_also: $(WEB www.codeguru.com/forum/archive/index.php/t-265551.html)
  */
-size_t solveCubic(T)(T a, T b, T c, T d, T[] outRoots) pure nothrow @nogc if (isFloatingPoint!T)
+int solveCubic(T)(T a, T b, T c, T d, T[] outRoots) pure nothrow @nogc if (isFloatingPoint!T)
 {
     assert(outRoots.length >= 3);
     if (d == 0)
@@ -285,7 +285,7 @@ size_t solveCubic(T)(T a, T b, T c, T d, T[] outRoots) pure nothrow @nogc if (is
  * Bugs: doesn't pass unit-test!
  * See_also: $(WEB mathworld.wolfram.com/QuarticEquation.html)
  */
-size_t solveQuartic(T)(T a, T b, T c, T d, T e, T[] roots) pure nothrow @nogc if (isFloatingPoint!T)
+int solveQuartic(T)(T a, T b, T c, T d, T e, T[] roots) pure nothrow @nogc if (isFloatingPoint!T)
 {
     assert(roots.length >= 4);
 
@@ -305,7 +305,7 @@ size_t solveQuartic(T)(T a, T b, T c, T d, T e, T[] roots) pure nothrow @nogc if
     T b1 = a1 * a3 - 4 * a0;
     T b2 = -a2;
     T[3] resolventCubicRoots;
-    size_t numRoots = solveCubic!T(b0, b1, b2, 1, resolventCubicRoots[]);
+    int numRoots = solveCubic!T(b0, b1, b2, 1, resolventCubicRoots[]);
     assert(numRoots == 3);
     T y = resolventCubicRoots[0];
     if (y < resolventCubicRoots[1]) y = resolventCubicRoots[1];
@@ -361,7 +361,7 @@ unittest
     // test quadratic
     {
         double[3] roots;
-        size_t numRoots = solveCubic!double(-2, -3 / 2.0, 3 / 4.0, 1 / 4.0, roots[]);
+        int numRoots = solveCubic!double(-2, -3 / 2.0, 3 / 4.0, 1 / 4.0, roots[]);
         assert(numRoots == 3);
         assert(arrayContainsRoot(roots[], -4));
         assert(arrayContainsRoot(roots[], -1));
@@ -371,7 +371,7 @@ unittest
     // test quartic
     {
         double[4] roots;
-        size_t numRoots = solveQuartic!double(0, -2, -1, 2, 1, roots[]);
+        int numRoots = solveQuartic!double(0, -2, -1, 2, 1, roots[]);
 
         assert(numRoots == 4);
         assert(arrayContainsRoot(roots[], -2));
