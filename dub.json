@@ -81,7 +81,6 @@
             "dependencies": {
                 "derelict-gl3": "==1.0.6",
                 "logger": "~>0.3.0",
-                "gfm:core": "*",
                 "gfm:math": "*"
             }
         },

@@ -1,7 +1,8 @@
 module gfm.opengl.matrixstack;
 
-import gfm.core.memory,
-       gfm.math.vector,
+import std.c.stdlib : malloc, free;
+
+import gfm.math.vector,
        gfm.math.matrix;
 
 /// A matrix stack designed to replace fixed-pipeline matrix stacks.
@@ -18,7 +19,7 @@ final class MatrixStack(size_t R, T) if (R == 3 || R == 4)
         {
             assert(depth > 0);
             size_t memNeeded = matrix_t.sizeof * depth * 2;
-            void* data = alignedMalloc(memNeeded * 2, 64);
+            void* data = malloc(memNeeded * 2);
             _matrices = cast(matrix_t*)data;
             _invMatrices = cast(matrix_t*)(data + memNeeded);
             _top = 0;
@@ -36,7 +37,7 @@ final class MatrixStack(size_t R, T) if (R == 3 || R == 4)
         {
             if (_matrices !is null)
             {
-                alignedFree(_matrices);
+                free(_matrices);
                 _matrices = null;
             }
         }
