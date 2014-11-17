@@ -71,7 +71,6 @@
             "importPaths": [ "assimp" ],
             "dependencies": {
                 "derelict-assimp3": "==1.0.0",
-                "gfm:core": "*",
                 "logger": "~>0.3.0"
             }
         },
@@ -101,7 +100,6 @@
             "importPaths": [ "freeimage" ],
             "dependencies": {
                 "derelict-fi": "==1.0.0",
-                "gfm:core": "*",
                 "logger": "~>0.3.0"
             }
         },
