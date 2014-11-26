@@ -186,15 +186,7 @@ class GLTexture
         /// Throws: $(D OpenGLException) on error.
         final void setMaxAnisotropy(float f)
         {
-            assert(f >= 1.0f);
-            if (!EXT_texture_filter_anisotropic())
-                return;
-
-            auto maxAniso = _gl.maxTextureMaxAnisotropy();
-
-            if (f >= maxAniso)
-                f = maxAniso;
-
+			bind();
             glTexParameterf(_target, GL_TEXTURE_MAX_ANISOTROPY_EXT, f);
             _gl.runtimeCheck();
         }

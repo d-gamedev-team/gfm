@@ -393,11 +393,6 @@ final class OpenGL
             return _textureUnits;
         }
 
-        /// Returns: Maximum value of anisotropic filter.
-        float maxTextureMaxAnisotropy() pure const nothrow
-        {
-            return _maxTextureMaxAnisotropy;
-        }
     }
 
     private
@@ -412,7 +407,6 @@ final class OpenGL
         int _maxVertexTextureImageUnits; // max for vertex shader
         int _maxCombinedTextureImageUnits; // max total
         int _maxColorAttachments;
-        float _maxTextureMaxAnisotropy;
 
         void getLimits(bool logging)
         {
@@ -460,11 +454,6 @@ final class OpenGL
             // GL_MAX_GEOMETRY_TEXTURE_IMAGE_UNITS, GL_MAX_TESS_CONTROL_TEXTURE_IMAGE_UNITS, GL_MAX_TESS_EVALUATION_TEXTURE_IMAGE_UNITS
 
             _maxColorAttachments = getInteger(GL_MAX_COLOR_ATTACHMENTS, 4, logging);
-
-            if (EXT_texture_filter_anisotropic())
-                _maxTextureMaxAnisotropy = getFloat(GL_MAX_TEXTURE_MAX_ANISOTROPY_EXT, 1.0f, logging);
-            else
-                _maxTextureMaxAnisotropy = 1.0f;
         }
 
         // flush out OpenGL errors
