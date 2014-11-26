@@ -23,28 +23,12 @@ final class GLFBO
         }
 
         /// Creates one FBO, with specified usage. OpenGL must have been loaded.
-        /// $(D EXT_framebuffer_object) is used as a fallback if $(D ARB_framebuffer_object) is missing.
+        /// $(D ARB_framebuffer_object) must be supported.
         /// Throws: $(D OpenGLException) on error.
         this(OpenGL gl, Usage usage = Usage.DRAW)
         {
-            if (glGenFramebuffers !is null)
-                _useEXTFallback = false;
-            else if (EXT_framebuffer_object())
-            {
-                gl._logger.warning("ARB_framebuffer_object missing, using EXT_framebuffer_object as fallback");
-                _useEXTFallback = true;
-            }
-            else
-                throw new OpenGLException("Neither ARB_framebuffer_object nor EXT_framebuffer_object are supported");
-
-            if (_useEXTFallback && usage == Usage.READ)
-                throw new OpenGLException("Unable to read FBO using EXT_framebuffer_object");
-
             _gl = gl;
-            if (_useEXTFallback)
-                glGenFramebuffersEXT(1, &_handle);
-            else
-                glGenFramebuffers(1, &_handle);
+            glGenFramebuffers(1, &_handle);
             _gl.runtimeCheck();
 
             _colors.length = _gl.maxColorAttachments();
@@ -85,10 +69,7 @@ final class GLFBO
                 _depth.close();
                 _stencil.close();
 
-                if (_useEXTFallback)
-                    glDeleteFramebuffersEXT(1, &_handle);
-                else
-                    glDeleteFramebuffers(1, &_handle);
+                glDeleteFramebuffers(1, &_handle);
                 _initialized = false;
             }
         }
@@ -97,10 +78,7 @@ final class GLFBO
         /// Throws: $(D OpenGLException) on error.
         void use()
         {
-            if (_useEXTFallback)
-                glBindFramebufferEXT(_target, _handle);
-            else
-                glBindFramebuffer(_target, _handle);
+            glBindFramebuffer(_target, _handle);
             
             _gl.runtimeCheck();
             _isBound = true;
@@ -114,10 +92,7 @@ final class GLFBO
         void unuse()
         {
             _isBound = false;
-            if (_useEXTFallback)
-                glBindFramebufferEXT(_target, 0);
-            else
-                glBindFramebuffer(_target, 0);
+            glBindFramebuffer(_target, 0);
 
             _gl.runtimeCheck();
         }
@@ -148,7 +123,6 @@ final class GLFBO
         OpenGL _gl;
         GLuint  _handle;
         bool _initialized, _isBound;
-        bool _useEXTFallback;
 
         // attachements
         GLFBOAttachment[] _colors;
@@ -160,10 +134,7 @@ final class GLFBO
         void checkStatus()
         {
             GLenum status = void;
-            if (_useEXTFallback)
-                status = glCheckFramebufferStatusEXT(_target);
-            else
-                status = glCheckFramebufferStatus(_target);
+            status = glCheckFramebufferStatus(_target);
 
             switch(status)
             {
@@ -222,7 +193,7 @@ class GLFBOAttachment
         /// Throws: $(D OpenGLException) on error.
         void attach(GLTexture3D tex, int layer, int level)
         {
-            _newCall = Call(this, Call.Type.TEXTURE_3D, tex, null, level, layer);            
+            _newCall = Call(this, Call.Type.TEXTURE_3D, tex, null, level, layer);
             updateAttachment();
         }
 
@@ -288,7 +259,7 @@ class GLFBOAttachment
         // guaranteed to be called once
         void close()
         {
-            _lastCall.detach(_fbo._useEXTFallback);
+            _lastCall.detach();
         }
 
         OpenGL _gl;
@@ -305,14 +276,14 @@ class GLFBOAttachment
                 {
                     // trying to detach existing attachment
                     // would that help?
-                    _lastCall.detach(_fbo._useEXTFallback);
+                    _lastCall.detach();
                 }
                 catch(OpenGLException e)
                 {
                     // ignoring errors here
                 }
 
-                _newCall.attach(_fbo._useEXTFallback);
+                _newCall.attach();
                 _lastCall = _newCall;
             }
         }
@@ -337,17 +308,17 @@ class GLFBOAttachment
                 GLint _level;
                 GLint _layer;
 
-                void attach(bool useEXTFallback)
+                void attach()
                 {
-                    attachOrDetach(useEXTFallback, _texture.handle(), _renderbuffer._handle);
+                    attachOrDetach(_texture.handle(), _renderbuffer._handle);
                 }
 
-                void detach(bool useEXTFallback)
+                void detach()
                 {
-                    attachOrDetach(useEXTFallback, 0, 0);
+                    attachOrDetach(0, 0);
                 }
 
-                void attachOrDetach(bool useEXTFallback, GLuint textureHandle, GLuint renderBufferHandle)
+                void attachOrDetach(GLuint textureHandle, GLuint renderBufferHandle)
                 {
                     final switch(_type)
                     {
@@ -355,31 +326,19 @@ class GLFBOAttachment
                             return; // do nothing
 
                         case Type.TEXTURE_1D:
-                            if (useEXTFallback)
-                                glFramebufferTexture1DEXT(_outer._fbo._target, _outer._attachment, _texture._target, textureHandle, _level);
-                            else
-                                glFramebufferTexture1D(_outer._fbo._target, _outer._attachment, _texture._target, textureHandle, _level);
+                            glFramebufferTexture1D(_outer._fbo._target, _outer._attachment, _texture._target, textureHandle, _level);
                             break;
 
                         case Type.TEXTURE_2D:
-                            if (useEXTFallback)
-                                glFramebufferTexture2DEXT(_outer._fbo._target, _outer._attachment, _texture._target, textureHandle, _level);
-                            else
-                                glFramebufferTexture2D(_outer._fbo._target, _outer._attachment, _texture._target, textureHandle, _level);
+                            glFramebufferTexture2D(_outer._fbo._target, _outer._attachment, _texture._target, textureHandle, _level);
                             break;
 
                         case Type.TEXTURE_3D: 
-                            if (useEXTFallback)
-                                glFramebufferTexture3DEXT(_outer._fbo._target, _outer._attachment, _texture._target, textureHandle, _level, _layer);
-                            else
-                                glFramebufferTexture3D(_outer._fbo._target, _outer._attachment, _texture._target, textureHandle, _level, _layer);
+                            glFramebufferTexture3D(_outer._fbo._target, _outer._attachment, _texture._target, textureHandle, _level, _layer);
                             break;
 
                         case Type.RENDERBUFFER: 
-                            if (useEXTFallback)
-                                glFramebufferRenderbufferEXT(_outer._fbo._target, _outer._attachment, GL_RENDERBUFFER, renderBufferHandle);
-                            else
-                                glFramebufferRenderbuffer(_outer._fbo._target, _outer._attachment, GL_RENDERBUFFER, renderBufferHandle);
+                            glFramebufferRenderbuffer(_outer._fbo._target, _outer._attachment, GL_RENDERBUFFER, renderBufferHandle);
                             break;
                     }
                     _outer._gl.runtimeCheck();
