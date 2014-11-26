@@ -6,8 +6,6 @@ import std.conv,
 import derelict.freeimage.freeimage,
        derelict.util.exception;
 
-import std.experimental.logger;
-
 /// The one exception type thrown in this wrapper.
 /// A failing FreeImage function should <b>always</b> throw an FreeImageException.
 class FreeImageException : Exception
@@ -28,10 +26,8 @@ final class FreeImage
     {
         /// Loads the FreeImage library and logs some information.
         /// Throws: FreeImageException on error.
-        this(Logger logger, bool useExternalPlugins = false)
+        this(bool useExternalPlugins = false)
         {
-            _logger = logger is null ? new NullLogger() : logger;
-
             try
             {
                 DerelictFI.load();
@@ -43,9 +39,6 @@ final class FreeImage
 
             //FreeImage_Initialise(useExternalPlugins ? TRUE : FALSE); // documentation says it's useless
             _libInitialized = true;
-
-            _logger.infof("FreeImage %s initialized.", getVersion());
-            _logger.infof("%s.", getCopyrightMessage());
         }
 
         ~this()
@@ -74,11 +67,6 @@ final class FreeImage
             const(char)* copyrightZ = FreeImage_GetCopyrightMessage();
             return fromStringz(copyrightZ);
         }
-    }
-
-    package
-    {
-        Logger _logger;
     }
 
     private

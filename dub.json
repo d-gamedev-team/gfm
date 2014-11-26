@@ -98,8 +98,7 @@
             "sourcePaths": [ "freeimage/gfm/freeimage" ],
             "importPaths": [ "freeimage" ],
             "dependencies": {
-                "derelict-fi": "==1.0.0",
-                "logger": "~>0.3.0"
+                "derelict-fi": "==1.0.0"
             }
         },
         {

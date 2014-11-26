@@ -48,14 +48,8 @@ final class Assimp
 
             _libInitialized = true;
 
-            _logger.infof("Assimp %s initialized.", getVersion());
-            _logger.infof("%s.", getLegalString());
-
-            // enable verbose logging in debug-mode
-            debug
-                aiEnableVerboseLogging(AI_TRUE);
-            else
-                aiEnableVerboseLogging(AI_FALSE);
+            // enable verbose logging by default
+            aiEnableVerboseLogging(AI_TRUE);
 
             // route Assimp logging to our own
             _logStream.callback = &loggingCallbackAssimp;
@@ -103,7 +97,7 @@ final class Assimp
             return format("v%s.%s_r%s (%s)", aiGetVersionMajor(), aiGetVersionMinor(), aiGetVersionRevision(), compileFlags());
         }
 
-        /// Returns: A string with legal copyright and licensing information about Assimp. 
+        /// Returns: A string with legal copyright and licensing information about Assimp.
         const(char)[] getLegalString()
         {
             const(char)* legalZ = aiGetLegalString();
@@ -136,7 +130,7 @@ final class Assimp
     }
 }
 
-extern (C) private 
+extern (C) private
 {
     void loggingCallbackAssimp(const(char)* message, char* user) nothrow
     {
