@@ -31,17 +31,17 @@ You absolutely don't need to use the whole of GFM. Pick just what you need to mi
 
 ![GFM dependencies](/deps/deps.png)
 
-There is an ongoing work to reduce package dependencies and delete things in GFM that exist elsewhere but better.
+There is an ongoing work to delete things in GFM that exist elsewhere but better.
+See http://code.dlang.org to discover lots of useful libraries for your programs.
 
 
 ## Design goals
 
-  * Give more power to the library user providing code that will probably need to be written anyway.
+  * Give some more power to the library user providing code that will probably need to be written anyway.
   * Each module / sub-package is maximally decoupled.
-  * Logging interface for everything which need to output messages.
+  * Logging interface for everything that has a logging callback.
   * Correctness and functionality are favoured over speed.
-  * Wrappers are lightweight layers that expose the C libraries objects, turn every error code into an D exception and makes it easier to use the library correctly.
-  * As much as possible, GFM emit warnings when something goes wrong, try to recover when it makes sense and log every problem.
+  * Wrappers are transparent layers that expose the C libraries objects, turn every error code into an D exception and makes it easier to use the library correctly. They should not restrict the original library caabilitities.
 
 ## Why use GFM?
 
