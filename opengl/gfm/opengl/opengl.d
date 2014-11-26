@@ -12,8 +12,6 @@ import derelict.opengl3.gl3,
 
 import std.experimental.logger;
 
-import gfm.opengl.textureunit;
-
 /// The one exception type thrown in this wrapper.
 /// A failing OpenGL function should <b>always</b> throw an $(D OpenGLException).
 class OpenGLException : Exception
@@ -60,8 +58,6 @@ final class OpenGL
             // do not log here since unimportant errors might happen:
             // no context is necessarily created at this point
             getLimits(false); 
-
-            _textureUnits = new TextureUnits(this);
         }
 
         ~this()
@@ -109,8 +105,6 @@ final class OpenGL
             }
 
             _logger.infof("    Extensions: %s found", _extensions.length);
-
-            _textureUnits = new TextureUnits(this);
 
             // now that the context exists, pipe OpenGL output
             pipeOpenGLDebugOutput();
@@ -387,18 +381,21 @@ final class OpenGL
             return _maxColorAttachments;
         }
 
-        /// Returns: Texture units abstraction.
-        TextureUnits textureUnits() pure nothrow
+		/// Sets the "active texture" which is more precisely active texture unit.
+        /// Throws: $(D OpenGLException) on error.
+        void setActiveTexture(int texture)
         {
-            return _textureUnits;
-        }
+            if (maxCombinedImageUnits() == 1)
+                return;
 
+            glActiveTexture(GL_TEXTURE0 + texture);
+            runtimeCheck();
+        }
     }
 
     private
     {
         string[] _extensions;
-        TextureUnits _textureUnits;
         int _majorVersion;
         int _minorVersion;
         int _maxTextureSize;

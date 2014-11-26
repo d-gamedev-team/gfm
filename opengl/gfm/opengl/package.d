@@ -15,7 +15,6 @@ public
            gfm.opengl.program,
            gfm.opengl.matrixstack,
            gfm.opengl.texture,
-           gfm.opengl.textureunit,
            gfm.opengl.fbo,
            gfm.opengl.vbo,
            gfm.opengl.vao;

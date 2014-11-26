@@ -5,8 +5,7 @@ import std.string;
 
 import derelict.opengl3.gl3;
 
-import gfm.opengl.opengl, 
-       gfm.opengl.textureunit;
+import gfm.opengl.opengl;
 
 /// OpenGL Texture wrapper.
 ///
@@ -52,7 +51,7 @@ class GLTexture
         ///     textureUnit = Index of the texture unit to use.
         final void use(int textureUnit = 0)
         {
-            _gl.textureUnits().setActiveTexture(textureUnit);
+            _gl.setActiveTexture(textureUnit);
             bind();
         }
 
