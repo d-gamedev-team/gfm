@@ -57,23 +57,6 @@ class SDL2Window : KeyboardListener, MouseListener
             _surfaceMustBeRenewed = false;
 
             bool OpenGL = (flags & SDL_WINDOW_OPENGL) != 0;
-
-            if (OpenGL)
-            {
-                // put here your desired context profile and version
-
-                //SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 3);
-                //SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 3);
-                //SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);
-                //SDL_GL_SetAttribute(SDL_GL_CONTEXT_FLAGS, SDL_GL_CONTEXT_DEBUG_FLAG | SDL_GL_CONTEXT_FORWARD_COMPATIBLE_FLAG);
-
-                // force debug OpenGL context creation in debug mode
-                debug
-                {
-                    SDL_GL_SetAttribute(SDL_GL_CONTEXT_FLAGS, SDL_GL_CONTEXT_DEBUG_FLAG);
-                }
-            }
-
             _window = SDL_CreateWindow(toStringz(""), x, y, width, height, flags);
             if (_window == null)
 			{
