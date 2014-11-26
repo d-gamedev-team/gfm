@@ -53,8 +53,6 @@ final class OpenGL
 
             DerelictGL.load(); // load deprecated functions too
 
-            _logger.infof("OpenGL loaded, version %s", DerelictGL3.loadedVersion());
-
             // do not log here since unimportant errors might happen:
             // no context is necessarily created at this point
             getLimits(false); 
@@ -79,12 +77,7 @@ final class OpenGL
         /// you should call reload() to get the context you want.
         void reload()
         {
-            DerelictGL3.reload();
-            _logger.infof("OpenGL reloaded, version %s", DerelictGL3.loadedVersion());
-            _logger.infof("    Version: %s", getVersionString());
-            _logger.infof("    Renderer: %s", getRendererString());
-            _logger.infof("    Vendor: %s", getVendorString());
-            _logger.infof("    GLSL version: %s", getGLSLVersionString());
+            DerelictGL3.reload();            
 
             getLimits(true);
 
@@ -103,8 +96,6 @@ final class OpenGL
                 for (int i = 0; i < numExtensions; ++i)
                     _extensions ~= getString(GL_EXTENSIONS, i).idup;
             }
-
-            _logger.infof("    Extensions: %s found", _extensions.length);
 
             // now that the context exists, pipe OpenGL output
             pipeOpenGLDebugOutput();

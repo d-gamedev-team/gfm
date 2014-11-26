@@ -35,21 +35,7 @@ final class SDLImage
             }
 
             int inited = IMG_Init(flags);
-
-            if ((inited & IMG_INIT_JPG) != 0)
-                _logger.infof("SDL_image: JPG loading enabled.");
-
-            if ((inited & IMG_INIT_PNG) != 0)
-                _logger.infof("SDL_image: PNG loading enabled.");
-
-            if ((inited & IMG_INIT_TIF) != 0)
-                _logger.infof("SDL_image: TIF loading enabled.");
-
-            if ((inited & IMG_INIT_WEBP) != 0)
-                _logger.infof("SDL_image: WebP loading enabled.");
-
             _SDLImageInitialized = true;
-
         }
 
         ~this()

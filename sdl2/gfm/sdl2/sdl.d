@@ -68,20 +68,14 @@ final class SDL2
             if (0 != SDL_Init(0))
                 throwSDL2Exception("SDL_Init");
 
-            _logger.infof("Platform: %s, %s CPU", getPlatform(), getCPUCount());
-            
             subSystemInit(SDL_INIT_TIMER);
             subSystemInit(SDL_INIT_VIDEO);
             subSystemInit(SDL_INIT_JOYSTICK);
             subSystemInit(SDL_INIT_AUDIO);
             subSystemInit(SDL_INIT_HAPTIC);
 
-            _logger.infof("Running using video driver: %s", fromStringz(SDL_GetCurrentVideoDriver()));
-
             int numDisplays = SDL_GetNumVideoDisplays();
             
-            _logger.infof("%s video display(s) detected.", numDisplays);
-
             _keyboard = new SDL2Keyboard(this);
             _mouse = new SDL2Mouse(this);
         }
