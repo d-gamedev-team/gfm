@@ -2,9 +2,9 @@ import std.math,
        std.random,
        std.typecons;
 
-import std.logger;
+import std.experimental.logger;
 
-import gfm.core,
+import gfm.logger,
        gfm.sdl2,
        gfm.opengl,
        gfm.math;
@@ -32,9 +32,6 @@ void main()
 
     // reload OpenGL now that a context exists
     gl.reload();
-
-    // the FrameCounter object gives the clock and maintain statistics about framerate
-    auto fc = scoped!FrameCounter(sdl2);
 
     // create a shader program made of a single fragment shader
     string tunnelProgramSource = 
@@ -70,7 +67,6 @@ void main()
     int texWidth = 1024;
     int texHeight = 1024;
     auto random = Random();
-    auto simplex = scoped!(SimplexNoise!Random)(random);
     ubyte texData[] = new ubyte[texWidth * texHeight * 3];
     int ind = 0;
     for (int y = 0; y < texHeight; ++y)
@@ -81,7 +77,7 @@ void main()
             float freq = 1;
             for (int level = 0; level < 8; ++level)
             {
-                sample += simplex.noise(freq * x / cast(float)texWidth, freq * y / cast(float)texHeight);                
+                sample += sin(freq * x / cast(float)texWidth) * cos(freq * y / cast(float)texHeight);
                 amplitude /= 2;
                 freq *= 2;
             }
@@ -100,11 +96,16 @@ void main()
     noiseTexture.generateMipmap();
 
     double time = 0;
+
+	uint lastTime = SDL_GetTicks();
+
     while(!sdl2.keyboard().isPressed(SDLK_ESCAPE))
     {
         sdl2.processEvents();
 
-        double dt = fc.tickMs();
+		uint now = SDL_GetTicks();
+	    double dt = now - lastTime;
+	    lastTime = now;
         time += 0.001 * dt;
 
         // clear the whole window
@@ -137,7 +138,7 @@ void main()
 
         program.unuse();
 
-        window.setTitle(fc.getFPSString());
+        window.setTitle("Simple shader");
         window.swapBuffers();        
     }
 }

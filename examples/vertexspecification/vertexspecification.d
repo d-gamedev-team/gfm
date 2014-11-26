@@ -1,8 +1,8 @@
-import std.logger;
+import std.experimental.logger;
 
 import gfm.opengl,
        gfm.sdl2,
-       gfm.core;
+       gfm.logger;
 
 import std.typecons,
        std.string;
@@ -198,14 +198,18 @@ void main()
     double time = 0;
 
     // The FrameCounter object gives the clock and maintain statistics about framerate.
-    auto frameCounter = scoped!FrameCounter(sdl);
-
+	uint lastTime = SDL_GetTicks();
+    
     /* While the program is running */
     while(!sdl.keyboard().isPressed(SDLK_ESCAPE)) 
     {
         sdl.processEvents();
 
-        time += frameCounter.tickSecs();
+		uint now = SDL_GetTicks();
+
+
+        time += (now - lastTime) * 0.001;
+		lastTime = now;
 
         // clear the whole window
         glClear(GL_COLOR_BUFFER_BIT);

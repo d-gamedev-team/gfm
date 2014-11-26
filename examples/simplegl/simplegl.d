@@ -3,8 +3,8 @@ import std.math,
 
 import std.experimental.logger;
 
-import gfm.core,
-       gfm.sdl2,
+import gfm.sdl2,
+	   gfm.logger,
        gfm.opengl;
 
 // This example show how to draw an OpenGL triangle

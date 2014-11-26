@@ -7,7 +7,9 @@
 
     "dependencies":
     {
-        "gfm:sdl2": {"path": "../../", "version": "~master"},
-        "gfm:opengl": {"path": "../../", "version": "~master"}
+        "gfm:sdl2": {"path": "../../" },
+        "gfm:opengl": {"path": "../../"},
+        "gfm:math": {"path": "../../"},
+        "gfm:logger": {"path": "../../"}
     }
 }

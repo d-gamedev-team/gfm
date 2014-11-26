@@ -8,6 +8,8 @@
     "dependencies":
     {
         "gfm:sdl2": {"path": "../../" },
-        "gfm:opengl": {"path": "../../" }
+        "gfm:opengl": {"path": "../../" },
+        "gfm:math": {"path": "../../" },
+        "gfm:logger": {"path": "../../" }
     }
 }
