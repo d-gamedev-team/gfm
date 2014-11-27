@@ -6,6 +6,7 @@
 module gfm.math.funcs;
 
 import std.math,
+	   std.traits,
        std.range,
        std.math;
 
