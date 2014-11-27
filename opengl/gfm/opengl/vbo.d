@@ -6,9 +6,7 @@ module gfm.opengl.vbo;
 
 import std.string;
 
-import derelict.opengl3.gl3,
-       derelict.opengl3.deprecatedFunctions,
-       derelict.opengl3.deprecatedConstants;
+import derelict.opengl3.gl3;
 
 import gfm.opengl.opengl,
        gfm.opengl.program,
@@ -121,17 +119,16 @@ class VertexSpecification
             return _ibo = ibo;
         }
 
-        /// Adds an non-generic attribute to the vertex specification.
+        /// Adds a generic attribute to the vertex specification.
         /// Params: role = what is the role of this attribute;
         /// n = 1, 2, 3 or 4, is the number of components of the attribute;
         /// For compatibility, you should not define more than 16 attributes
-        void addLegacy(VertexAttribute.Role role, GLenum glType, int n)
+        void addAttribute(GLenum glType, int n, GLuint location, GLboolean normalize = GL_FALSE)
         {
-            assert(role != VertexAttribute.Role.GENERIC);
             assert(n > 0 && n <= 4);
             assert(_state == State.UNUSED);
             assert(isGLTypeSuitable(glType));
-            _attributes ~= VertexAttribute(role, n, _currentOffset, glType, -1, "", GL_FALSE);
+            _attributes ~= VertexAttribute(n, _currentOffset, glType, location, "", normalize);
             _currentOffset += n * glTypeSize(glType);
         }
 
@@ -139,25 +136,12 @@ class VertexSpecification
         /// Params: role = what is the role of this attribute;
         /// n = 1, 2, 3 or 4, is the number of components of the attribute;
         /// For compatibility, you should not define more than 16 attributes
-        void addGeneric(GLenum glType, int n, GLuint location, GLboolean normalize = GL_FALSE)
+        void addAttribute(GLenum glType, int n, string name, GLboolean normalize = GL_FALSE)
         {
             assert(n > 0 && n <= 4);
             assert(_state == State.UNUSED);
             assert(isGLTypeSuitable(glType));
-            _attributes ~= VertexAttribute(VertexAttribute.Role.GENERIC, n, _currentOffset, glType, location, "", normalize);
-            _currentOffset += n * glTypeSize(glType);
-        }
-
-        /// Adds a generic attribute to the vertex specification.
-        /// Params: role = what is the role of this attribute;
-        /// n = 1, 2, 3 or 4, is the number of components of the attribute;
-        /// For compatibility, you should not define more than 16 attributes
-        void addGeneric(GLenum glType, int n, string name, GLboolean normalize = GL_FALSE)
-        {
-            assert(n > 0 && n <= 4);
-            assert(_state == State.UNUSED);
-            assert(isGLTypeSuitable(glType));
-            _attributes ~= VertexAttribute(VertexAttribute.Role.GENERIC, n, _currentOffset, glType, -1, name, normalize);
+            _attributes ~= VertexAttribute(n, _currentOffset, glType, -1, name, normalize);
             _currentOffset += n * glTypeSize(glType);
         }
 
@@ -196,19 +180,8 @@ class VertexSpecification
 /// Describes a single attribute in a vertex entry.
 struct VertexAttribute
 {
-    /// Role of this vertex attribute.
-    enum Role
-    {
-        POSITION,  /// This attribute is a position.
-        COLOR,     /// This attribute is a color.
-        TEX_COORD, /// This attribute is a texture coordinate.
-        NORMAL,    /// This attribute is a normal.
-        GENERIC    /// This attribute is a generic vertex attribute
-    }
-
     private
     {
-        Role role;
         int n;
         size_t offset;
         GLenum glType;
@@ -230,35 +203,8 @@ struct VertexAttribute
         /// Throws: $(D OpenGLException) on error.
         void use(OpenGL gl, GLsizei sizeOfVertex)
         {
-            final switch (role)
-            {
-                case Role.POSITION:
-                    glEnableClientState(GL_VERTEX_ARRAY);
-                    glVertexPointer(n, glType, sizeOfVertex, cast(GLvoid *) offset);
-                    break;
-
-                case Role.COLOR:
-                    glEnableClientState(GL_COLOR_ARRAY);
-                    glColorPointer(n, glType, sizeOfVertex, cast(GLvoid *) offset);
-                    break;
-
-                case Role.TEX_COORD:
-                    glEnableClientState(GL_TEXTURE_COORD_ARRAY);
-                    glTexCoordPointer(n, glType, sizeOfVertex, cast(GLvoid *) offset);
-                    break;
-
-                case Role.NORMAL:
-                    glEnableClientState(GL_NORMAL_ARRAY);
-                    assert(n == 3);
-                    glNormalPointer(glType, sizeOfVertex, cast(GLvoid *) offset);
-                    break;
-
-               case Role.GENERIC:
-                    glEnableVertexAttribArray(genericLocation);
-                    glVertexAttribPointer(genericLocation, n, glType, normalize, sizeOfVertex, cast(GLvoid *) offset);
-                    break;
-            }
-
+            glEnableVertexAttribArray(genericLocation);
+            glVertexAttribPointer(genericLocation, n, glType, normalize, sizeOfVertex, cast(GLvoid *) offset);
             gl.runtimeCheck();
         }
 
@@ -266,28 +212,7 @@ struct VertexAttribute
         /// Throws: $(D OpenGLException) on error.
         void unuse(OpenGL gl)
         {
-            final switch (role)
-            {
-                case Role.POSITION:
-                    glDisableClientState(GL_VERTEX_ARRAY);
-                    break;
-
-                case Role.COLOR:
-                    glDisableClientState(GL_COLOR_ARRAY);
-                    break;
-
-                case Role.TEX_COORD:
-                    glDisableClientState(GL_TEXTURE_COORD_ARRAY);
-                    break;
-
-                case Role.NORMAL:
-                    glDisableClientState(GL_NORMAL_ARRAY);
-                    break;
-
-                case Role.GENERIC:
-                    glDisableVertexAttribArray(genericLocation);
-                    break;
-            }
+            glDisableVertexAttribArray(genericLocation);
             gl.runtimeCheck();
         }
     }
