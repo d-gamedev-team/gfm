@@ -8,11 +8,8 @@ $(LINK2 https://github.com/p0nce/gfm, GFM) is a feature-rich library to ease the
 $(UL
     <p>$(LI gfm.core:
         $(UL
-            $(LI $(D log.d): logging interface + implementations (HTML file, colored console output...).)
             $(LI $(D queue.d): a dead simple queue/fifo/stack/ring-buffer, with a range interface. Synchronized queue for threads.)
             $(LI $(D memory.d): aligned malloc/free/realloc.)
-            $(LI $(D alignedbuffer.d): aligned array-like container.)
-            $(LI $(D text.d): string utilities.)
          )
     )</p>
     <p>$(LI gfm.math:
@@ -25,11 +22,9 @@ $(UL
             $(LI $(D box.d): half-open intervals (for eg. AABB).)
             $(LI $(D fixedpoint.d): fixed-point numbers.)
             $(LI $(D fraction.d): rational numbers.)
-            $(LI $(D statistics.d): statistical functions.)
             $(LI $(D simplerng.d): random distributions: a port of SimpleRNG from John D. Cook.)
             $(LI $(D shapes.d): segment, triangle, sphere, ray, plane, frustum.)
-            $(LI $(D funcs.d): useful math functions, polynomial solvers.)
-            $(LI $(D simplexnoise.d): Simplex noise implementation.)
+            $(LI $(D funcs.d): useful math functions, polynomial solvers, statistics.)
          )
     )</p>
     <p>$(LI gfm.opengl:
@@ -40,7 +35,6 @@ $(UL
             $(LI including compilation of a single source for multiple shaders.)
             $(LI practical shader uniforms support: set them at any time, with id caching, and support pruned uniforms.)
             $(LI legacy multi-texture support which is needed for a low-spec game.)
-            $(LI FBO support with GL_EXT_framebuffer_object fallback.)
             $(LI built-in OpenGL debug output forwarding.)
          )
     )</p>
@@ -53,7 +47,7 @@ $(UL
     )</p>
     <p>$(LI gfm.sdl2:
         $(UL
-            $(LI SDL 2.0 wrapper based on package derelict-sdl2.)
+            $(LI SDL 2.x wrapper based on package derelict-sdl2.)
             $(LI including SDL_image and SDL_ttf wrappers.)
             $(LI built-in SDL logging forwarding.)
             $(LI framerate statistics.)
@@ -70,12 +64,18 @@ $(UL
          )
     )</p>
 
+    <p>$(LI gfm.logger:
+        $(UL
+            $(LI $(D log.d): coloured console logger implementation based on std.logger.)
+         )
+    )</p>
+
     <p>$(LI gfm.freeimage:
         $(UL
             $(LI FreeImage wrapper based on package derelict-fi.)
          )
     )</p>
-    
+
     <p>$(LI gfm.assimp:
         $(UL
             $(LI Assimp wrapper based on package derelict-assimp3.)
@@ -88,13 +88,8 @@ $(UL
          )
     )</p>
 
-    <p>$(LI gfm.bgfx:
-        $(UL
-            $(LI bgfx wrapper based on package derelict-bgfx.)
-         )
-    )</p>
 
-) 
+)
 
 
 <h3>Dealing with resources in D.</h3>
@@ -104,10 +99,10 @@ Resource management in D needs more care than it seems at first ; more so than i
 </p>
 
 <p>
-The crux of the matter is that <b>you cannot rely on a class destructor being called by the 
+The crux of the matter is that <b>you cannot rely on a class destructor being called by the
 GC or even class destruction order</b>.</p>
 
-<p>A notable consequence is that <b>when a class instance destructor is 
+<p>A notable consequence is that <b>when a class instance destructor is
 called, its members might have been destroyed already (unlike in C++).</b></p>
 
 <p>
@@ -115,8 +110,8 @@ You can verify this fact here: $(WEB dlang.org/class.html#destructors).
 </p>
 
 <p>
-To simplify, the <i>resource-ness</i> of a class leaks on anything that owns it. 
-This is an unavoidable fact of a GC with cycles and you have to deal with it, ie. 
+To simplify, the <i>resource-ness</i> of a class leaks on anything that owns it.
+This is an unavoidable fact of a GC with cycles and you have to deal with it, ie.
 you have to call close() methods manually before it's too late.
 </p>
 
@@ -125,7 +120,7 @@ you have to call close() methods manually before it's too late.
 $(UL
   $(LI Call close() manually on resource classes.)
   $(LI A class with a close() method should have it called automatically by its destructor.)
-  $(LI Use such friendly resource classes with $(D scoped!), $(D RefCounted), $(D scope(exit)), 
+  $(LI Use such friendly resource classes with $(D scoped!), $(D RefCounted), $(D scope(exit)),
     $(D Unique!), or any other deterministic destruction mechanisms.)
   $(LI For maximum usefulness, a close() method should support being called several times.)
 )
