@@ -179,7 +179,6 @@ final class SDL2
             if (SDL_PollEvent(event) != 0)
             {
                 updateState(event);
-                dispatchEvent(event);
                 return true;
             }
             else
@@ -220,7 +219,6 @@ final class SDL2
             while(SDL_PollEvent(&event) != 0)
             {
                 updateState(&event);
-                dispatchEvent(&event);
             }
         }
 
@@ -458,60 +456,6 @@ final class SDL2
                 return SDL_ASSERTION_ALWAYS_IGNORE; // ingore SDL assertions in release
         }
 
-        // dispatch to relevant event callbacks
-        void dispatchEvent(const (SDL_Event*) event)
-        {
-            switch(event.type)
-            {
-                case SDL_WINDOWEVENT:
-                    dispatchWindowEvent(&event.window);
-                    break;
-
-                case SDL_KEYDOWN:
-                case SDL_KEYUP:
-                    const (SDL_KeyboardEvent*) keyboardEvent = &event.key;
-                    SDL2Window* window = (keyboardEvent.windowID in _knownWindows);
-                    if (window !is null)
-                    {
-                        if (event.type == SDL_KEYDOWN)
-                            window.onKeyDown(keyboardEvent.timestamp, _keyboard, keyboardEvent.keysym.sym);
-                        else
-                            window.onKeyUp(keyboardEvent.timestamp, _keyboard, keyboardEvent.keysym.sym);
-                    }
-                    break;
-
-                case SDL_MOUSEBUTTONUP:
-                case SDL_MOUSEBUTTONDOWN:
-                    const (SDL_MouseButtonEvent*) mbEvent = &event.button;
-                    SDL2Window* window = (mbEvent.windowID in _knownWindows);
-                    if (window !is null)
-                    {
-                        if (event.type == SDL_MOUSEBUTTONDOWN)
-                            window.onMouseButtonPressed(mbEvent.timestamp, _mouse, mbEvent.button, mbEvent.clicks > 1);
-                        else
-                            window.onMouseButtonReleased(mbEvent.timestamp, _mouse, mbEvent.button);
-                    }
-                    break;
-
-                case SDL_MOUSEWHEEL:
-                    const (SDL_MouseWheelEvent*) wheelEvent = &event.wheel;
-                    SDL2Window* window = (wheelEvent.windowID in _knownWindows);
-                    if (window !is null)
-                        window.onMouseWheel(wheelEvent.timestamp, _mouse, wheelEvent.x, wheelEvent.y);
-                    break;
-
-                case SDL_MOUSEMOTION:
-                    const (SDL_MouseMotionEvent*) motionEvent = &event.motion;
-                    SDL2Window* window = (motionEvent.windowID in _knownWindows);
-                    if (window !is null)
-                        window.onMouseMove(motionEvent.timestamp, _mouse);
-                    break;
-
-                default:
-                    break;
-            }
-        }
-
         // update state based on event
         // TODO: add joystick state
         //       add haptic state
@@ -566,83 +510,6 @@ final class SDL2
                     break;
 
                 default:
-                    break;
-            }
-        }
-
-        // call callbacks that can be overriden by subclassing SDL2Window
-        void dispatchWindowEvent(const (SDL_WindowEvent*) windowEvent)
-        {
-            assert(windowEvent.type == SDL_WINDOWEVENT);
-
-            SDL2Window* window = (windowEvent.windowID in _knownWindows);
-
-            if (window is null)
-            {
-                _logger.warningf("Received a SDL event for an unknown window (id = %s)", windowEvent.windowID);
-                return; // no such id known, warning
-            }
-
-            switch (windowEvent.event)
-            {
-                case SDL_WINDOWEVENT_SHOWN:
-                    window.onShow();
-                    break;
-
-                case SDL_WINDOWEVENT_HIDDEN:
-                    window.onHide();
-                    break;
-
-                case SDL_WINDOWEVENT_EXPOSED:
-                    window.onExposed();
-                    break;
-
-                case SDL_WINDOWEVENT_MOVED:
-                    window.onMove(windowEvent.data1, windowEvent.data2);
-                    break;
-
-                case SDL_WINDOWEVENT_RESIZED:
-                    window.onResized(windowEvent.data1, windowEvent.data2);
-                    break;
-
-                case SDL_WINDOWEVENT_SIZE_CHANGED:
-                    window.onSizeChanged();
-                    break;
-
-                case SDL_WINDOWEVENT_MINIMIZED:
-                    window.onMinimized();
-                    break;
-
-                case SDL_WINDOWEVENT_MAXIMIZED:
-                    window.onMaximized();
-                    break;
-
-                case SDL_WINDOWEVENT_RESTORED:
-                    window.onRestored();
-                    break;
-
-                case SDL_WINDOWEVENT_ENTER:
-                    window.onEnter();
-                    break;
-
-                case SDL_WINDOWEVENT_LEAVE:
-                    window.onLeave();
-                    break;
-
-                case SDL_WINDOWEVENT_FOCUS_GAINED:
-                    window.onFocusGained();
-                    break;
-
-                case SDL_WINDOWEVENT_FOCUS_LOST:
-                    window.onFocusLost();
-                    break;
-
-                case SDL_WINDOWEVENT_CLOSE:
-                    window.onClose();
-                    break;
-
-                default:
-                    // not a window event
                     break;
             }
         }

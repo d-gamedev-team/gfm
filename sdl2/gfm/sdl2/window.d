@@ -12,36 +12,10 @@ import gfm.sdl2.sdl,
        gfm.sdl2.keyboard;
 
 
-/// An interface for mouse events.
-interface KeyboardListener
-{
-    /// Called whenever a keyboard button is pressed.
-    void onKeyDown(uint timestamp, SDL2Keyboard keyboard, SDL_Keycode key);
-
-    /// Called whenever a keyboard button is released.
-    void onKeyUp(uint timestamp, SDL2Keyboard keyboard, SDL_Keycode key);
-}
-
-/// An interface for mouse events.
-interface MouseListener
-{
-    /// Called whenever the mouse moves.
-    void onMouseMove(uint timestamp, SDL2Mouse mouseState);
-
-    /// Called whenever a mouse button is pressed.
-    void onMouseButtonPressed(uint timestamp, SDL2Mouse mouseState, int button, bool isDoubleClick);
-
-    /// Called whenever a mouse button is released.
-    void onMouseButtonReleased(uint timestamp, SDL2Mouse mouseState, int button);
-
-    /// Called whenever the mouse wheel is scrolled.
-    void onMouseWheel(uint timestamp, SDL2Mouse mouseState, int wheelDeltaX, int wheelDeltaY);
-}
-
 /// SDL Window wrapper.
 /// There is two ways to receive events, either by polling a SDL2 object, 
 /// or by overriding the event callbacks.
-class SDL2Window : KeyboardListener, MouseListener
+final class SDL2Window
 {
     public
     {
@@ -253,117 +227,6 @@ class SDL2Window : KeyboardListener, MouseListener
             if (res != SDL_TRUE)
                 _sdl2.throwSDL2Exception("SDL_GetWindowWMInfo");
             return info;
-        }
-
-        // override these function, they are event callbacks
-
-        ///
-        void onShow()
-        {
-        }
-
-        ///
-        void onHide()
-        {
-        }
-
-        ///
-        void onExposed()
-        {
-            _surfaceMustBeRenewed = true;
-        }
-
-        ///
-        void onMove(int x, int y)
-        {        
-        }
-        
-        ///
-        void onResized(int width, int height)
-        {
-            _surfaceMustBeRenewed = true;
-        }
-
-        ///
-        void onSizeChanged()
-        {
-            _surfaceMustBeRenewed = true;
-        }
-
-        ///
-        void onMinimized()
-        {
-            _surfaceMustBeRenewed = true;
-        }
-
-        ///
-        void onMaximized()
-        {
-            _surfaceMustBeRenewed = true;
-        }
-
-        ///
-        void onRestored()
-        {            
-        }
-
-        ///
-        void onEnter()
-        {
-        }
-        
-        ///
-        void onLeave()
-        {
-        }
-
-        ///
-        void onFocusGained()
-        {
-        }
-
-        ///
-        void onFocusLost()
-        {
-        }
-        
-        ///
-        void onClose()
-        {
-        }
-
-        // Mouse event callbacks
-
-        override void onMouseMove(uint timestamp, SDL2Mouse mouseState)
-        {
-            // do nothing by default
-        }
-
-        override void onMouseButtonPressed(uint timestamp, SDL2Mouse mouseState, int button, bool isDoubleClick)
-        {
-            // do nothing by default
-        }
-
-        override void onMouseButtonReleased(uint timestamp, SDL2Mouse mouseState, int button)
-        {
-            // do nothing by default
-        }
-
-        override void onMouseWheel(uint timestamp, SDL2Mouse mouseState, int wheelDeltaX, int wheelDeltaY)
-        {
-            // do nothing by default
-        }
-
-        // Keybard event callbacks
-
-        override void onKeyDown(uint timestamp, SDL2Keyboard keyboard, SDL_Keycode key)
-        {
-            // do nothing by default
-        }
-
-        override void onKeyUp(uint timestamp, SDL2Keyboard keyboard, SDL_Keycode key)
-        {
-            // do nothing by default
         }
 
         /// Swap OpenGL buffers.
