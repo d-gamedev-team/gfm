@@ -43,7 +43,7 @@ final class GLProgram
          * Compiles N times the same GLSL source and link to a program.
          * 
          * <p>
-         * The same input is compiled 1 to 5 times, each time prepended
+         * The same input is compiled 1 to 6 times, each time prepended
          * with a $(D #define) specific to a shader type.
          * </p>
          * $(UL
@@ -52,6 +52,7 @@ final class GLProgram
          *    $(LI $(D GEOMETRY_SHADER))
          *    $(LI $(D TESS_CONTROL_SHADER))
          *    $(LI $(D TESS_EVALUATION_SHADER))
+		 *    $(LI $(D COMPUTE_SHADER))
          * )
          * <p>
          * Each of these macros are alternatively set to 1 while the others are
@@ -96,23 +97,25 @@ final class GLProgram
         this(OpenGL gl, string[] sourceLines)
         {
             _gl = gl;
-            bool present[5];
-            enum string[5] defines = 
+            bool present[6];
+            enum string[6] defines = 
             [ 
               "VERTEX_SHADER",
               "FRAGMENT_SHADER",
               "GEOMETRY_SHADER",
               "TESS_CONTROL_SHADER",
-              "TESS_EVALUATION_SHADER"
+              "TESS_EVALUATION_SHADER",
+			  "COMPUTE_SHADER"
             ];
 
-            enum GLenum[5] shaderTypes =
+            enum GLenum[6] shaderTypes =
             [ 
                 GL_VERTEX_SHADER,
                 GL_FRAGMENT_SHADER,
                 GL_GEOMETRY_SHADER,
                 GL_TESS_CONTROL_SHADER,
-                GL_TESS_EVALUATION_SHADER
+                GL_TESS_EVALUATION_SHADER,
+				GL_COMPUTE_SHADER
             ];
 
             // from GLSL spec: "Each number sign (#) can be preceded in its line only by 
@@ -364,7 +367,6 @@ final class GLProgram
             {
                 // no such variable found, either it's really missing or the OpenGL driver discarded an unused uniform
                 // create a fake disabled GLUniform to allow the show to proceed
-                _gl._logger.warningf("Faking uniform variable '%s'", name);
                 _activeUniforms[name] = new GLUniform(_gl, name);
                 return _activeUniforms[name];
             }

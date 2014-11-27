@@ -57,7 +57,7 @@ final class GLUniform
         {
             _gl = gl;
             _disabled = true;
-            _gl._logger.warningf("creating fake uniform '%s' which either does not exist in the shader program, or was discarded by the driver as unused", name);
+            _gl._logger.warningf("Faking uniform '%s' which either does not exist in the shader program, or was discarded by the driver as unused", name);
         }
 
         /// Sets a uniform variable value.
@@ -110,10 +110,16 @@ final class GLUniform
             update();
         }       
 
-        /// Unuses this uniform..
+        /// Unuses this uniform.
         void unuse()
         {
             _shouldUpdateImmediately = false;
+        }
+
+        /// Returns: Uniform name.
+        string name()
+        {
+            return _name;
         }
     }
 
