@@ -13,7 +13,7 @@ final class VAO
     {
         /// Creates a VAO.
         /// Throws: $(D OpenGLException) on error.
-        this(OpenGL gl, GLuint target, GLuint storage, GLuint usage)
+        this(OpenGL gl)
         {
             _gl = gl;
             glGenVertexArrays(1, &_handle);

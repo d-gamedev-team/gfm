@@ -190,10 +190,12 @@ struct VertexAttribute
         GLboolean normalize;
 
         /// If needed, recover the location of this generic attribute.
-        void recoverLocation(OpenGL gl, GLProgram program) {
+        void recoverLocation(OpenGL gl, GLProgram program)
+        {
             // The attributes that require recovery of location are the one
             // called by name;
-            if (genericName.length) {
+            if (genericName.length)
+            {
                 genericLocation = program.attrib(genericName).location;
                 gl.runtimeCheck();
             }
