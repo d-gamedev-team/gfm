@@ -24,42 +24,57 @@ void main()
     auto sdl2 = scoped!SDL2(log);
     auto gl = scoped!OpenGL(log);
 
+    SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 3);
+    SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 3);
+    SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);
+
     // create an OpenGL-enabled SDL window
-    auto window = scoped!SDL2Window(sdl2, 
+    auto window = scoped!SDL2Window(sdl2,
                                     SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED,
                                     width, height,
-                                    SDL_WINDOW_OPENGL);    
+                                    SDL_WINDOW_OPENGL);
 
     // reload OpenGL now that a context exists
     gl.reload();
 
     // create a shader program made of a single fragment shader
     string tunnelProgramSource = 
-        r"#version 110
-        #if FRAGMENT_SHADER
+        q{#version 330 core
 
+        #if VERTEX_SHADER
+        layout(location = 0) in vec4 vertexPos;
+        layout(location = 1) in vec4 vertexUV;
+        out vec2 fragmentUV;
+        //uniform mat4 mvpMatrix;
+        void main()
+        {
+            gl_Position = /* mvpMatrix * */ vertexPos;
+            fragmentUV = vertexUV.xy;
+        }
+        #endif
+
+        #if FRAGMENT_SHADER
+        in vec2 fragmentUV;
         uniform float time;
-        uniform vec2 resolution;
-        uniform sampler2D noiseTexture;
+   //     uniform sampler2D noiseTexture;
         #define pi 3.1415927410125
+        out vec4 color;
 
         void main()
         {
-            vec2 pos = gl_FragCoord.xy / resolution - vec2(0.5, 0.5);
-            vec4 noise = texture2D(noiseTexture, pos + vec2(0.5, 0.5));
-            pos.x *= (resolution.x / resolution.y);
-
+            vec2 pos = fragmentUV - vec2(0.5, 0.5);
+   //         vec4 noise = texture2D(noiseTexture, pos + vec2(0.5, 0.5));
+            vec4 noise = vec4(0);
             float u = length(pos);
             float v = atan(pos.y, pos.x) + noise.y * 0.04;
             float t = time / 0.5 + 1.0 / u;
-
             float intensity = abs(sin(t * 10.0 + v)+sin(v*8.0)) * .25 * u * 0.25 * (0.1 + noise.x);
             vec3 col = vec3(-sin(v*4.0+v*2.0+time), sin(u*8.0+v-time), cos(u+v*3.0+time))*16.0;
 
-            gl_FragColor = vec4(col * intensity * (u * 4.0), 1.0);
+            color = vec4(col * intensity * (u * 4.0), 1.0);
         }
         #endif
-    ";
+    };
 
     auto program = scoped!GLProgram(gl, tunnelProgramSource);
 
@@ -87,14 +102,41 @@ void main()
             texData[ind++] = grey;
         }
     auto noiseTexture = scoped!GLTexture2D(gl);
-    
+
     noiseTexture.setMinFilter(GL_LINEAR_MIPMAP_LINEAR);
     noiseTexture.setMagFilter(GL_LINEAR);
     noiseTexture.setWrapS(GL_REPEAT);
     noiseTexture.setWrapT(GL_REPEAT);
-    noiseTexture.setImage(0, GL_RGB, texWidth, texHeight, 0, GL_RGB, GL_UNSIGNED_BYTE, texData.ptr);    
+    noiseTexture.setImage(0, GL_RGB, texWidth, texHeight, 0, GL_RGB, GL_UNSIGNED_BYTE, texData.ptr);
     noiseTexture.generateMipmap();
 
+
+	align(1) struct Vertex
+	{
+		align(1):
+		vec3f position;
+		vec2f coordinates;
+	}
+
+    Vertex[] quad;
+	quad ~= Vertex(vec3f(-1, -1, 0), vec2f(0, 0));
+	quad ~= Vertex(vec3f(+1, -1, 0), vec2f(1, 0));
+	quad ~= Vertex(vec3f(+1, +1, 0), vec2f(1, 1));
+    quad ~= Vertex(vec3f(+1, +1, 0), vec2f(1, 1));
+	quad ~= Vertex(vec3f(-1, +1, 0), vec2f(0, 1));
+    quad ~= Vertex(vec3f(-1, -1, 0), vec2f(0, 0));
+
+    auto quadVBO = scoped!GLBuffer(gl, GL_ARRAY_BUFFER, GL_STATIC_DRAW, quad[]);
+
+    // add one attribute to the triangle: position, as "legacy" Role.POSITION (OpenGL 2.0 style);
+    // add another attribute: color, as GENERIC attribute (OpenGL 3.0+ style); the color is added by attribute name
+    // Variables will be accessible in the shader by 'gl_Vertex' and 'color_attribute' respectively
+    auto quadVS = scoped!VertexSpecification(gl);
+    quadVS.addAttribute(GL_FLOAT, 3, 0);
+	quadVS.addAttribute(GL_FLOAT, 2, 1);
+
+
+    auto vao = scoped!VAO(gl);
     double time = 0;
 
 	uint lastTime = SDL_GetTicks();
@@ -112,33 +154,27 @@ void main()
         glViewport(0, 0, width, height);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-        // load projection and model-view matrices
-        glMatrixMode(GL_PROJECTION);
-        glLoadIdentity();
+		int texUnit = 0;
 
-        glMatrixMode(GL_MODELVIEW);
-        glLoadIdentity();
+        //noiseTexture.use(texUnit);        
 
         // uniform variable can be set at any time
-        program.uniform("resolution").set(vec2f(width, height));
         program.uniform("time").set(cast(float)time);
-        program.uniform("noiseTexture").set(0);
+		gl.runtimeCheck();
+        //program.uniform("noiseTexture").set(texUnit);
+		//program.uniform("mvpMatrix").set(mat4f.identity);
+		program.use();
 
-        noiseTexture.use(0);
 
-        program.use();        
-
-        // draw a full quad
-        glBegin(GL_QUADS);
-            glVertex2i(+1, -1);
-            glVertex2i(+1, +1);
-            glVertex2i(-1, +1);
-            glVertex2i(-1, -1);            
-        glEnd();
-
+		// draw a full quad
+        vao.bind();
+        quadVBO.bind();
+        quadVS.use();
+        glDrawArrays(GL_TRIANGLES, 0, cast(int)(quadVBO.size() / quadVS.vertexSize()));
+        quadVS.unuse();
         program.unuse();
 
         window.setTitle("Simple shader");
-        window.swapBuffers();        
+        window.swapBuffers();
     }
 }
