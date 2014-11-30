@@ -63,7 +63,7 @@ void main()
         void main()
         {
             vec2 pos = fragmentUV - vec2(0.5, 0.5);
-   //         vec4 noise = texture2D(noiseTexture, pos + vec2(0.5, 0.5));
+   //         vec4 noise = texture(noiseTexture, pos + vec2(0.5, 0.5));
             vec4 noise = vec4(0);
             float u = length(pos);
             float v = atan(pos.y, pos.x) + noise.y * 0.04;
@@ -111,67 +111,68 @@ void main()
     noiseTexture.generateMipmap();
 
 
-	align(1) struct Vertex
-	{
-		align(1):
-		vec3f position;
-		vec2f coordinates;
-	}
+    struct Vertex
+    {
+        vec3f position;
+        vec2f coordinates;
+    }
 
     Vertex[] quad;
-	quad ~= Vertex(vec3f(-1, -1, 0), vec2f(0, 0));
-	quad ~= Vertex(vec3f(+1, -1, 0), vec2f(1, 0));
-	quad ~= Vertex(vec3f(+1, +1, 0), vec2f(1, 1));
+    quad ~= Vertex(vec3f(-1, -1, 0), vec2f(0, 0));
+    quad ~= Vertex(vec3f(+1, -1, 0), vec2f(1, 0));
     quad ~= Vertex(vec3f(+1, +1, 0), vec2f(1, 1));
-	quad ~= Vertex(vec3f(-1, +1, 0), vec2f(0, 1));
+    quad ~= Vertex(vec3f(+1, +1, 0), vec2f(1, 1));
+    quad ~= Vertex(vec3f(-1, +1, 0), vec2f(0, 1));
     quad ~= Vertex(vec3f(-1, -1, 0), vec2f(0, 0));
 
     auto quadVBO = scoped!GLBuffer(gl, GL_ARRAY_BUFFER, GL_STATIC_DRAW, quad[]);
 
-    // add one attribute to the triangle: position, as "legacy" Role.POSITION (OpenGL 2.0 style);
-    // add another attribute: color, as GENERIC attribute (OpenGL 3.0+ style); the color is added by attribute name
-    // Variables will be accessible in the shader by 'gl_Vertex' and 'color_attribute' respectively
-    auto quadVS = scoped!VertexSpecification(gl);
-    quadVS.addAttribute(GL_FLOAT, 3, 0);
-	quadVS.addAttribute(GL_FLOAT, 2, 1);
-
+    // Create an OpenGL vertex description from the Vertex structure.
+    auto quadVS = new VertexSpecification!Vertex(program);
 
     auto vao = scoped!VAO(gl);
     double time = 0;
 
-	uint lastTime = SDL_GetTicks();
+    uint lastTime = SDL_GetTicks();
+
+
+    // prepare VAO
+    {
+        vao.bind();
+        quadVBO.bind();
+        quadVS.use();
+        vao.unbind();
+    }
 
     while(!sdl2.keyboard().isPressed(SDLK_ESCAPE))
     {
         sdl2.processEvents();
 
-		uint now = SDL_GetTicks();
-	    double dt = now - lastTime;
-	    lastTime = now;
+        uint now = SDL_GetTicks();
+        double dt = now - lastTime;
+        lastTime = now;
         time += 0.001 * dt;
 
         // clear the whole window
         glViewport(0, 0, width, height);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-		int texUnit = 0;
+        int texUnit = 0;
 
-        //noiseTexture.use(texUnit);        
+        //noiseTexture.use(texUnit);
 
         // uniform variable can be set at any time
         program.uniform("time").set(cast(float)time);
-		gl.runtimeCheck();
-        //program.uniform("noiseTexture").set(texUnit);
-		//program.uniform("mvpMatrix").set(mat4f.identity);
-		program.use();
+        gl.runtimeCheck();
+        program.uniform("noiseTexture").set(texUnit);
+        //program.uniform("mvpMatrix").set(mat4f.identity);
+        program.use();
 
 
-		// draw a full quad
+        // draw a full quad
         vao.bind();
-        quadVBO.bind();
-        quadVS.use();
         glDrawArrays(GL_TRIANGLES, 0, cast(int)(quadVBO.size() / quadVS.vertexSize()));
-        quadVS.unuse();
+        vao.unbind();
         program.unuse();
 
         window.setTitle("Simple shader");
