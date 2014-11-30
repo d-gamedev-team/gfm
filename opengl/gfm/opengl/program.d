@@ -391,9 +391,13 @@ final class GLProgram
         }
     }
 
-    private
+    package
     {
         OpenGL _gl;
+    }
+
+    private
+    {
         GLuint _program; // OpenGL handle
         bool _initialized;
         GLUniform[string] _activeUniforms;

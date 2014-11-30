@@ -16,6 +16,6 @@ public
            gfm.opengl.matrixstack,
            gfm.opengl.texture,
            gfm.opengl.fbo,
-           gfm.opengl.vbo,
+           gfm.opengl.vertex,
            gfm.opengl.vao;
 }
