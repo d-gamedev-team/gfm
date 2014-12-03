@@ -13,6 +13,8 @@ module gfm.math.wideint;
 import std.traits,
        std.ascii;
 
+static if( __VERSION__ < 2066 ) private enum nogc = 1;
+
 /// Wide signed integer.
 /// Params:
 ///    bits = number of bits, must be a power of 2.
@@ -110,13 +112,13 @@ align(1) struct wideIntImpl(bool signed, int bits)
     }
 
     /// Construct from a value.
-    this(T)(T x) pure nothrow @nogc
+    @nogc this(T)(T x) pure nothrow
     {
         opAssign!T(x);
     }
 
     /// Assign with a smaller unsigned type.
-    ref self opAssign(T)(T n) pure nothrow @nogc if (isIntegral!T && isUnsigned!T)
+    @nogc ref self opAssign(T)(T n) pure nothrow if (isIntegral!T && isUnsigned!T)
     {
         hi = 0;
         lo = n;
@@ -124,7 +126,7 @@ align(1) struct wideIntImpl(bool signed, int bits)
     }
 
     /// Assign with a smaller signed type (sign is extended).
-    ref self opAssign(T)(T n) pure nothrow @nogc if (isIntegral!T && isSigned!T)
+    @nogc ref self opAssign(T)(T n) pure nothrow if (isIntegral!T && isSigned!T)
     {
         // shorter int always gets sign-extended,
         // regardless of the larger int being signed or not
@@ -136,7 +138,7 @@ align(1) struct wideIntImpl(bool signed, int bits)
     }
 
     /// Assign with a wide integer of the same size (sign is lost).
-    ref self opAssign(T)(T n) pure nothrow @nogc if (is(typeof(T._isWideIntImpl)) && T._bits == bits) 
+    @nogc ref self opAssign(T)(T n) pure nothrow if (is(typeof(T._isWideIntImpl)) && T._bits == bits) 
     {
         hi = n.hi;
         lo = n.lo;
@@ -144,7 +146,7 @@ align(1) struct wideIntImpl(bool signed, int bits)
     }
 
     /// Assign with a smaller wide integer (sign is extended accordingly).
-    ref self opAssign(T)(T n) pure nothrow @nogc if (is(typeof(T._isWideIntImpl)) && T._bits < bits) 
+    @nogc ref self opAssign(T)(T n) pure nothrow if (is(typeof(T._isWideIntImpl)) && T._bits < bits) 
     {
         static if (T._signed)
         {
@@ -165,19 +167,19 @@ align(1) struct wideIntImpl(bool signed, int bits)
     }
 
     /// Cast to a smaller integer type (truncation).
-    T opCast(T)() pure const nothrow @nogc if (isIntegral!T)
+    @nogc T opCast(T)() pure const nothrow if (isIntegral!T)
     {
         return cast(T)lo;
     }
 
     /// Cast to bool.
-    T opCast(T)() pure const nothrow @nogc if (is(T == bool))
+    @nogc T opCast(T)() pure const nothrow if (is(T == bool))
     {
         return this != 0;
     }
 
     /// Cast to wide integer of any size.
-    T opCast(T)() pure const nothrow @nogc if (is(typeof(T._isWideIntImpl)))
+    @nogc T opCast(T)() pure const nothrow if (is(typeof(T._isWideIntImpl)))
     {
         static if (T._bits < bits)
             return cast(T)lo;
@@ -202,27 +204,27 @@ align(1) struct wideIntImpl(bool signed, int bits)
         return outbuff;
     }
 
-    self opBinary(string op, T)(T o) pure const nothrow @nogc if (!isSelf!T)
+    @nogc self opBinary(string op, T)(T o) pure const nothrow if (!isSelf!T)
     {
         self r = this;
         self y = o;
         return r.opOpAssign!(op)(y);
     }
 
-    self opBinary(string op, T)(T y) pure const nothrow @nogc if (isSelf!T)
+    @nogc self opBinary(string op, T)(T y) pure const nothrow if (isSelf!T)
     {
         self r = this; // copy
         self o = y;
         return r.opOpAssign!(op)(o);
     }
 
-    ref self opOpAssign(string op, T)(T y) pure nothrow @nogc if (!isSelf!T)
+    @nogc ref self opOpAssign(string op, T)(T y) pure nothrow if (!isSelf!T)
     {
         const(self) o = y;
         return opOpAssign!(op)(o);
     }
 
-    ref self opOpAssign(string op, T)(T y) pure nothrow @nogc if (isSelf!T)
+    @nogc ref self opOpAssign(string op, T)(T y) pure nothrow if (isSelf!T)
     {
         static if (op == "+")
         {
@@ -322,7 +324,7 @@ align(1) struct wideIntImpl(bool signed, int bits)
     }
 
     // const unary operations
-    self opUnary(string op)() pure const nothrow @nogc if (op == "+" || op == "-" || op == "~")
+    @nogc self opUnary(string op)() pure const nothrow if (op == "+" || op == "-" || op == "~")
     {
         static if (op == "-")
         {
@@ -342,7 +344,7 @@ align(1) struct wideIntImpl(bool signed, int bits)
     }
 
     // non-const unary operations
-    self opUnary(string op)() pure nothrow @nogc if (op == "++" || op == "--")
+    @nogc self opUnary(string op)() pure nothrow if (op == "++" || op == "--")
     {
         static if (op == "++")
             increment();
@@ -351,22 +353,22 @@ align(1) struct wideIntImpl(bool signed, int bits)
         return this;
     }
 
-    bool opEquals(T)(T y) pure const @nogc if (!isSelf!T)
+    @nogc bool opEquals(T)(T y) pure const if (!isSelf!T)
     {
         return this == self(y);
     }
 
-    bool opEquals(T)(T y) pure const @nogc if (isSelf!T)
+    @nogc bool opEquals(T)(T y) pure const if (isSelf!T)
     {
        return lo == y.lo && y.hi == hi;
     }
 
-    int opCmp(T)(T y) pure const @nogc if (!isSelf!T)
+    @nogc int opCmp(T)(T y) pure const if (!isSelf!T)
     {
         return opCmp(self(y));
     }
 
-    int opCmp(T)(T y) pure const @nogc if (isSelf!T)
+    @nogc int opCmp(T)(T y) pure const if (isSelf!T)
     {
         if (hi < y.hi) return -1;
         if (hi > y.hi) return 1;
@@ -391,44 +393,44 @@ align(1) struct wideIntImpl(bool signed, int bits)
     {
         static if (signed)
         {
-            bool isNegative() pure nothrow const @nogc 
+            @nogc bool isNegative() pure nothrow const
             {
                 return signBit();
             }
         }
         else
         {
-            bool isNegative() pure nothrow const @nogc 
+            @nogc bool isNegative() pure nothrow const
             {
                 return false;
             }
         }
 
-        void not() pure nothrow @nogc 
+        @nogc void not() pure nothrow
         {
             hi = ~hi;
             lo = ~lo;
         }
 
-        void increment() pure nothrow @nogc 
+        @nogc void increment() pure nothrow
         {
             ++lo;
             if (lo == 0) ++hi;
         }
 
-        void decrement() pure nothrow @nogc 
+        @nogc void decrement() pure nothrow
         {
             if (lo == 0) --hi;
             --lo;
         }
 
-        bool signBit() pure const nothrow @nogc 
+        @nogc bool signBit() pure const nothrow
         {
             enum SIGN_SHIFT = bits / 2 - 1;
             return ((hi >> SIGN_SHIFT) & 1) != 0;
         }
 
-        sub_sub_uint_t[4] toParts() pure const nothrow @nogc 
+        @nogc sub_sub_uint_t[4] toParts() pure const nothrow
         {
             sub_sub_uint_t[4] p = void;
             enum SHIFT = bits / 4;
@@ -442,7 +444,7 @@ align(1) struct wideIntImpl(bool signed, int bits)
     }
 }
 
-public wideIntImpl!(signed, bits) abs(bool signed, int bits)(wideIntImpl!(signed, bits) x) pure nothrow @nogc
+@nogc public wideIntImpl!(signed, bits) abs(bool signed, int bits)(wideIntImpl!(signed, bits) x) pure nothrow
 {
     if(x >= 0)
         return x;
@@ -455,8 +457,8 @@ private struct Internals(int bits)
     alias wideIntImpl!(true, bits) wint_t;
     alias wideIntImpl!(false, bits) uwint_t;
 
-    static void unsignedDivide(uwint_t dividend, uwint_t divisor,
-                               out uwint_t quotient, out uwint_t remainder) pure nothrow @nogc
+    @nogc static void unsignedDivide(uwint_t dividend, uwint_t divisor,
+                                     out uwint_t quotient, out uwint_t remainder) pure nothrow
     {
         assert(divisor != 0);
 
@@ -488,8 +490,8 @@ private struct Internals(int bits)
         remainder = cDividend;
     }
 
-    static void signedDivide(wint_t dividend, wint_t divisor,
-                             out wint_t quotient, out wint_t remainder) pure nothrow @nogc
+    @nogc static void signedDivide(wint_t dividend, wint_t divisor,
+                                   out wint_t quotient, out wint_t remainder) pure nothrow 
     {
         uwint_t q, r;
         unsignedDivide(uwint_t(abs(dividend)), uwint_t(abs(divisor)), q, r);
@@ -572,4 +574,3 @@ unittest
         }
     }
 }
-

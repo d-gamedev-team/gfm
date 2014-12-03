@@ -3,6 +3,8 @@ module gfm.math.half;
 import std.traits,
        std.string;
 
+static if( __VERSION__ < 2066 ) private enum nogc = 1;
+
 /** 
 
   16-bits floating point type (Half).
@@ -23,13 +25,13 @@ align(1) struct half
         ushort value;
 
         /// Construct a half from a float.
-        this(float n) pure nothrow @nogc
+        @nogc this(float n) pure nothrow
         {
             opAssign!float(n);
         }
 
         /// Construct a half from another half.
-        this(half h) pure nothrow @nogc
+        @nogc this(half h) pure nothrow
         {
             opAssign!half(h);
         }
@@ -41,45 +43,45 @@ align(1) struct half
         }
 
         /// Converts to a float.
-        float toFloat() pure const nothrow @nogc
+        @nogc float toFloat() pure const nothrow
         {
             return halfToFloat(value);
         }
 
         /// Assign with float.
-        ref half opAssign(T)(T other) pure nothrow @nogc if (is(T: float))
+        @nogc ref half opAssign(T)(T other) pure nothrow if (is(T: float))
         {
             value = floatToHalf(other);
             return this;
         }
 
         /// Assign with another half.
-        ref half opAssign(T)(T other) pure nothrow @nogc if (is(Unqual!T == half))
+        @nogc ref half opAssign(T)(T other) pure nothrow if (is(Unqual!T == half))
         {
             value = other.value;
             return this;
         }
 
-        half opBinary(string op, T)(T o) pure const nothrow @nogc if (is(Unqual!T == half))
+        @nogc half opBinary(string op, T)(T o) pure const nothrow if (is(Unqual!T == half))
         {
             return opBinary!(op, float)(o.toFloat());
         }
 
-        half opBinary(string op, T)(T o) pure const nothrow @nogc if (is(T: float))
+        @nogc half opBinary(string op, T)(T o) pure const nothrow if (is(T: float))
         {
             half res = void;
             mixin("res.value = floatToHalf(toFloat() " ~ op ~ "o);");
             return res;
         }
 
-        ref half opOpAssign(string op, T)(T o) pure nothrow @nogc
+        @nogc ref half opOpAssign(string op, T)(T o) pure nothrow
         {
             half res = opBinary!(op, T)(o);
             this = res;
             return this;
         }
 
-        half opUnary(string op)() pure const nothrow @nogc if (op == "+" || op == "-")
+        @nogc half opUnary(string op)() pure const nothrow if (op == "+" || op == "-")
         {
             static if (op == "-")
             {
@@ -92,12 +94,12 @@ align(1) struct half
         }
 
 
-        bool opEquals(T)(T other) pure const nothrow @nogc if (!is(Unqual!T == half))
+        @nogc bool opEquals(T)(T other) pure const nothrow if (!is(Unqual!T == half))
         {
             return this == half(other);
         }
 
-        bool opEquals(T)(T other) pure const nothrow @nogc if (is(Unqual!T == half))
+        @nogc bool opEquals(T)(T other) pure const nothrow if (is(Unqual!T == half))
         {
             return value == other.value;
         }
@@ -116,7 +118,7 @@ private union uint_float
 }
 
 /// Converts from float to half.
-ushort floatToHalf(float f) pure nothrow @nogc 
+@nogc ushort floatToHalf(float f) pure nothrow
 {
     uint_float uf = void;
     uf.f = f;
@@ -125,7 +127,7 @@ ushort floatToHalf(float f) pure nothrow @nogc
 }
 
 /// Converts from half to float.
-float halfToFloat(ushort h) pure nothrow @nogc 
+@nogc float halfToFloat(ushort h) pure nothrow
 {
     uint_float uf = void;
     uf.ui = mantissatable[offsettable[h>>10] + (h & 0x3ff)] + exponenttable[h>>10];

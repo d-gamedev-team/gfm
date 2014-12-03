@@ -6,6 +6,8 @@ import std.math,
 import gfm.math.vector, 
        gfm.math.funcs;
 
+static if( __VERSION__ < 2066 ) private enum nogc = 1;
+
 /// N-dimensional half-open interval [a, b[.
 align(1) struct Box(T, int N)
 {
@@ -21,7 +23,7 @@ align(1) struct Box(T, int N)
 
         /// Construct a box which extends between 2 points.
         /// Boundaries: min is inside the box, max is just outside.
-        this(bound_t min_, bound_t max_) pure nothrow @nogc
+        @nogc this(bound_t min_, bound_t max_) pure nothrow
         {
             min = min_;
             max = max_;
@@ -29,7 +31,7 @@ align(1) struct Box(T, int N)
 
         static if (N == 1)
         {
-            this(T min_, T max_) pure nothrow @nogc
+            @nogc this(T min_, T max_) pure nothrow
             {
                 min.x = min_;
                 max.x = max_;
@@ -38,7 +40,7 @@ align(1) struct Box(T, int N)
 
         static if (N == 2)
         {
-            this(T min_x, T min_y, T max_x, T max_y) pure nothrow @nogc
+            @nogc this(T min_x, T min_y, T max_x, T max_y) pure nothrow
             {
                 min = bound_t(min_x, min_y);
                 max = bound_t(max_x, max_y);
@@ -47,7 +49,7 @@ align(1) struct Box(T, int N)
 
         static if (N == 3)
         {
-            this(T min_x, T min_y, T min_z, T max_x, T max_y, T max_z) pure nothrow @nogc
+            @nogc this(T min_x, T min_y, T min_z, T max_x, T max_y, T max_z) pure nothrow
             {
                 min = bound_t(min_x, min_y, min_z);
                 max = bound_t(max_x, max_y, max_z);
@@ -58,40 +60,40 @@ align(1) struct Box(T, int N)
         @property
         {
             /// Returns: Dimensions of the box.
-            bound_t size() pure const nothrow @nogc
+            @nogc bound_t size() pure const nothrow
             {
                 return max - min;
             }
 
             /// Returns: Center of the box.
-            bound_t center() pure const nothrow @nogc
+            @nogc bound_t center() pure const nothrow
             {
                 return (min + max) / 2;
             }
 
             /// Returns: Width of the box, always applicable.
             static if (N >= 1)
-            T width() pure const nothrow @property @nogc
+            @nogc T width() pure const nothrow @property
             {
                 return max.x - min.x;
             }
 
             /// Returns: Height of the box, if applicable.
             static if (N >= 2)
-            T height() pure const nothrow @property @nogc
+            @nogc T height() pure const nothrow @property
             {
                 return max.y - min.y;
             }
 
             /// Returns: Depth of the box, if applicable.
             static if (N >= 3)
-            T depth() pure const nothrow @property @nogc
+            @nogc T depth() pure const nothrow @property
             {
                 return max.z - min.z;
             }
 
             /// Returns: Signed volume of the box.
-            T volume() pure const nothrow @nogc
+            @nogc T volume() pure const nothrow
             {
                 T res = 1;
                 bound_t size = size();
@@ -102,7 +104,7 @@ align(1) struct Box(T, int N)
         }
 
         /// Returns: true if it contains point.
-        bool contains(bound_t point) pure const nothrow @nogc
+        @nogc bool contains(bound_t point) pure const nothrow
         {
             assert(isSorted());
             for(int i = 0; i < N; ++i)
@@ -113,7 +115,7 @@ align(1) struct Box(T, int N)
         }
 
         /// Returns: true if it contains box other.
-        bool contains(Box other) pure const nothrow @nogc
+        @nogc bool contains(Box other) pure const nothrow
         {
             assert(isSorted());
             assert(other.isSorted());
@@ -126,7 +128,7 @@ align(1) struct Box(T, int N)
 
         /// Euclidean squared distance from a point.
         /// See_also: Numerical Recipes Third Edition (2007)
-        double squaredDistance(bound_t point) pure const nothrow @nogc
+        @nogc double squaredDistance(bound_t point) pure const nothrow
         {
             assert(isSorted());
             double distanceSquared = 0;
@@ -143,14 +145,14 @@ align(1) struct Box(T, int N)
 
         /// Euclidean distance from a point.
         /// See_also: squaredDistance.
-        double distance(bound_t point) pure const nothrow @nogc
+        @nogc double distance(bound_t point) pure const nothrow
         {
             return sqrt(squaredDistance(point));
         }
 
         /// Euclidean squared distance from another box.
         /// See_also: Numerical Recipes Third Edition (2007)
-        double squaredDistance(Box o) pure const nothrow @nogc
+        @nogc double squaredDistance(Box o) pure const nothrow
         {
             assert(isSorted());
             assert(o.isSorted());
@@ -168,14 +170,14 @@ align(1) struct Box(T, int N)
 
         /// Euclidean distance from another box.
         /// See_also: squaredDistance.
-        double distance(Box o) pure const nothrow @nogc
+        @nogc double distance(Box o) pure const nothrow
         {
             return sqrt(squaredDistance(o));
         }
 
         /// Assumes sorted boxes.
         /// Returns: Intersection of two boxes.
-        Box intersection(Box o) pure const nothrow @nogc
+        @nogc Box intersection(Box o) pure const nothrow
         {
             assert(isSorted());
             assert(o.isSorted());
@@ -199,7 +201,7 @@ align(1) struct Box(T, int N)
         }
 
         /// Extends the area of this Box.
-        Box grow(bound_t space) pure const nothrow @nogc
+        @nogc Box grow(bound_t space) pure const nothrow
         {
             Box res = this;
             res.min -= space;
@@ -208,32 +210,32 @@ align(1) struct Box(T, int N)
         }
 
         /// Shrink the area of this Box. The box might became unsorted.
-        Box shrink(bound_t space) pure const nothrow @nogc
+        @nogc Box shrink(bound_t space) pure const nothrow
         {
             return grow(-space);
         }
 
         /// Extends the area of this Box.
-        Box grow(T space) pure const nothrow @nogc
+        @nogc Box grow(T space) pure const nothrow
         {
             return grow(bound_t(space));
         }
 
         /// Shrink the area of this Box.
-        Box shrink(T space) pure const nothrow @nogc
+        @nogc Box shrink(T space) pure const nothrow
         {
             return shrink(bound_t(space));
         }
 
         /// Expand the box to include point.
-        Box expand(bound_t point) pure const nothrow @nogc
+        @nogc Box expand(bound_t point) pure const nothrow
         {
           import vector = gfm.math.vector;
           return Box(vector.min(min, point), vector.max(max, point));
         }
 
         /// Returns: true if each dimension of the box is >= 0.
-        bool isSorted() pure const nothrow @nogc
+        @nogc bool isSorted() pure const nothrow
         {
             for(int i = 0; i < N; ++i)
             {
@@ -244,7 +246,7 @@ align(1) struct Box(T, int N)
         }
 
         /// Assign with another box.
-        ref Box opAssign(U)(U x) nothrow @nogc if (is(typeof(x.isBox)))
+        @nogc ref Box opAssign(U)(U x) nothrow if (is(typeof(x.isBox)))
         {
             static if(is(U.element_t : T))
             {
@@ -266,7 +268,7 @@ align(1) struct Box(T, int N)
         }
 
         /// Returns: true if comparing equal boxes.
-        bool opEquals(U)(U other) pure const nothrow @nogc if (is(U : Box))
+        @nogc bool opEquals(U)(U other) pure const nothrow if (is(U : Box))
         {
             return (min == other.min) && (max == other.max);
         }

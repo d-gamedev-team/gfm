@@ -11,6 +11,8 @@ import gfm.math.vector,
        gfm.math.shapes,
        gfm.math.quaternion;
 
+static if( __VERSION__ < 2066 ) private enum nogc = 1;
+
 /// Generic non-resizeable matrix with R rows and C columns.
 /// Intended for 3D use (size 3x3 and 4x4).
 /// Important: <b>Matrices here are in row-major order whereas OpenGL is column-major.</b>
@@ -38,7 +40,7 @@ align(1) struct Matrix(T, int R, int C)
             T[C][R] c;       // components
         }
 
-        this(U...)(U values) pure nothrow @nogc
+        @nogc this(U...)(U values) pure nothrow
         {
             static if ((U.length == C*R) && allSatisfy!(isTConvertible, U))
             {
@@ -55,7 +57,7 @@ align(1) struct Matrix(T, int R, int C)
         }
 
         /// Construct a matrix from columns.
-        static Matrix fromColumns(column_t[] columns) pure nothrow @nogc
+        @nogc static Matrix fromColumns(column_t[] columns) pure nothrow
         {
             assert(columns.length == C);
             Matrix res;
@@ -68,7 +70,7 @@ align(1) struct Matrix(T, int R, int C)
         }
 
         /// Construct a matrix from rows.
-        static Matrix fromRows(row_t[] rows) pure nothrow @nogc
+        @nogc static Matrix fromRows(row_t[] rows) pure nothrow
         {
             assert(rows.length == R);
             Matrix res;
@@ -77,14 +79,14 @@ align(1) struct Matrix(T, int R, int C)
         }
 
         /// Construct matrix with a scalar.
-        this(U)(T x) pure nothrow @nogc
+        @nogc this(U)(T x) pure nothrow
         {
             for (int i = 0; i < _N; ++i)
                 v[i] = x;
         }
 
         /// Assign with a samey matrice.
-        ref Matrix opAssign(U : Matrix)(U x) pure nothrow @nogc
+        @nogc ref Matrix opAssign(U : Matrix)(U x) pure nothrow
         {
             for (int i = 0; i < R * C; ++i)
                 v[i] = x.v[i];
@@ -92,7 +94,7 @@ align(1) struct Matrix(T, int R, int C)
         }
 
         /// Assign from other small matrices (same size, compatible type).
-        ref Matrix opAssign(U)(U x) pure nothrow @nogc
+        @nogc ref Matrix opAssign(U)(U x) pure nothrow
             if (is(typeof(U._isMatrix))
                 && is(U._T : _T)
                 && (!is(U: Matrix))
@@ -104,7 +106,7 @@ align(1) struct Matrix(T, int R, int C)
         }
 
         /// Assign with a static array of size R * C.
-        ref Matrix opAssign(U)(U x) pure nothrow @nogc
+        @nogc ref Matrix opAssign(U)(U x) pure nothrow
             if ((isStaticArray!U)
                 && is(typeof(x[0]) : T)
                 && (U.length == R * C))
@@ -115,7 +117,7 @@ align(1) struct Matrix(T, int R, int C)
         }
 
         /// Assign with a dynamic array of size R * C.
-        ref Matrix opAssign(U)(U x) pure nothrow @nogc
+        @nogc ref Matrix opAssign(U)(U x) pure nothrow
             if ((isDynamicArray!U)
                 && is(typeof(x[0]) : T))
         {
@@ -126,13 +128,13 @@ align(1) struct Matrix(T, int R, int C)
         }
 
         /// Return a pointer to content.
-        inout(T)* ptr() pure inout nothrow @property @nogc
+        @nogc inout(T)* ptr() pure inout nothrow @property
         {
             return v.ptr;
         }
 
         /// Returns: column j as a vector.
-        column_t column(int j) pure const nothrow @nogc
+        @nogc column_t column(int j) pure const nothrow
         {
             column_t res = void;
             for (int i = 0; i < R; ++i)
@@ -141,7 +143,7 @@ align(1) struct Matrix(T, int R, int C)
         }
 
         /// Returns: row i as a vector.
-        row_t row(int i) pure const nothrow @nogc
+        @nogc row_t row(int i) pure const nothrow
         {
             return rows[i];
         }
@@ -156,7 +158,7 @@ align(1) struct Matrix(T, int R, int C)
         }
 
         /// Matrix * vector multiplication.
-        column_t opBinary(string op)(row_t x) pure const nothrow @nogc if (op == "*")
+        @nogc column_t opBinary(string op)(row_t x) pure const nothrow if (op == "*")
         {
             column_t res = void;
             for (int i = 0; i < R; ++i)
@@ -172,7 +174,7 @@ align(1) struct Matrix(T, int R, int C)
         }
 
         /// Matrix * matrix multiplication.
-        auto opBinary(string op, U)(U x) pure const nothrow @nogc
+        @nogc auto opBinary(string op, U)(U x) pure const nothrow
             if (is(typeof(U._isMatrix)) && (U._R == C) && (op == "*"))
         {
             Matrix!(T, R, U._C) result = void;
@@ -191,7 +193,7 @@ align(1) struct Matrix(T, int R, int C)
         }
 
         /// Matrix add and substraction.
-        Matrix opBinary(string op, U)(U other) pure const nothrow @nogc
+        @nogc Matrix opBinary(string op, U)(U other) pure const nothrow
             if (is(U : Matrix) && (op == "+" || op == "-"))
         {
             Matrix result = void;
@@ -207,14 +209,14 @@ align(1) struct Matrix(T, int R, int C)
         }
 
         /// Assignment operator with another samey matrix.
-        ref Matrix opOpAssign(string op, U)(U operand) pure nothrow @nogc if (is(U : Matrix))
+        @nogc ref Matrix opOpAssign(string op, U)(U operand) pure nothrow if (is(U : Matrix))
         {
             mixin("Matrix result = this " ~ op ~ " operand;");
             return opAssign!Matrix(result);
         }
 
         /// Assignment operator with another samey matrix.
-        ref Matrix opOpAssign(string op, U)(U operand) pure nothrow @nogc if (isConvertible!U)
+        @nogc ref Matrix opOpAssign(string op, U)(U operand) pure nothrow if (isConvertible!U)
         {
             Matrix conv = operand;
             return opOpAssign!op(conv);
@@ -223,7 +225,7 @@ align(1) struct Matrix(T, int R, int C)
         /// Cast to other matrix types.
         /// If the size are different, the resulting matrix is truncated
         /// and/or filled with identity coefficients.
-        U opCast(U)() pure const nothrow @nogc if (is(typeof(U._isMatrix)))
+        @nogc U opCast(U)() pure const nothrow if (is(typeof(U._isMatrix)))
         {
             U res = U.identity();
             enum minR = R < U._R ? R : U._R;
@@ -236,7 +238,7 @@ align(1) struct Matrix(T, int R, int C)
             return res;
         }
 
-        bool opEquals(U)(U other) pure const nothrow @nogc if (is(U : Matrix))
+        @nogc bool opEquals(U)(U other) pure const nothrow if (is(U : Matrix))
         {
             for (int i = 0; i < R * C; ++i)
                 if (v[i] != other.v[i])
@@ -244,7 +246,7 @@ align(1) struct Matrix(T, int R, int C)
             return true;
         }
 
-        bool opEquals(U)(U other) pure const nothrow @nogc
+        @nogc bool opEquals(U)(U other) pure const nothrow
             if ((isAssignable!U) && (!is(U: Matrix)))
         {
             Matrix conv = other;
@@ -252,7 +254,7 @@ align(1) struct Matrix(T, int R, int C)
         }
 
         // +matrix, -matrix, ~matrix, !matrix
-        Matrix opUnary(string op)() pure const nothrow @nogc if (op == "+" || op == "-" || op == "~" || op == "!")
+        @nogc Matrix opUnary(string op)() pure const nothrow if (op == "+" || op == "-" || op == "~" || op == "!")
         {
             Matrix res = void;
             for (int i = 0; i < N; ++i)
@@ -262,7 +264,7 @@ align(1) struct Matrix(T, int R, int C)
 
         /// Convert 3x3 rotation matrix to quaternion.
         /// See_also: 3D Math Primer for Graphics and Game Development.
-        U opCast(U)() pure const nothrow @nogc if (is(typeof(U._isQuaternion))
+        @nogc U opCast(U)() pure const nothrow if (is(typeof(U._isQuaternion))
                                                    && is(U._T : _T)
                                                    && (_R == 3) && (_C == 3))
         {
@@ -331,9 +333,9 @@ align(1) struct Matrix(T, int R, int C)
         }
 
         /// Converts a 4x4 rotation matrix to quaternion.
-        U opCast(U)() pure const nothrow @nogc if (is(typeof(U._isQuaternion))
-                                                  && is(U._T : _T)
-                                                  && (_R == 4) && (_C == 4))
+        @nogc U opCast(U)() pure const nothrow if (is(typeof(U._isQuaternion))
+                                                   && is(U._T : _T)
+                                                   && (_R == 4) && (_C == 4))
         {
             auto m3 = cast(mat3!T)(this);
             return cast(U)(m3);
@@ -344,7 +346,7 @@ align(1) struct Matrix(T, int R, int C)
         static if (isSquare && isFloatingPoint!T && R == 2)
         {
             /// Returns: inverse of matrix.
-            Matrix inverse() pure const nothrow @nogc
+            @nogc Matrix inverse() pure const nothrow
             {
                 T invDet = 1 / (c[0][0] * c[1][1] - c[0][1] * c[1][0]);
                 return Matrix( c[1][1] * invDet, -c[0][1] * invDet,
@@ -355,7 +357,7 @@ align(1) struct Matrix(T, int R, int C)
         static if (isSquare && isFloatingPoint!T && R == 3)
         {
             /// Returns: inverse of matrix.
-            Matrix inverse() pure const nothrow @nogc
+            @nogc Matrix inverse() pure const nothrow
             {
                 T det = c[0][0] * (c[1][1] * c[2][2] - c[2][1] * c[1][2])
                       - c[0][1] * (c[1][0] * c[2][2] - c[1][2] * c[2][0])
@@ -379,7 +381,7 @@ align(1) struct Matrix(T, int R, int C)
         static if (isSquare && isFloatingPoint!T && R == 4)
         {
             /// Returns: inverse of matrix.
-            Matrix inverse() pure const nothrow @nogc
+            @nogc Matrix inverse() pure const nothrow
             {
                 T det2_01_01 = c[0][0] * c[1][1] - c[0][1] * c[1][0];
                 T det2_01_02 = c[0][0] * c[1][2] - c[0][2] * c[1][0];
@@ -449,7 +451,7 @@ align(1) struct Matrix(T, int R, int C)
         }
 
         /// Returns: transposed matrice.
-        Matrix!(T, C, R) transposed() pure const nothrow @nogc
+        @nogc Matrix!(T, C, R) transposed() pure const nothrow
         {
             Matrix!(T, C, R) res;
             for (int i = 0; i < C; ++i)
@@ -461,7 +463,7 @@ align(1) struct Matrix(T, int R, int C)
         static if (isSquare && R > 1)
         {
             /// In-place translate by (v, 1)
-            void translate(Vector!(T, R-1) v) pure nothrow @nogc
+            @nogc void translate(Vector!(T, R-1) v) pure nothrow
             {
                 for (int i = 0; i < R; ++i)
                 {
@@ -474,7 +476,7 @@ align(1) struct Matrix(T, int R, int C)
             }
 
             /// Make a translation matrix.
-            static Matrix translation(Vector!(T, R-1) v) pure nothrow @nogc
+            @nogc static Matrix translation(Vector!(T, R-1) v) pure nothrow
             {
                 Matrix res = identity();
                 for (int i = 0; i + 1 < R; ++i)
@@ -491,7 +493,7 @@ align(1) struct Matrix(T, int R, int C)
             }
 
             /// Make a scaling matrix.
-            static Matrix scaling(Vector!(T, R-1) v) pure nothrow @nogc
+            @nogc static Matrix scaling(Vector!(T, R-1) v) pure nothrow
             {
                 Matrix res = identity();
                 for (int i = 0; i + 1 < R; ++i)
@@ -503,7 +505,7 @@ align(1) struct Matrix(T, int R, int C)
         // rotations are implemented for 3x3 and 4x4 matrices.
         static if (isSquare && (R == 3 || R == 4) && isFloatingPoint!T)
         {
-            public static Matrix rotateAxis(int i, int j)(T angle) pure nothrow @nogc
+            @nogc public static Matrix rotateAxis(int i, int j)(T angle) pure nothrow
             {
                 Matrix res = identity();
                 const T cosa = cos(angle);
@@ -526,7 +528,7 @@ align(1) struct Matrix(T, int R, int C)
 
             /// Similar to the glRotate matrix, however the angle is expressed in radians
             /// See_also: $(LINK http://www.cs.rutgers.edu/~decarlo/428/gl_man/rotate.html)
-            static Matrix rotation(T angle, vec3!T axis) pure nothrow @nogc
+            @nogc static Matrix rotation(T angle, vec3!T axis) pure nothrow
             {
                 Matrix res = identity();
                 const T c = cos(angle);
@@ -557,7 +559,7 @@ align(1) struct Matrix(T, int R, int C)
         static if (isSquare && R == 4 && isFloatingPoint!T)
         {
             /// Returns: orthographic projection.
-            static Matrix orthographic(T left, T right, T bottom, T top, T near, T far) pure nothrow @nogc
+            @nogc static Matrix orthographic(T left, T right, T bottom, T top, T near, T far) pure nothrow
             {
                 T dx = right - left,
                   dy = top - bottom,
@@ -574,7 +576,7 @@ align(1) struct Matrix(T, int R, int C)
             }
 
             /// Returns: perspective projection.
-            static Matrix perspective(T FOVInRadians, T aspect, T zNear, T zFar) pure nothrow @nogc
+            @nogc static Matrix perspective(T FOVInRadians, T aspect, T zNear, T zFar) pure nothrow
             {
                 T f = 1 / tan(FOVInRadians / 2);
                 T d = 1 / (zNear - zFar);
@@ -587,7 +589,7 @@ align(1) struct Matrix(T, int R, int C)
 
             /// Returns: "lookAt" projection.
             /// Thanks to vuaru for corrections.
-            static Matrix lookAt(vec3!T eye, vec3!T target, vec3!T up) pure nothrow @nogc
+            @nogc static Matrix lookAt(vec3!T eye, vec3!T target, vec3!T up) pure nothrow
             {
                 vec3!T Z = (eye - target).normalized();
                 vec3!T X = cross(-up, Z).normalized();
@@ -600,7 +602,7 @@ align(1) struct Matrix(T, int R, int C)
             }
 
             /// Extract frustum from a 4x4 matrice.
-            Frustum!T frustum() pure const nothrow @nogc
+            @nogc Frustum!T frustum() pure const nothrow
             {
                 auto left   = Plane!T(row(3) + row(0));
                 auto right  = Plane!T(row(3) - row(0));
@@ -657,7 +659,7 @@ align(1) struct Matrix(T, int R, int C)
         /// Returns: an identity matrice.
         /// Note: the identity matrix, while only meaningful for square matrices,
         /// is also defined for non-square ones.
-        static Matrix identity() pure nothrow @nogc
+        @nogc static Matrix identity() pure nothrow
         {
             Matrix res = void;
             for (int i = 0; i < R; ++i)
@@ -667,7 +669,7 @@ align(1) struct Matrix(T, int R, int C)
         }
 
         /// Returns: a constant matrice.
-        static Matrix constant(U)(U x) pure nothrow @nogc
+        @nogc static Matrix constant(U)(U x) pure nothrow
         {
             Matrix res = void;
 

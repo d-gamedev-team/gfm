@@ -17,6 +17,7 @@ import std.math,
 import gfm.math.vector,
        gfm.math.box;
 
+static if( __VERSION__ < 2066 ) private enum nogc = 1;
 
 /// A Segment is 2 points.
 /// When considered like a vector, it represents the arrow from a to b.
@@ -47,13 +48,13 @@ align(1) struct Triangle(T, int N)
         static if (N == 2)
         {
             /// Returns: Area of a 2D triangle.
-            T area() pure const nothrow @nogc
+            @nogc T area() pure const nothrow
             {
                 return abs(signedArea());
             }
 
             /// Returns: Signed area of a 2D triangle.
-            T signedArea() pure const nothrow @nogc
+            @nogc T signedArea() pure const nothrow
             {
                 return ((b.x * a.y - a.x * b.y)
                       + (c.x * b.y - b.x * c.y)
@@ -64,7 +65,7 @@ align(1) struct Triangle(T, int N)
         static if (N == 3)
         {
             /// Returns: Triangle normal.
-            Vector!(T, 3) computeNormal() pure const nothrow @nogc
+            @nogc Vector!(T, 3) computeNormal() pure const nothrow
             {
                 return cross(b - a, c - a).normalized();
             }
@@ -88,7 +89,7 @@ align(1) struct Sphere(T, int N)
         T radius;
 
         /// Creates a sphere from a point and a radius.
-        this(in point_t center_, T radius_) pure nothrow @nogc
+        @nogc this(in point_t center_, T radius_) pure nothrow
         {
             center = center_;
             radius = radius_;
@@ -96,7 +97,7 @@ align(1) struct Sphere(T, int N)
 
         /// Sphere contains point test.
         /// Returns: true if the point is inside the sphere.
-        bool contains(in Sphere s) pure const nothrow @nogc
+        @nogc bool contains(in Sphere s) pure const nothrow
         {
             if (s.radius > radius)
                 return false;
@@ -106,14 +107,14 @@ align(1) struct Sphere(T, int N)
         }
 
         /// Sphere vs point Euclidean distance squared.
-        T squaredDistanceTo(point_t p) pure const nothrow @nogc
+        @nogc T squaredDistanceTo(point_t p) pure const nothrow
         {
             return center.squaredDistanceTo(p);
         }
 
         /// Sphere vs sphere intersection.
         /// Returns: true if the spheres intersect.
-        bool intersects(Sphere s) pure const nothrow @nogc
+        @nogc bool intersects(Sphere s) pure const nothrow
         {
             T outerRadius = radius + s.radius;
             return squaredDistanceTo(s.center) < outerRadius * outerRadius;
@@ -122,7 +123,7 @@ align(1) struct Sphere(T, int N)
         static if (isFloatingPoint!T)
         {
             /// Sphere vs point Euclidean distance.
-            T distanceTo(point_t p) pure const nothrow @nogc
+            @nogc T distanceTo(point_t p) pure const nothrow
             {
                 return center.distanceTo(p);
             }
@@ -130,7 +131,7 @@ align(1) struct Sphere(T, int N)
             static if(N == 2)
             {
                 /// Returns: Circle area.
-                T area() pure const nothrow @nogc
+                @nogc T area() pure const nothrow
                 {
                     return PI * (radius * radius);
                 }
@@ -157,7 +158,7 @@ nothrow:
         point_t dir;
 
         /// Returns: A point further along the ray direction.
-        point_t progress(T t) pure const nothrow @nogc
+        @nogc point_t progress(T t) pure const nothrow
         {
             return orig + dir * t;
         }
@@ -167,7 +168,7 @@ nothrow:
             /// Ray vs triangle intersection.
             /// See_also: "Fast, Minimum Storage Ray/Triangle intersection", Mommer & Trumbore (1997)
             /// Returns: Barycentric coordinates, the intersection point is at $(D (1 - u - v) * A + u * B + v * C).
-            bool intersect(Triangle!(T, 3) triangle, out T t, out T u, out T v) pure const nothrow @nogc
+            @nogc bool intersect(Triangle!(T, 3) triangle, out T t, out T u, out T v) pure const nothrow
             {
                 point_t edge1 = triangle.b - triangle.a;
                 point_t edge2 = triangle.c - triangle.a;
@@ -218,27 +219,27 @@ align(1) struct Plane(T) if (isFloatingPoint!T)
         T d;
 
         /// Create from four coordinates.
-        this(vec4!T abcd) pure nothrow @nogc
+        @nogc this(vec4!T abcd) pure nothrow
         {
             n = vec3!T(abcd.x, abcd.y, abcd.z).normalized();
             d = abcd.z;
         }
 
         /// Create from a point and a normal.
-        this(vec3!T origin, vec3!T normal) pure nothrow @nogc
+        @nogc this(vec3!T origin, vec3!T normal) pure nothrow
         {
             n = normal.normalized();
             d = -dot(origin, n);
         }
 
         /// Create from 3 non-aligned points.
-        this(vec3!T A, vec3!T B, vec3!T C) pure nothrow @nogc
+        @nogc this(vec3!T A, vec3!T B, vec3!T C) pure nothrow
         {
             this(C, cross(B - A, C - A));
         }
 
         /// Assign a plane with another plane.
-        ref Plane opAssign(Plane other) pure nothrow @nogc
+        @nogc ref Plane opAssign(Plane other) pure nothrow
         {
             n = other.n;
             d = other.d;
@@ -246,31 +247,31 @@ align(1) struct Plane(T) if (isFloatingPoint!T)
         }
 
         /// Returns: signed distance between a point and the plane.
-        T signedDistanceTo(vec3!T point) pure const nothrow @nogc
+        @nogc T signedDistanceTo(vec3!T point) pure const nothrow
         {
             return dot(n, point) + d;
         }
 
         /// Returns: absolute distance between a point and the plane.
-        T distanceTo(vec3!T point) pure const nothrow @nogc
+        @nogc T distanceTo(vec3!T point) pure const nothrow
         {
             return abs(signedDistanceTo(point));
         }
 
         /// Returns: true if the point is in front of the plane.
-        bool isFront(vec3!T point) pure const nothrow @nogc
+        @nogc bool isFront(vec3!T point) pure const nothrow
         {
             return signedDistanceTo(point) >= 0;
         }
 
         /// Returns: true if the point is in the back of the plane.
-        bool isBack(vec3!T point) pure const nothrow @nogc
+        @nogc bool isBack(vec3!T point) pure const nothrow
         {
             return signedDistanceTo(point) < 0;
         }
 
         /// Returns: true if the point is on the plane, with a given epsilon.
-        bool isOn(vec3!T point, T epsilon) pure const nothrow @nogc
+        @nogc bool isOn(vec3!T point, T epsilon) pure const nothrow
         {
             T sd = signedDistanceTo(point);
             return (-epsilon < sd) && (sd < epsilon);
@@ -313,7 +314,7 @@ align(1) struct Frustum(T) if (isFloatingPoint!T)
         Plane!T[6] planes;
 
         /// Create a frustum from 6 planes.
-        this(Plane!T left, Plane!T right, Plane!T top, Plane!T bottom, Plane!T near, Plane!T far) pure nothrow @nogc
+        @nogc this(Plane!T left, Plane!T right, Plane!T top, Plane!T bottom, Plane!T near, Plane!T far) pure nothrow
         {
             planes[LEFT] = left;
             planes[RIGHT] = right;
@@ -331,7 +332,7 @@ align(1) struct Frustum(T) if (isFloatingPoint!T)
         }
 
         /// Point vs frustum intersection.
-        bool contains(vec3!T point) pure const nothrow @nogc
+        @nogc bool contains(vec3!T point) pure const nothrow
         {
             for(int i = 0; i < 6; ++i) 
             {
@@ -345,7 +346,7 @@ align(1) struct Frustum(T) if (isFloatingPoint!T)
 
         /// Sphere vs frustum intersection.
         /// Returns: Frustum.OUTSIDE, Frustum.INTERSECT or Frustum.INSIDE.
-        int contains(Sphere!(T, 3) sphere) pure const nothrow @nogc
+        @nogc int contains(Sphere!(T, 3) sphere) pure const nothrow
         {
             // calculate our distances to each of the planes
             for(int i = 0; i < 6; ++i) 
@@ -366,7 +367,7 @@ align(1) struct Frustum(T) if (isFloatingPoint!T)
 
         /// AABB vs frustum intersection.
         /// Returns: Frustum.OUTSIDE, Frustum.INTERSECT or Frustum.INSIDE.
-        int contains(box3!T box) pure const nothrow @nogc
+        @nogc int contains(box3!T box) pure const nothrow
         {
             vec3!T corners[8];
             int totalIn = 0;

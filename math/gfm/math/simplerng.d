@@ -11,9 +11,11 @@ module gfm.math.simplerng;
 public import std.random;
 import std.math;
 
+static if( __VERSION__ < 2066 ) private enum nogc = 1;
+
 /// Returns: Normal (Gaussian) random sample.
 /// See_also: Box-Muller algorithm.
-double randNormal(RNG)(ref RNG rng, double mean = 0.0, double standardDeviation = 1.0) nothrow @nogc
+@nogc double randNormal(RNG)(ref RNG rng, double mean = 0.0, double standardDeviation = 1.0) nothrow
 {
     assert(standardDeviation > 0);    
     double u1;
@@ -29,7 +31,7 @@ double randNormal(RNG)(ref RNG rng, double mean = 0.0, double standardDeviation 
 }
 
 /// Returns: Exponential random sample with specified mean.
-double randExponential(RNG)(ref RNG rng, double mean = 1.0) nothrow @nogc
+@nogc double randExponential(RNG)(ref RNG rng, double mean = 1.0) nothrow
 {
     assert(mean > 0);
     return -mean*log(uniform(0.0, 1.0, rng));
@@ -39,7 +41,7 @@ double randExponential(RNG)(ref RNG rng, double mean = 1.0) nothrow @nogc
 /// See_also: "A Simple Method for Generating Gamma Variables"
 /// by George Marsaglia and Wai Wan Tsang.  ACM Transactions on Mathematical Software
 /// Vol 26, No 3, September 2000, pages 363-372.
-double randGamma(RNG)(ref RNG rng, double shape, double scale) nothrow @nogc
+@nogc double randGamma(RNG)(ref RNG rng, double shape, double scale) nothrow
 {
     double d, c, x, xsquared, v, u;
 
@@ -72,7 +74,7 @@ double randGamma(RNG)(ref RNG rng, double shape, double scale) nothrow @nogc
 }
 
 /// Returns: Chi-square sample.
-double randChiSquare(RNG)(ref RNG rng, double degreesOfFreedom) nothrow @nogc
+@nogc double randChiSquare(RNG)(ref RNG rng, double degreesOfFreedom) nothrow
 {
     // A chi squared distribution with n degrees of freedom
     // is a gamma distribution with shape n/2 and scale 2.
@@ -80,7 +82,7 @@ double randChiSquare(RNG)(ref RNG rng, double degreesOfFreedom) nothrow @nogc
 }
 
 /// Returns: Inverse-gamma sample.
-double randInverseGamma(RNG)(ref RNG rng, double shape, double scale) nothrow @nogc
+@nogc double randInverseGamma(RNG)(ref RNG rng, double shape, double scale) nothrow
 {
     // If X is gamma(shape, scale) then
     // 1/Y is inverse gamma(shape, 1/scale)
@@ -88,14 +90,14 @@ double randInverseGamma(RNG)(ref RNG rng, double shape, double scale) nothrow @n
 }
 
 /// Returns: Weibull sample.
-double randWeibull(RNG)(ref RNG rng, double shape, double scale) nothrow @nogc
+@nogc double randWeibull(RNG)(ref RNG rng, double shape, double scale) nothrow
 {
     assert(shape > 0 && scale > 0);
     return scale * pow(-log(uniform(0.0, 1.0, rng)), 1.0 / shape);
 }
 
 /// Returns: Cauchy sample.
-double randCauchy(RNG)(ref RNG rng, double median, double scale) nothrow @nogc
+@nogc double randCauchy(RNG)(ref RNG rng, double median, double scale) nothrow
 {
     assert(scale > 0);
     double p = uniform(0.0, 1.0, rng);
@@ -106,7 +108,7 @@ double randCauchy(RNG)(ref RNG rng, double median, double scale) nothrow @nogc
 
 /// Returns: Student-t sample.
 /// See_also: Seminumerical Algorithms by Knuth.
-double randStudentT(RNG)(ref RNG rng, double degreesOfFreedom) nothrow @nogc
+@nogc double randStudentT(RNG)(ref RNG rng, double degreesOfFreedom) nothrow
 {
     assert(degreesOfFreedom > 0);
 
@@ -117,7 +119,7 @@ double randStudentT(RNG)(ref RNG rng, double degreesOfFreedom) nothrow @nogc
 }
 
 /// Returns: Laplace distribution random sample (also known as the double exponential distribution).
-double randLaplace(RNG)(ref RNG rng, double mean, double scale) nothrow @nogc
+@nogc double randLaplace(RNG)(ref RNG rng, double mean, double scale) nothrow
 {
     double u = uniform(0.0, 1.0, rng);
     return (u < 0.5) ? (mean + scale*log(2.0*u))
@@ -125,13 +127,13 @@ double randLaplace(RNG)(ref RNG rng, double mean, double scale) nothrow @nogc
 }
 
 /// Returns: Log-normal sample.
-double randLogNormal(RNG)(ref RNG rng, double mu, double sigma) nothrow @nogc
+@nogc double randLogNormal(RNG)(ref RNG rng, double mu, double sigma) nothrow
 {
     return exp(getNormal(rng, mu, sigma));
 }
 
 /// Returns: Beta sample.
-double randBeta(RNG)(ref RNG rng, double a, double b) nothrow @nogc
+@nogc double randBeta(RNG)(ref RNG rng, double a, double b) nothrow
 {
     assert(a > 0 && b > 0);
 
@@ -146,14 +148,14 @@ double randBeta(RNG)(ref RNG rng, double a, double b) nothrow @nogc
 }
 
 /// Returns: Poisson sample.
-int randPoisson(RNG)(ref RNG rng, double lambda) nothrow @nogc
+@nogc int randPoisson(RNG)(ref RNG rng, double lambda) nothrow
 {
     return (lambda < 30.0) ? poissonSmall(rng, lambda) : poissonLarge(rng, lambda);
 }
 
 private
 {
-    int poissonSmall(RNG)(ref RNG rng, double lambda) nothrow @nogc
+    @nogc int poissonSmall(RNG)(ref RNG rng, double lambda) nothrow
     {
         // Algorithm due to Donald Knuth, 1969.
         double p = 1.0, L = exp(-lambda);
@@ -167,7 +169,7 @@ private
         return k - 1;
     }
 
-    int poissonLarge(RNG)(ref RNG rng, double lambda) nothrow @nogc
+    @nogc int poissonLarge(RNG)(ref RNG rng, double lambda) nothrow
     {
         // "Rejection method PA" from "The Computer Generation of Poisson Random Variables" by A. C. Atkinson
         // Journal of the Royal Statistical Society Series C (Applied Statistics) Vol. 28, No. 1. (1979)
@@ -195,7 +197,7 @@ private
         }
     }
 
-    double logFactorial(int n) nothrow @nogc
+    @nogc double logFactorial(int n) nothrow
     {
         assert(n >= 0);
         if (n > 254)

@@ -7,6 +7,7 @@ import gfm.math.vector,
        gfm.math.matrix,
        funcs = gfm.math.funcs;
 
+static if( __VERSION__ < 2066 ) private enum nogc = 1;
 
 /// Quaternion implementation.
 /// Holds a rotation + angle in a proper but wild space.
@@ -25,14 +26,14 @@ align(1) struct Quaternion(T)
         }
 
         /// Construct a Quaternion from a value.
-        this(U)(U x) pure nothrow @nogc if (isAssignable!U)
+        @nogc this(U)(U x) pure nothrow if (isAssignable!U)
         {
             opAssign!U(x);
         }
 
         /// Constructs a Quaternion from coordinates.
         /// Warning: order of coordinates is different from storage.
-        this(T qw, T qx, T qy, T qz) pure nothrow @nogc
+        @nogc this(T qw, T qx, T qy, T qz) pure nothrow
         {
             x = qx;
             y = qy;
@@ -41,7 +42,7 @@ align(1) struct Quaternion(T)
         }
 
         /// Constructs a Quaternion from axis + angle.
-        static Quaternion fromAxis(Vector!(T, 3) axis, T angle) pure nothrow @nogc
+        @nogc static Quaternion fromAxis(Vector!(T, 3) axis, T angle) pure nothrow
         {
             Quaternion q = void;
             axis.normalize();
@@ -58,7 +59,7 @@ align(1) struct Quaternion(T)
         /// All paramers given in radians.
         /// Roll->X axis, Pitch->Y axis, Yaw->Z axis
         /// See_also: $(LINK https://www.cs.princeton.edu/~gewang/projects/darth/stuff/quat_faq.html)
-        static Quaternion fromEulerAngles(T roll, T pitch, T yaw) pure nothrow @nogc
+        @nogc static Quaternion fromEulerAngles(T roll, T pitch, T yaw) pure nothrow
         {
             Quaternion q = void;
             T sinPitch = sin(pitch / 2);
@@ -79,7 +80,7 @@ align(1) struct Quaternion(T)
         /// Converts a quaternion to Euler angles.
         /// TODO: adds a EulerAngles type.
         /// Returns: A vector which contains roll-pitch-yaw as x-y-z.
-        vec3!T toEulerAngles() pure const nothrow @nogc
+        @nogc vec3!T toEulerAngles() pure const nothrow
         {
             mat3!T m = cast(mat3!T)(this);
 
@@ -101,14 +102,14 @@ align(1) struct Quaternion(T)
         }
 
         /// Assign from another Quaternion.
-        ref Quaternion opAssign(U)(U u) pure nothrow @nogc if (is(typeof(U._isQuaternion)) && is(U._T : T))
+        @nogc ref Quaternion opAssign(U)(U u) pure nothrow if (is(typeof(U._isQuaternion)) && is(U._T : T))
         {
             v = u.v;
             return this;
         }
 
         /// Assign from a vector of 4 elements.
-        ref Quaternion opAssign(U)(U u) pure nothrow @nogc if (is(U : Vector!(T, 4u)))
+        @nogc ref Quaternion opAssign(U)(U u) pure nothrow if (is(U : Vector!(T, 4u)))
         {
             v = u;
             return this;
@@ -124,13 +125,13 @@ align(1) struct Quaternion(T)
         }
 
         /// Normalizes a quaternion.
-        void normalize() pure nothrow @nogc
+        @nogc void normalize() pure nothrow
         {
             v.normalize();
         }
 
         /// Returns: Normalized quaternion.
-        Quaternion normalized() pure const nothrow @nogc
+        @nogc Quaternion normalized() pure const nothrow
         {
             Quaternion res = void;
             res.v = v.normalized();
@@ -138,7 +139,7 @@ align(1) struct Quaternion(T)
         }
 
         /// Inverses a quaternion in-place.
-        void inverse() pure nothrow @nogc
+        @nogc void inverse() pure nothrow
         {
             x = -x;
             y = -y;
@@ -146,7 +147,7 @@ align(1) struct Quaternion(T)
         }
 
         /// Returns: Inverse of quaternion.
-        Quaternion inversed() pure const nothrow @nogc
+        @nogc Quaternion inversed() pure const nothrow
         {
             Quaternion res = void;
             res.v = v;
@@ -154,7 +155,7 @@ align(1) struct Quaternion(T)
             return res;
         }
 
-        ref Quaternion opOpAssign(string op, U)(U q) pure nothrow @nogc
+        @nogc ref Quaternion opOpAssign(string op, U)(U q) pure nothrow
             if (is(U : Quaternion) && (op == "*"))
         {
             T nx = w * q.x + x * q.w + y * q.z - z * q.y,
@@ -168,13 +169,13 @@ align(1) struct Quaternion(T)
             return this;
         }
 
-        ref Quaternion opOpAssign(string op, U)(U operand) pure nothrow @nogc  if (isConvertible!U)
+        @nogc ref Quaternion opOpAssign(string op, U)(U operand) pure nothrow if (isConvertible!U)
         {
             Quaternion conv = operand;
             return opOpAssign!op(conv);
         }
 
-        Quaternion opBinary(string op, U)(U operand) pure const nothrow @nogc
+        @nogc Quaternion opBinary(string op, U)(U operand) pure const nothrow
             if (is(U: Quaternion) || (isConvertible!U))
         {
             Quaternion temp = this;
@@ -196,9 +197,9 @@ align(1) struct Quaternion(T)
 
         /// Convert to a 3x3 rotation matrix.
         /// TODO: check out why we can't do is(Unqual!U == mat3!T)
-        U opCast(U)() pure const nothrow @nogc  if (is(typeof(U._isMatrix))
-                                                    && is(U._T : _T)
-                                                    && (U._R == 3) && (U._C == 3))
+        @nogc U opCast(U)() pure const nothrow if (is(typeof(U._isMatrix))
+                                                   && is(U._T : _T)
+                                                   && (U._R == 3) && (U._C == 3))
         {
             // do not assume that quaternion is normalized
             T norm = x*x + y*y + z*z + w*w;
@@ -217,7 +218,7 @@ align(1) struct Quaternion(T)
 
         /// Converts a to a 4x4 rotation matrix.
         /// Bugs: check why we can't do is(Unqual!U == mat4!T)
-        U opCast(U)() pure const nothrow @nogc if (is(typeof(U._isMatrix))
+        @nogc U opCast(U)() pure const nothrow if (is(typeof(U._isMatrix))
                                                    && is(U._T : _T)
                                                    && (U._R == 4) && (U._C == 4))
         {
@@ -226,13 +227,13 @@ align(1) struct Quaternion(T)
         }
 
         // Workaround Vector not being constructable through CTFE
-        static Quaternion identity() pure nothrow @property @nogc
+        @nogc static Quaternion identity() pure nothrow @property
         {
             Quaternion q;
             q.x = q.y = q.z = 0;
             q.w = 1;
             return q;
-        }        
+        }
     }
 
     private
@@ -262,7 +263,7 @@ alias Quaternion!float quatf;
 alias Quaternion!double quatd;
 
 /// Linear interpolation, for quaternions.
-Quaternion!T lerp(T)(Quaternion!T a, Quaternion!T b, float t) pure nothrow @nogc
+@nogc Quaternion!T lerp(T)(Quaternion!T a, Quaternion!T b, float t) pure nothrow
 {
     Quaternion!T res = void;
     res.v = funcs.lerp(a.v, b.v, t);
@@ -272,7 +273,7 @@ Quaternion!T lerp(T)(Quaternion!T a, Quaternion!T b, float t) pure nothrow @nogc
 
 /// Returns: Nlerp of quaternions.
 /// See_also: $(WEB keithmaggio.wordpress.com/2011/02/15/math-magician-lerp-slerp-and-nlerp/, Math Magician – Lerp, Slerp, and Nlerp)
-Quaternion!T Nlerp(T)(Quaternion!T a, Quaternion!T b, float t) pure nothrow @nogc
+@nogc Quaternion!T Nlerp(T)(Quaternion!T a, Quaternion!T b, float t) pure nothrow
 {
     assert(t >= 0 && t <= 1); // else probably doesn't make sense
     Quaternion!T res = void;
@@ -283,7 +284,7 @@ Quaternion!T Nlerp(T)(Quaternion!T a, Quaternion!T b, float t) pure nothrow @nog
 
 /// Returns: Slerp of quaternions. Slerp is more expensive than Nlerp.
 /// See_also: "Understanding Slerp, Then Not Using It"
-Quaternion!T slerp(T)(Quaternion!T a, Quaternion!T b, T t) pure nothrow @nogc
+@nogc Quaternion!T slerp(T)(Quaternion!T a, Quaternion!T b, T t) pure nothrow
 {
     assert(t >= 0 && t <= 1); // else probably doesn't make sense
 
