@@ -53,8 +53,6 @@ final class OpenGL
 
             DerelictGL.load(); // load deprecated functions too
 
-            // do not log here since unimportant errors might happen:
-            // no context is necessarily created at this point
             getLimits(false); 
         }
 
@@ -77,25 +75,9 @@ final class OpenGL
         /// you should call reload() to get the context you want.
         void reload()
         {
-            DerelictGL3.reload();            
+            DerelictGL3.reload();
 
             getLimits(true);
-
-            // Get available extensions
-
-            if (_majorVersion < 3)
-            {
-                // Legacy way to get extensions
-                _extensions = std.array.split(getString(GL_EXTENSIONS).idup);
-            }
-            else
-            {
-                // New way to get extensions
-                int numExtensions = getInteger(GL_NUM_EXTENSIONS, 0, true);
-                _extensions.length = 0;
-                for (int i = 0; i < numExtensions; ++i)
-                    _extensions ~= getString(GL_EXTENSIONS, i).idup;
-            }
 
             // now that the context exists, pipe OpenGL output
             pipeOpenGLDebugOutput();
@@ -248,38 +230,14 @@ final class OpenGL
         /// See_also: $(WEB www.opengl.org/sdk/docs/man4/xhtml/glGet.xml).
         /// Note: It is generally a bad idea to call $(D glGetSomething) since it might stall
         ///       the OpenGL pipeline.
-        bool getInteger(GLenum pname, out int result) nothrow
+        int getInteger(GLenum pname)
         {
             GLint param;
             glGetIntegerv(pname, &param);
-
-            if (runtimeCheckNothrow())
-            {
-                result = param;
-                return true;
-            }
-            else
-                return false;
+            runtimeCheck();
+            return param;
         }
 
-        /// Returns: The requested integer returned by $(D glGetIntegerv) 
-        ///          or defaultValue if an error occured.
-        /// See_also: $(WEB www.opengl.org/sdk/docs/man4/xhtml/glGet.xml).        
-        int getInteger(GLenum pname, GLint defaultValue, bool logging)
-        {
-            int result;
-
-            if (getInteger(pname, result))
-            {
-                return result;
-            }
-            else
-            {
-                if (logging)
-                    _logger.warning("couldn't get OpenGL integer");
-                return defaultValue;
-            }
-        }
 
         /// Returns: The requested float returned by $(D glGetFloatv).
         /// See_also: $(WEB www.opengl.org/sdk/docs/man4/xhtml/glGet.xml). 
@@ -290,23 +248,6 @@ final class OpenGL
             glGetFloatv(pname, &res);
             runtimeCheck();
             return res;
-        }
-
-        /// Returns: The requested float returned by $(D glGetFloatv) 
-        ///          or defaultValue if an error occured.
-        /// See_also: $(WEB www.opengl.org/sdk/docs/man4/xhtml/glGet.xml).   
-        float getFloat(GLenum pname, GLfloat defaultValue, bool logging)
-        {
-            try
-            {
-                return getFloat(pname);
-            }
-            catch(OpenGLException e)
-            {
-                if (logging)
-                    _logger.warning(e.msg);
-                return defaultValue;
-            }
         }
     }
 
@@ -334,37 +275,6 @@ final class OpenGL
 
     public
     {
-        /// Returns: Maximum texture size. 
-        ///          This value should be at least 512 for a conforming OpenGL implementation.
-        int maxTextureSize() pure const nothrow
-        {
-            return _maxTextureSize;
-        }
-
-        /// Returns: Number of texture units.
-        int maxTextureUnits() pure const nothrow
-        {
-            return _maxTextureUnits;
-        }
-
-        /// Returns: Number of texture image units usable in a fragment shader.
-        int maxFragmentTextureImageUnits() pure const nothrow
-        {
-            return _maxFragmentTextureImageUnits;
-        }
-
-        /// Returns: Number of texture image units usable in a vertex shader.
-        int maxVertexImageUnits() pure const nothrow
-        {
-            return _maxVertexTextureImageUnits;
-        }
-
-        /// Returns: Number of combined texture image units.
-        int maxCombinedImageUnits() pure const nothrow
-        {
-            return _maxCombinedTextureImageUnits;
-        }
-
         /// Returns: Maximum number of color attachments. This is the number of targets a fragment shader can output to.
         /// You can rely on this number being at least 4 if MRT is supported.
         int maxColorAttachments() pure const nothrow
@@ -376,9 +286,6 @@ final class OpenGL
         /// Throws: $(D OpenGLException) on error.
         void setActiveTexture(int texture)
         {
-            if (maxCombinedImageUnits() == 1)
-                return;
-
             glActiveTexture(GL_TEXTURE0 + texture);
             runtimeCheck();
         }
@@ -389,17 +296,12 @@ final class OpenGL
         string[] _extensions;
         int _majorVersion;
         int _minorVersion;
-        int _maxTextureSize;
-        int _maxTextureUnits; // number of conventional units, deprecated
-        int _maxFragmentTextureImageUnits; // max for fragment shader
-        int _maxVertexTextureImageUnits; // max for vertex shader
-        int _maxCombinedTextureImageUnits; // max total
         int _maxColorAttachments;
 
-        void getLimits(bool logging)
+        void getLimits(bool isReload)
         {
             // parse GL_VERSION string
-            if (logging)
+            if (isReload)
             {
                 const(char)[] verString = getVersionString();
                 const(char)[][] verParts = std.array.split(verString, ".");
@@ -423,25 +325,32 @@ final class OpenGL
                     catch (Exception e)
                         goto cant_parse;
                 }
+
+                // 2. Get a list of available extensions
+                if (_majorVersion < 3)
+                {
+                    // Legacy way to get extensions
+                    _extensions = std.array.split(getString(GL_EXTENSIONS).idup);
+                }
+                else
+                {
+                    // New way to get extensions
+                    int numExtensions = getInteger(GL_NUM_EXTENSIONS);
+                    _extensions.length = 0;
+                    for (int i = 0; i < numExtensions; ++i)
+                        _extensions ~= getString(GL_EXTENSIONS, i).idup;
+                }
+
+                // 3. Get limits
+                _maxColorAttachments = getInteger(GL_MAX_COLOR_ATTACHMENTS);
             }
             else
             {
                 _majorVersion = 1;
                 _minorVersion = 1;
-            }
-
-            _maxTextureSize = getInteger(GL_MAX_TEXTURE_SIZE, 512, logging);
-            // For other textures, add calls to:
-            // GL_MAX_ARRAY_TEXTURE_LAYERS​, GL_MAX_3D_TEXTURE_SIZE​
-            _maxTextureUnits = getInteger(GL_MAX_TEXTURE_UNITS, 2, logging);
-
-            _maxFragmentTextureImageUnits = getInteger(GL_MAX_TEXTURE_IMAGE_UNITS, 2, logging); // odd GL enum name because of legacy reasons (initially only fragment shader could access textures)
-            _maxVertexTextureImageUnits = getInteger(GL_MAX_VERTEX_TEXTURE_IMAGE_UNITS, 2, logging);
-            _maxCombinedTextureImageUnits = getInteger(GL_MAX_COMBINED_TEXTURE_IMAGE_UNITS, 2, logging);
-            // Get texture unit max for other shader stages with:
-            // GL_MAX_GEOMETRY_TEXTURE_IMAGE_UNITS, GL_MAX_TESS_CONTROL_TEXTURE_IMAGE_UNITS, GL_MAX_TESS_EVALUATION_TEXTURE_IMAGE_UNITS
-
-            _maxColorAttachments = getInteger(GL_MAX_COLOR_ATTACHMENTS, 4, logging);
+                _extensions = [];
+                _maxColorAttachments = 0;
+            }          
         }
 
         // flush out OpenGL errors
