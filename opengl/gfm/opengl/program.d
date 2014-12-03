@@ -380,7 +380,12 @@ final class GLProgram
         {
             GLAttribute* a = name in _activeAttributes;
             if (a is null)
-                throw new OpenGLException(format("Attribute %s is unknown", name));
+            {
+                // no such attribute found, either it's really missing or the OpenGL driver discarded an unused uniform
+                // create a fake disabled GLattribute to allow the show to proceed
+                _activeAttributes[name] = new GLAttribute(_gl,name);
+                return _activeAttributes[name];
+            }
             return *a;
         }
 
@@ -412,6 +417,8 @@ final class GLAttribute
 {
     public
     {
+        enum GLint fakeLocation = -1;
+
         this(OpenGL gl, string name, GLint location, GLenum type, GLsizei size)
         {
             _gl = gl;
@@ -419,6 +426,19 @@ final class GLAttribute
             _location = location;
             _type = type;
             _size = size;
+            _disabled = false;
+        }
+
+        /// Creates a fake disabled attribute, designed to cope with attribute 
+        /// that have been optimized out by the OpenGL driver, or those which do not exist.
+        this(OpenGL gl, string name)
+        {
+            _gl = gl;
+            _disabled = true;
+            _location = fakeLocation;
+            _type = GL_FLOAT; // whatever
+            _size = 1;
+            _gl._logger.warningf("Faking attribute '%s' which either does not exist in the shader program, or was discarded by the driver as unused", name);
         }
 
     }
@@ -440,5 +460,6 @@ final class GLAttribute
         GLenum _type;
         GLsizei _size;
         string _name;
+        bool _disabled;
     }
 }

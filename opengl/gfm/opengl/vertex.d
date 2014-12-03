@@ -68,7 +68,8 @@ class VertexSpecification(Vertex)
                     int location = program.attrib(member).location;                
                     mixin("enum size_t offset = Vertex." ~ member ~ ".offsetof;");
 
-                    bool normalize = false; // TODO implement @Normalized
+                    enum UDAs = __traits(getAttributes, member);
+                    bool normalize = (staticIndexOf!(Normalized, UDAs) == -1);
 
                     // detect suitable type
                     int n;
@@ -131,6 +132,10 @@ struct VertexAttribute
         /// Throws: $(D OpenGLException) on error.
         void use(OpenGL gl, GLsizei sizeOfVertex)
         {
+            // fake attribute, do not enable
+            if (location == GLAttribute.fakeLocation)
+                return ;
+
             glEnableVertexAttribArray(location);
             if (isIntegerType(glType))
                 glVertexAttribIPointer(location, n, glType, sizeOfVertex, cast(GLvoid*)offset);
