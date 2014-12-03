@@ -283,8 +283,8 @@ final class GLProgram
                                        &type,
                                        buffer.ptr);
                     _gl.runtimeCheck();
-                    const(char)[] name = fromStringz(buffer.ptr);
-                   _activeUniforms[name] = new GLUniform(_gl, _program, type, name.idup, size);
+                    string name = fromStringz(buffer.ptr).idup;
+                   _activeUniforms[name] = new GLUniform(_gl, _program, type, name, size);
                 }
             }
 
@@ -305,11 +305,11 @@ final class GLProgram
                     GLsizei length;
                     glGetActiveAttrib(_program, cast(GLuint)i, cast(GLint)(buffer.length), &length, &size, &type, buffer.ptr);                    
                     _gl.runtimeCheck();
-                    const(char)[] name = fromStringz(buffer.ptr);
+                    string name = fromStringz(buffer.ptr).idup;
                     GLint location = glGetAttribLocation(_program, buffer.ptr);
                     _gl.runtimeCheck();
 
-                    _activeAttributes[name] = new GLAttribute(_gl, name.idup, location, type, size);
+                    _activeAttributes[name] = new GLAttribute(_gl, name, location, type, size);
                 }
             }
 
@@ -423,7 +423,15 @@ final class GLAttribute
 
     }
 
-    @property GLint location() { return _location; } // property, getter only
+    GLint location()
+    { 
+        return _location;
+    }
+
+    string name() pure const nothrow
+    {
+        return _name;
+    }
 
     private
     {
