@@ -436,7 +436,7 @@ final class SDL2
             string formattedMessage = format("SDL (category %s, priority %s): %s", 
                                              readableCategory(category), 
                                              readablePriority(priority), 
-											 fromStringz(message));
+                                             fromStringz(message));
 
             if (priority == SDL_LOG_PRIORITY_WARN)
                 _logger.warning(formattedMessage);
