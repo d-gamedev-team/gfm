@@ -161,7 +161,7 @@ private
              || t == GL_UNSIGNED_INT);
     }
 
-    alias VectorTypes = TypeTuple!(byte, ubyte, short, ushort, int, uint, ulong, float, double);
+    alias VectorTypes = TypeTuple!(byte, ubyte, short, ushort, int, uint, float, double);
     enum GLenum[] VectorTypesGL = 
     [ 
         GL_BYTE,
@@ -196,8 +196,6 @@ private
         else
         {
             alias U = Unqual!T;
-
-//            enum E234 = Tuple!(int, 2, int, 3, int, 4);
 
             // is it a gfm.vector.Vector?
             foreach(int t, S ; VectorTypes)
