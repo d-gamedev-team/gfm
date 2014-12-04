@@ -24,6 +24,10 @@ void main()
     auto sdl2 = scoped!SDL2(log);
     auto gl = scoped!OpenGL(log);
 
+    // You have to initialize each SDL subsystem you want by hand
+    sdl2.subSystemInit(SDL_INIT_VIDEO);
+    sdl2.subSystemInit(SDL_INIT_EVENTS);
+
     SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 3);
     SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 3);
     SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);
