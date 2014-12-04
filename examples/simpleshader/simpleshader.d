@@ -38,12 +38,11 @@ void main()
     gl.reload();
 
     // create a shader program made of a single fragment shader
-    string tunnelProgramSource = 
+    string tunnelProgramSource =
         q{#version 330 core
 
         #if VERTEX_SHADER
         in vec3 position;
-        in vec3 normal;
         in vec2 coordinates;
         out vec2 fragmentUV;
         uniform mat4 mvpMatrix;
@@ -113,16 +112,15 @@ void main()
     {
         vec3f position;
         vec2f coordinates;
-        @Normalized vec3f normal;
     }
 
     Vertex[] quad;
-    quad ~= Vertex(vec3f(-1, -1, 0), vec2f(0, 0), vec3f(0, 0, 1));
-    quad ~= Vertex(vec3f(+1, -1, 0), vec2f(1, 0), vec3f(0, 0, 1));
-    quad ~= Vertex(vec3f(+1, +1, 0), vec2f(1, 1), vec3f(0, 0, 1));
-    quad ~= Vertex(vec3f(+1, +1, 0), vec2f(1, 1), vec3f(0, 0, 1));
-    quad ~= Vertex(vec3f(-1, +1, 0), vec2f(0, 1), vec3f(0, 0, 1));
-    quad ~= Vertex(vec3f(-1, -1, 0), vec2f(0, 0), vec3f(0, 0, 1));
+    quad ~= Vertex(vec3f(-1, -1, 0), vec2f(0, 0));
+    quad ~= Vertex(vec3f(+1, -1, 0), vec2f(1, 0));
+    quad ~= Vertex(vec3f(+1, +1, 0), vec2f(1, 1));
+    quad ~= Vertex(vec3f(+1, +1, 0), vec2f(1, 1));
+    quad ~= Vertex(vec3f(-1, +1, 0), vec2f(0, 1));
+    quad ~= Vertex(vec3f(-1, -1, 0), vec2f(0, 0));
 
     auto quadVBO = scoped!GLBuffer(gl, GL_ARRAY_BUFFER, GL_STATIC_DRAW, quad[]);
 

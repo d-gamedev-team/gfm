@@ -32,13 +32,13 @@ struct Normalized
  *      vec3f position;
  *      vec4f diffuse;
  *      float shininess;
- *      vec2f uv;
- *      @Normalized vec3f normal;
+ *      @Normalized vec2i uv;
+ *      vec3f normal;
  *  }
  *
  * Names MUST match those used in the vertex shader as attributes.
  */
-class VertexSpecification(Vertex)
+final class VertexSpecification(Vertex)
 {
     public
     {
@@ -58,14 +58,14 @@ class VertexSpecification(Vertex)
             alias TT = FieldTypeTuple!Vertex;
 
             // Create all attribute description
-            foreach (member; __traits(allMembers, Vertex)) 
+            foreach (member; __traits(allMembers, Vertex))
             {
                 enum fullName = "Vertex." ~ member;
                 mixin("alias T = typeof(" ~ fullName ~ ");");
 
                 static if (staticIndexOf!(T, TT) != -1)
                 {
-                    int location = program.attrib(member).location;                
+                    int location = program.attrib(member).location;
                     mixin("enum size_t offset = Vertex." ~ member ~ ".offsetof;");
 
                     enum UDAs = __traits(getAttributes, member);
@@ -73,7 +73,7 @@ class VertexSpecification(Vertex)
 
                     // detect suitable type
                     int n;
-                    GLenum glType;                
+                    GLenum glType;
                     toGLTypeAndSize!T(glType, n);
                     _attributes ~= VertexAttribute(n, offset, glType, location, normalize ? GL_TRUE : GL_FALSE);
 
@@ -90,7 +90,7 @@ class VertexSpecification(Vertex)
                 _attributes[i].use(_gl, cast(GLsizei) vertexSize());
         }
 
-        /// Unuse this vertex specification. If you are using a VAO, you don't need to call it, 
+        /// Unuse this vertex specification. If you are using a VAO, you don't need to call it,
         /// since the attributes would be tied to the VAO activation.
         /// Throws: $(D OpenGLException) on error.
         void unuse()
@@ -158,17 +158,17 @@ private
 {
     bool isIntegerType(GLenum t)
     {
-        return (t == GL_BYTE  
-             || t == GL_UNSIGNED_BYTE 
-             || t == GL_SHORT 
+        return (t == GL_BYTE
+             || t == GL_UNSIGNED_BYTE
+             || t == GL_SHORT
              || t == GL_UNSIGNED_SHORT
-             || t == GL_INT   
+             || t == GL_INT
              || t == GL_UNSIGNED_INT);
     }
 
     alias VectorTypes = TypeTuple!(byte, ubyte, short, ushort, int, uint, float, double);
-    enum GLenum[] VectorTypesGL = 
-    [ 
+    enum GLenum[] VectorTypesGL =
+    [
         GL_BYTE,
         GL_UNSIGNED_BYTE,
         GL_SHORT,
@@ -192,7 +192,7 @@ private
     }
 
     void toGLTypeAndSize(T)(out GLenum type, out int n)
-    {        
+    {
         static if (isStaticArray!T)
         {
             type = typeToGLScalar(typeof(T[0]));

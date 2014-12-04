@@ -7,7 +7,7 @@ import derelict.opengl3.gl3;
 import std.experimental.logger;
 
 import gfm.opengl.opengl,
-       gfm.opengl.texture, 
+       gfm.opengl.texture,
        gfm.opengl.renderbuffer;
 
 /// OpenGL FrameBuffer Object wrapper.
@@ -79,7 +79,7 @@ final class GLFBO
         void use()
         {
             glBindFramebuffer(_target, _handle);
-            
+
             _gl.runtimeCheck();
             _isBound = true;
 
@@ -159,7 +159,7 @@ final class GLFBO
                 case GL_FRAMEBUFFER_INCOMPLETE_READ_BUFFER:
                     throw new OpenGLException("GL_FRAMEBUFFER_INCOMPLETE_READ_BUFFER");
 
-                case GL_FRAMEBUFFER_UNSUPPORTED: 
+                case GL_FRAMEBUFFER_UNSUPPORTED:
                     throw new OpenGLException("GL_FRAMEBUFFER_UNSUPPORTED");
 
                 default: throw new OpenGLException("Unknown FBO error");
@@ -169,7 +169,7 @@ final class GLFBO
 }
 
 /// Defines one FBO attachment.
-class GLFBOAttachment
+final class GLFBOAttachment
 {
     public
     {
@@ -333,11 +333,11 @@ class GLFBOAttachment
                             glFramebufferTexture2D(_outer._fbo._target, _outer._attachment, _texture._target, textureHandle, _level);
                             break;
 
-                        case Type.TEXTURE_3D: 
+                        case Type.TEXTURE_3D:
                             glFramebufferTexture3D(_outer._fbo._target, _outer._attachment, _texture._target, textureHandle, _level, _layer);
                             break;
 
-                        case Type.RENDERBUFFER: 
+                        case Type.RENDERBUFFER:
                             glFramebufferRenderbuffer(_outer._fbo._target, _outer._attachment, GL_RENDERBUFFER, renderBufferHandle);
                             break;
                     }
