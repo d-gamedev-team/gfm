@@ -6,7 +6,7 @@ import std.stream,
 import std.experimental.logger;
 import colorize;
 
-// Because default std.logger logger is a bit verbose, and lacks colors.
+/// Coloured console logger.
 class ConsoleLogger : Logger
 {
     public
