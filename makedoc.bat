@@ -4,6 +4,7 @@
 :lol
 xcopy /Y /e ..\gfm\index.d source
 xcopy /Y /e ..\gfm\core source
+xcopy /Y /e ..\gfm\logger source
 xcopy /Y /e ..\gfm\math source
 xcopy /Y /e ..\gfm\image source
 xcopy /Y /e ..\gfm\net source

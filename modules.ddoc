@@ -1,10 +1,7 @@
 MODULES =
     $(MODULE index, Index)
-	$(MODULE gfm.core.log, logging)
     $(MODULE gfm.core.queue, queue/fifo/stack/ring-buffer)
     $(MODULE gfm.core.memory, aligned malloc/free/realloc)
-    $(MODULE gfm.core.text, string utilities)
-    $(MODULE gfm.core.alignedbuffer, aligned buffer)
 
     $(MODULE gfm.math.vector, small vectors)
     $(MODULE gfm.math.matrix, small matrices)
@@ -12,13 +9,11 @@ MODULES =
     $(MODULE gfm.math.half, 16-bit floating point)
     $(MODULE gfm.math.wideint, fixed-width large integers)
     $(MODULE gfm.math.box, half-open intervals)
-    $(MODULE gfm.math.statistics, statistical functions)
     $(MODULE gfm.math.fixedpoint, fixed-point numbers)
     $(MODULE gfm.math.rational, rational numbers)
     $(MODULE gfm.math.simplerng, random distributions)
     $(MODULE gfm.math.shapes, segment/triangla/sphere/ray)
     $(MODULE gfm.math.funcs, misc. real functions)
-    $(MODULE gfm.math.simplexnoise, simplex noise)
 
     $(MODULE gfm.net.uri, URI parsing)
     $(MODULE gfm.net.httpclient, very basic HTTP client)
@@ -44,13 +39,9 @@ MODULES =
     $(MODULE gfm.opengl.buffer, OpenGL buffer wrapper)
     $(MODULE gfm.opengl.program, OpenGL program wrapper)
     $(MODULE gfm.opengl.shader, OpenGL shader wrapper)
-    $(MODULE gfm.opengl.vbo, OpenGL VBO wrapper)
+    $(MODULE gfm.opengl.vertex, OpenGL VBO wrapper)
     $(MODULE gfm.opengl.vao, OpenGL VAO wrapper)
 
-    $(MODULE gfm.image.image, abstract image trait)
-    $(MODULE gfm.image.bitmap, memory images / tiled images)
-    $(MODULE gfm.image.hsv, HSV conversions)
-    $(MODULE gfm.image.cie, physical color computations)
     $(MODULE gfm.image.stb_image, stb_image port)
 
     $(MODULE gfm.freeimage.freeimage, FreeImage library wrapper)
@@ -58,6 +49,8 @@ MODULES =
 
     $(MODULE gfm.assimp.assimp, ASSIMP library wrapper)
     $(MODULE gfm.assimp.scene, ASSIMP scene wrapper)
+
+    $(MODULE gfm.logger.log, logging)
 
     $(MODULE gfm.enet.enet, ENet library wrapper)
     $(MODULE gfm.enet.host, ENet host wrapper)
