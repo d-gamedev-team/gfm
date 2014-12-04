@@ -40,9 +40,6 @@ final class SDL2Window
 
             _id = SDL_GetWindowID(_window);
 
-            // register window for event dispatch
-            _sdl2.registerWindow(this);
-
             if (OpenGL)
                 _glContext = new SDL2GLContext(this);
         }
@@ -59,7 +56,6 @@ final class SDL2Window
 
             if (_window !is null)
             {
-                _sdl2.unregisterWindow(this);
                 SDL_DestroyWindow(_window);
                 _window = null;
             }

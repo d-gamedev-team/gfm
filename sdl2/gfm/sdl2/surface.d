@@ -27,6 +27,7 @@ final class SDL2Surface
         }
 
         /// Create a new RGBA surface. Both pixels data and handle are owned.
+        /// See_also: $(LINK http://wiki.libsdl.org/SDL_CreateRGBSurface)
         /// Throws: $(D SDL2Exception) on error.
         this(SDL2 sdl2, int width, int height, int depth,
              uint Rmask, uint Gmask, uint Bmask, uint Amask)
@@ -68,6 +69,7 @@ final class SDL2Surface
         }
 
         /// Converts the surface to another format.
+        /// See_also: $(LINK http://wiki.libsdl.org/SDL_ConvertSurface)
         /// Returns: A new surface.
         SDL2Surface convert(const(SDL_PixelFormat)* newFormat)
         {
@@ -136,6 +138,7 @@ final class SDL2Surface
             return _surface.format;
         }
 
+        ///
         struct RGBA
         {
             ubyte r, g, b, a;

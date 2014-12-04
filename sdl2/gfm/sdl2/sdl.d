@@ -39,8 +39,9 @@ final class SDL2
     {
         /// Load SDL2 library, redirect logging to our logger.
         /// You can pass a null logger if you don't want logging.
+        /// Creating this object doesn't initialize any SDL subsystem!
         /// Throws: $(D SDL2Exception) on error.
-        /// TODO: Custom SDL assertion handler.
+        /// See_also: $(LINK http://wiki.libsdl.org/SDL_Init), $(D subSystemInit)
         this(Logger logger)
         {
             _logger = logger is null ? new NullLogger() : logger;
@@ -68,14 +69,6 @@ final class SDL2
             if (0 != SDL_Init(0))
                 throwSDL2Exception("SDL_Init");
 
-            subSystemInit(SDL_INIT_TIMER);
-            subSystemInit(SDL_INIT_VIDEO);
-            subSystemInit(SDL_INIT_JOYSTICK);
-            subSystemInit(SDL_INIT_AUDIO);
-            subSystemInit(SDL_INIT_HAPTIC);
-
-            int numDisplays = SDL_GetNumVideoDisplays();
-            
             _keyboard = new SDL2Keyboard(this);
             _mouse = new SDL2Mouse(this);
         }
@@ -83,6 +76,7 @@ final class SDL2
         /// Releases the SDL library and all resources.
         /// All resources should have been released at this point,
         /// since you won't be able to call any SDL function afterwards.
+        /// See_also: $(LINK http://wiki.libsdl.org/SDL_Quit)
         void close()
         {
             // restore previously set logging function
@@ -107,6 +101,26 @@ final class SDL2
         ~this()
         {
             close();
+        }
+
+        /// Returns: true if a subsystem is initialized.
+        /// See_also: $(LINK http://wiki.libsdl.org/SDL_WasInit)
+        bool subSystemInitialized(int subSystem)
+        {
+            int inited = SDL_WasInit(SDL_INIT_EVERYTHING);
+            return 0 != (inited & subSystem);
+        }
+
+        /// Initialize a subsystem. By default, all SDL subsystems are uninitialized.
+        /// See_also: $(LINK http://wiki.libsdl.org/SDL_InitSubSystem)
+        void subSystemInit(int flag)
+        {
+            if (!subSystemInitialized(flag))
+            {
+                int res = SDL_InitSubSystem(flag);
+                if (0 != res)
+                    throwSDL2Exception("SDL_InitSubSystem");
+            }
         }
 
         /// Returns: Available displays information.
@@ -194,7 +208,6 @@ final class SDL2
             int res = SDL_WaitEvent(event);
             if (res == 0)
                 throwSDL2Exception("SDL_WaitEvent");
-
         }
 
         /// Wait for next SDL event, with a timeout.
@@ -215,11 +228,8 @@ final class SDL2
         void processEvents()
         {
             SDL_Event event;
-
             while(SDL_PollEvent(&event) != 0)
-            {
                 updateState(&event);
-            }
         }
 
         /// Returns: Keyboard state.
@@ -351,17 +361,6 @@ final class SDL2
             SDL_ClearError(); // clear error
             return fromStringz(message);
         }
-
-        void registerWindow(SDL2Window window)
-        {
-            _knownWindows[window.id()] = window;
-        }
-
-        void unregisterWindow(SDL2Window window)
-        {
-            assert((window.id() in _knownWindows) !is null);
-            _knownWindows.remove(window.id());
-        }        
     }
 
     private
@@ -385,22 +384,6 @@ final class SDL2
 
         // Holds mouse state
         SDL2Mouse _mouse;
-
-        bool subSystemInitialized(int subSystem)
-        {
-            int inited = SDL_WasInit(SDL_INIT_EVERYTHING);
-            return 0 != ( inited & subSystem );
-        }
-
-        void subSystemInit(int flag)
-        {
-            if (!subSystemInitialized(flag))
-            {
-                int res = SDL_InitSubSystem(flag);
-                if (0 != res)
-                    throwSDL2Exception("SDL_InitSubSystem");
-            }
-        }
 
         void onLogMessage(int category, SDL_LogPriority priority, const(char)* message)
         {
@@ -490,7 +473,6 @@ final class SDL2
             }
         }
 
-        // TODO: add window callbacks when pressing a key?
         void updateKeyboard(const(SDL_KeyboardEvent*) event)
         {
             // ignore key-repeat
