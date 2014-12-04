@@ -93,7 +93,6 @@
     <li class="sidebar-list-entry tree-leaf"><a href="gfm.opengl.matrixstack.html" title="gfm.opengl.matrixstack"><i class="icon-th"></i>gfm.opengl.matrixstack</a></li>
     <li class="sidebar-list-entry tree-leaf"><a href="gfm.opengl.texture.html" title="gfm.opengl.texture"><i class="icon-th"></i>gfm.opengl.texture</a></li>
     <li class="sidebar-list-entry tree-leaf"><a href="gfm.opengl.renderbuffer.html" title="gfm.opengl.renderbuffer"><i class="icon-th"></i>gfm.opengl.renderbuffer</a></li>
-    <li class="sidebar-list-entry tree-leaf"><a href="gfm.opengl.textureunit.html" title="gfm.opengl.textureunit"><i class="icon-th"></i>gfm.opengl.textureunit</a></li>
     <li class="sidebar-list-entry tree-leaf"><a href="gfm.opengl.fbo.html" title="gfm.opengl.fbo"><i class="icon-th"></i>gfm.opengl.fbo</a></li>
     <li class="sidebar-list-entry tree-leaf"><a href="gfm.opengl.buffer.html" title="gfm.opengl.buffer"><i class="icon-th"></i>gfm.opengl.buffer</a></li>
     <li class="sidebar-list-entry tree-leaf"><a href="gfm.opengl.program.html" title="gfm.opengl.program"><i class="icon-th"></i>gfm.opengl.program</a></li>
@@ -187,7 +186,6 @@
     <li class="sidebar-list-entry tree-leaf"><a href="gfm.opengl.matrixstack.html" title="gfm.opengl.matrixstack"><i class="icon-th"></i>gfm.opengl.matrixstack</a></li>
     <li class="sidebar-list-entry tree-leaf"><a href="gfm.opengl.texture.html" title="gfm.opengl.texture"><i class="icon-th"></i>gfm.opengl.texture</a></li>
     <li class="sidebar-list-entry tree-leaf"><a href="gfm.opengl.renderbuffer.html" title="gfm.opengl.renderbuffer"><i class="icon-th"></i>gfm.opengl.renderbuffer</a></li>
-    <li class="sidebar-list-entry tree-leaf"><a href="gfm.opengl.textureunit.html" title="gfm.opengl.textureunit"><i class="icon-th"></i>gfm.opengl.textureunit</a></li>
     <li class="sidebar-list-entry tree-leaf"><a href="gfm.opengl.fbo.html" title="gfm.opengl.fbo"><i class="icon-th"></i>gfm.opengl.fbo</a></li>
     <li class="sidebar-list-entry tree-leaf"><a href="gfm.opengl.buffer.html" title="gfm.opengl.buffer"><i class="icon-th"></i>gfm.opengl.buffer</a></li>
     <li class="sidebar-list-entry tree-leaf"><a href="gfm.opengl.program.html" title="gfm.opengl.program"><i class="icon-th"></i>gfm.opengl.program</a></li>
@@ -257,13 +255,15 @@ to ensure library loading.</p>
 </p>
 
 <p>You can pass a <span class="d_keyword">null</span> <i>logger</i> if you don't want logging.
+<br><br>
+
+Creating this object doesn't initialize any SDL subsystem!
 
 </p>
 <dt>Throws</dt><dd><span class="inlinecode">SDL2Exception</span> on error.
 
 </dd>
-<dt>TODO:</dt><dd>
-Custom SDL assertion handler.</dd>
+<dt>See Also</dt><dd><a href="http://wiki.libsdl.org/SDL_Init">http://wiki.libsdl.org/SDL_Init</a>, <span class="inlinecode">subSystemInit</span></dd>
 </dl>
 </div>
 <hr><div class="row-fluid declaration"><h3>void <span class="symbol-target" id="close">&nbsp;</span><a class="symbol-link" href="#close">close</a>();
@@ -274,7 +274,26 @@ Custom SDL assertion handler.</dd>
 <p>All resources should have been released at this point,
 <br><br>
 
-since you won't be able to call any SDL function afterwards.</p>
+since you won't be able to call any SDL function afterwards.
+
+</p>
+<dt>See Also</dt><dd><a href="http://wiki.libsdl.org/SDL_Quit">http://wiki.libsdl.org/SDL_Quit</a></dd>
+</dl>
+</div>
+<hr><div class="row-fluid declaration"><h3>bool <span class="symbol-target" id="subSystemInitialized">&nbsp;</span><a class="symbol-link" href="#subSystemInitialized">subSystemInitialized</a>(int <i>subSystem</i>);
+</h3></div>
+<div class="declaration-content"><dl><dt>Returns</dt><dd><span class="d_keyword">true</span> if a subsystem is initialized.
+
+</dd>
+<dt>See Also</dt><dd><a href="http://wiki.libsdl.org/SDL_WasInit">http://wiki.libsdl.org/SDL_WasInit</a></dd>
+</dl>
+</div>
+<hr><div class="row-fluid declaration"><h3>void <span class="symbol-target" id="subSystemInit">&nbsp;</span><a class="symbol-link" href="#subSystemInit">subSystemInit</a>(int <i>flag</i>);
+</h3></div>
+<div class="declaration-content"><dl><p>Initialize a subsystem. By default, all SDL subsystems are uninitialized.
+</p>
+
+<dt>See Also</dt><dd><a href="http://wiki.libsdl.org/SDL_InitSubSystem">http://wiki.libsdl.org/SDL_InitSubSystem</a></dd>
 </dl>
 </div>
 <hr><div class="row-fluid declaration"><h3>SDL2VideoDisplay[] <span class="symbol-target" id="getDisplays">&nbsp;</span><a class="symbol-link" href="#getDisplays">getDisplays</a>();

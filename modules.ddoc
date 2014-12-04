@@ -34,7 +34,6 @@ MODULES =
     $(MODULE gfm.opengl.matrixstack, stack of matrices)
     $(MODULE gfm.opengl.texture, OpenGL texture wrapper)
     $(MODULE gfm.opengl.renderbuffer, OpenGL renderbuffer wrapper)
-    $(MODULE gfm.opengl.textureunit, OpenGL texture unit wrapper)
     $(MODULE gfm.opengl.fbo, OpenGL FBO state)
     $(MODULE gfm.opengl.buffer, OpenGL buffer wrapper)
     $(MODULE gfm.opengl.program, OpenGL program wrapper)
