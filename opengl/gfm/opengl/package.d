@@ -1,6 +1,13 @@
 module gfm.opengl;
 
 // OpenGL OO wrapper
+//
+// TODO add support for:
+//  - uniform blocks
+//  - SSBO
+//  - Sampler objects
+//  - "storage" calls
+//  - barriers
 
 public
 {
