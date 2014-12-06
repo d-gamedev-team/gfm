@@ -180,7 +180,7 @@ final class SDL2
                 int err = SDL_GetRenderDriverInfo(i, &info);
                 if (err != 0)
                     throwSDL2Exception("SDL_GetRenderDriverInfo");
-                res ~= new SDL2RendererInfo(_logger, i, info);
+                res ~= new SDL2RendererInfo(info);
             }
             return res;
         }

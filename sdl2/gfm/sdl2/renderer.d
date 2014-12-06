@@ -25,6 +25,8 @@ final class SDL2Renderer
             _renderer = SDL_CreateRenderer(window._window, -1, flags);
             if (_renderer is null)
                 _sdl2.throwSDL2Exception("SDL_CreateRenderer");
+
+            readCapabilities();
         }
 
         /// Create a software renderer which targets a surface.
@@ -36,6 +38,8 @@ final class SDL2Renderer
             _renderer = SDL_CreateSoftwareRenderer(surface._surface);
             if (_renderer is null)
                 _sdl2.throwSDL2Exception("SDL_CreateSoftwareRenderer");
+
+            readCapabilities();
         }
 
         /// Releases the SDL ressource.
@@ -202,13 +206,34 @@ final class SDL2Renderer
             SDL_Rect dest = SDL_Rect(x, y, w, h);
             copy(texture, source, dest);
         }
+
+        /// Returns: Renderer information.
+        /// See_also: $(LINK http://wiki.libsdl.org/SDL_GetRendererInfo)
+        /// Throws: $(D SDL2Exception) on error.
+        SDL2RendererInfo info()
+        {
+            return _info;
+        }
     }
 
     package
     {
         SDL2 _sdl2;
         SDL_Renderer* _renderer;
-    }    
+        SDL2RendererInfo _info;
+    }
+
+    private
+    {
+        void readCapabilities()
+        {
+            SDL_RendererInfo info;
+            int res = SDL_GetRendererInfo(_renderer, &info);
+            if (res != 0)
+                _sdl2.throwSDL2Exception("SDL_GetRendererInfo");
+            _info = new SDL2RendererInfo(info);
+        }
+    }
 }
 
 /// SDL Renderer information.
@@ -216,10 +241,8 @@ final class SDL2RendererInfo
 {
     public
     {
-        this(Logger logger, int index, SDL_RendererInfo info)
+        this(SDL_RendererInfo info)
         {
-            _logger = logger;
-            _index = index;
             _info = info;
         }
 
@@ -256,7 +279,7 @@ final class SDL2RendererInfo
         /// Returns: Pretty string describing the renderer.
         override string toString()
         {
-            string res = format("renderer #%d: %s [flags:", _index, name());
+            string res = format("renderer: %s [flags:", name());
             if (isSoftware()) res ~= " software";
             if (isAccelerated()) res ~= " accelerated";
             if (hasRenderToTexture()) res ~= " render-to-texture";
@@ -269,8 +292,6 @@ final class SDL2RendererInfo
 
     private
     {
-        Logger _logger;
-        int _index;
         SDL_RendererInfo _info;
     }
 }
