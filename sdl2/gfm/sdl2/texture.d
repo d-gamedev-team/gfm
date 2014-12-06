@@ -19,6 +19,7 @@ final class SDL2Texture
         this(SDL2Renderer renderer, uint format, uint access, int width, int height)
         {
             _sdl2 = renderer._sdl2;
+            _renderer = renderer;
             _handle = SDL_CreateTexture(renderer._renderer, format, access, width, height);
             if (_handle is null)
                 _sdl2.throwSDL2Exception("SDL_CreateTexture");
@@ -30,6 +31,7 @@ final class SDL2Texture
         this(SDL2Renderer renderer, SDL2Surface surface)
         {
             _handle = SDL_CreateTextureFromSurface(renderer._renderer, surface._surface);
+            _renderer = renderer;
             if (_handle is null)
                 _sdl2.throwSDL2Exception("SDL_CreateTextureFromSurface");
         }
@@ -69,6 +71,14 @@ final class SDL2Texture
         /// Throws: $(D SDL2Exception) on error.
         void setAlphaMod(int a)
         {
+
+            // #Workaround SDL software renderer bug with alpha = 255
+            if (_renderer.info().isSoftware())
+            {
+                if (a >= 255)
+                    a = 254;
+            }
+
             if (SDL_SetTextureAlphaMod(_handle, cast(ubyte)a) != 0)
                 _sdl2.throwSDL2Exception("SDL_SetTextureAlphaMod");
         }
@@ -173,6 +183,7 @@ final class SDL2Texture
     private
     {
         SDL2 _sdl2;
+        SDL2Renderer _renderer;
     }
 }
 
