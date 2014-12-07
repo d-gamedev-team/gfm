@@ -11,16 +11,14 @@ module gfm.math.simplerng;
 public import std.random;
 import std.math;
 
-static if( __VERSION__ < 2066 ) private enum nogc = 1;
-
 /// Returns: Normal (Gaussian) random sample.
 /// See_also: Box-Muller algorithm.
-@nogc double randNormal(RNG)(ref RNG rng, double mean = 0.0, double standardDeviation = 1.0) nothrow
+double randNormal(RNG)(ref RNG rng, double mean = 0.0, double standardDeviation = 1.0)
 {
-    assert(standardDeviation > 0);    
+    assert(standardDeviation > 0);
     double u1;
 
-    do 
+    do
     {
         u1 = uniform(0.0, 1.0, rng);
     } while (u1 == 0); // u1 must not be zero
@@ -31,7 +29,7 @@ static if( __VERSION__ < 2066 ) private enum nogc = 1;
 }
 
 /// Returns: Exponential random sample with specified mean.
-@nogc double randExponential(RNG)(ref RNG rng, double mean = 1.0) nothrow
+double randExponential(RNG)(ref RNG rng, double mean = 1.0)
 {
     assert(mean > 0);
     return -mean*log(uniform(0.0, 1.0, rng));
@@ -41,7 +39,7 @@ static if( __VERSION__ < 2066 ) private enum nogc = 1;
 /// See_also: "A Simple Method for Generating Gamma Variables"
 /// by George Marsaglia and Wai Wan Tsang.  ACM Transactions on Mathematical Software
 /// Vol 26, No 3, September 2000, pages 363-372.
-@nogc double randGamma(RNG)(ref RNG rng, double shape, double scale) nothrow
+double randGamma(RNG)(ref RNG rng, double shape, double scale)
 {
     double d, c, x, xsquared, v, u;
 
@@ -53,7 +51,7 @@ static if( __VERSION__ < 2066 ) private enum nogc = 1;
         {
             do
             {
-                x = getNormal(rng);
+                x = randNormal(rng);
                 v = 1.0 + c*x;
             }
             while (v <= 0.0);
@@ -67,37 +65,37 @@ static if( __VERSION__ < 2066 ) private enum nogc = 1;
     else
     {
         assert(shape > 0);
-        double g = getGamma(shape+1.0, 1.0);
+        double g = randGamma(rng, shape+1.0, 1.0);
         double w = uniform(0.0, 1.0, rng);
         return scale*g*pow(w, 1.0/shape);
     }
 }
 
 /// Returns: Chi-square sample.
-@nogc double randChiSquare(RNG)(ref RNG rng, double degreesOfFreedom) nothrow
+double randChiSquare(RNG)(ref RNG rng, double degreesOfFreedom)
 {
     // A chi squared distribution with n degrees of freedom
     // is a gamma distribution with shape n/2 and scale 2.
-    return getGamma(rng, 0.5 * degreesOfFreedom, 2.0);
+    return randGamma(rng, 0.5 * degreesOfFreedom, 2.0);
 }
 
 /// Returns: Inverse-gamma sample.
-@nogc double randInverseGamma(RNG)(ref RNG rng, double shape, double scale) nothrow
+double randInverseGamma(RNG)(ref RNG rng, double shape, double scale)
 {
     // If X is gamma(shape, scale) then
     // 1/Y is inverse gamma(shape, 1/scale)
-    return 1.0 / getGamma(rng, shape, 1.0 / scale);
+    return 1.0 / randGamma(rng, shape, 1.0 / scale);
 }
 
 /// Returns: Weibull sample.
-@nogc double randWeibull(RNG)(ref RNG rng, double shape, double scale) nothrow
+double randWeibull(RNG)(ref RNG rng, double shape, double scale)
 {
     assert(shape > 0 && scale > 0);
     return scale * pow(-log(uniform(0.0, 1.0, rng)), 1.0 / shape);
 }
 
 /// Returns: Cauchy sample.
-@nogc double randCauchy(RNG)(ref RNG rng, double median, double scale) nothrow
+double randCauchy(RNG)(ref RNG rng, double median, double scale)
 {
     assert(scale > 0);
     double p = uniform(0.0, 1.0, rng);
@@ -108,18 +106,18 @@ static if( __VERSION__ < 2066 ) private enum nogc = 1;
 
 /// Returns: Student-t sample.
 /// See_also: Seminumerical Algorithms by Knuth.
-@nogc double randStudentT(RNG)(ref RNG rng, double degreesOfFreedom) nothrow
+double randStudentT(RNG)(ref RNG rng, double degreesOfFreedom)
 {
     assert(degreesOfFreedom > 0);
 
-    
+
     double y1 = getNormal(rng);
     double y2 = getChiSquare(rng, degreesOfFreedom);
     return y1 / sqrt(y2 / degreesOfFreedom);
 }
 
 /// Returns: Laplace distribution random sample (also known as the double exponential distribution).
-@nogc double randLaplace(RNG)(ref RNG rng, double mean, double scale) nothrow
+double randLaplace(RNG)(ref RNG rng, double mean, double scale)
 {
     double u = uniform(0.0, 1.0, rng);
     return (u < 0.5) ? (mean + scale*log(2.0*u))
@@ -127,13 +125,13 @@ static if( __VERSION__ < 2066 ) private enum nogc = 1;
 }
 
 /// Returns: Log-normal sample.
-@nogc double randLogNormal(RNG)(ref RNG rng, double mu, double sigma) nothrow
+double randLogNormal(RNG)(ref RNG rng, double mu, double sigma)
 {
     return exp(getNormal(rng, mu, sigma));
 }
 
 /// Returns: Beta sample.
-@nogc double randBeta(RNG)(ref RNG rng, double a, double b) nothrow
+double randBeta(RNG)(ref RNG rng, double a, double b)
 {
     assert(a > 0 && b > 0);
 
@@ -148,14 +146,14 @@ static if( __VERSION__ < 2066 ) private enum nogc = 1;
 }
 
 /// Returns: Poisson sample.
-@nogc int randPoisson(RNG)(ref RNG rng, double lambda) nothrow
+int randPoisson(RNG)(ref RNG rng, double lambda)
 {
     return (lambda < 30.0) ? poissonSmall(rng, lambda) : poissonLarge(rng, lambda);
 }
 
 private
 {
-    @nogc int poissonSmall(RNG)(ref RNG rng, double lambda) nothrow
+    int poissonSmall(RNG)(ref RNG rng, double lambda)
     {
         // Algorithm due to Donald Knuth, 1969.
         double p = 1.0, L = exp(-lambda);
@@ -169,7 +167,7 @@ private
         return k - 1;
     }
 
-    @nogc int poissonLarge(RNG)(ref RNG rng, double lambda) nothrow
+    int poissonLarge(RNG)(ref RNG rng, double lambda)
     {
         // "Rejection method PA" from "The Computer Generation of Poisson Random Variables" by A. C. Atkinson
         // Journal of the Royal Statistical Society Series C (Applied Statistics) Vol. 28, No. 1. (1979)
@@ -197,7 +195,7 @@ private
         }
     }
 
-    @nogc double logFactorial(int n) nothrow
+    double logFactorial(int n) nothrow
     {
         assert(n >= 0);
         if (n > 254)
@@ -470,3 +468,18 @@ private static immutable double[255] LOG_FACTORIAL =
     1150.633503306223700,
     1156.170837573242400,
 ];
+
+unittest
+{
+    Xorshift32 rng;
+    rng.seed(unpredictableSeed());
+
+    double x = randNormal!Xorshift32(rng, 0.0, 1.0);
+    x = randExponential!Xorshift32(rng);
+    x = randGamma!Xorshift32(rng, 1.2, 1.0);
+    x = randGamma!Xorshift32(rng, 0.8, 2.0);
+    x = randChiSquare!Xorshift32(rng, 2.0);
+    x = randInverseGamma!Xorshift32(rng, 1.1, 0.7);
+    x = randWeibull!Xorshift32(rng, 3.0, 0.7);
+    x = randCauchy!Xorshift32(rng, 5.0, 1.4);
+}
