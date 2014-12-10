@@ -7,7 +7,7 @@ import gfm.math.vector,
 
 /// A matrix stack designed to replace fixed-pipeline matrix stacks.
 /// This stack always expose both the top element and its inverse.
-final class MatrixStack(size_t R, T) if (R == 3 || R == 4)
+final class MatrixStack(int R, T) if (R == 3 || R == 4)
 {
     public
     {
@@ -45,8 +45,8 @@ final class MatrixStack(size_t R, T) if (R == 3 || R == 4)
         /// Replacement for $(D glLoadIdentity).
         void loadIdentity() pure nothrow
         {
-            _matrices[_top] = mat4d.identity();
-            _invMatrices[_top] = mat4d.identity();
+            _matrices[_top] = matrix_t.identity();
+            _invMatrices[_top] = matrix_t.identity();
         }
 
         /// Replacement for $(D glPushMatrix).
@@ -157,12 +157,17 @@ final class MatrixStack(size_t R, T) if (R == 3 || R == 4)
 
 unittest
 {
-    auto s = new MatrixStack!(4u, double)();
-    
+    auto s = new MatrixStack!(4, double)();
     s.loadIdentity();
     s.push();
     s.pop();
-
-    s.translate(vec3d(4,5,6));
+    s.translate(vec3d(4, 5, 6));
     s.scale(vec3d(0.5));
+
+    auto t = new MatrixStack!(3, float)();
+    t.loadIdentity();
+    t.push();
+    t.pop();
+    t.translate(vec2f(-4, 5));
+    t.scale(vec2f(0.5));
 }
