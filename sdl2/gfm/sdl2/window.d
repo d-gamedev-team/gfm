@@ -44,6 +44,27 @@ final class SDL2Window
                 _glContext = new SDL2GLContext(this);
         }
 
+        /// Creates a SDL window from anexisting handle.
+        /// See_also: $(LINK http://wiki.libsdl.org/SDL_CreateWindowFrom)
+        /// Throws: $(D SDL2Exception) on error.
+        this(SDL2 sdl2, void* windowData)
+        {
+            _sdl2 = sdl2;
+            _logger = sdl2._logger;
+            _surface = null;
+            _glContext = null;
+            _surfaceMustBeRenewed = false;
+             _window = SDL_CreateWindowFrom(windowData);
+             if (_window == null)
+             {
+                 string message = "SDL_CreateWindowFrom failed: " ~ _sdl2.getErrorString().idup;
+                 throw new SDL2Exception(message);
+             }
+
+            _id = SDL_GetWindowID(_window);
+        }
+
+
         /// Releases the SDL resource.
         /// See_also: $(LINK http://wiki.libsdl.org/SDL_DestroyWindow)
         final void close()
