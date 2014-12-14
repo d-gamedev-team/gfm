@@ -77,9 +77,9 @@ final class SDL2Renderer
         /// Sets the color used for drawing operations.
         /// See_also: $(LINK http://wiki.libsdl.org/SDL_SetRenderDrawColor)
         /// Throws: $(D SDL2Exception) on error.
-        void setColor(ubyte r, ubyte g, ubyte b, ubyte a)
+        void setColor(int r, int g, int b, int a = 255)
         {
-            if (0 != SDL_SetRenderDrawColor(_renderer, r, g, b, a))
+            if (0 != SDL_SetRenderDrawColor(_renderer, cast(ubyte)r, cast(ubyte)g, cast(ubyte)b, cast(ubyte)a))
                 _sdl2.throwSDL2Exception("SDL_SetRenderDrawColor");
         }
 
@@ -93,7 +93,7 @@ final class SDL2Renderer
                 _sdl2.throwSDL2Exception("SDL_RenderSetViewport");
         }
 
-        /// Sets the whole window as drawing area.        
+        /// Sets the whole window as drawing area.
         /// See_also: $(LINK http://wiki.libsdl.org/SDL_RenderSetViewport)
         /// Throws: $(D SDL2Exception) on error.
         void setViewportFull()
