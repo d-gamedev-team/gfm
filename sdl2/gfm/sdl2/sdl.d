@@ -208,6 +208,7 @@ final class SDL2
             int res = SDL_WaitEvent(event);
             if (res == 0)
                 throwSDL2Exception("SDL_WaitEvent");
+            updateState(event);
         }
 
         /// Wait for next SDL event, with a timeout.
@@ -220,11 +221,19 @@ final class SDL2
             //  "This also returns 0 if the timeout elapsed without an event arriving."
             // => no way to separate errors from no event, error code is ignored
             int res = SDL_WaitEventTimeout(event, timeoutMs);
-            return res == 1;
+            if (res == 1)
+            {
+                updateState(event);
+                return true;
+            }
+            else
+                return false;
         }
 
         /// Process all pending SDL events.
-        /// Input state gets updated and window callbacks are called too.
+        /// Input state gets updated. You would typically look at event instead of calling
+        /// this function.
+        /// See_also: $(D pollEvent), $(D waitEvent), $(D waitEventTimeout)
         void processEvents()
         {
             SDL_Event event;
