@@ -140,10 +140,16 @@ final class SDL2Window
             return SDL_Point(w, h);
         }
 
-        /// See_also: $(LINK https://wiki.libsdl.org/SDL_SetWindowIcon)
+        /// See_also: $(LINK http://wiki.libsdl.org/SDL_SetWindowIcon)
         final void setIcon(SDL2Surface icon)
         {
                 SDL_SetWindowIcon( _window, icon.handle() );
+        }
+
+        /// See_also: $(LINK http://wiki.libsdl.org/SDL_SetWindowBordered)
+        final void setWindowBordered( bool value )
+        {
+                SDL_SetWindowBordered( _window, value );
         }
 
         /// See_also: $(LINK http://wiki.libsdl.org/SDL_GetWindowSize)
