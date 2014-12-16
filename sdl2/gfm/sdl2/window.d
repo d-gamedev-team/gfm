@@ -147,7 +147,7 @@ final class SDL2Window
         }
 
         /// See_also: $(LINK http://wiki.libsdl.org/SDL_SetWindowBordered)
-        final void setWindowBordered( bool value )
+        final void setBordered( bool value )
         {
                 SDL_SetWindowBordered( _window, value );
         }
