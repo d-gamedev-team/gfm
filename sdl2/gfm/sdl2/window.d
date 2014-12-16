@@ -13,7 +13,7 @@ import gfm.sdl2.sdl,
 
 
 /// SDL Window wrapper.
-/// There is two ways to receive events, either by polling a SDL2 object, 
+/// There is two ways to receive events, either by polling a SDL2 object,
 /// or by overriding the event callbacks.
 final class SDL2Window
 {
@@ -143,13 +143,13 @@ final class SDL2Window
         /// See_also: $(LINK http://wiki.libsdl.org/SDL_SetWindowIcon)
         final void setIcon(SDL2Surface icon)
         {
-                SDL_SetWindowIcon( _window, icon.handle() );
+            SDL_SetWindowIcon(_window, icon.handle());
         }
 
         /// See_also: $(LINK http://wiki.libsdl.org/SDL_SetWindowBordered)
-        final void setBordered( bool value )
+        final void setBordered(bool bordered)
         {
-                SDL_SetWindowBordered( _window, value );
+            SDL_SetWindowBordered(_window, bordered ? SDL_TRUE : SDL_FALSE);
         }
 
         /// See_also: $(LINK http://wiki.libsdl.org/SDL_GetWindowSize)
@@ -229,7 +229,7 @@ final class SDL2Window
             int res = SDL_UpdateWindowSurface(_window);
             if (res != 0)
                 _sdl2.throwSDL2Exception("SDL_UpdateWindowSurface");
-            
+
         }
 
         /// Returns: Window ID.
@@ -290,7 +290,7 @@ final class SDL2GLContext
 {
     public
     {
-        /// Creates for a given SDL window. 
+        /// Creates an OpenGL context for a given SDL window.
         this(SDL2Window window)
         {
             _window = window;
