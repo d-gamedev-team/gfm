@@ -239,7 +239,7 @@
 </dd>
 <dt>See Also</dt><dd><a href="http://www.johndcook.com/cpp_random_number_generation.html">www.johndcook.com/cpp_random_number_generation.html</a></dd>
 </dl>
-<hr><div class="row-fluid declaration"><h3>nothrow @nogc double <span class="symbol-target" id="randNormal">&nbsp;</span><a class="symbol-link" href="#randNormal">randNormal</a>(RNG)(ref RNG <i>rng</i>, double <i>mean</i> = 0.000000, double <i>standardDeviation</i> = 1.00000);
+<hr><div class="row-fluid declaration"><h3>double <span class="symbol-target" id="randNormal">&nbsp;</span><a class="symbol-link" href="#randNormal">randNormal</a>(RNG)(ref RNG <i>rng</i>, double <i>mean</i> = 0.000000, double <i>standardDeviation</i> = 1.00000);
 </h3></div>
 <div class="declaration-content"><dl><dt>Returns</dt><dd>Normal (Gaussian) random sample.
 
@@ -247,12 +247,12 @@
 <dt>See Also</dt><dd>Box-Muller algorithm.</dd>
 </dl>
 </div>
-<hr><div class="row-fluid declaration"><h3>nothrow @nogc double <span class="symbol-target" id="randExponential">&nbsp;</span><a class="symbol-link" href="#randExponential">randExponential</a>(RNG)(ref RNG <i>rng</i>, double <i>mean</i> = 1.00000);
+<hr><div class="row-fluid declaration"><h3>double <span class="symbol-target" id="randExponential">&nbsp;</span><a class="symbol-link" href="#randExponential">randExponential</a>(RNG)(ref RNG <i>rng</i>, double <i>mean</i> = 1.00000);
 </h3></div>
 <div class="declaration-content"><dl><dt>Returns</dt><dd>Exponential random sample with specified mean.</dd>
 </dl>
 </div>
-<hr><div class="row-fluid declaration"><h3>nothrow @nogc double <span class="symbol-target" id="randGamma">&nbsp;</span><a class="symbol-link" href="#randGamma">randGamma</a>(RNG)(ref RNG <i>rng</i>, double <i>shape</i>, double <i>scale</i>);
+<hr><div class="row-fluid declaration"><h3>double <span class="symbol-target" id="randGamma">&nbsp;</span><a class="symbol-link" href="#randGamma">randGamma</a>(RNG)(ref RNG <i>rng</i>, double <i>shape</i>, double <i>scale</i>);
 </h3></div>
 <div class="declaration-content"><dl><dt>Returns</dt><dd>Gamma random sample.
 
@@ -266,27 +266,27 @@ by George Marsaglia and Wai Wan Tsang.  ACM Transactions on Mathematical Softwar
 Vol 26, No 3, September 2000, pages 363-372.</dd>
 </dl>
 </div>
-<hr><div class="row-fluid declaration"><h3>nothrow @nogc double <span class="symbol-target" id="randChiSquare">&nbsp;</span><a class="symbol-link" href="#randChiSquare">randChiSquare</a>(RNG)(ref RNG <i>rng</i>, double <i>degreesOfFreedom</i>);
+<hr><div class="row-fluid declaration"><h3>double <span class="symbol-target" id="randChiSquare">&nbsp;</span><a class="symbol-link" href="#randChiSquare">randChiSquare</a>(RNG)(ref RNG <i>rng</i>, double <i>degreesOfFreedom</i>);
 </h3></div>
 <div class="declaration-content"><dl><dt>Returns</dt><dd>Chi-square sample.</dd>
 </dl>
 </div>
-<hr><div class="row-fluid declaration"><h3>nothrow @nogc double <span class="symbol-target" id="randInverseGamma">&nbsp;</span><a class="symbol-link" href="#randInverseGamma">randInverseGamma</a>(RNG)(ref RNG <i>rng</i>, double <i>shape</i>, double <i>scale</i>);
+<hr><div class="row-fluid declaration"><h3>double <span class="symbol-target" id="randInverseGamma">&nbsp;</span><a class="symbol-link" href="#randInverseGamma">randInverseGamma</a>(RNG)(ref RNG <i>rng</i>, double <i>shape</i>, double <i>scale</i>);
 </h3></div>
 <div class="declaration-content"><dl><dt>Returns</dt><dd>Inverse-gamma sample.</dd>
 </dl>
 </div>
-<hr><div class="row-fluid declaration"><h3>nothrow @nogc double <span class="symbol-target" id="randWeibull">&nbsp;</span><a class="symbol-link" href="#randWeibull">randWeibull</a>(RNG)(ref RNG <i>rng</i>, double <i>shape</i>, double <i>scale</i>);
+<hr><div class="row-fluid declaration"><h3>double <span class="symbol-target" id="randWeibull">&nbsp;</span><a class="symbol-link" href="#randWeibull">randWeibull</a>(RNG)(ref RNG <i>rng</i>, double <i>shape</i>, double <i>scale</i>);
 </h3></div>
 <div class="declaration-content"><dl><dt>Returns</dt><dd>Weibull sample.</dd>
 </dl>
 </div>
-<hr><div class="row-fluid declaration"><h3>nothrow @nogc double <span class="symbol-target" id="randCauchy">&nbsp;</span><a class="symbol-link" href="#randCauchy">randCauchy</a>(RNG)(ref RNG <i>rng</i>, double <i>median</i>, double <i>scale</i>);
+<hr><div class="row-fluid declaration"><h3>double <span class="symbol-target" id="randCauchy">&nbsp;</span><a class="symbol-link" href="#randCauchy">randCauchy</a>(RNG)(ref RNG <i>rng</i>, double <i>median</i>, double <i>scale</i>);
 </h3></div>
 <div class="declaration-content"><dl><dt>Returns</dt><dd>Cauchy sample.</dd>
 </dl>
 </div>
-<hr><div class="row-fluid declaration"><h3>nothrow @nogc double <span class="symbol-target" id="randStudentT">&nbsp;</span><a class="symbol-link" href="#randStudentT">randStudentT</a>(RNG)(ref RNG <i>rng</i>, double <i>degreesOfFreedom</i>);
+<hr><div class="row-fluid declaration"><h3>double <span class="symbol-target" id="randStudentT">&nbsp;</span><a class="symbol-link" href="#randStudentT">randStudentT</a>(RNG)(ref RNG <i>rng</i>, double <i>degreesOfFreedom</i>);
 </h3></div>
 <div class="declaration-content"><dl><dt>Returns</dt><dd>Student-t sample.
 
@@ -294,22 +294,22 @@ Vol 26, No 3, September 2000, pages 363-372.</dd>
 <dt>See Also</dt><dd>Seminumerical Algorithms by Knuth.</dd>
 </dl>
 </div>
-<hr><div class="row-fluid declaration"><h3>nothrow @nogc double <span class="symbol-target" id="randLaplace">&nbsp;</span><a class="symbol-link" href="#randLaplace">randLaplace</a>(RNG)(ref RNG <i>rng</i>, double <i>mean</i>, double <i>scale</i>);
+<hr><div class="row-fluid declaration"><h3>double <span class="symbol-target" id="randLaplace">&nbsp;</span><a class="symbol-link" href="#randLaplace">randLaplace</a>(RNG)(ref RNG <i>rng</i>, double <i>mean</i>, double <i>scale</i>);
 </h3></div>
 <div class="declaration-content"><dl><dt>Returns</dt><dd>Laplace distribution random sample (also known as the double exponential distribution).</dd>
 </dl>
 </div>
-<hr><div class="row-fluid declaration"><h3>nothrow @nogc double <span class="symbol-target" id="randLogNormal">&nbsp;</span><a class="symbol-link" href="#randLogNormal">randLogNormal</a>(RNG)(ref RNG <i>rng</i>, double <i>mu</i>, double <i>sigma</i>);
+<hr><div class="row-fluid declaration"><h3>double <span class="symbol-target" id="randLogNormal">&nbsp;</span><a class="symbol-link" href="#randLogNormal">randLogNormal</a>(RNG)(ref RNG <i>rng</i>, double <i>mu</i>, double <i>sigma</i>);
 </h3></div>
 <div class="declaration-content"><dl><dt>Returns</dt><dd>Log-normal sample.</dd>
 </dl>
 </div>
-<hr><div class="row-fluid declaration"><h3>nothrow @nogc double <span class="symbol-target" id="randBeta">&nbsp;</span><a class="symbol-link" href="#randBeta">randBeta</a>(RNG)(ref RNG <i>rng</i>, double <i>a</i>, double <i>b</i>);
+<hr><div class="row-fluid declaration"><h3>double <span class="symbol-target" id="randBeta">&nbsp;</span><a class="symbol-link" href="#randBeta">randBeta</a>(RNG)(ref RNG <i>rng</i>, double <i>a</i>, double <i>b</i>);
 </h3></div>
 <div class="declaration-content"><dl><dt>Returns</dt><dd>Beta sample.</dd>
 </dl>
 </div>
-<hr><div class="row-fluid declaration"><h3>nothrow @nogc int <span class="symbol-target" id="randPoisson">&nbsp;</span><a class="symbol-link" href="#randPoisson">randPoisson</a>(RNG)(ref RNG <i>rng</i>, double <i>lambda</i>);
+<hr><div class="row-fluid declaration"><h3>int <span class="symbol-target" id="randPoisson">&nbsp;</span><a class="symbol-link" href="#randPoisson">randPoisson</a>(RNG)(ref RNG <i>rng</i>, double <i>lambda</i>);
 </h3></div>
 <div class="declaration-content"><dl><dt>Returns</dt><dd>Poisson sample.</dd>
 </dl>

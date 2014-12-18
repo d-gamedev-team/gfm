@@ -285,7 +285,7 @@
 <dt>See Also</dt><dd><a href="http://wiki.libsdl.org/SDL_RenderPresent">http://wiki.libsdl.org/SDL_RenderPresent</a></dd>
 </dl>
 </div>
-<hr><div class="row-fluid declaration"><h3>void <span class="symbol-target" id="setColor">&nbsp;</span><a class="symbol-link" href="#setColor">setColor</a>(ubyte <i>r</i>, ubyte <i>g</i>, ubyte <i>b</i>, ubyte <i>a</i>);
+<hr><div class="row-fluid declaration"><h3>void <span class="symbol-target" id="setColor">&nbsp;</span><a class="symbol-link" href="#setColor">setColor</a>(int <i>r</i>, int <i>g</i>, int <i>b</i>, int <i>a</i> = 255);
 </h3></div>
 <div class="declaration-content"><dl><p>Sets the color used for drawing operations.
 </p>
@@ -434,6 +434,17 @@
 </p>
 
 <dt>See Also</dt><dd><a href="http://wiki.libsdl.org/SDL_RenderCopy">http://wiki.libsdl.org/SDL_RenderCopy</a>
+
+</dd>
+<dt>Throws</dt><dd><span class="inlinecode">SDL2Exception</span> on error.</dd>
+</dl>
+</div>
+<hr><div class="row-fluid declaration"><h3>SDL2RendererInfo <span class="symbol-target" id="info">&nbsp;</span><a class="symbol-link" href="#info">info</a>();
+</h3></div>
+<div class="declaration-content"><dl><dt>Returns</dt><dd>Renderer information.
+
+</dd>
+<dt>See Also</dt><dd><a href="http://wiki.libsdl.org/SDL_GetRendererInfo">http://wiki.libsdl.org/SDL_GetRendererInfo</a>
 
 </dd>
 <dt>Throws</dt><dd><span class="inlinecode">SDL2Exception</span> on error.</dd>

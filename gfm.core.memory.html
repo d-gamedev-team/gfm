@@ -233,12 +233,12 @@
 <dl><p>This module provide support for aligned <span class="symbol-target" id="memory">&nbsp;</span><a class="symbol-link" href="#memory">memory</a>.</p>
 
 </dl>
-<hr><div class="row-fluid declaration"><h3>pure nothrow void* <span class="symbol-target" id="nextAlignedPointer">&nbsp;</span><a class="symbol-link" href="#nextAlignedPointer">nextAlignedPointer</a>(void* <i>start</i>, size_t <i>alignment</i>);
+<hr><div class="row-fluid declaration"><h3>pure nothrow @nogc void* <span class="symbol-target" id="nextAlignedPointer">&nbsp;</span><a class="symbol-link" href="#nextAlignedPointer">nextAlignedPointer</a>(void* <i>start</i>, size_t <i>alignment</i>);
 </h3></div>
 <div class="declaration-content"><dl><dt>Returns</dt><dd>next pointer aligned with <i>alignment</i> bytes.</dd>
 </dl>
 </div>
-<hr><div class="row-fluid declaration"><h3>nothrow void* <span class="symbol-target" id="alignedMalloc">&nbsp;</span><a class="symbol-link" href="#alignedMalloc">alignedMalloc</a>(size_t <i>size</i>, size_t <i>alignment</i>);
+<hr><div class="row-fluid declaration"><h3>nothrow @nogc void* <span class="symbol-target" id="alignedMalloc">&nbsp;</span><a class="symbol-link" href="#alignedMalloc">alignedMalloc</a>(size_t <i>size</i>, size_t <i>alignment</i>);
 </h3></div>
 <div class="declaration-content"><dl><p>Allocates an aligned memory chunk.
 </p>
@@ -246,7 +246,7 @@
 <p>Functionally equivalent to Visual C++ aligned_malloc.</p>
 </dl>
 </div>
-<hr><div class="row-fluid declaration"><h3>nothrow void <span class="symbol-target" id="alignedFree">&nbsp;</span><a class="symbol-link" href="#alignedFree">alignedFree</a>(void* <i>aligned</i>);
+<hr><div class="row-fluid declaration"><h3>nothrow @nogc void <span class="symbol-target" id="alignedFree">&nbsp;</span><a class="symbol-link" href="#alignedFree">alignedFree</a>(void* <i>aligned</i>);
 </h3></div>
 <div class="declaration-content"><dl><p>Frees <i>aligned</i> memory allocated by alignedMalloc or alignedRealloc.
 </p>
@@ -254,7 +254,7 @@
 <p>Functionally equivalent to Visual C++ aligned_free.</p>
 </dl>
 </div>
-<hr><div class="row-fluid declaration"><h3>nothrow void* <span class="symbol-target" id="alignedRealloc">&nbsp;</span><a class="symbol-link" href="#alignedRealloc">alignedRealloc</a>(void* <i>aligned</i>, size_t <i>size</i>, size_t <i>alignment</i>);
+<hr><div class="row-fluid declaration"><h3>nothrow @nogc void* <span class="symbol-target" id="alignedRealloc">&nbsp;</span><a class="symbol-link" href="#alignedRealloc">alignedRealloc</a>(void* <i>aligned</i>, size_t <i>size</i>, size_t <i>alignment</i>);
 </h3></div>
 <div class="declaration-content"><dl><p>Reallocates an <i>aligned</i> memory chunk allocated by alignedMalloc or <span class="symbol-target" id="alignedRealloc">&nbsp;</span><a class="symbol-link" href="#alignedRealloc">alignedRealloc</a>.
 </p>

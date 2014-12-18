@@ -287,6 +287,20 @@ you should call <span class="symbol-target" id="reload">&nbsp;</span><a class="s
 since you won't be able to call any OpenGL function afterwards.</p>
 </dl>
 </div>
+<hr><div class="row-fluid declaration"><h3>void <span class="symbol-target" id="redirectDebugOutput">&nbsp;</span><a class="symbol-link" href="#redirectDebugOutput">redirectDebugOutput</a>();
+</h3></div>
+<div class="declaration-content"><dl><p>Redirects OpenGL debug output to the Logger.
+</p>
+
+<p>You still has to use glDebugMessageControl to set which messages are emitted.
+<br><br>
+
+For example, to enable all messages, use:
+<br><br>
+
+glDebugMessageControl(GL_DONT_CARE, GL_DONT_CARE, GL_DONT_CARE, 0, <span class="d_keyword">null</span>, GL_TRUE);</p>
+</dl>
+</div>
 <hr><div class="row-fluid declaration"><h3>void <span class="symbol-target" id="debugCheck">&nbsp;</span><a class="symbol-link" href="#debugCheck">debugCheck</a>();
 </h3></div>
 <div class="declaration-content"><dl><p>Check for pending OpenGL errors, log a message if there is.

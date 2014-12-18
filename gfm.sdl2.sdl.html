@@ -367,7 +367,13 @@ since you won't be able to call any SDL function afterwards.
 <div class="declaration-content"><dl><p>Process all pending SDL events.
 </p>
 
-<p>Input state gets updated and window callbacks are called too.</p>
+<p>Input state gets updated. You would typically look at event instead of calling
+<br><br>
+
+this function.
+
+</p>
+<dt>See Also</dt><dd><span class="inlinecode">pollEvent</span>, <span class="inlinecode">waitEvent</span>, <span class="inlinecode">waitEventTimeout</span></dd>
 </dl>
 </div>
 <hr><div class="row-fluid declaration"><h3>SDL2Keyboard <span class="symbol-target" id="keyboard">&nbsp;</span><a class="symbol-link" href="#keyboard">keyboard</a>();
