@@ -78,9 +78,6 @@ final class OpenGL
             DerelictGL3.reload();
 
             getLimits(true);
-
-            // now that the context exists, pipe OpenGL output
-            pipeOpenGLDebugOutput();
         }
 
         /// Releases the OpenGL dynamic library.
@@ -90,6 +87,21 @@ final class OpenGL
         {
             DerelictGL.unload();
             DerelictGL3.unload();
+        }
+
+        /// Redirects OpenGL debug output to the Logger.
+        /// You still has to use glDebugMessageControl to set which messages are emitted.
+        /// For example, to enable all messages, use:
+        /// glDebugMessageControl(GL_DONT_CARE, GL_DONT_CARE, GL_DONT_CARE, 0, null, GL_TRUE);
+        void redirectDebugOutput()
+        {
+            if (KHR_debug())
+            {
+                glDebugMessageCallback(&loggingCallbackOpenGL, cast(void*)this);
+                runtimeCheck();
+                glEnable(GL_DEBUG_OUTPUT);
+                runtimeCheck();
+            }
         }
 
         /// Check for pending OpenGL errors, log a message if there is.
@@ -362,19 +374,6 @@ final class OpenGL
                 GLint r = glGetError();
                 if (r == GL_NO_ERROR)
                     break;
-            }
-        }
-
-        // Redirect OpenGL debug output to the provided Logger.
-        // You still has to use glDebugMessageControl to set which messages are emitted.
-        // For example, to enable all messages, use:
-        // glDebugMessageControl(GL_DONT_CARE, GL_DONT_CARE, GL_DONT_CARE, 0, null, GL_TRUE);
-        void pipeOpenGLDebugOutput()
-        {
-            if (KHR_debug())
-            {
-                glDebugMessageCallback(&loggingCallbackOpenGL, cast(void*)this);
-                glEnable(GL_DEBUG_OUTPUT);
             }
         }
     }

@@ -41,6 +41,9 @@ void main()
     // reload OpenGL now that a context exists
     gl.reload();
 
+    // redirect OpenGL output to our Logger
+    gl.redirectDebugOutput();
+
     // create a shader program made of a single fragment shader
     string tunnelProgramSource =
         q{#version 330 core
