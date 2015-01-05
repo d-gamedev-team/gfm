@@ -24,19 +24,20 @@ struct Normalized
 
 /**
  * A VertexSpecification's role is to describe a Vertex structure.
- * You must instantiate it with a compile-time struc describing you vertex format.
+ * You must instantiate it with a compile-time struct describing your vertex format.
  *
- * Example:
- *  struct MyVertex
- *  {
- *      vec3f position;
- *      vec4f diffuse;
- *      float shininess;
- *      @Normalized vec2i uv;
- *      vec3f normal;
- *  }
- *
- * Names MUST match those used in the vertex shader as attributes.
+ * Examples:
+ * --------------------
+ * struct MyVertex
+ * {
+ *     vec3f position;
+ *     vec4f diffuse;
+ *     float shininess;
+ *     @Normalized vec2i uv;
+ *     vec3f normal;
+ * }
+ * --------------------
+ * Member names MUST match those used in the vertex shader as attributes.
  */
 final class VertexSpecification(Vertex)
 {

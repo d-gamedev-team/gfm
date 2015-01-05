@@ -1,4 +1,3 @@
-
 /// D translation of stb_image-1.33 (http://nothings.org/stb_image.c)
 ///
 /// This port only supports:
@@ -18,16 +17,16 @@
 //
 // Image formats                                Optimizations & bugfixes
 // Sean Barrett (jpeg, png, bmp)                Fabian "ryg" Giesen
-// Nicolas Schulz (hdr, psd)                                                 
-// Jonathan Dummer (tga)                     Bug fixes & warning fixes           
-// Jean-Marc Lienher (gif)                      Marc LeBlanc               
-// Tom Seddon (pic)                             Christpher Lloyd           
-// Thatcher Ulrich (psd)                        Dave Moore                 
-// Won Chun                   
-// the Horde3D community      
-// Extensions, features                            Janez Zemva                
-// Jetro Lauha (stbi_info)                      Jonathan Blow              
-// James "moose2000" Brown (iPhone PNG)         Laurent Gomila                             
+// Nicolas Schulz (hdr, psd)
+// Jonathan Dummer (tga)                     Bug fixes & warning fixes
+// Jean-Marc Lienher (gif)                      Marc LeBlanc
+// Tom Seddon (pic)                             Christpher Lloyd
+// Thatcher Ulrich (psd)                        Dave Moore
+// Won Chun
+// the Horde3D community
+// Extensions, features                            Janez Zemva
+// Jetro Lauha (stbi_info)                      Jonathan Blow
+// James "moose2000" Brown (iPhone PNG)         Laurent Gomila
 // Ben "Disch" Wenger (io callbacks)            Aruelien Pocheville
 // Martin "SpartanJ" Golini                     Ryamond Barbiero
 // David Woo
@@ -77,7 +76,7 @@ struct stbi
 {
    uint img_x, img_y;
    int img_n, img_out_n;
-   
+
    int buflen;
    ubyte buffer_start[128];
 
@@ -201,13 +200,13 @@ int get8(stbi *s)
 {
    if (s.img_buffer < s.img_buffer_end)
       return *s.img_buffer++;
-   
+
    return 0;
 }
 
 int at_eof(stbi *s)
 {
-   return s.img_buffer >= s.img_buffer_end;   
+   return s.img_buffer >= s.img_buffer_end;
 }
 
 ubyte get8u(stbi *s)
@@ -289,55 +288,55 @@ ubyte *convert_format(ubyte *data, int img_n, int req_comp, uint x, uint y)
 
         // convert source image with img_n components to one with req_comp components;
         // avoid switch per pixel, so use switch per scanline and massive macros
-        switch (img_n * 8 + req_comp) 
+        switch (img_n * 8 + req_comp)
         {
-            case 1 * 8 + 2: 
+            case 1 * 8 + 2:
                 for(i=x-1; i >= 0; --i, src += 1, dest += 2)
                     dest[0] = src[0], dest[1] = 255;
                 break;
-            case 1 * 8 + 3: 
+            case 1 * 8 + 3:
                 for(i=x-1; i >= 0; --i, src += 1, dest += 3)
-                    dest[0]=dest[1]=dest[2]=src[0]; 
+                    dest[0]=dest[1]=dest[2]=src[0];
                 break;
-            case 1 * 8 + 4: 
+            case 1 * 8 + 4:
                 for(i=x-1; i >= 0; --i, src += 1, dest += 4)
-                    dest[0]=dest[1]=dest[2]=src[0], dest[3]=255; 
+                    dest[0]=dest[1]=dest[2]=src[0], dest[3]=255;
                 break;
-            case 2 * 8 + 1: 
+            case 2 * 8 + 1:
                 for(i=x-1; i >= 0; --i, src += 2, dest += 1)
-                    dest[0]=src[0]; 
+                    dest[0]=src[0];
                 break;
-            case 2 * 8 + 3: 
+            case 2 * 8 + 3:
                 for(i=x-1; i >= 0; --i, src += 2, dest += 3)
-                    dest[0]=dest[1]=dest[2]=src[0]; 
+                    dest[0]=dest[1]=dest[2]=src[0];
                 break;
-            case 2 * 8 + 4: 
+            case 2 * 8 + 4:
                 for(i=x-1; i >= 0; --i, src += 2, dest += 4)
-                    dest[0]=dest[1]=dest[2]=src[0], dest[3]=src[1]; 
+                    dest[0]=dest[1]=dest[2]=src[0], dest[3]=src[1];
                 break;
             case 3 * 8 + 4:
-                for(i=x-1; i >= 0; --i, src += 3, dest += 4) 
-                    dest[0]=src[0],dest[1]=src[1],dest[2]=src[2],dest[3]=255; 
+                for(i=x-1; i >= 0; --i, src += 3, dest += 4)
+                    dest[0]=src[0],dest[1]=src[1],dest[2]=src[2],dest[3]=255;
                 break;
-            case 3 * 8 + 1: 
+            case 3 * 8 + 1:
                 for(i=x-1; i >= 0; --i, src += 3, dest += 1)
-                    dest[0]=compute_y(src[0],src[1],src[2]); 
+                    dest[0]=compute_y(src[0],src[1],src[2]);
                 break;
-            case 3 * 8 + 2: 
+            case 3 * 8 + 2:
                 for(i=x-1; i >= 0; --i, src += 3, dest += 2)
-                    dest[0]=compute_y(src[0],src[1],src[2]), dest[1] = 255; 
+                    dest[0]=compute_y(src[0],src[1],src[2]), dest[1] = 255;
                 break;
             case 4 * 8 + 1:
                 for(i=x-1; i >= 0; --i, src += 4, dest += 1)
-                    dest[0]=compute_y(src[0],src[1],src[2]); 
+                    dest[0]=compute_y(src[0],src[1],src[2]);
                 break;
-            case 4 * 8 + 2: 
+            case 4 * 8 + 2:
                 for(i=x-1; i >= 0; --i, src += 4, dest += 2)
-                    dest[0]=compute_y(src[0],src[1],src[2]), dest[1] = src[3]; 
+                    dest[0]=compute_y(src[0],src[1],src[2]), dest[1] = src[3];
                 break;
-            case 4 * 8 + 3: 
+            case 4 * 8 + 3:
                 for(i=x-1; i >= 0; --i, src += 4, dest += 3)
-                    dest[0]=src[0],dest[1]=src[1],dest[2]=src[2]; 
+                    dest[0]=src[0],dest[1]=src[1],dest[2]=src[2];
                 break;
             default: assert(0);
         }
@@ -412,8 +411,8 @@ struct jpeg
       ubyte *data;
       void *raw_data;
       ubyte *linebuf;
-   } 
-   
+   }
+
    img_comp_[4] img_comp;
 
    uint         code_buffer; // jpeg entropy-coded buffer
@@ -445,7 +444,7 @@ int build_huffman(huffman *h, int *count)
       if (h.size[k] == j) {
          while (h.size[k] == j)
             h.code[k++] = cast(ushort) (code++);
-         if (code-1 >= (1 << j)) 
+         if (code-1 >= (1 << j))
              throw new STBImageException("Bad code lengths, corrupt JPEG");
       }
       // compute largest code + 1 for this size, preshifted as needed later
@@ -641,40 +640,40 @@ void IDCT_1D(int s0, int s1, int s2, int s3, int s4, int s5, int s6, int s7,
              out int t0, out int t1, out int t2, out int t3,
              out int x0, out int x1, out int x2, out int x3)
 {
-   int p1,p2,p3,p4,p5; 
-   p2 = s2;                                    
-   p3 = s6;                                    
-   p1 = (p2+p3) * f2f(0.5411961f);             
-   t2 = p1 + p3*f2f(-1.847759065f);            
-   t3 = p1 + p2*f2f( 0.765366865f);            
-   p2 = s0;                                    
-   p3 = s4;                                    
-   t0 = fsh(p2+p3);                            
-   t1 = fsh(p2-p3);                            
-   x0 = t0+t3;                                 
-   x3 = t0-t3;                                 
-   x1 = t1+t2;                                 
-   x2 = t1-t2;                                 
-   t0 = s7;                                    
-   t1 = s5;                                    
-   t2 = s3;                                    
-   t3 = s1;                                    
-   p3 = t0+t2;                                 
-   p4 = t1+t3;                                 
-   p1 = t0+t3;                                 
-   p2 = t1+t2;                                 
-   p5 = (p3+p4)*f2f( 1.175875602f);            
-   t0 = t0*f2f( 0.298631336f);                 
-   t1 = t1*f2f( 2.053119869f);                 
-   t2 = t2*f2f( 3.072711026f);                 
-   t3 = t3*f2f( 1.501321110f);                 
-   p1 = p5 + p1*f2f(-0.899976223f);            
-   p2 = p5 + p2*f2f(-2.562915447f);            
-   p3 = p3*f2f(-1.961570560f);                 
-   p4 = p4*f2f(-0.390180644f);                 
-   t3 += p1+p4;                                
-   t2 += p2+p3;                                
-   t1 += p2+p4;                                
+   int p1,p2,p3,p4,p5;
+   p2 = s2;
+   p3 = s6;
+   p1 = (p2+p3) * f2f(0.5411961f);
+   t2 = p1 + p3*f2f(-1.847759065f);
+   t3 = p1 + p2*f2f( 0.765366865f);
+   p2 = s0;
+   p3 = s4;
+   t0 = fsh(p2+p3);
+   t1 = fsh(p2-p3);
+   x0 = t0+t3;
+   x3 = t0-t3;
+   x1 = t1+t2;
+   x2 = t1-t2;
+   t0 = s7;
+   t1 = s5;
+   t2 = s3;
+   t3 = s1;
+   p3 = t0+t2;
+   p4 = t1+t3;
+   p1 = t0+t3;
+   p2 = t1+t2;
+   p5 = (p3+p4)*f2f( 1.175875602f);
+   t0 = t0*f2f( 0.298631336f);
+   t1 = t1*f2f( 2.053119869f);
+   t2 = t2*f2f( 3.072711026f);
+   t3 = t3*f2f( 1.501321110f);
+   p1 = p5 + p1*f2f(-0.899976223f);
+   p2 = p5 + p2*f2f(-2.562915447f);
+   p3 = p3*f2f(-1.961570560f);
+   p4 = p4*f2f(-0.390180644f);
+   t3 += p1+p4;
+   t2 += p2+p3;
+   t1 += p2+p4;
    t0 += p1+p3;
  }
 
@@ -851,7 +850,7 @@ int process_marker(jpeg *z, int m)
 {
    int L;
    switch (m) {
-      
+
       case MARKER_none: // no marker found
          throw new STBImageException("Expected marker, corrupt JPEG");
 
@@ -859,7 +858,7 @@ int process_marker(jpeg *z, int m)
           throw new STBImageException("JPEG format not supported (progressive)");
 
       case 0xDD: // DRI - specify restart interval
-         if (get16(z.s) != 4) 
+         if (get16(z.s) != 4)
              throw new STBImageException("Bad DRI len, corrupt JPEG");
          z.restart_interval = get16(z.s);
          return 1;
@@ -872,7 +871,7 @@ int process_marker(jpeg *z, int m)
             int t = q & 15,i;
             if (p != 0)
                throw new STBImageException("Bad DQT type, corrupt JPEG");
-            if (t > 3) 
+            if (t > 3)
                throw new STBImageException("Bad DQT table, corrupt JPEG");
             for (i=0; i < 64; ++i)
                z.dequant[t][dezigzag[i]] = get8u(z.s);
@@ -890,7 +889,7 @@ int process_marker(jpeg *z, int m)
             int q = get8(z.s);
             int tc = q >> 4;
             int th = q & 15;
-            if (tc > 1 || th > 3) 
+            if (tc > 1 || th > 3)
                 throw new STBImageException("Bad DHT header, corrupt JPEG");
             for (i=0; i < 16; ++i) {
                sizes[i] = get8(z.s);
@@ -927,12 +926,12 @@ int process_scan_header(jpeg *z)
    int i;
    int Ls = get16(z.s);
    z.scan_n = get8(z.s);
-   if (z.scan_n < 1 || z.scan_n > 4 || z.scan_n > cast(int) z.s.img_n) 
+   if (z.scan_n < 1 || z.scan_n > 4 || z.scan_n > cast(int) z.s.img_n)
       throw new STBImageException("Bad SOS component count, Corrupt JPEG");
-      
-   if (Ls != 6+2*z.scan_n) 
+
+   if (Ls != 6+2*z.scan_n)
       throw new STBImageException("Bad SOS length, Corrupt JPEG");
-      
+
    for (i=0; i < z.scan_n; ++i) {
       int id = get8(z.s), which;
       int q = get8(z.s);
@@ -940,18 +939,18 @@ int process_scan_header(jpeg *z)
          if (z.img_comp[which].id == id)
             break;
       if (which == z.s.img_n) return 0;
-      z.img_comp[which].hd = q >> 4;   
-      if (z.img_comp[which].hd > 3) 
+      z.img_comp[which].hd = q >> 4;
+      if (z.img_comp[which].hd > 3)
          throw new STBImageException("Bad DC huff, Corrupt JPEG");
-      z.img_comp[which].ha = q & 15;   
+      z.img_comp[which].ha = q & 15;
       if (z.img_comp[which].ha > 3)
          throw new STBImageException("Bad AC huff, Corrupt JPEG");
       z.order[i] = which;
    }
-   if (get8(z.s) != 0) 
+   if (get8(z.s) != 0)
       throw new STBImageException("Bad SOS, Corrupt JPEG");
    get8(z.s); // should be 63, but might be 0
-   if (get8(z.s) != 0) 
+   if (get8(z.s) != 0)
       throw new STBImageException("Bad SOS, Corrupt JPEG");
 
    return 1;
@@ -973,7 +972,7 @@ int process_frame_header(jpeg *z, int scan)
       z.img_comp[i].linebuf = null;
    }
 
-   if (Lf != 8+3*s.img_n) throw new STBImageException("Bad SOF len, corrupt JPEG"); 
+   if (Lf != 8+3*s.img_n) throw new STBImageException("Bad SOF len, corrupt JPEG");
 
    for (i=0; i < s.img_n; ++i) {
       z.img_comp[i].id = get8(s);
@@ -1044,7 +1043,7 @@ int decode_jpeg_header(jpeg *z, int scan)
    if (!SOI(m)) throw new STBImageException("No SOI, corrupt JPEG");
    if (scan == SCAN_type) return 1;
    m = get_marker(z);
-   while (!SOF(m)) 
+   while (!SOF(m))
    {
 
       if (!process_marker(z,m)) return 0;
@@ -1052,7 +1051,7 @@ int decode_jpeg_header(jpeg *z, int scan)
 
 
 
-      while (m == MARKER_none) 
+      while (m == MARKER_none)
       {
          // some files have extra padding after their blocks, so ok, we'll scan
          if (at_eof(z.s)) throw new STBImageException("No SOF, corrupt JPEG");
@@ -1104,7 +1103,7 @@ ubyte div4(int x)
 }
 
 ubyte *resample_row_1(ubyte *out_, ubyte *in_near, ubyte *in_far, int w, int hs)
-{ 
+{
    return in_near;
 }
 
@@ -1235,7 +1234,7 @@ struct stbi_resample
    ubyte* line0;
    ubyte* line1;
    int hs,vs;   // expansion factor in each axis
-   int w_lores; // horizontal pixels pre-expansion 
+   int w_lores; // horizontal pixels pre-expansion
    int ystep;   // how far through vertical expansion we are
    int ypos;    // which pre-expansion row we're on
 } ;
@@ -1244,7 +1243,7 @@ ubyte *load_jpeg_image(jpeg *z, int *out_x, int *out_y, int *comp, int req_comp)
 {
    int n, decode_n;
    // validate req_comp
-   if (req_comp < 0 || req_comp > 4) 
+   if (req_comp < 0 || req_comp > 4)
        throw new STBImageException("Internal error: bad req_comp");
    z.s.img_n = 0;
 
@@ -1274,9 +1273,9 @@ ubyte *load_jpeg_image(jpeg *z, int *out_x, int *out_y, int *comp, int req_comp)
          // allocate line buffer big enough for upsampling off the edges
          // with upsample factor of 4
          z.img_comp[k].linebuf = cast(ubyte*) malloc(z.s.img_x + 3);
-         if (!z.img_comp[k].linebuf) 
-         { 
-             cleanup_jpeg(z); 
+         if (!z.img_comp[k].linebuf)
+         {
+             cleanup_jpeg(z);
              throw new STBImageException("Out of memory");
          }
 
@@ -1352,7 +1351,7 @@ void stbi_jpeg_test(stbi *s)
 {
    jpeg j;
    j.s = s;
-   int r = decode_jpeg_header(&j, SCAN_type);   
+   int r = decode_jpeg_header(&j, SCAN_type);
    if (r == 0)
        throw new STBImageException("Couldn't decode JPEG header");
 }
@@ -1408,7 +1407,7 @@ int zbuild_huffman(zhuffman *z, ubyte *sizelist, int num)
    // DEFLATE spec for generating codes
    memset(sizes.ptr, 0, sizes.sizeof);
    memset(z.fast.ptr, 255, z.fast.sizeof);
-   for (i=0; i < num; ++i) 
+   for (i=0; i < num; ++i)
       ++sizes[sizelist[i]];
    sizes[0] = 0;
    for (i=1; i < 16; ++i)
@@ -1420,7 +1419,7 @@ int zbuild_huffman(zhuffman *z, ubyte *sizelist, int num)
       z.firstsymbol[i] = cast(ushort) k;
       code = (code + sizes[i]);
       if (sizes[i])
-         if (code-1 >= (1 << i)) 
+         if (code-1 >= (1 << i))
             throw new STBImageException("Bad codelength, corrupt JPEG");
       z.maxcode[i] = code << (16-i); // preshift for inner loop
       code <<= 1;
@@ -1489,7 +1488,7 @@ uint zreceive(zbuf *z, int n)
    k = z.code_buffer & ((1 << n) - 1);
    z.code_buffer >>= n;
    z.num_bits -= n;
-   return k;   
+   return k;
 }
 
 int zhuffman_decode(zbuf *a, zhuffman *z)
@@ -1523,14 +1522,14 @@ int expand(zbuf *z, int n)  // need to make room for n bytes
 {
    ubyte *q;
    int cur, limit;
-   if (!z.z_expandable) 
+   if (!z.z_expandable)
       throw new STBImageException("Output buffer limit, corrupt PNG");
    cur   = cast(int) (z.zout     - z.zout_start);
    limit = cast(int) (z.zout_end - z.zout_start);
    while (cur + n > limit)
       limit *= 2;
    q = cast(ubyte*) realloc(z.zout_start, limit);
-   if (q == null) 
+   if (q == null)
       throw new STBImageException("Out of memory");
    z.zout_start = q;
    z.zout       = q + cur;
@@ -1543,7 +1542,7 @@ static immutable int length_base[31] = [
    15,17,19,23,27,31,35,43,51,59,
    67,83,99,115,131,163,195,227,258,0,0 ];
 
-static immutable int length_extra[31]= 
+static immutable int length_extra[31]=
 [ 0,0,0,0,0,0,0,0,1,1,1,1,2,2,2,2,3,3,3,3,4,4,4,4,5,5,5,5,0,0,0 ];
 
 static immutable int dist_base[32] = [ 1,2,3,4,5,7,9,13,17,25,33,49,65,97,129,193,
@@ -1557,8 +1556,8 @@ int parse_huffman_block(zbuf *a)
    for(;;) {
       int z = zhuffman_decode(a, &a.z_length);
       if (z < 256) {
-         if (z < 0) 
-             throw new STBImageException("Bad Huffman code, corrupt PNG");             
+         if (z < 0)
+             throw new STBImageException("Bad Huffman code, corrupt PNG");
          if (a.zout >= a.zout_end) if (!expand(a, 1)) return 0;
          *a.zout++ = cast(ubyte) z;
       } else {
@@ -1838,7 +1837,7 @@ static int check_png_header(stbi *s)
    {
        ubyte headerByte = get8u(s);
        ubyte expected = png_sig[i];
-       if (headerByte != expected) 
+       if (headerByte != expected)
            throw new STBImageException("Bad PNG sig, not a PNG");
    }
    return 1;
@@ -1853,7 +1852,7 @@ struct png
 }
 
 
-enum : int 
+enum : int
 {
    F_none=0, F_sub=1, F_up=2, F_avg=3, F_paeth=4,
    F_avg_first, F_paeth_first
@@ -2030,7 +2029,7 @@ int expand_palette(png *a, ubyte *palette, int len, int pal_img_n)
    ubyte *orig = a.out_;
 
    p = cast(ubyte*) malloc(pixel_count * pal_img_n);
-   if (p == null) 
+   if (p == null)
       throw new STBImageException("Out of memory");
 
    // between here and free(out) below, exitting would leak
@@ -2205,7 +2204,7 @@ int parse_png_file(png *z, int scan, int req_comp)
 ubyte *do_png(png *p, int *x, int *y, int *n, int req_comp)
 {
    ubyte *result=null;
-   if (req_comp < 0 || req_comp > 4) 
+   if (req_comp < 0 || req_comp > 4)
       throw new STBImageException("Internal error: bad req_comp");
    if (parse_png_file(p, SCAN_load, req_comp)) {
       result = p.out_;
@@ -2251,7 +2250,7 @@ void stbi_bmp_test(stbi *s)
     get16le(s); // discard reserved
     get32le(s); // discard data offset
     int sz = get32le(s);
-    if (sz == 12 || sz == 40 || sz == 56 || sz == 108) 
+    if (sz == 12 || sz == 40 || sz == 56 || sz == 108)
         return;
 
     throw new STBImageException("Couldn't decode BMP header");
@@ -2465,7 +2464,7 @@ ubyte *bmp_load(stbi *s, int *x, int *y, int *comp, int req_comp)
                out_[z++] = cast(ubyte) shiftsigned(v & mg, gshift, gcount);
                out_[z++] = cast(ubyte) shiftsigned(v & mb, bshift, bcount);
                a = (ma ? shiftsigned(v & ma, ashift, acount) : 255);
-               if (target == 4) out_[z++] = cast(ubyte) a; 
+               if (target == 4) out_[z++] = cast(ubyte) a;
             }
          }
          skip(s, pad);
@@ -2500,7 +2499,7 @@ ubyte *stbi_bmp_load(stbi *s, int *x, int *y, int *comp, int req_comp)
 
 // *************************************************************************************************
 // GIF loader -- public domain by Jean-Marc Lienher -- simplified/shrunk by stb
-struct stbi_gif_lzw 
+struct stbi_gif_lzw
 {
    short prefix;
    ubyte first;
@@ -2527,12 +2526,12 @@ struct stbi_gif
 void stbi_gif_test(stbi *s)
 {
     int sz;
-    if (get8(s) != 'G' || get8(s) != 'I' || get8(s) != 'F' || get8(s) != '8') 
+    if (get8(s) != 'G' || get8(s) != 'I' || get8(s) != 'F' || get8(s) != '8')
         throw new STBImageException("Couldn't decode GIF header");
     sz = get8(s);
-    if (sz != '9' && sz != '7') 
+    if (sz != '9' && sz != '7')
         throw new STBImageException("Couldn't decode GIF header");
-    if (get8(s) != 'a') 
+    if (get8(s) != 'a')
         throw new STBImageException("Couldn't decode GIF header");
 }
 
@@ -2544,7 +2543,7 @@ void stbi_gif_parse_colortable(stbi *s, ubyte pal[256][4], int num_entries, int 
       pal[i][1] = get8u(s);
       pal[i][0] = get8u(s);
       pal[i][3] = transp ? 0 : 255;
-   }   
+   }
 }
 
 int stbi_gif_header(stbi *s, stbi_gif *g, int *comp, int is_info)
@@ -2556,7 +2555,7 @@ int stbi_gif_header(stbi *s, stbi_gif *g, int *comp, int is_info)
    version_ = get8u(s);
    if (version_ != '7' && version_ != '9')    throw new STBImageException("not GIF, corrupt GIF");
    if (get8(s) != 'a')                      throw new STBImageException("not GIF, corrupt GIF");
- 
+
    g.w = get16le(s);
    g.h = get16le(s);
    g.flags = get8(s);
@@ -2585,7 +2584,7 @@ void stbi_out_gif_code(stbi_gif *g, ushort code)
       stbi_out_gif_code(g, g.codes[code].prefix);
 
    if (g.cur_y >= g.max_y) return;
-  
+
    p = (&g.out_[g.cur_x + g.cur_y]);
    c = &g.color_table[g.codes[code].suffix * 4];
 
@@ -2639,7 +2638,7 @@ ubyte *stbi_process_gif_raster(stbi *s, stbi_gif *g)
       if (valid_bits < codesize) {
          if (len == 0) {
             len = get8(s); // start new block
-            if (len == 0) 
+            if (len == 0)
                return g.out_;
          }
          --len;
@@ -2684,7 +2683,7 @@ ubyte *stbi_process_gif_raster(stbi *s, stbi_gif *g)
          } else {
             throw new STBImageException("illegal code in raster, corrupt GIF");
          }
-      } 
+      }
    }
 }
 
@@ -2722,7 +2721,7 @@ ubyte *stbi_gif_load_next(stbi *s, stbi_gif *g, int *comp, int req_comp)
          memcpy(g.out_, old_out, g.w*g.h*4);
       }
    }
-    
+
    for (;;) {
       switch (get8(s)) {
          case 0x2C: /* Image Descriptor */
@@ -2757,16 +2756,16 @@ ubyte *stbi_gif_load_next(stbi *s, stbi_gif *g, int *comp, int req_comp)
 
             if (g.lflags & 0x80) {
                stbi_gif_parse_colortable(s,g.lpal, 2 << (g.lflags & 7), g.eflags & 0x01 ? g.transparent : -1);
-               g.color_table = &g.lpal[0][0];       
+               g.color_table = &g.lpal[0][0];
             } else if (g.flags & 0x80) {
                for (i=0; i < 256; ++i)  // @OPTIMIZE: reset only the previous transparent
-                  g.pal[i][3] = 255; 
+                  g.pal[i][3] = 255;
                if (g.transparent >= 0 && (g.eflags & 0x01))
                   g.pal[g.transparent][3] = 0;
                g.color_table = &g.pal[0][0];
             } else
                throw new STBImageException("missing color table, corrupt GIF");
-   
+
             o = stbi_process_gif_raster(s, g);
             if (o == null) return null;
 
