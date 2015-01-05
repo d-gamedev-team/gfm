@@ -41,7 +41,7 @@ See http://code.dlang.org to discover lots of useful libraries for your programs
   * Each module / sub-package is maximally decoupled.
   * Logging interface for everything that has a logging callback.
   * Correctness and functionality are favoured over speed.
-  * Wrappers are transparent layers that expose the C libraries objects, turn every error code into an D exception and makes it easier to use the library correctly. They should not restrict the original library caabilitities.
+  * Wrappers are transparent layers that expose the C libraries objects, turn every error code into an D exception and makes it easier to use the library correctly. They should not restrict the original library capabilities.
 
 ## Why use GFM?
 
