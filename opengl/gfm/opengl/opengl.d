@@ -183,7 +183,9 @@ final class OpenGL
         }
 
         /// Returns: OpenGL version string, can be "major_number.minor_number" or 
-        ///          "major_number.minor_number.release_number".
+        ///          "major_number.minor_number.release_number", eventually 
+        ///          followed by a space and additional vendor informations.
+        /// See_also: $(WEB www.opengl.org/sdk/docs/man/xhtml/glGetString.xml)
         const(char)[] getVersionString()
         {
             return getString(GL_VERSION);
@@ -316,6 +318,16 @@ final class OpenGL
             if (isReload)
             {
                 const(char)[] verString = getVersionString();
+
+                // "Vendor-specific information may follow the version number.
+                // Its format depends on the implementation, but a space always 
+                // separates the version number and the vendor-specific information."
+                // Consequently we must slice the version string up to the first space.
+                // Thanks to @ColonelThirtyTwo for reporting this.
+                int firstSpace = countUntil(verString, " ");
+                if (firstSpace != -1)
+                    verString = verString[0..firstSpace];
+
                 const(char)[][] verParts = std.array.split(verString, ".");
 
                 if (verParts.length < 2)
