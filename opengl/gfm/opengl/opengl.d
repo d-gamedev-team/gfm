@@ -53,7 +53,7 @@ final class OpenGL
 
             DerelictGL.load(); // load deprecated functions too
 
-            getLimits(false); 
+            getLimits(false);
         }
 
         ~this()
@@ -71,7 +71,7 @@ final class OpenGL
         }
 
         /// Reload OpenGL function pointers.
-        /// Once a first OpenGL context has been created, 
+        /// Once a first OpenGL context has been created,
         /// you should call reload() to get the context you want.
         void reload()
         {
@@ -182,8 +182,8 @@ final class OpenGL
             return _minorVersion;
         }
 
-        /// Returns: OpenGL version string, can be "major_number.minor_number" or 
-        ///          "major_number.minor_number.release_number", eventually 
+        /// Returns: OpenGL version string, can be "major_number.minor_number" or
+        ///          "major_number.minor_number.release_number", eventually
         ///          followed by a space and additional vendor informations.
         /// See_also: $(WEB www.opengl.org/sdk/docs/man/xhtml/glGetString.xml)
         const(char)[] getVersionString()
@@ -219,14 +219,14 @@ final class OpenGL
                 return Vendor.other;
         }
 
-        /// Returns: Name of the renderer. This name is typically specific 
+        /// Returns: Name of the renderer. This name is typically specific
         ///          to a particular configuration of a hardware platform.
         const(char)[] getRendererString()
         {
             return getString(GL_RENDERER);
         }
 
-        /// Returns: GLSL version string, can be "major_number.minor_number" or 
+        /// Returns: GLSL version string, can be "major_number.minor_number" or
         ///          "major_number.minor_number.release_number".
         const(char)[] getGLSLVersionString()
         {
@@ -254,7 +254,7 @@ final class OpenGL
 
 
         /// Returns: The requested float returned by $(D glGetFloatv).
-        /// See_also: $(WEB www.opengl.org/sdk/docs/man4/xhtml/glGet.xml). 
+        /// See_also: $(WEB www.opengl.org/sdk/docs/man4/xhtml/glGet.xml).
         /// Throws: $(D OpenGLException) if at least one OpenGL error was pending.
         float getFloat(GLenum pname)
         {
@@ -320,11 +320,11 @@ final class OpenGL
                 const(char)[] verString = getVersionString();
 
                 // "Vendor-specific information may follow the version number.
-                // Its format depends on the implementation, but a space always 
+                // Its format depends on the implementation, but a space always
                 // separates the version number and the vendor-specific information."
                 // Consequently we must slice the version string up to the first space.
                 // Thanks to @ColonelThirtyTwo for reporting this.
-                int firstSpace = countUntil(verString, " ");
+                int firstSpace = cast(int)countUntil(verString, " ");
                 if (firstSpace != -1)
                     verString = verString[0..firstSpace];
 
@@ -343,7 +343,7 @@ final class OpenGL
                         _majorVersion = to!int(verParts[0]);
                     catch (Exception e)
                         goto cant_parse;
-                
+
                     try
                         _minorVersion = to!int(verParts[1]);
                     catch (Exception e)
@@ -374,12 +374,12 @@ final class OpenGL
                 _minorVersion = 1;
                 _extensions = [];
                 _maxColorAttachments = 0;
-            }          
+            }
         }
 
         // flush out OpenGL errors
         void flushGLErrors() nothrow
-        {            
+        {
             int timeout = 0;
             while (++timeout <= 5) // avoid infinite loop in a no-driver situation
             {
@@ -438,12 +438,12 @@ extern(System) private
                         sseverity = "high";
                         break;
 
-                    case GL_DEBUG_SEVERITY_MEDIUM: 
+                    case GL_DEBUG_SEVERITY_MEDIUM:
                         level = LogLevel.warning;
                         sseverity = "medium";
                         break;
 
-                    case GL_DEBUG_SEVERITY_LOW:    
+                    case GL_DEBUG_SEVERITY_LOW:
                         level = LogLevel.warning;
                         sseverity = "low";
                         break;
