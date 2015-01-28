@@ -1,6 +1,6 @@
 {
     "name": "gfm",
-    "description": "D gamedev toolkit.",
+    "description": "D gamedev toolkit. 3D maths, OpenGL/SDL/FreeImage/Assimp/ENet wrapper, stb_image port.",
     "homepage": "http://github.com/d-gamedev-team/gfm/",
     "copyright": "none",
     "license": "public domain",
