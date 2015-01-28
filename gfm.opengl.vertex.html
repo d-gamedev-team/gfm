@@ -240,21 +240,19 @@
 <hr><div class="row-fluid declaration"><h3>class <span class="symbol-target" id="VertexSpecification">&nbsp;</span><a class="symbol-link" href="#VertexSpecification">VertexSpecification</a>(Vertex);
 </h3></div>
 <div class="declaration-content"><dl><p>A <span class="symbol-target" id="VertexSpecification">&nbsp;</span><a class="symbol-link" href="#VertexSpecification">VertexSpecification</a>'s role is to describe a Vertex structure.
- You must instantiate it with a compile-time struc describing you vertex format.
+ You must instantiate it with a compile-time struct describing your vertex format.
 </p>
 
-<dt>Example:</dt><dd>
-struct MyVertex
-  {
-      vec3f position;
-      vec4f diffuse;
-      float shininess;
-      @Normalized vec2i uv;
-      vec3f normal;
-  }
-<br><br>
-
- Names MUST match those used in the vertex shader as attributes.</dd>
+<dt>Examples</dt><dd><pre class="d_code"><span class="d_keyword">struct</span> MyVertex
+{
+    vec3f position;
+    vec4f diffuse;
+    <span class="d_keyword">float</span> shininess;
+    @Normalized vec2i uv;
+    vec3f normal;
+}
+</pre>
+ Member names MUST match those used in the vertex shader as attributes.</dd>
 </dl>
 <div class="offset1 member-list"><hr><div class="row-fluid declaration"><h3>this(GLProgram <i>program</i>);
 </h3></div>
