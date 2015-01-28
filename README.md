@@ -1,10 +1,12 @@
-# What's this?
+# GFM [![Build Status](https://travis-ci.org/d-gamedev-team/gfm.png?branch=master)](https://travis-ci.org/d-gamedev-team/gfm)
 
 GFM is a feature-rich library to ease the creation of video games / multimedia applications with the D programming language.
 
 Documentation and overview can be found here: http://d-gamedev-team.github.io/gfm/
 
-[![Build Status](https://travis-ci.org/d-gamedev-team/gfm.png?branch=master)](https://travis-ci.org/d-gamedev-team/gfm)
+
+**Tested compilers:** ![dmd-2.066.1](https://img.shields.io/badge/DMD-2.066.1-brightgreen.svg) ![DMD-2.065.0](https://img.shields.io/badge/DMD-2.065.0-red.svg) ![DMD-2.064.2](https://img.shields.io/badge/DMD-2.064.2-red.svg) ![LDC-0.15.1](https://img.shields.io/badge/LDC-0.15.1-brightgreen.svg) ![LDC-0.14.0](https://img.shields.io/badge/LDC-0.14.0-red.svg) ![GDC-4.9.0](https://img.shields.io/badge/GDC-4.9.0-red.svg)
+
 
 ## License
 
