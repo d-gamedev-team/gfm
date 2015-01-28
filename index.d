@@ -50,16 +50,11 @@ $(UL
             $(LI SDL 2.x wrapper based on package derelict-sdl2.)
             $(LI including SDL_image and SDL_ttf wrappers.)
             $(LI built-in SDL logging forwarding.)
-            $(LI framerate statistics.)
          )
     )</p>
 
     <p>$(LI gfm.image:
         $(UL
-            $(LI $(D image.d): generic abstract image and software rendering routines.)
-            $(LI $(D bitmap.d): planar and tile-based concrete images.)
-            $(LI $(D cie.d): physical color computations.)
-            $(LI $(D hsv.d): RGB <-> HSV conversions.)
             $(LI $(D stb_image.d): stb_image port, loads BMP, PNG, GIF and JPEG.)
          )
     )</p>
