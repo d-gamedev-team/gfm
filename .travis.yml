@@ -10,13 +10,13 @@ install:
   - sudo apt-get install libenet-dev
 
 script:
-  - dub test gfm:core
-  - dub test gfm:math
-  - dub test gfm:net
-  - dub test gfm:enet
-  - dub test gfm:sdl2
-  - dub test gfm:opengl
-  - dub test gfm:assimp
-  - dub test gfm:freeimage
-  - dub test gfm:image
-  - dub test gfm:logger
+  - dub test --compiler=${DC} gfm:core
+  - dub test --compiler=${DC} gfm:math
+  - dub test --compiler=${DC} gfm:net
+  - dub test --compiler=${DC} gfm:enet
+  - dub test --compiler=${DC} gfm:sdl2
+  - dub test --compiler=${DC} gfm:opengl
+  - dub test --compiler=${DC} gfm:assimp
+  - dub test --compiler=${DC} gfm:freeimage
+  - dub test --compiler=${DC} gfm:image
+  - dub test --compiler=${DC} gfm:logger
