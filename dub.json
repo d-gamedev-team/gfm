@@ -48,7 +48,7 @@
             "sourcePaths": [ "image/gfm/image" ],
             "importPaths": [ "image" ],
             "dependencies": {
-                "ae-graphics": "==0.0.3"
+                "ae-graphics": "~>0.0"
             }
         },
         {
@@ -70,7 +70,7 @@
             "sourcePaths": [ "assimp/gfm/assimp" ],
             "importPaths": [ "assimp" ],
             "dependencies": {
-                "derelict-assimp3": "==1.0.0",
+                "derelict-assimp3": "~>1.0",
                 "logger": "~>0.3.0"
             }
         },
@@ -79,7 +79,7 @@
             "sourcePaths": [ "opengl/gfm/opengl" ],
             "importPaths": [ "opengl" ],
             "dependencies": {
-                "derelict-gl3": "==1.0.6",
+                "derelict-gl3": "==1.0.12",
                 "logger": "~>0.3.0",
                 "gfm:math": "*"
             }
@@ -89,7 +89,7 @@
             "sourcePaths": [ "sdl2/gfm/sdl2" ],
             "importPaths": [ "sdl2" ],
             "dependencies": {
-                "derelict-sdl2": "==1.2.8",
+                "derelict-sdl2": "==1.9.2",
                 "logger": "~>0.3.0"
             }
         },
@@ -98,7 +98,7 @@
             "sourcePaths": [ "freeimage/gfm/freeimage" ],
             "importPaths": [ "freeimage" ],
             "dependencies": {
-                "derelict-fi": "==1.0.0"
+                "derelict-fi": "==1.9.0"
             }
         },
         {

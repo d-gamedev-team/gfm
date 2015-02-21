@@ -1,16 +1,16 @@
 module gfm.opengl.program;
 
-import std.conv, 
-       std.string, 
-       std.regex, 
+import std.conv,
+       std.string,
+       std.regex,
        std.algorithm;
 
 import derelict.opengl3.gl3;
 
-import gfm.math.vector, 
+import gfm.math.vector,
        gfm.math.matrix,
-       gfm.opengl.opengl, 
-       gfm.opengl.shader, 
+       gfm.opengl.opengl,
+       gfm.opengl.shader,
        gfm.opengl.uniform,
        gfm.opengl.uniformblock;
 
@@ -41,7 +41,7 @@ final class GLProgram
 
         /**
          * Compiles N times the same GLSL source and link to a program.
-         * 
+         *
          * <p>
          * The same input is compiled 1 to 6 times, each time prepended
          * with a $(D #define) specific to a shader type.
@@ -52,15 +52,15 @@ final class GLProgram
          *    $(LI $(D GEOMETRY_SHADER))
          *    $(LI $(D TESS_CONTROL_SHADER))
          *    $(LI $(D TESS_EVALUATION_SHADER))
-		 *    $(LI $(D COMPUTE_SHADER))
+         *    $(LI $(D COMPUTE_SHADER))
          * )
          * <p>
          * Each of these macros are alternatively set to 1 while the others are
-         * set to 0. If such a macro isn't used in any preprocessor directive 
+         * set to 0. If such a macro isn't used in any preprocessor directive
          * of your source, this shader stage is considered unused.</p>
          *
          * <p>For conformance reasons, any #version directive on the first line will stay at the top.</p>
-         * 
+         *
          * Warning: <b>THIS FUNCTION REWRITES YOUR SHADER A BIT.</b>
          * Expect slightly wrong lines in GLSL compiler's error messages.
          *
@@ -75,14 +75,14 @@ final class GLProgram
          *      {
          *          gl_Vertex = ftransform();
          *      }
-         *      
+         *
          *      #elif FRAGMENT_SHADER
-         *      
+         *
          *      void main()
          *      {
          *          gl_FragColor = color;
          *      }
-         *      
+         *
          *      #endif
          * ---
          *
@@ -97,28 +97,28 @@ final class GLProgram
         this(OpenGL gl, string[] sourceLines)
         {
             _gl = gl;
-            bool present[6];
-            enum string[6] defines = 
-            [ 
+            bool[6] present;
+            enum string[6] defines =
+            [
               "VERTEX_SHADER",
               "FRAGMENT_SHADER",
               "GEOMETRY_SHADER",
               "TESS_CONTROL_SHADER",
               "TESS_EVALUATION_SHADER",
-			  "COMPUTE_SHADER"
+              "COMPUTE_SHADER"
             ];
 
             enum GLenum[6] shaderTypes =
-            [ 
+            [
                 GL_VERTEX_SHADER,
                 GL_FRAGMENT_SHADER,
                 GL_GEOMETRY_SHADER,
                 GL_TESS_CONTROL_SHADER,
                 GL_TESS_EVALUATION_SHADER,
-				GL_COMPUTE_SHADER
+                GL_COMPUTE_SHADER
             ];
 
-            // from GLSL spec: "Each number sign (#) can be preceded in its line only by 
+            // from GLSL spec: "Each number sign (#) can be preceded in its line only by
             //                  spaces or horizontal tabs."
             enum directiveRegexp = ctRegex!(r"^[ \t]*#");
             enum versionRegexp = ctRegex!(r"^[ \t]*#[ \t]*version");
@@ -135,7 +135,7 @@ final class GLProgram
                     foreach (int i, string define; defines)
                         if (!present[i] && countUntil(line, define) != -1)
                             present[i] = true;
-                   
+
                     if (match(line, versionRegexp))
                     {
                         if (versionLine != -1)
@@ -303,7 +303,7 @@ final class GLProgram
                     GLint size;
                     GLenum type;
                     GLsizei length;
-                    glGetActiveAttrib(_program, cast(GLuint)i, cast(GLint)(buffer.length), &length, &size, &type, buffer.ptr);                    
+                    glGetActiveAttrib(_program, cast(GLuint)i, cast(GLint)(buffer.length), &length, &size, &type, buffer.ptr);
                     _gl.runtimeCheck();
                     string name = fromStringz(buffer.ptr).idup;
                     GLint location = glGetAttribLocation(_program, buffer.ptr);
@@ -429,7 +429,7 @@ final class GLAttribute
             _disabled = false;
         }
 
-        /// Creates a fake disabled attribute, designed to cope with attribute 
+        /// Creates a fake disabled attribute, designed to cope with attribute
         /// that have been optimized out by the OpenGL driver, or those which do not exist.
         this(OpenGL gl, string name)
         {
@@ -444,7 +444,7 @@ final class GLAttribute
     }
 
     GLint location()
-    { 
+    {
         return _location;
     }
 
