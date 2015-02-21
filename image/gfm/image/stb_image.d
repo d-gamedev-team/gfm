@@ -78,7 +78,7 @@ struct stbi
    int img_n, img_out_n;
 
    int buflen;
-   ubyte buffer_start[128];
+   ubyte[128] buffer_start;
 
    const(ubyte) *img_buffer;
    const(ubyte) *img_buffer_end;
@@ -486,7 +486,7 @@ void grow_buffer_unsafe(jpeg *j)
 }
 
 // (1 << n) - 1
-static immutable uint bmask[17]=[0,1,3,7,15,31,63,127,255,511,1023,2047,4095,8191,16383,32767,65535];
+static immutable uint[17] bmask=[0,1,3,7,15,31,63,127,255,511,1023,2047,4095,8191,16383,32767,65535];
 
 // decode a jpeg huffman value from the bitstream
 int decode(jpeg *j, huffman *h)
@@ -562,7 +562,7 @@ int extend_receive(jpeg *j, int n)
 
 // given a value that's at position X in the zigzag stream,
 // where does it appear in the 8x8 matrix coded as row-major?
-static immutable ubyte dezigzag[64+15] =
+static immutable ubyte[64+15] dezigzag =
 [
     0,  1,  8, 16,  9,  2,  3, 10,
    17, 24, 32, 25, 18, 11,  4,  5,
@@ -578,7 +578,7 @@ static immutable ubyte dezigzag[64+15] =
 ];
 
 // decode one 64-entry block--
-int decode_block(jpeg *j, short data[64], huffman *hdc, huffman *hac, int b)
+int decode_block(jpeg *j, short[64] data, huffman *hdc, huffman *hac, int b)
 {
    int diff,dc,k;
    int t = decode(j, hdc);
@@ -680,7 +680,7 @@ void IDCT_1D(int s0, int s1, int s2, int s3, int s4, int s5, int s6, int s7,
 alias stbi_dequantize_t = ubyte;
 
 // .344 seconds on 3*anemones.jpg
-void idct_block(ubyte *out_, int out_stride, short data[64], stbi_dequantize_t *dequantize)
+void idct_block(ubyte *out_, int out_stride, short[64] data, stbi_dequantize_t *dequantize)
 {
    int i;
    int[64] val;
@@ -790,7 +790,7 @@ int parse_entropy_coded_data(jpeg *z)
    reset(z);
    if (z.scan_n == 1) {
       int i,j;
-      short data[64];
+      short[64] data;
       int n = z.order[0];
       // non-interleaved data, we just need to process one block at a time,
       // in trivial scanline order
@@ -1263,9 +1263,9 @@ ubyte *load_jpeg_image(jpeg *z, int *out_x, int *out_y, int *comp, int req_comp)
       int k;
       uint i,j;
       ubyte *output;
-      ubyte *coutput[4];
+      ubyte*[4] coutput;
 
-      stbi_resample res_comp[4];
+      stbi_resample[4] res_comp;
 
       for (k=0; k < decode_n; ++k) {
          stbi_resample *r = &res_comp[k];
@@ -1537,18 +1537,18 @@ int expand(zbuf *z, int n)  // need to make room for n bytes
    return 1;
 }
 
-static immutable int length_base[31] = [
+static immutable int[31] length_base = [
    3,4,5,6,7,8,9,10,11,13,
    15,17,19,23,27,31,35,43,51,59,
    67,83,99,115,131,163,195,227,258,0,0 ];
 
-static immutable int length_extra[31]=
+static immutable int[31] length_extra =
 [ 0,0,0,0,0,0,0,0,1,1,1,1,2,2,2,2,3,3,3,3,4,4,4,4,5,5,5,5,0,0,0 ];
 
-static immutable int dist_base[32] = [ 1,2,3,4,5,7,9,13,17,25,33,49,65,97,129,193,
+static immutable int[32] dist_base = [ 1,2,3,4,5,7,9,13,17,25,33,49,65,97,129,193,
 257,385,513,769,1025,1537,2049,3073,4097,6145,8193,12289,16385,24577,0,0];
 
-static immutable int dist_extra[32] =
+static immutable int[32] dist_extra =
 [ 0,0,0,0,1,1,2,2,3,3,4,4,5,5,6,6,7,7,8,8,9,9,10,10,11,11,12,12,13,13];
 
 int parse_huffman_block(zbuf *a)
@@ -1582,10 +1582,10 @@ int parse_huffman_block(zbuf *a)
 
 int compute_huffman_codes(zbuf *a)
 {
-   static immutable ubyte length_dezigzag[19] = [ 16,17,18,0,8,7,9,6,10,5,11,4,12,3,13,2,14,1,15 ];
+   static immutable ubyte[19] length_dezigzag = [ 16,17,18,0,8,7,9,6,10,5,11,4,12,3,13,2,14,1,15 ];
    zhuffman z_codelength;
-   ubyte lencodes[286+32+137];//padding for maximum single op
-   ubyte codelength_sizes[19];
+   ubyte[286+32+137] lencodes;//padding for maximum single op
+   ubyte[19] codelength_sizes;
    int i,n;
 
    int hlit  = zreceive(a,5) + 257;
@@ -1628,7 +1628,7 @@ int compute_huffman_codes(zbuf *a)
 
 int parse_uncompressed_block(zbuf *a)
 {
-   ubyte header[4];
+   ubyte[4] header;
    int len,nlen,k;
    if (a.num_bits & 7)
       zreceive(a, a.num_bits & 7); // discard
@@ -1968,10 +1968,10 @@ int create_png_image(png *a, ubyte *raw, uint raw_len, int out_n, int interlaced
    // de-interlacing
    final_ = cast(ubyte*) malloc(a.s.img_x * a.s.img_y * out_n);
    for (p=0; p < 7; ++p) {
-      int xorig[] = [ 0,4,0,2,0,1,0 ];
-      int yorig[] = [ 0,0,4,0,2,0,1 ];
-      int xspc[]  = [ 8,8,4,4,2,2,1 ];
-      int yspc[]  = [ 8,8,8,4,4,2,2 ];
+      static immutable int[7] xorig = [ 0,4,0,2,0,1,0 ];
+      static immutable int[7] yorig = [ 0,0,4,0,2,0,1 ];
+      static immutable int[7] xspc = [ 8,8,4,4,2,2,1 ];
+      static immutable int[7] yspc = [ 8,8,8,4,4,2,2 ];
       int i,j,x,y;
       // pass1_x[4] = 0, pass1_x[5] = 1, pass1_x[12] = 1
       x = (a.s.img_x - xorig[p] + xspc[p]-1) / xspc[p];
@@ -1996,7 +1996,7 @@ int create_png_image(png *a, ubyte *raw, uint raw_len, int out_n, int interlaced
    return 1;
 }
 
-static int compute_transparency(png *z, ubyte tc[3], int out_n)
+static int compute_transparency(png *z, ubyte[3] tc, int out_n)
 {
    stbi *s = z.s;
    uint i, pixel_count = s.img_x * s.img_y;
@@ -2064,7 +2064,7 @@ int parse_png_file(png *z, int scan, int req_comp)
    ubyte[1024] palette;
    ubyte pal_img_n=0;
    ubyte has_trans=0;
-   ubyte tc[3];
+   ubyte[3] tc;
    uint ioff=0, idata_limit=0, i, pal_len=0;
    int first=1,k,interlace=0;
    stbi *s = z.s;
@@ -2301,7 +2301,7 @@ ubyte *bmp_load(stbi *s, int *x, int *y, int *comp, int req_comp)
 {
    ubyte *out_;
    uint mr=0,mg=0,mb=0,ma=0, fake_a=0;
-   ubyte pal[256][4];
+   ubyte[4][256] pal;
    int psize=0,i,j,compress=0,width;
    int bpp, flip_vertically, pad, target, offset, hsz;
    if (get8(s) != 'B' || get8(s) != 'M') throw new STBImageException("not BMP, Corrupt BMP");
@@ -2511,9 +2511,9 @@ struct stbi_gif
    int w,h;
    ubyte *out_;                 // output buffer (always 4 components)
    int flags, bgindex, ratio, transparent, eflags;
-   ubyte  pal[256][4];
-   ubyte lpal[256][4];
-   stbi_gif_lzw codes[4096];
+   ubyte[4][256]  pal;
+   ubyte[4][256] lpal;
+   stbi_gif_lzw[4096] codes;
    ubyte *color_table;
    int parse, step;
    int lflags;
@@ -2535,7 +2535,7 @@ void stbi_gif_test(stbi *s)
         throw new STBImageException("Couldn't decode GIF header");
 }
 
-void stbi_gif_parse_colortable(stbi *s, ubyte pal[256][4], int num_entries, int transp)
+void stbi_gif_parse_colortable(stbi *s, ubyte[4][256] pal, int num_entries, int transp)
 {
    int i;
    for (i=0; i < num_entries; ++i) {
