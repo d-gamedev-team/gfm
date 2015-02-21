@@ -616,13 +616,16 @@ align(1) struct Matrix(T, int R, int C)
         }
     }
 
-    private
+    package
     {
         alias T _T;
         enum _R = R;
         enum _C = C;
         enum bool _isMatrix = true;
+    }
 
+    private
+    {
         template isAssignable(T)
         {
             enum bool isAssignable =
