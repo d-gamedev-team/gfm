@@ -86,7 +86,7 @@ void main()
     int texWidth = 1024;
     int texHeight = 1024;
     auto random = Random();
-    ubyte texData[] = new ubyte[texWidth * texHeight * 3];
+    ubyte[] texData = new ubyte[texWidth * texHeight * 3];
     int ind = 0;
     for (int y = 0; y < texHeight; ++y)
         for (int x = 0; x < texWidth; ++x)
