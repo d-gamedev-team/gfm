@@ -181,7 +181,7 @@ nothrow:
                 // calculate distance from triangle.a to ray origin
                 point_t tvec = orig - triangle.a;
 
-                // calculate U parameter and test bounds 
+                // calculate U parameter and test bounds
                 u = dot(tvec, pvec) * invDet;
                 if (u < 0 || u > 1)
                     return false;
@@ -285,8 +285,8 @@ alias Plane!double planed; /// 3D double plane.
 unittest
 {
     auto p = planed(vec4d(1.0, 2.0, 3.0, 4.0));
-    auto p2 = planed(vec3d(1.0, 0.0, 0.0), 
-                     vec3d(0.0, 1.0, 0.0), 
+    auto p2 = planed(vec3d(1.0, 0.0, 0.0),
+                     vec3d(0.0, 1.0, 0.0),
                      vec3d(0.0, 0.0, 1.0));
 
     assert(p2.isOn(vec3d(1.0, 0.0, 0.0), 1e-7));
@@ -304,7 +304,7 @@ align(1) struct Frustum(T) if (isFloatingPoint!T)
     align(1):
     public
     {
-        enum int LEFT   = 0, 
+        enum int LEFT   = 0,
                  RIGHT  = 1,
                  TOP    = 2,
                  BOTTOM = 3,
@@ -334,7 +334,7 @@ align(1) struct Frustum(T) if (isFloatingPoint!T)
         /// Point vs frustum intersection.
         @nogc bool contains(vec3!T point) pure const nothrow
         {
-            for(int i = 0; i < 6; ++i) 
+            for(int i = 0; i < 6; ++i)
             {
                 T distance = planes[i].signedDistanceTo(point);
 
@@ -349,7 +349,7 @@ align(1) struct Frustum(T) if (isFloatingPoint!T)
         @nogc int contains(Sphere!(T, 3) sphere) pure const nothrow
         {
             // calculate our distances to each of the planes
-            for(int i = 0; i < 6; ++i) 
+            for(int i = 0; i < 6; ++i)
             {
                 // find the distance to this plane
                 T distance = planes[i].signedDistanceTo(sphere.center);
@@ -369,7 +369,7 @@ align(1) struct Frustum(T) if (isFloatingPoint!T)
         /// Returns: Frustum.OUTSIDE, Frustum.INTERSECT or Frustum.INSIDE.
         @nogc int contains(box3!T box) pure const nothrow
         {
-            vec3!T corners[8];
+            vec3!T[8] corners;
             int totalIn = 0;
 
             for (int i = 0; i < 2; ++i)
@@ -417,4 +417,12 @@ align(1) struct Frustum(T) if (isFloatingPoint!T)
         }
 
     }
+}
+
+unittest
+{
+    seg2f se;
+    triangle3f tr;
+    Frustum!double frust;
+    planed pl;
 }
