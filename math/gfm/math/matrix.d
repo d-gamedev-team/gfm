@@ -571,7 +571,7 @@ align(1) struct Matrix(T, int R, int C)
 
                 return Matrix(2 / dx,   0,      0,    tx,
                                 0,    2 / dy,   0,    ty,
-                                0,      0,    2 / dz, tz,
+                                0,      0,   -2 / dz, tz,
                                 0,      0,      0,     1);
             }
 
