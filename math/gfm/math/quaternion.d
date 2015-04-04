@@ -330,4 +330,3 @@ unittest
     quatf g = quatf.fromEulerAngles(-0.1f, 1.2f, -0.3f);
     vec3f ga = g.toEulerAngles();
 }
-
