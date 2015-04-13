@@ -28,7 +28,7 @@ final class SDL2Keyboard
         bool testAndRelease(SDL_Keycode key)
         {
             SDL_Scancode scan = SDL_GetScancodeFromKey(key);
-            return markKeyAsReleased(key);
+            return markKeyAsReleased(scan);
         }
     }
 
