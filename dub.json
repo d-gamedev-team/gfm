@@ -6,7 +6,7 @@
     "license": "public domain",
 
     "authors": [
-        "ponce",
+        "Guillaume Piolat / ponce: main author",
         "Gerbrand Kamphuis / vuaru: many fixes",
         "Kyle Hunter / Kelet: ENet wrapper",
         "Francesco Cattoglio: OpenGL wrapper improvements",
