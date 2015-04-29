@@ -116,11 +116,11 @@ unittest
         p = alignedRealloc(p, 0, 16);
     }
 }
-/+
+
 
 /// Allocates and construct a struct or class object.
 /// Returns: Newly allocated object.
-auto mallocEmplace(T, Args...)(Args args) nothrow @nogc
+auto mallocEmplace(T, Args...)(Args args)
 {
     static if (is(T == class))
         immutable size_t allocSize = __traits(classInstanceSize, T);
@@ -134,7 +134,8 @@ auto mallocEmplace(T, Args...)(Args args) nothrow @nogc
     static if (is(T == class))
     {
         //static assert(!hasIndirections!T);
-        T obj = emplace!T(rawMemory[0 .. allocSize], args); // TODO: check if emplace changes memory
+        // TODO: check if emplace changes memory
+        T obj = emplace!T(rawMemory[0 .. allocSize], args); 
         return obj;
     }
     else
@@ -147,7 +148,7 @@ auto mallocEmplace(T, Args...)(Args args) nothrow @nogc
 }
 
 /// Destroys and frees a class object created with $(D mallocEmplace).
-void destroyFree(T)(T p) nothrow @nogc if (is(T == class))
+void destroyFree(T)(T p) if (is(T == class))
 {
     //static assert(!hasIndirections!T);
     if (p !is null)
@@ -158,7 +159,7 @@ void destroyFree(T)(T p) nothrow @nogc if (is(T == class))
 }
 
 /// Destroys and frees a non-class object created with $(D mallocEmplace).
-void destroyFree(T)(T* p) nothrow @nogc if (!is(T == class))
+void destroyFree(T)(T* p) if (!is(T == class))
 {
     //static assert(!hasIndirections!T);
     if (p !is null)
@@ -180,15 +181,14 @@ unittest
         int i;
     }
 
-    void testMallocEmplace() nothrow @nogc
+    void testMallocEmplace()
     {
         A a = mallocEmplace!A();
-        destroyFree!(a);
+        destroyFree(a);
 
-        B b = mallocEmplace!B();
-        destroyFree!(b);
+        B* b = mallocEmplace!B();
+        destroyFree(b);
     }
 
     testMallocEmplace();
 }
-+/
