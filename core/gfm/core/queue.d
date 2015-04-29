@@ -18,7 +18,8 @@ private enum OverflowPolicy
     Doubly-indexed queue, can be used as a FIFO or stack.
 
     Bugs:
-        Doesn't call struct destructors.
+        Doesn't call struct destructors, don't scan memory.
+        You should probably only put POD types in them.
  */
 final class QueueImpl(T, OverflowPolicy overflowPolicy)
 {
@@ -352,9 +353,10 @@ final class LockedQueue(T)
 {
     public
     {
+        /// Creates a locked queue with an initial capacity.
         this(size_t capacity)
         {
-            _queue = new Queue!T(capacity);
+            _queue = new FixedSizeQueue!T(capacity);
             _rwMutex = new Mutex();
             _readerSemaphore = new Semaphore(0);
             _writerSemaphore = new Semaphore(capacity);
@@ -413,6 +415,38 @@ final class LockedQueue(T)
             return res;
         }
 
+        /// Tries to pop an item from the front immediately.
+        /// Returns: true if an item was returned, false if the queue is empty.
+        bool tryPopFront(out T result)
+        {
+            if (_readerSemaphore.tryWait())
+            {
+                _rwMutex.lock();
+                result = _queue.popFront();
+                _rwMutex.unlock();
+                _writerSemaphore.notify();
+                return true;
+            }
+            else
+                return false;
+        }
+
+        /// Tries to pop an item from the back immediately.
+        /// Returns: true if an item was returned, false if the queue is empty.
+        bool tryPopBack(out T result)
+        {
+            if (_readerSemaphore.tryWait())
+            {
+                _rwMutex.lock();
+                result = _queue.popBack();
+                _rwMutex.unlock();
+                _writerSemaphore.notify();
+                return true;
+            }
+            else
+                return false;
+        }
+
         /// Removes all locked queue items.
         void clear()
         {
@@ -428,8 +462,28 @@ final class LockedQueue(T)
 
     private
     {
-        Queue!T _queue;
+        FixedSizeQueue!T _queue;
         Mutex _rwMutex;
         Semaphore _readerSemaphore, _writerSemaphore;
+    }
+}
+
+
+unittest
+{
+    import std.stdio;
+    auto lq = new LockedQueue!int(3);
+    lq.clear();
+    lq.pushFront(2);
+    lq.pushBack(3);
+    lq.pushFront(1);
+
+    // should contain [1 2 3] here
+    assert(lq.popBack() == 3);
+    assert(lq.popFront() == 1);
+    int res;
+    if (lq.tryPopFront(res))
+    {
+        assert(res == 2);
     }
 }
