@@ -26,7 +26,14 @@ static if( __VERSION__ < 2066 ) private enum nogc = 1;
     if (size == 0)
         return null;
 
-    void* raw = malloc(requestedSize(size, alignment));
+    size_t request = requestedSize(size, alignment);
+    void* raw = malloc(request);
+
+    static if( __VERSION__ > 2067 ) // onOutOfMemoryError wasn't nothrow before July 2014
+    {
+        if (request > 0 && raw == null) // malloc(0) can validly return anything
+            onOutOfMemoryError();
+    }
 
     return storeRawPointerAndReturnAligned(raw, alignment);
 }
@@ -57,7 +64,15 @@ static if( __VERSION__ < 2066 ) private enum nogc = 1;
     }
 
     void* raw = *cast(void**)(cast(char*)aligned - size_t.sizeof);
-    void* newRaw = realloc(raw, requestedSize(size, alignment));
+
+    size_t request = requestedSize(size, alignment);
+    void* newRaw = realloc(raw, request);
+    
+    static if( __VERSION__ > 2067 ) // onOutOfMemoryError wasn't nothrow before July 2014
+    {
+        if (request > 0 && newRaw == null) // realloc(0) can validly return anything
+            onOutOfMemoryError();
+    }
 
     // if newRaw is raw, nothing to do
     if (raw is newRaw)
