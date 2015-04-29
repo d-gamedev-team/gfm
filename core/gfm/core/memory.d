@@ -3,9 +3,12 @@
  */
 module gfm.core.memory;
 
-import std.c.stdlib : malloc, free, realloc;
+import core.exception : onOutOfMemoryError;
 
-// TODO: make this module disappear when std.allocator is out.
+import std.c.stdlib : malloc, free, realloc;
+import std.conv : emplace;
+import std.traits;
+
 
 static if( __VERSION__ < 2066 ) private enum nogc = 1;
 
@@ -113,3 +116,79 @@ unittest
         p = alignedRealloc(p, 0, 16);
     }
 }
+/+
+
+/// Allocates and construct a struct or class object.
+/// Returns: Newly allocated object.
+auto mallocEmplace(T, Args...)(Args args) nothrow @nogc
+{
+    static if (is(T == class))
+        immutable size_t allocSize = __traits(classInstanceSize, T);
+    else
+        immutable size_t allocSize = T.sizeof;
+
+    void* rawMemory = malloc(allocSize);
+    if (!rawMemory)
+        onOutOfMemoryError();
+
+    static if (is(T == class))
+    {
+        //static assert(!hasIndirections!T);
+        T obj = emplace!T(rawMemory[0 .. allocSize], args); // TODO: check if emplace changes memory
+        return obj;
+    }
+    else
+    {
+        //static assert(!hasIndirections!T);
+        T* obj = cast(T*)rawMemory;
+        emplace!T(obj, args);
+        return obj;
+    }
+}
+
+/// Destroys and frees a class object created with $(D mallocEmplace).
+void destroyFree(T)(T p) nothrow @nogc if (is(T == class))
+{
+    //static assert(!hasIndirections!T);
+    if (p !is null)
+    {
+        destroy(p);
+        free(cast(void*)p);
+    }
+}
+
+/// Destroys and frees a non-class object created with $(D mallocEmplace).
+void destroyFree(T)(T* p) nothrow @nogc if (!is(T == class))
+{
+    //static assert(!hasIndirections!T);
+    if (p !is null)
+    {
+        destroy(p);
+        free(cast(void*)p);
+    }
+}
+
+unittest
+{
+    class A
+    {
+        int i;
+    }
+
+    struct B
+    {
+        int i;
+    }
+
+    void testMallocEmplace() nothrow @nogc
+    {
+        A a = mallocEmplace!A();
+        destroyFree!(a);
+
+        B b = mallocEmplace!B();
+        destroyFree!(b);
+    }
+
+    testMallocEmplace();
+}
++/
