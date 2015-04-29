@@ -173,7 +173,11 @@ unittest
 {
     class A
     {
-        int i;
+        int _i;
+        this(int i)
+        {
+            _i = i;
+        }
     }
 
     struct B
@@ -183,12 +187,41 @@ unittest
 
     void testMallocEmplace()
     {
-        A a = mallocEmplace!A();
+        A a = mallocEmplace!A(4);
         destroyFree(a);
 
-        B* b = mallocEmplace!B();
+        B* b = mallocEmplace!B(5);
         destroyFree(b);
     }
 
     testMallocEmplace();
+}
+
+version( D_InlineAsm_X86 )
+{
+    version = AsmX86;
+}
+else version( D_InlineAsm_X86_64 )
+{
+    version = AsmX86;
+}
+
+/// Inserts a breakpoint instruction. useful to trigger the debugger.
+void debugBreak() nothrow @nogc
+{
+    version( AsmX86 )
+    {
+        static if( __VERSION__ >= 2067 )
+        {
+            mixin("asm nothrow @nogc { int 3; }");
+        }
+        else
+        {
+            mixin("asm { int 3; }");
+        }
+    }
+    else
+    {
+        static assert(false, "Not implemented for this architecture");
+    }
 }
