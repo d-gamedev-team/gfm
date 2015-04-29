@@ -3,6 +3,7 @@
  */
 module gfm.core.memory;
 
+import core.memory : GC;
 import core.exception : onOutOfMemoryError;
 
 import std.c.stdlib : malloc, free, realloc;
@@ -133,27 +134,30 @@ auto mallocEmplace(T, Args...)(Args args)
 
     static if (is(T == class))
     {
-        //static assert(!hasIndirections!T);
-        // TODO: check if emplace changes memory
         T obj = emplace!T(rawMemory[0 .. allocSize], args); 
-        return obj;
     }
     else
     {
-        //static assert(!hasIndirections!T);
         T* obj = cast(T*)rawMemory;
         emplace!T(obj, args);
-        return obj;
     }
+
+    static if (hasIndirections!T)
+        GC.addRange(rawMemory, allocSize);
+
+    return obj;
 }
 
 /// Destroys and frees a class object created with $(D mallocEmplace).
 void destroyFree(T)(T p) if (is(T == class))
 {
-    //static assert(!hasIndirections!T);
     if (p !is null)
     {
         destroy(p);
+
+        static if (hasIndirections!T)
+            GC.removeRange(cast(void*)p);
+
         free(cast(void*)p);
     }
 }
@@ -161,10 +165,13 @@ void destroyFree(T)(T p) if (is(T == class))
 /// Destroys and frees a non-class object created with $(D mallocEmplace).
 void destroyFree(T)(T* p) if (!is(T == class))
 {
-    //static assert(!hasIndirections!T);
     if (p !is null)
     {
         destroy(p);
+
+        static if (hasIndirections!T)
+            GC.removeRange(cast(void*)p);
+
         free(cast(void*)p);
     }
 }
