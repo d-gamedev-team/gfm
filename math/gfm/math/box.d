@@ -121,7 +121,7 @@ align(1) struct Box(T, int N)
             assert(other.isSorted());
 
             for(int i = 0; i < N; ++i)
-                if (other.min[i] >= max[i] || other.max[i] < min[i])
+                if ( (other.min[i] < min[i]) || (other.max[i] > max[i]) )
                     return false;
             return true;
         }
@@ -316,4 +316,6 @@ unittest
     assert(b.contains(b));
     box2i d = c.expand(vec2i(3, 3));
     assert(d.contains(vec2i(2, 2)));
+
+    assert(!box2i(0, 0, 4, 4).contains(box2i(2, 2, 6, 6)));
 }
