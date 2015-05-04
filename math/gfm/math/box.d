@@ -221,17 +221,34 @@ align(1) struct Box(T, int N)
             return grow(bound_t(space));
         }
 
-        /// Shrink the area of this Box.
+        /// Shrinks the area of this Box.
+        /// Returns: Shrinked box.
         @nogc Box shrink(T space) pure const nothrow
         {
             return shrink(bound_t(space));
         }
 
-        /// Expand the box to include point.
+        /// Expands the box to include point.
+        /// Returns: Expanded box.
         @nogc Box expand(bound_t point) pure const nothrow
         {
-          import vector = gfm.math.vector;
-          return Box(vector.min(min, point), vector.max(max, point));
+            import vector = gfm.math.vector;
+            return Box(vector.min(min, point), vector.max(max, point));
+        }
+
+        /// Expands the box to include another box.
+        /// Returns: Expanded box.
+        @nogc Box expand(box2i other) pure const nothrow
+        {          
+            Box result;
+            for (int i = 0; i < N; ++i)
+            {
+                T minOfMins = (min.v[i] < other.min.v[i]) ? min.v[i] : other.min.v[i];
+                T maxOfMaxs = (max.v[i] > other.max.v[i]) ? max.v[i] : other.max.v[i];
+                result.min.v[i] = minOfMins;
+                result.max.v[i] = maxOfMaxs;
+            }
+            return result;
         }
 
         /// Returns: true if each dimension of the box is >= 0.
@@ -316,6 +333,8 @@ unittest
     assert(b.contains(b));
     box2i d = c.expand(vec2i(3, 3));
     assert(d.contains(vec2i(2, 2)));
+
+    assert(d == d.expand(d));
 
     assert(!box2i(0, 0, 4, 4).contains(box2i(2, 2, 6, 6)));
 }
