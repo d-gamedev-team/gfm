@@ -14,7 +14,7 @@ private enum OverflowPolicy
 }
 
 /**
-  
+
     Doubly-indexed queue, can be used as a FIFO or stack.
 
     Bugs:
@@ -109,8 +109,8 @@ final class QueueImpl(T, OverflowPolicy overflowPolicy)
         }
 
         /// Returns: item index from the queue.
-        T opIndex(size_t index) 
-        { 
+        T opIndex(size_t index)
+        {
             // crash if index out-of-bounds (not recoverable)
             if (index > _count)
                 assert(0);
@@ -148,7 +148,7 @@ final class QueueImpl(T, OverflowPolicy overflowPolicy)
             {
                 this(QueueImpl queue) pure
                 {
-                    this(queue, 0, queue._count);                    
+                    this(queue, 0, queue._count);
                     _first = queue._first;
                     _count = queue._count;
                 }
@@ -191,8 +191,8 @@ final class QueueImpl(T, OverflowPolicy overflowPolicy)
                     return this;
                 }
 
-                T opIndex(size_t i) 
-                { 
+                T opIndex(size_t i)
+                {
                     // crash if index out-of-bounds of the range (not recoverable)
                     if (i > _count)
                         assert(0);
@@ -215,7 +215,7 @@ final class QueueImpl(T, OverflowPolicy overflowPolicy)
                 size_t _first;
                 size_t _count;
             }
-        }        
+        }
     }
 
     private
@@ -230,7 +230,7 @@ final class QueueImpl(T, OverflowPolicy overflowPolicy)
         // element lie from _first to _first + _count - 1 index, modulo the allocated size
         T[] _data;
         size_t _first;
-        size_t _count; 
+        size_t _count;
 
         void checkOverflow(alias popMethod)() nothrow
         {
@@ -246,7 +246,7 @@ final class QueueImpl(T, OverflowPolicy overflowPolicy)
                     popMethod();
             }
         }
-      
+
         void extend() nothrow
         {
             size_t newCapacity = capacity * 2;
@@ -312,8 +312,8 @@ A queue that can only grow.
 See_also: $(LINK2 #QueueImpl, QueueImpl)
 
 */
-template Queue(T) 
-{ 
+template Queue(T)
+{
     alias QueueImpl!(T, OverflowPolicy.GROW) Queue;
 }
 
@@ -325,8 +325,8 @@ See_also: $(LINK2 #QueueImpl, QueueImpl)
 
 
 */
-template FixedSizeQueue(T) 
-{ 
+template FixedSizeQueue(T)
+{
     alias QueueImpl!(T, OverflowPolicy.CRASH) FixedSizeQueue;
 }
 
@@ -337,8 +337,8 @@ Ring buffer, it drops if its capacity is exceeded.
 See_also: $(LINK2 #QueueImpl, QueueImpl)
 
 */
-template RingBuffer(T) 
-{ 
+template RingBuffer(T)
+{
     alias QueueImpl!(T, OverflowPolicy.DROP) RingBuffer;
 }
 
@@ -359,7 +359,7 @@ final class LockedQueue(T)
             _queue = new FixedSizeQueue!T(capacity);
             _rwMutex = new Mutex();
             _readerSemaphore = new Semaphore(0);
-            _writerSemaphore = new Semaphore(capacity);
+            _writerSemaphore = new Semaphore(cast(uint)capacity);
         }
 
         /// Returns: Capacity of the locked queue.
