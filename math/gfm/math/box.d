@@ -105,7 +105,11 @@ align(1) struct Box(T, int N)
             /// Returns: true if empty.
             @nogc bool empty() pure const nothrow
             {
-                return size() == bound_t(0);
+                bound_t size = size();
+                for(int i = 0; i < N; ++i)
+                    if (size[i] == 0)
+                        return true;
+                return false;
             }
         }
 
@@ -181,29 +185,39 @@ align(1) struct Box(T, int N)
             return sqrt(squaredDistance(o));
         }
 
-        /// Assumes sorted boxes.
+        /// Assumes sorted boxes. 
+        /// This function deals with empty boxes correctly.
         /// Returns: Intersection of two boxes.
         @nogc Box intersection(Box o) pure const nothrow
         {
             assert(isSorted());
             assert(o.isSorted());
+
+            // Return an empty box if one of the boxes is empty
+            if (empty())
+                return this;
+
+            if (o.empty())
+                return o;
+
             Box result;
             for (int i = 0; i < N; ++i)
             {
                 T maxOfMins = (min.v[i] > o.min.v[i]) ? min.v[i] : o.min.v[i];
                 T minOfMaxs = (max.v[i] < o.max.v[i]) ? max.v[i] : o.max.v[i];
                 result.min.v[i] = maxOfMins;
-                result.max.v[i] = minOfMaxs;
+                result.max.v[i] = minOfMaxs >= maxOfMins ? minOfMaxs : maxOfMins;
             }
             return result;
         }
 
-        /// Assumes sorted boxes.
-        /// Returns: true if boxes overlap.
+        /// Assumes sorted boxes. 
+        /// This function deals with empty boxes correctly.
+        /// Returns: Intersection of two boxes.
         bool intersects(Box other)
         {
             Box inter = this.intersection(other);
-            return inter.isSorted() && inter.volume() != 0;
+            return inter.isSorted() && !inter.empty();
         }
 
         /// Extends the area of this Box.
@@ -243,9 +257,19 @@ align(1) struct Box(T, int N)
         }
 
         /// Expands the box to include another box.
+        /// This function deals with empty boxes correctly.
         /// Returns: Expanded box.
-        @nogc Box expand(box2i other) pure const nothrow
-        {          
+        @nogc Box expand(Box other) pure const nothrow
+        {
+            assert(isSorted());
+            assert(other.isSorted());
+
+            // handle empty boxes
+            if (empty())
+                return other;
+            if (other.empty())
+                return this;
+
             Box result;
             for (int i = 0; i < N; ++i)
             {
@@ -345,5 +369,14 @@ unittest
     assert(!box2i(0, 0, 4, 4).contains(box2i(2, 2, 6, 6)));
 
     assert(box2f(0, 0, 0, 0).empty());
+    assert(!box2f(0, 2, 1, 1).empty());
     assert(!box2f(0, 0, 1, 1).empty());
+
+    assert(box2i(260, 100, 360, 200).intersection(box2i(100, 100, 200, 200)).empty());
+
+    // union with empty box is identity
+    assert(a.expand(box2i(10, 4, 10, 6)) == a);
+
+    // intersection with empty box is empty
+    assert(a.intersection(box2i(10, 4, 10, 6)).empty);
 }
