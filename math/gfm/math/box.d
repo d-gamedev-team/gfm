@@ -101,6 +101,12 @@ align(1) struct Box(T, int N)
                     res *= size[i];
                 return res;
             }
+
+            /// Returns: true if empty.
+            @nogc bool empty() pure const nothrow
+            {
+                return size() == bound_t(0);
+            }
         }
 
         /// Returns: true if it contains point.
@@ -337,4 +343,7 @@ unittest
     assert(d == d.expand(d));
 
     assert(!box2i(0, 0, 4, 4).contains(box2i(2, 2, 6, 6)));
+
+    assert(box2f(0, 0, 0, 0).empty());
+    assert(!box2f(0, 0, 1, 1).empty());
 }
