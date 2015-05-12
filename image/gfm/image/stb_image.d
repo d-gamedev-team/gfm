@@ -39,6 +39,35 @@ import core.stdc.string;
 import ae.utils.graphics.image;
 import ae.utils.graphics.color;
 
+
+
+/// The one function you probably want to use.
+/// Loads an image from a static array.
+/// Because probing has been removed from stb_image, parsing is optimistic 
+/// and might throw internally before finding the right image format.
+/// Throws: $(D STBImageException) on error.
+Image!RGBA loadImage(const(ubyte[]) imageData)
+{
+    import gfm.image.stb_image;
+    import core.stdc.string;
+
+    void[] data = cast(void[])imageData;
+    int width, height, components;
+    ubyte* decoded = stbi_load_from_memory(data, width, height, components, 4);
+    scope(exit) stbi_image_free(decoded);
+
+    // stb_image guarantees that ouput will always have 4 components when asked
+    // Fortunately they are already RGBA
+
+    // allocates result
+    Image!RGBA loaded;
+    loaded.size(width, height);
+
+    // copy pixels (here they are contiguous in each case)
+    memcpy(loaded.pixels.ptr, decoded, width * height * 4);
+    return loaded; // this uses the GC to give up ownership
+}
+
 enum STBI_VERSION = 1;
 
 /// The exception type thrown when loading an image failed.
