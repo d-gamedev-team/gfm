@@ -1,5 +1,7 @@
 # GFM [![Build Status](https://travis-ci.org/d-gamedev-team/gfm.png?branch=master)](https://travis-ci.org/d-gamedev-team/gfm)
 
+[![Join the chat at https://gitter.im/d-gamedev-team/gfm](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/d-gamedev-team/gfm?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+
 GFM is a feature-rich library to ease the creation of video games / multimedia applications with the D programming language.
 
 Documentation and overview can be found here: http://d-gamedev-team.github.io/gfm/
