@@ -241,6 +241,12 @@ align(1) struct Box(T, int N)
             return grow(bound_t(space));
         }
 
+        /// Translate this Box.
+        @nogc Box translate(bound_t offset) pure const nothrow
+        {
+            return Box(min + offset, max + offset);
+        }
+
         /// Shrinks the area of this Box.
         /// Returns: Shrinked box.
         @nogc Box shrink(T space) pure const nothrow
@@ -358,6 +364,7 @@ unittest
     box2i b = box2i(vec2i(1, 2), vec2i(3, 4));
     assert(a == b);
     box2i c = box2i(0, 0, 1,1);
+    assert(c.translate(vec2i(3, 3)) == box2i(3, 3, 4, 4));
     assert(c.contains(vec2i(0, 0)));
     assert(!c.contains(vec2i(1, 1)));
     assert(b.contains(b));
