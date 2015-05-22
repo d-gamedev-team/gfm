@@ -67,7 +67,7 @@ static if( __VERSION__ < 2066 ) private enum nogc = 1;
 
     size_t request = requestedSize(size, alignment);
     void* newRaw = realloc(raw, request);
-    
+
     static if( __VERSION__ > 2067 ) // onOutOfMemoryError wasn't nothrow before July 2014
     {
         if (request > 0 && newRaw == null) // realloc(0) can validly return anything
@@ -149,7 +149,7 @@ auto mallocEmplace(T, Args...)(Args args)
 
     static if (is(T == class))
     {
-        T obj = emplace!T(rawMemory[0 .. allocSize], args); 
+        T obj = emplace!T(rawMemory[0 .. allocSize], args);
     }
     else
     {
@@ -244,6 +244,6 @@ void debugBreak() nothrow @nogc
     }
     else
     {
-        static assert(false, "Not implemented for this architecture");
+        // TODO: implement debugBreak() for GDC        
     }
 }
