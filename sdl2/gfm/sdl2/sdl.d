@@ -43,10 +43,10 @@ final class SDL2
         /// Creating this object doesn't initialize any SDL subsystem!
         /// Params:
         ///     logger         = The logger to redirect logging to.
-        ///     sdl2Version    = The version of SDL2 to load. Defaults to SharedLibVersion(2, 0, 0).
+        ///     sdl2Version    = The version of SDL2 to load. Defaults to SharedLibVersion(2, 0, 2).
         /// Throws: $(D SDL2Exception) on error.
         /// See_also: $(LINK http://wiki.libsdl.org/SDL_Init), $(D subSystemInit)
-        this(Logger logger, SharedLibVersion sdl2Version = SharedLibVersion(2, 0, 3))
+        this(Logger logger, SharedLibVersion sdl2Version = SharedLibVersion(2, 0, 2))
         {
             _logger = logger is null ? new NullLogger() : logger;
             _SDLInitialized = false;
@@ -134,7 +134,7 @@ final class SDL2
             int numDisplays = SDL_GetNumVideoDisplays();
 
             SDL2VideoDisplay[] availableDisplays;
-            
+
             for (int displayIndex = 0; displayIndex < numDisplays; ++displayIndex)
             {
                 SDL_Rect rect;
@@ -263,7 +263,7 @@ final class SDL2
         bool wasQuitRequested() const
         {
             return _quitWasRequested;
-        }        
+        }
 
         /// Start text input.
         void startTextInput()
@@ -299,7 +299,7 @@ final class SDL2
                 throwSDL2Exception("SDL_GetClipboardText");
 
             return fromStringz(s);
-        }   
+        }
 
         /// Returns: Available SDL video drivers.
         const(char)[][] getVideoDrivers()
@@ -342,12 +342,12 @@ final class SDL2
         const(char)[] getPrefPath(string orgName, string applicationName)
         {
             char* basePath = SDL_GetPrefPath(toStringz(orgName), toStringz(applicationName));
-            if (basePath != null) 
+            if (basePath != null)
             {
                 const(char)[] result = fromStringz(basePath);
                 SDL_free(basePath);
                 return result;
-            } 
+            }
             else
             {
                 throwSDL2Exception("SDL_GetPrefPath");
@@ -429,9 +429,9 @@ final class SDL2
                 }
             }
 
-            string formattedMessage = format("SDL (category %s, priority %s): %s", 
-                                             readableCategory(category), 
-                                             readablePriority(priority), 
+            string formattedMessage = format("SDL (category %s, priority %s): %s",
+                                             readableCategory(category),
+                                             readablePriority(priority),
                                              fromStringz(message));
 
             if (priority == SDL_LOG_PRIORITY_WARN)
@@ -446,7 +446,7 @@ final class SDL2
         {
             _logger.warningf("SDL assertion error: %s in %s line %d", adata.condition, adata.filename, adata.linenum);
 
-            debug 
+            debug
                 return SDL_ASSERTION_ABORT; // crash in debug mode
             else
                 return SDL_ASSERTION_ALWAYS_IGNORE; // ingore SDL assertions in release
@@ -459,7 +459,7 @@ final class SDL2
         {
             switch(event.type)
             {
-                case SDL_QUIT: 
+                case SDL_QUIT:
                     _quitWasRequested = true;
                     break;
 
@@ -471,7 +471,7 @@ final class SDL2
                 case SDL_MOUSEMOTION:
                     _mouse.updateMotion(&event.motion);
                 break;
-                
+
                 case SDL_MOUSEBUTTONUP:
                 case SDL_MOUSEBUTTONDOWN:
                     _mouse.updateButtons(&event.button);
@@ -569,7 +569,7 @@ final class SDL2DisplayMode
 
         override string toString()
         {
-            return format("mode #%s (width = %spx, height = %spx, rate = %shz, format = %s)", 
+            return format("mode #%s (width = %spx, height = %spx, rate = %shz, format = %s)",
                           _modeIndex, _mode.w, _mode.h, _mode.refresh_rate, _mode.format);
         }
     }
@@ -609,7 +609,7 @@ final class SDL2VideoDisplay
 
         override string toString()
         {
-            string res = format("display #%s (start = %s,%s - dimension = %s x %s)\n", _displayindex, 
+            string res = format("display #%s (start = %s,%s - dimension = %s x %s)\n", _displayindex,
                                 _bounds.x, _bounds.y, _bounds.w, _bounds.h);
             foreach (mode; _availableModes)
                 res ~= format("  - %s\n", mode);
