@@ -39,17 +39,21 @@ final class SDL2
     {
         /// Load SDL2 library, redirect logging to our logger.
         /// You can pass a null logger if you don't want logging.
+        /// You can specify a minimum version of SDL2 you wish your project to support.
         /// Creating this object doesn't initialize any SDL subsystem!
+        /// Params:
+        ///     logger         = The logger to redirect logging to.
+        ///     sdl2Version    = The version of SDL2 to load. Defaults to SharedLibVersion(2, 0, 0).
         /// Throws: $(D SDL2Exception) on error.
         /// See_also: $(LINK http://wiki.libsdl.org/SDL_Init), $(D subSystemInit)
-        this(Logger logger)
+        this(Logger logger, SharedLibVersion sdl2Version = SharedLibVersion(2, 0, 3))
         {
             _logger = logger is null ? new NullLogger() : logger;
             _SDLInitialized = false;
             _SDL2LoggingRedirected = false;
             try
             {
-                DerelictSDL2.load();
+                DerelictSDL2.load(sdl2Version);
             }
             catch(DerelictException e)
             {
