@@ -61,7 +61,7 @@
             "sourcePaths": [ "enet/gfm/enet" ],
             "importPaths": [ "enet" ],
              "dependencies": {
-                "derelict-enet": "==1.3.10",
+                "derelict-enet": "~>2.0",
                 "logger": "~>0.3.0"
             }
         },
@@ -79,7 +79,7 @@
             "sourcePaths": [ "opengl/gfm/opengl" ],
             "importPaths": [ "opengl" ],
             "dependencies": {
-                "derelict-gl3": "==1.0.12",
+                "derelict-gl3": "~>1.0",
                 "logger": "~>0.3.0",
                 "gfm:math": "*"
             }
@@ -89,7 +89,7 @@
             "sourcePaths": [ "sdl2/gfm/sdl2" ],
             "importPaths": [ "sdl2" ],
             "dependencies": {
-                "derelict-sdl2": "==1.9.2",
+                "derelict-sdl2": "~>1.9",
                 "logger": "~>0.3.0"
             }
         },
@@ -98,7 +98,7 @@
             "sourcePaths": [ "freeimage/gfm/freeimage" ],
             "importPaths": [ "freeimage" ],
             "dependencies": {
-                "derelict-fi": "==1.9.0"
+                "derelict-fi": "~>2.0"
             }
         },
         {
@@ -107,7 +107,7 @@
             "importPaths": [ "logger" ],
             "dependencies": {
                 "logger": "~>0.3.0",
-                "colorize": "==1.0.5"
+                "colorize": "~>1.0"
             }
         },
     ]
