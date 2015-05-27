@@ -202,10 +202,8 @@ Image!RGBA stbiLoadImageAE(void[] buffer)
 {
     int width, height, components;
     ubyte* data = stbi_load_from_memory(buffer, width, height, components, 4);
+    ubyte[] range = data[0..width*height*4];
     scope(exit) stbi_image_free(data);
-
-    if(components != 4)
-        throw new STBImageException("Could't convert image to 4 components");
 
     auto result = Image!RGBA(width, height);
     size_t length = width * height * RGBA.sizeof;
