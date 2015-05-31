@@ -244,6 +244,36 @@ void debugBreak() nothrow @nogc
     }
     else
     {
-        // TODO: implement debugBreak() for GDC        
+        // TODO: implement debugBreak() for GDC
+    }
+}
+
+auto assumeNoGC(T) (T t) if (isFunctionPointer!T || isDelegate!T)
+{
+    enum attrs = functionAttributes!T | FunctionAttribute.nogc;
+    return cast(SetFunctionAttributes!(T, functionLinkage!T, attrs)) t;
+}
+
+auto assumeNothrowNoGC(T) (T t) if (isFunctionPointer!T || isDelegate!T)
+{
+    enum attrs = functionAttributes!T | FunctionAttribute.nogc | FunctionAttribute.nothrow_;
+    return cast(SetFunctionAttributes!(T, functionLinkage!T, attrs)) t;
+}
+
+unittest
+{
+    void funcThatDoesGC()
+    {
+        throw new Exception("hello!");
+    }
+
+    void anotherFunction() nothrow @nogc
+    {
+        assumeNothrowNoGC( (){ funcThatDoesGC(); } )();
+    }
+
+    void aThirdFunction() @nogc
+    {
+        assumeNoGC( () { funcThatDoesGC(); } )();
     }
 }
