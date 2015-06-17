@@ -49,7 +49,10 @@
             "importPaths": [ "image" ],
             "dependencies": {
                 "ae-graphics": "~>0.0"
-            }
+            },
+            "buildRequirements": [
+                "disallowOptimization"
+            ]
         },
         {
             "name": "net",
