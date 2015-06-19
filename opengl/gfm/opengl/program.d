@@ -183,6 +183,9 @@ final class GLProgram
                 }
             }
             this(gl, shaders);
+            
+            foreach(shader; shaders)
+              shader.close();
         }
 
         /// Ditto, except with lines in a single string.
