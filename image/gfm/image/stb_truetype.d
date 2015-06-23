@@ -1045,21 +1045,31 @@ void stbtt__add_point(stbtt__point *points, int n, float x, float y)
 // tesselate until threshhold p is happy... @TODO warped to compensate for non-linear stretching
 int stbtt__tesselate_curve(stbtt__point *points, int *num_points, float x0, float y0, float x1, float y1, float x2, float y2, float objspace_flatness_squared, int n)
 {
+    bool stopSubdiv = (n > 16);
+
     // midpoint
     float mx = (x0 + 2*x1 + x2)*0.25f;
     float my = (y0 + 2*y1 + y2)*0.25f;
     // versus directly drawn line
     float dx = (x0+x2)*0.5f - mx;
     float dy = (y0+y2)*0.5f - my;
-    if (n > 16) // 65536 segments on one curve better be enough!
-        return 1;
-    if (dx*dx+dy*dy > objspace_flatness_squared) { // half-pixel error allowed... need to be smaller if AA
-        float x01h = (x0 + x1) * 0.5f;
-        float y01h = (y0 + y1) * 0.5f;
-        float x12h = (x1 + x2) * 0.5f;
-        float y12h = (y1 + y2) * 0.5f;
-        stbtt__tesselate_curve(points, num_points, x0, y0, x01h, y01h, mx,my, objspace_flatness_squared,n+1);
-        stbtt__tesselate_curve(points, num_points, mx, my, x12h, y12h, x2,y2, objspace_flatness_squared,n+1);
+    float squarexy = dx*dx+dy*dy;
+    
+    if (squarexy > objspace_flatness_squared && !stopSubdiv) 
+    { 
+        // half-pixel error allowed... need to be smaller if AA
+        {
+            float x01h = (x0 + x1) * 0.5f;
+            float y01h = (y0 + y1) * 0.5f;
+            stbtt__tesselate_curve(points, num_points, x0, y0, x01h, y01h, mx,my, objspace_flatness_squared,n+1);
+        }
+
+        {
+            float x12h = (x1 + x2) * 0.5f;
+            float y12h = (y1 + y2) * 0.5f;
+            stbtt__tesselate_curve(points, num_points, mx, my, x12h, y12h, x2,y2, objspace_flatness_squared,n+1);
+        }
+
     } else {
         stbtt__add_point(points, *num_points,x2,y2);
         *num_points = *num_points+1;
