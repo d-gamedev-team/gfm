@@ -214,7 +214,7 @@ align(1) struct Box(T, int N)
         /// Assumes sorted boxes. 
         /// This function deals with empty boxes correctly.
         /// Returns: Intersection of two boxes.
-        bool intersects(Box other)
+        @nogc bool intersects(Box other) pure const nothrow
         {
             Box inter = this.intersection(other);
             return inter.isSorted() && !inter.empty();
