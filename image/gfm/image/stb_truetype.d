@@ -746,15 +746,15 @@ void stbtt_FreeShape(const stbtt_fontinfo *info, stbtt_vertex *v)
 void stbtt_GetGlyphBitmapBoxSubpixel(const stbtt_fontinfo *font, int glyph, float scale_x, float scale_y,float shift_x, float shift_y, int *ix0, int *iy0, int *ix1, int *iy1)
 {
     int x0, y0, x1, y1;
-    if (!stbtt_GetGlyphBox(font, glyph, &x0, &y0, &x1, &y1)) 
+    if (!stbtt_GetGlyphBox(font, glyph, &x0, &y0, &x1, &y1))
     {
         // e.g. space character
         if (ix0) *ix0 = 0;
         if (iy0) *iy0 = 0;
         if (ix1) *ix1 = 0;
         if (iy1) *iy1 = 0;
-    } 
-    else 
+    }
+    else
     {
         // move to integral bboxes (treating pixels as little squares, what pixels get touched)?
         if (ix0) *ix0 = ifloor( x0 * scale_x + shift_x);
@@ -1043,34 +1043,41 @@ void stbtt__add_point(stbtt__point *points, int n, float x, float y)
 }
 
 // tesselate until threshhold p is happy... @TODO warped to compensate for non-linear stretching
-int stbtt__tesselate_curve(stbtt__point *points, int *num_points, float x0, float y0, float x1, float y1, float x2, float y2, float objspace_flatness_squared, int n)
+int stbtt__tesselate_curve(stbtt__point *points, int *num_points, double x0, double y0, double x1, double y1, double x2, double y2, double objspace_flatness_squared, int n)
 {
     bool stopSubdiv = (n > 16);
 
     // midpoint
-    float mx = (x0 + 2*x1 + x2)*0.25f;
-    float my = (y0 + 2*y1 + y2)*0.25f;
+    double mx = (x0 + 2*x1 + x2)*0.25f;
+    double my = (y0 + 2*y1 + y2)*0.25f;
     // versus directly drawn line
-    float dx = (x0+x2)*0.5f - mx;
-    float dy = (y0+y2)*0.5f - my;
-    float squarexy = dx*dx+dy*dy;
-    
-    if (squarexy > objspace_flatness_squared && !stopSubdiv) 
-    { 
+    double dx = (x0+x2)*0.5f - mx;
+    double dy = (y0+y2)*0.5f - my;
+    double squarexy = dx*dx+dy*dy;
+
+    bool addThisPoint = true;
+
+    if (squarexy > objspace_flatness_squared && !stopSubdiv)
+    {
         // half-pixel error allowed... need to be smaller if AA
+        int res1, res2;
         {
-            float x01h = (x0 + x1) * 0.5f;
-            float y01h = (y0 + y1) * 0.5f;
-            stbtt__tesselate_curve(points, num_points, x0, y0, x01h, y01h, mx,my, objspace_flatness_squared,n+1);
+            double x01h = (x0 + x1) * 0.5f;
+            double y01h = (y0 + y1) * 0.5f;
+            res1 = stbtt__tesselate_curve(points, num_points, x0, y0, x01h, y01h, mx,my, objspace_flatness_squared,n+1);
         }
 
         {
-            float x12h = (x1 + x2) * 0.5f;
-            float y12h = (y1 + y2) * 0.5f;
-            stbtt__tesselate_curve(points, num_points, mx, my, x12h, y12h, x2,y2, objspace_flatness_squared,n+1);
+            double x12h = (x1 + x2) * 0.5f;
+            double y12h = (y1 + y2) * 0.5f;
+            res2 = stbtt__tesselate_curve(points, num_points, mx, my, x12h, y12h, x2,y2, objspace_flatness_squared,n+1);
         }
 
-    } else {
+        addThisPoint = false;
+    }
+
+    if (addThisPoint) // do stuff here even in subdivided case to avoid TCO
+    {
         stbtt__add_point(points, *num_points,x2,y2);
         *num_points = *num_points+1;
     }
