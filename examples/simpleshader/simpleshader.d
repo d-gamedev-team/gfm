@@ -9,7 +9,13 @@ import gfm.logger,
        gfm.opengl,
        gfm.math;
 
-// This example show how to use shaders and textures
+// This example demonstrate how to use:
+// - shaders
+// - textures
+// - VBO with VAO
+// - render to texture with FBO (optional)
+//
+// Press SPACE to enable/disable post-processing
 
 void main()
 {
@@ -21,7 +27,7 @@ void main()
     auto log = new ConsoleLogger();
 
     // load dynamic libraries
-    auto sdl2 = scoped!SDL2(log);
+    auto sdl2 = scoped!SDL2(log, SharedLibVersion(2, 0, 0));
     auto gl = scoped!OpenGL(log);
 
     // You have to initialize each SDL subsystem you want by hand
@@ -139,6 +145,10 @@ void main()
 
     uint lastTime = SDL_GetTicks();
 
+    Postprocessing postprocessing = new Postprocessing(gl,  width, height);
+    scope(exit) postprocessing.close();
+    bool activatePostprocessing;
+
 
     // prepare VAO
     {
@@ -150,9 +160,11 @@ void main()
 
     window.setTitle("Simple shader");
 
-    while(!sdl2.keyboard().isPressed(SDLK_ESCAPE))
+    while(!sdl2.keyboard.isPressed(SDLK_ESCAPE))
     {
         sdl2.processEvents();
+
+        bool doPostprocessing = !sdl2.keyboard.isPressed(SDLK_SPACE);
 
         uint now = SDL_GetTicks();
         double dt = now - lastTime;
@@ -172,13 +184,116 @@ void main()
         program.uniform("mvpMatrix").set(mat4f.identity);
         program.use();
 
+        if (doPostprocessing)
+            postprocessing.bindFBO();
 
-        // draw a full quad
-        vao.bind();
-        glDrawArrays(GL_TRIANGLES, 0, cast(int)(quadVBO.size() / quadVS.vertexSize()));
-        vao.unbind();
+        void drawFullQuad()
+        {
+            vao.bind();
+            glDrawArrays(GL_TRIANGLES, 0, cast(int)(quadVBO.size() / quadVS.vertexSize()));
+            vao.unbind();
+        }
+        drawFullQuad();
         program.unuse();
+
+        if (doPostprocessing)
+            postprocessing.pass(&drawFullQuad); // we reuse the quad geometry here for shortness purpose
 
         window.swapBuffers();
     }
+}
+
+// Basically a sharpening pass
+class Postprocessing
+{
+public:
+    this(OpenGL gl, int screenWidth, int screenHeight)
+    {
+        _screenBuf = new GLTexture2D(gl);
+        _screenBuf.setMinFilter(GL_LINEAR_MIPMAP_LINEAR);
+        _screenBuf.setMagFilter(GL_LINEAR);
+        _screenBuf.setWrapS(GL_CLAMP_TO_EDGE);
+        _screenBuf.setWrapT(GL_CLAMP_TO_EDGE);
+        _screenBuf.setImage(0, GL_RGBA, screenWidth, screenHeight, 0, GL_RGBA, GL_UNSIGNED_BYTE, null);
+        _screenBuf.generateMipmap();
+
+
+        _fbo = new GLFBO(gl);
+        _fbo.use();
+        _fbo.color(0).attach(_screenBuf);
+        _fbo.unuse();
+
+        // create a shader program made of a single fragment shader
+        string postprocProgramSource =
+            q{#version 330 core
+
+                #if VERTEX_SHADER
+                in vec3 position;
+                in vec2 coordinates;
+                out vec2 fragmentUV;
+                void main()
+                {
+                    gl_Position = vec4(position, 1.0);
+                    fragmentUV = coordinates;
+                }
+                #endif
+
+                #if FRAGMENT_SHADER
+                in vec2 fragmentUV;
+                uniform sampler2D fbTexture;
+                out vec4 color;
+
+                void main()
+                {
+                    // basic glow
+                    vec3 base = texture(fbTexture, fragmentUV).rgb;
+
+                    vec3 filtered = texture(fbTexture, fragmentUV, 1.0).rgb * 0.5
+                                  + texture(fbTexture, fragmentUV, 2.0).rgb * 0.3
+                                  + texture(fbTexture, fragmentUV, 3.0).rgb * 0.2;
+
+                    color = vec4(base + (base - filtered) * 20.0, 1.0); // sharpen
+
+                }
+                #endif
+            };
+
+        _program = new GLProgram(gl, postprocProgramSource);
+    }    
+
+    ~this()
+    {
+        close();
+    }
+
+    void close()
+    {
+        _program.close();
+        _fbo.close();
+        _screenBuf.close();
+    }
+
+    void bindFBO()
+    {
+        _fbo.use();
+    }
+
+    // Post-processing pass
+    void pass(void delegate() drawGeometry)
+    {
+        _fbo.unuse();
+        _screenBuf.generateMipmap();
+
+        int texUnit = 1;
+        _screenBuf.use(texUnit);
+
+        _program.uniform("fbTexture").set(texUnit);
+        _program.use();
+
+        drawGeometry();
+    }
+private:
+    GLFBO _fbo;
+    GLTexture2D _screenBuf;
+    GLProgram _program;
 }
