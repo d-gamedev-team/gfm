@@ -62,6 +62,8 @@ final class GLFBO
         {
             if (_initialized)
             {
+                glBindFramebuffer(_target, _handle);
+
                 // detach all
                 for(int i = 0; i < _colors.length; ++i)
                     _colors[i].close();
@@ -310,7 +312,9 @@ final class GLFBOAttachment
 
                 void attach()
                 {
-                    attachOrDetach(_texture.handle(), _renderbuffer._handle);
+                    GLuint textureHandle = _texture !is null ? _texture.handle() : 0;
+                    GLuint renderBufferHandle = _renderbuffer !is null ? _renderbuffer.handle() : 0;
+                    attachOrDetach(textureHandle, renderBufferHandle);
                 }
 
                 void detach()
