@@ -7,6 +7,8 @@ import std.string,
        std.array,
        std.algorithm;
 
+import derelict.util.exception;
+
 import derelict.opengl3.gl3,
        derelict.opengl3.gl;
 
@@ -49,6 +51,23 @@ final class OpenGL
         this(Logger logger)
         {
             _logger = logger is null ? new NullLogger() : logger;
+
+            ShouldThrow missingSymFunc( string symName )
+            {
+                // Some NVIDIA drivers are missing these functions
+
+                if (symName == "glGetSubroutineUniformLocation")
+                    return ShouldThrow.No;
+
+                if (symName == "glVertexAttribL1d")
+                    return ShouldThrow.No;
+
+                // Any other missing symbol should throw.
+                return ShouldThrow.Yes;
+            }
+
+            DerelictGL3.missingSymbolCallback = &missingSymFunc;
+
             DerelictGL3.load(); // load latest available version
 
             DerelictGL.load(); // load deprecated functions too
