@@ -242,9 +242,17 @@ void debugBreak() nothrow @nogc
             mixin("asm { int 3; }");
         }
     }
+    else version( GNU )
+    {
+        // __builtin_trap() is not the same thing unfortunately
+        asm 
+        {
+            "int $0x03" : : : ;
+        }
+    }
     else
     {
-        // TODO: implement debugBreak() for GDC
+        static assert(false, "No debugBreak() for this compiler");
     }
 }
 
