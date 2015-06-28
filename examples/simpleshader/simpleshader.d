@@ -4,6 +4,8 @@ import std.math,
 
 import std.experimental.logger;
 
+import derelict.util.loader;
+
 import gfm.logger,
        gfm.sdl2,
        gfm.opengl,

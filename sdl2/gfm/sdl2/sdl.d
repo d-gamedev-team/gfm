@@ -8,7 +8,8 @@ import std.conv,
 
 import derelict.sdl2.sdl,
        derelict.sdl2.image,
-       derelict.util.exception;
+       derelict.util.exception,
+       derelict.util.loader;
 
 import std.experimental.logger;
 
