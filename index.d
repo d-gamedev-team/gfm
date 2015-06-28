@@ -56,6 +56,7 @@ $(UL
     <p>$(LI gfm.image:
         $(UL
             $(LI $(D stb_image.d): stb_image port, loads BMP, PNG, GIF and JPEG.)
+            $(LI $(D stb_truetype.d): stb_truetype port.)
          )
     )</p>
 
