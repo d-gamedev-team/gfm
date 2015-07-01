@@ -9,6 +9,7 @@ import core.exception : onOutOfMemoryError;
 import std.c.stdlib : malloc, free, realloc;
 import std.conv : emplace;
 import std.traits;
+import std.algorithm: swap;
 
 
 static if( __VERSION__ < 2066 ) private enum nogc = 1;
@@ -284,4 +285,59 @@ unittest
     {
         assumeNoGC( () { funcThatDoesGC(); } )();
     }
+}
+
+/// Must return -1 if a < b
+///              0 if a == b
+///              1 if a > b  
+alias nogcComparisonFunction(T) = int delegate(in T a, in T b) nothrow @nogc;
+
+/// @nogc quicksort
+/// From the excellent: http://codereview.stackexchange.com/a/77788
+void nogc_qsort(T)(T[] array, nogcComparisonFunction!T comparison) nothrow @nogc
+{
+    if (array.length < 2)
+        return;
+
+    int partition(T* arr, int left, int right) nothrow @nogc
+    {
+        immutable int mid = left + (right - left) / 2;
+        immutable T pivot = arr[mid];
+        // move the mid point value to the front.
+        swap(arr[mid],arr[left]);
+        int i = left + 1;
+        int j = right;
+        while (i <= j) 
+        {
+            while(i <= j && comparison(arr[i], pivot) <= 0 )
+                i++;
+
+            while(i <= j && comparison(arr[j], pivot) > 0)
+                j--;
+
+            if (i < j)
+                swap(arr[i], arr[j]);
+        }
+        swap(arr[i - 1], arr[left]);
+        return i - 1;
+    }
+
+    void doQsort(T* array, int left, int right) nothrow @nogc
+    {
+        if (left >= right)
+            return;
+
+        int part = partition(array, left, right);
+        doQsort(array, left, part - 1);
+        doQsort(array, part + 1, right);
+    }
+
+    doQsort(array.ptr, 0, array.length - 1);
+}
+
+unittest
+{
+    int[] testData = [110, 5, 10, 3, 22, 100, 1, 23];
+    nogc_qsort!int(testData, (a, b) => (a - b));
+    assert(testData == [1, 3, 5, 10, 22, 23, 100, 110]);
 }

@@ -48,6 +48,7 @@
             "sourcePaths": [ "image/gfm/image" ],
             "importPaths": [ "image" ],
             "dependencies": {
+                "gfm:core": "*",
                 "ae-graphics": "~>0.0"
             }
         },
