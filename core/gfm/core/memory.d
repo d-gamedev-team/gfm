@@ -116,6 +116,13 @@ private
 
 unittest
 {
+    assert(nextMultipleOf(0, 4) == 0);
+    assert(nextMultipleOf(1, 4) == 4);
+    assert(nextMultipleOf(2, 4) == 4);
+    assert(nextMultipleOf(3, 4) == 4);
+    assert(nextMultipleOf(4, 4) == 4);
+    assert(nextMultipleOf(5, 4) == 8);
+
     {
         void* p = alignedMalloc(23, 16);
         assert(p !is null);
@@ -128,9 +135,22 @@ unittest
     alignedFree(null);
 
     {
-        void* p = alignedRealloc(null, 100, 16);
-        p = alignedRealloc(p, 200, 16);
-        p = alignedRealloc(p, 0, 16);
+        int alignment = 16;
+        int* p = null;
+
+        // check if growing keep values in place
+        foreach(int i; 0..100)
+        {
+            p = cast(int*) alignedRealloc(p, (i + 1) * int.sizeof, alignment);
+            p[i] = i;
+        }
+
+        foreach(int i; 0..100)
+            assert(p[i] == i);
+
+
+        p = cast(int*) alignedRealloc(p, 0, alignment);
+        assert(p is null);
     }
 }
 
