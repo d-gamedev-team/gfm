@@ -332,7 +332,7 @@ void nogc_qsort(T)(T[] array, nogcComparisonFunction!T comparison) nothrow @nogc
         doQsort(array, part + 1, right);
     }
 
-    doQsort(array.ptr, 0, array.length - 1);
+    doQsort(array.ptr, 0, cast(int)(array.length) - 1);
 }
 
 unittest
