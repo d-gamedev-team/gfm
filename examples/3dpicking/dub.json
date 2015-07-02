@@ -1,0 +1,14 @@
+{
+    "targetType": "executable",
+    "name": "3dpicking",
+    "sourcePaths": [ "." ],
+    "importPaths": [ "." ],
+    "mainSourceFile": "picking.d",
+
+    "dependencies":
+    {
+        "gfm:sdl2": {"path": "../../"},
+        "gfm:opengl": {"path": "../../"},
+        "gfm:logger": {"path": "../../"}
+    }
+}
