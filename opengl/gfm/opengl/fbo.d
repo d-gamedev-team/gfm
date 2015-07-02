@@ -39,6 +39,18 @@ final class GLFBO
             _stencil = new GLFBOAttachment(this, GL_STENCIL_ATTACHMENT);
             _depthStencil = new GLFBOAttachment(this, GL_DEPTH_STENCIL_ATTACHMENT);
 
+            setTarget(usage);
+            _initialized = true;
+            _isBound = false;
+        }
+
+        ~this()
+        {
+            close();
+        }
+
+        void setTarget(Usage usage)
+        {
             _usage = usage;
             final switch(usage)
             {
@@ -48,13 +60,6 @@ final class GLFBO
                 case Usage.READ:
                     _target = GL_READ_FRAMEBUFFER;
             }
-            _initialized = true;
-            _isBound = false;
-        }
-
-        ~this()
-        {
-            close();
         }
 
         /// Releases the OpenGL FBO resource.

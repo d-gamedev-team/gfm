@@ -8,3 +8,4 @@
 examples/build
 *.visualdproj
 output_log.html
+*.a
