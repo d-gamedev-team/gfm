@@ -4,6 +4,8 @@ module gfm.sdl2;
 
 public
 {
+    import derelict.util.loader;
+
     import derelict.sdl2.sdl,
            derelict.sdl2.image,
            derelict.sdl2.ttf;
