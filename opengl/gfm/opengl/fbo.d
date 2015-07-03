@@ -39,6 +39,19 @@ final class GLFBO
             _stencil = new GLFBOAttachment(this, GL_STENCIL_ATTACHMENT);
             _depthStencil = new GLFBOAttachment(this, GL_DEPTH_STENCIL_ATTACHMENT);
 
+            setUsage(usage);
+            
+            _initialized = true;
+            _isBound = false;
+        }
+
+        auto usage() pure const nothrow @nogc
+        {
+            return _usage; 
+        }
+        
+        void setUsage(Usage usage) nothrow @nogc
+        {
             _usage = usage;
             final switch(usage)
             {
@@ -48,8 +61,6 @@ final class GLFBO
                 case Usage.READ:
                     _target = GL_READ_FRAMEBUFFER;
             }
-            _initialized = true;
-            _isBound = false;
         }
 
         ~this()
