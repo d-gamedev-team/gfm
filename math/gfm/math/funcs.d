@@ -12,6 +12,15 @@ import std.math,
 
 static if( __VERSION__ < 2066 ) private enum nogc = 1;
 
+version( D_InlineAsm_X86 )
+{
+    version = AsmX86;
+}
+else version( D_InlineAsm_X86_64 )
+{
+    version = AsmX86;
+}
+
 /// Returns: minimum of a and b.
 deprecated("Use std.algorithm.min instead") @nogc T min(T)(T a, T b) pure nothrow
 {
@@ -466,4 +475,32 @@ private
         }
         return best;
     }
+}
+
+/// SSE approximation of reciprocal square root.
+@nogc T inverseSqrt(T)(T x) pure nothrow if (isFloatingPoint!T)
+{
+    version(AsmX86)
+    {
+        static if (is(T == float))
+        {
+            float result;
+
+            static if( __VERSION__ >= 2067 )
+                mixin(`asm pure nothrow @nogc { movss XMM0, x; rsqrtss XMM0, XMM0; movss result, XMM0; }`);
+            else
+                mixin(`asm { movss XMM0, x; rsqrtss XMM0, XMM0; movss result, XMM0; }`);
+            return result;
+        }
+        else
+            return 1 / sqrt(x);
+    }
+    else
+        return 1 / sqrt(x);
+}
+
+unittest
+{
+    assert(abs( inverseSqrt!float(1) - 1) < 1e-3 );
+    assert(abs( inverseSqrt!double(1) - 1) < 1e-3 );
 }
