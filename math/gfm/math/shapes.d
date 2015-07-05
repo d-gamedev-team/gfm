@@ -35,6 +35,8 @@ alias Segment!(float, 2) seg2f;  /// 2D float segment.
 alias Segment!(float, 3) seg3f;  /// 3D float segment.
 alias Segment!(double, 2) seg2d; /// 2D double segment.
 alias Segment!(double, 3) seg3d; /// 3D double segment.
+alias Segment!(int, 2) seg2i;    /// 2D integer segment.
+alias Segment!(int, 3) seg3i;    /// 3D integer segment.
 
 /// A Triangle is 3 points.
 align(1) struct Triangle(T, int N)
