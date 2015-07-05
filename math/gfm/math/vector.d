@@ -384,6 +384,19 @@ nothrow:
                 return sqrt(squaredLength());
             }
 
+            /// Returns: Inverse of Euclidean length.
+            @nogc T inverseLength() pure const nothrow
+            {
+                return 1 / sqrt(squaredLength());
+            }
+
+            /// Faster but less accurate inverse of Euclidean length.
+            /// Returns: Inverse of Euclidean length.
+            @nogc T fastInverseLength() pure const nothrow
+            {
+                return inverseSqrt(squaredLength());
+            }
+
             /// Returns: Euclidean distance between this and other.
             @nogc T distanceTo(Vector other) pure const nothrow
             {
@@ -393,11 +406,9 @@ nothrow:
             /// In-place normalization.
             @nogc void normalize() pure nothrow
             {
-                auto invLength = 1 / length();
+                auto invLength = inverseLength();
                 for (int i = 0; i < N; ++i)
-                {
                     v[i] *= invLength;
-                }
             }
 
             /// Returns: Normalized vector.
@@ -405,6 +416,23 @@ nothrow:
             {
                 Vector res = this;
                 res.normalize();
+                return res;
+            }
+
+            /// Faster but less accurate in-place normalization.
+            @nogc void fastNormalize() pure nothrow
+            {
+                auto invLength = fastInverseLength();
+                for (int i = 0; i < N; ++i)
+                    v[i] *= invLength;
+            }
+
+            /// Faster but less accurate vector normalization.
+            /// Returns: Normalized vector.
+            @nogc Vector fastNormalized() pure const nothrow
+            {
+                Vector res = this;
+                res.fastNormalize();
                 return res;
             }
 
