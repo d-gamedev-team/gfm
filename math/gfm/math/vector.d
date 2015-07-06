@@ -3,6 +3,7 @@ module gfm.math.vector;
 import std.traits,
        std.math,
        std.conv,
+       std.array,
        std.string;
 
 import gfm.math.funcs;
