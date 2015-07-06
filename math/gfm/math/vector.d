@@ -160,7 +160,7 @@ nothrow:
         @nogc ref Vector opAssign(U)(U arr) pure nothrow if (isDynamicArray!(U) && is(typeof(arr[0]) : T))
         {
             assert(arr.length == N);
-            v[] = arr[];
+            mixin(generateLoopCode!("v[@] = arr[@];", N)());
             return this;
         }
 
