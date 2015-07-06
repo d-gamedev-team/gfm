@@ -2,6 +2,7 @@ module gfm.math.vector;
 
 import std.traits,
        std.math,
+       std.conv,
        std.string;
 
 import gfm.math.funcs;
@@ -235,20 +236,14 @@ nothrow:
             if (op == "+" || op == "-" || op == "~" || op == "!")
         {
             Vector res = void;
-            for (int i = 0; i < N; ++i)
-            {
-                mixin("res.v[i] = " ~ op ~ "v[i];");
-            }
+            mixin(generateLoopCode!("res.v[@] = " ~ op ~ " v[@];", N)());
             return res;
         }
 
         @nogc ref Vector opOpAssign(string op, U)(U operand) pure nothrow
             if (is(U : Vector))
         {
-            for (int i = 0; i < N; ++i)
-            {
-                mixin("v[i] " ~ op ~ "= operand.v[i];");
-            }
+            mixin(generateLoopCode!("v[@] " ~ op ~ "= operand.v[@];", N)());
             return this;
         }
 
@@ -261,14 +256,28 @@ nothrow:
         @nogc Vector opBinary(string op, U)(U operand) pure const nothrow
             if (is(U: Vector) || (isConvertible!U))
         {
-            Vector temp = this;
-            return temp.opOpAssign!op(operand);
+            Vector result = void;
+            static if (is(U: T))
+                mixin(generateLoopCode!("result.v[@] = cast(T)(v[@] " ~ op ~ " operand);", N)());
+            else
+            {
+                Vector other = operand;
+                mixin(generateLoopCode!("result.v[@] = cast(T)(v[@] " ~ op ~ " other.v[@]);", N)());
+            }
+            return result;
         }
 
         @nogc Vector opBinaryRight(string op, U)(U operand) pure const nothrow if (isConvertible!U)
         {
-            Vector temp = operand;
-            return temp.opOpAssign!op(this);
+            Vector result = void;
+            static if (is(U: T))
+                mixin(generateLoopCode!("result.v[@] = cast(T)(operand " ~ op ~ " v[@]);", N)());
+            else
+            {
+                Vector other = operand;
+                mixin(generateLoopCode!("result.v[@] = cast(T)(other.v[@] " ~ op ~ " v[@]);", N)());
+            }
+            return result;
         }
 
         @nogc ref T opIndex(size_t i) pure nothrow
@@ -555,6 +564,18 @@ nothrow:
                 enum swizzleTuple = [];
             else
                 enum swizzleTuple = [ swizzleIndex!(op[0]) ] ~ swizzleTuple!(op[1..op.length]);
+        }
+
+        static string generateLoopCode(string formatString, int N)()
+        {
+            string result;
+            for (int i = 0; i < N; ++i)
+            {
+                string index = to!string(i);
+                // replace all @ by indices
+                result ~= formatString.replace("@", index);
+            }
+            return result;
         }
     }
 }
