@@ -290,6 +290,7 @@ public:
         _screenBuf.use(texUnit);
 
         _program.uniform("fbTexture").set(texUnit);
+        _program.uniform("sharpen").set(true);
         _program.use();
 
         drawGeometry();
