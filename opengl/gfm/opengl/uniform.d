@@ -82,25 +82,36 @@ final class GLUniform
             if (_disabled)
                 return;
 
-            if (!typeIsCompliant!T(_type))
-                throw new OpenGLException(format("using type %s for setting uniform '%s' which has GLSL type '%s'", 
-                                                 T.stringof, _name, GLSLTypeNameArray(_type, _size)));
-
-            if (count != _size)
-                throw new OpenGLException(format("cannot set uniform '%s' of size %s with a value of size %s", 
-                                                 _name, _size, count));
-
-            // if first time or different value incoming
-            if (_firstSet || (0 != memcmp(newValues, _value.ptr, _value.length)))
+            // special case so that GL_BOOL variable can be assigned when T is bool
+            static if (is(T == bool))
             {
-                memcpy(_value.ptr, newValues, _value.length);
-                _valueChanged = true;
-
-                if (_shouldUpdateImmediately)
-                    update();
+                assert(_type == GL_BOOL); // else we would have thrown
+                assert(count == 1);  // else we would have thrown
+                set!int( cast(int)(*newValues) );
+                return;
             }
+            else
+            {
+                if (!typeIsCompliant!T(_type))
+                    throw new OpenGLException(format("using type %s for setting uniform '%s' which has GLSL type '%s'", 
+                                                     T.stringof, _name, GLSLTypeNameArray(_type, _size)));
 
-            _firstSet = false;
+                if (count != _size)
+                    throw new OpenGLException(format("cannot set uniform '%s' of size %s with a value of size %s", 
+                                                     _name, _size, count));
+
+                // if first time or different value incoming
+                if (_firstSet || (0 != memcmp(newValues, _value.ptr, _value.length)))
+                {
+                    memcpy(_value.ptr, newValues, _value.length);
+                    _valueChanged = true;
+
+                    if (_shouldUpdateImmediately)
+                        update();
+                }
+
+                _firstSet = false;
+            }
         }
     
         /// Updates the uniform value.
@@ -274,7 +285,7 @@ final class GLUniform
                 case GL_UNSIGNED_INT_VEC2: return is(T == vec2ui);
                 case GL_UNSIGNED_INT_VEC3: return is(T == vec3ui);
                 case GL_UNSIGNED_INT_VEC4: return is(T == vec4ui);
-                case GL_BOOL:      return is(T == int); // int because bool type is 1 byte
+                case GL_BOOL:      return is(T == int) || is(T == bool); // int because bool type is 1 byte
                 case GL_BOOL_VEC2: return is(T == vec2i);
                 case GL_BOOL_VEC3: return is(T == vec3i);
                 case GL_BOOL_VEC4: return is(T == vec4i);
