@@ -3,7 +3,11 @@ module gfm.logger.log;
 import std.stream,
        std.string;
 
-import std.experimental.logger;
+static if( __VERSION__ >= 2067 )
+    import std.experimental.logger;
+else
+    import std.historical.logger;
+
 import colorize;
 
 /// Coloured console logger.

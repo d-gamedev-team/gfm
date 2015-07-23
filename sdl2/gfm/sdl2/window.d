@@ -4,7 +4,10 @@ import std.string;
 
 import derelict.sdl2.sdl;
 
-import std.experimental.logger;
+static if( __VERSION__ >= 2067 )
+    import std.experimental.logger;
+else
+    import std.historical.logger;
 
 import gfm.sdl2.sdl,
        gfm.sdl2.surface,
