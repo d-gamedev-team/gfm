@@ -8,3 +8,5 @@
 examples/build
 *.visualdproj
 output_log.html
+dub.selections.json
+__test__library__

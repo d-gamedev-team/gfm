@@ -4,7 +4,10 @@ import std.string;
 
 import derelict.opengl3.gl3;
 
-import std.experimental.logger;
+static if( __VERSION__ >= 2067 )
+    import std.experimental.logger;
+else
+    import std.historical.logger;
 
 import gfm.opengl.opengl,
        gfm.opengl.texture,
