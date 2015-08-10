@@ -2,7 +2,7 @@ language: d
 sudo: true
 
 d:
- - dmd-2.068.0-b2
+ - dmd-2.068.0-rc1
  - dmd-2.067.1
  - ldc-0.15.1
  - gdc-4.9.2
