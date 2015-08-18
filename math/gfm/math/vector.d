@@ -155,6 +155,13 @@ nothrow:
             v[] = arr[];
             return this;
         }
+        
+        /// Assign from castable static array.
+        @nogc ref Vector opAssign(U)(U arr) pure nothrow if ((isStaticArray!(U) && is(typeof(cast(T)arr[0])) && (arr.length == N)))
+        {
+            mixin(generateLoopCode!("v[@] = cast(T)arr[@];", N)());
+            return this;
+        }
 
         /// Assign with a dynamic array.
         /// Size is checked in debug-mode.
@@ -162,6 +169,13 @@ nothrow:
         {
             assert(arr.length == N);
             mixin(generateLoopCode!("v[@] = arr[@];", N)());
+            return this;
+        }
+        
+        /// Assign from castable dynamic array.
+        @nogc ref Vector opAssign(U)(U arr) pure nothrow if (isDynamicArray!(U) && is(typeof(cast(T)arr[0])))
+        {
+            mixin(generateLoopCode!("v[@] = cast(T)arr[@];", N)());
             return this;
         }
 
