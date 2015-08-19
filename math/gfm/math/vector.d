@@ -157,7 +157,7 @@ nothrow:
         }
         
         /// Assign from castable static array.
-        @nogc ref Vector opAssign(U)(U arr) pure nothrow if ((isStaticArray!(U) && is(typeof(cast(T)arr[0])) && (arr.length == N)))
+        @nogc ref Vector opAssign(U)(U arr) pure nothrow if ((isStaticArray!(U) && !is(typeof(arr[0]) : T) && is(typeof(cast(T)arr[0])) && (arr.length == N)))
         {
             mixin(generateLoopCode!("v[@] = cast(T)arr[@];", N)());
             return this;
@@ -173,7 +173,7 @@ nothrow:
         }
         
         /// Assign from castable dynamic array.
-        @nogc ref Vector opAssign(U)(U arr) pure nothrow if (isDynamicArray!(U) && is(typeof(cast(T)arr[0])))
+        @nogc ref Vector opAssign(U)(U arr) pure nothrow if (isDynamicArray!(U) && !is(typeof(arr[0]) : T) && is(typeof(cast(T)arr[0])))
         {
             mixin(generateLoopCode!("v[@] = cast(T)arr[@];", N)());
             return this;
