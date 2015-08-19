@@ -150,7 +150,7 @@ nothrow:
         }
 
         /// Assign a Vector with a static array type.
-        @nogc ref Vector opAssign(U)(U arr) pure nothrow if ((isStaticArray!(U) && is(typeof(arr[0]) : T) && (arr.length == N)))
+        @nogc ref Vector opAssign(U)(U arr) pure nothrow if ((isStaticArray!(U) && isAssignable!(T, typeof(arr[0])) && (arr.length == N)))
         {
             v[] = arr[];
             return this;
@@ -158,7 +158,7 @@ nothrow:
 
         /// Assign with a dynamic array.
         /// Size is checked in debug-mode.
-        @nogc ref Vector opAssign(U)(U arr) pure nothrow if (isDynamicArray!(U) && is(typeof(arr[0]) : T))
+        @nogc ref Vector opAssign(U)(U arr) pure nothrow if (isDynamicArray!(U) && isAssignable!(T, typeof(arr[0])))
         {
             assert(arr.length == N);
             mixin(generateLoopCode!("v[@] = arr[@];", N)());
