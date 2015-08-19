@@ -143,9 +143,9 @@ nothrow:
         }
 
         /// Assign a Vector from a compatible type.
-        @nogc ref Vector opAssign(U)(U x) pure nothrow if (is(U: T))
+        @nogc ref Vector opAssign(U)(U x) pure nothrow if (isAssignable!(T, U))
         {
-            v[] = x; // copy to each component
+            mixin(generateLoopCode!("v[@] = x;", N)()); // copy to each component
             return this;
         }
 
@@ -174,7 +174,7 @@ nothrow:
 
         /// Assign from other vectors types (same size, compatible type).
         @nogc ref Vector opAssign(U)(U x) pure nothrow if (is(typeof(U._isVector))
-                                                       && is(U._T : T)
+                                                       && isAssignable!(T, U._T)
                                                        && (!is(U: Vector))
                                                        && (U._N == _N))
         {
