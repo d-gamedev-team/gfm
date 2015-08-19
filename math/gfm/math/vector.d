@@ -152,7 +152,7 @@ nothrow:
         /// Assign a Vector with a static array type.
         @nogc ref Vector opAssign(U)(U arr) pure nothrow if ((isStaticArray!(U) && isAssignable!(T, typeof(arr[0])) && (arr.length == N)))
         {
-            v[] = arr[];
+            mixin(generateLoopCode!("v[@] = arr[@];", N)());
             return this;
         }
 
