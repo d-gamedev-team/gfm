@@ -4,7 +4,8 @@ import std.traits,
        std.math,
        std.conv,
        std.array,
-       std.string;
+       std.string,
+       std.range;
 
 import gfm.math.funcs;
 
@@ -142,43 +143,32 @@ nothrow:
             opAssign!U(x);
         }
 
-        /// Assign a Vector from a compatible type.
-        @nogc ref Vector opAssign(U)(U x) pure nothrow if (isAssignable!(T, U))
+        /// Assign a Vector from a compatible variable.
+        @nogc ref Vector opAssign(U)(U u) pure nothrow if (isAssignable!(T, U))
         {
-            mixin(generateLoopCode!("v[@] = x;", N)()); // copy to each component
+            foreach (i; 0..N)
+            {
+                v[i] = u;
+            }
             return this;
         }
 
-        /// Assign a Vector with a static array type.
-        @nogc ref Vector opAssign(U)(U arr) pure nothrow if ((isStaticArray!(U) && isAssignable!(T, typeof(arr[0])) && (arr.length == N)))
+        /// Assign a Vector from a Range of compatible elements.
+        /// Size is checked in debug mode.
+        @nogc ref Vector opAssign(R)(R r) pure nothrow if (isAssignable!(T, ElementType!R))
         {
-            mixin(generateLoopCode!("v[@] = arr[@];", N)());
+            assert(r.length == N);
+            foreach (i, e; r)
+            {
+                v[i] = e;
+            }
             return this;
         }
-
-        /// Assign with a dynamic array.
-        /// Size is checked in debug-mode.
-        @nogc ref Vector opAssign(U)(U arr) pure nothrow if (isDynamicArray!(U) && isAssignable!(T, typeof(arr[0])))
+        
+        /// Assign from a Vector.
+        @nogc ref Vector opAssign(U)(U u) pure nothrow if (is(U : Vector) || is(typeof(U._isVector)))
         {
-            assert(arr.length == N);
-            mixin(generateLoopCode!("v[@] = arr[@];", N)());
-            return this;
-        }
-
-        /// Assign from a samey Vector.
-        @nogc ref Vector opAssign(U)(U u) pure nothrow if (is(U : Vector))
-        {
-            v[] = u.v[];
-            return this;
-        }
-
-        /// Assign from other vectors types (same size, compatible type).
-        @nogc ref Vector opAssign(U)(U x) pure nothrow if (is(typeof(U._isVector))
-                                                       && isAssignable!(T, U._T)
-                                                       && (!is(U: Vector))
-                                                       && (U._N == _N))
-        {
-            mixin(generateLoopCode!("v[@] = x.v[@];", N)());
+            opAssign(u[]);
             return this;
         }
 
@@ -197,24 +187,32 @@ nothrow:
                 assert(false); // should not happen since format is right
         }
 
-        @nogc bool opEquals(U)(U other) pure const nothrow
-            if (is(U : Vector))
+        @nogc bool opEquals(O)(O o) pure const nothrow if (isAssignable!(T, O))
         {
-            for (int i = 0; i < N; ++i)
+            foreach (e; v)
             {
-                if (v[i] != other.v[i])
+                if (e != o)
                 {
                     return false;
                 }
             }
             return true;
         }
-
-        @nogc bool opEquals(U)(U other) pure const nothrow
-            if (isConvertible!U)
+        
+        @nogc bool opEquals(O)(O other) pure const nothrow if (is(typeof(O._isVector)) || isAssignable!(T, ElementType!O))
         {
-            Vector conv = other;
-            return opEquals(conv);
+            if (other[].length < N)
+            {
+                return false;
+            }
+            foreach (i, o; other[])
+            {
+                if (v[i] != o)
+                {
+                    return false;
+                }
+            }
+            return true;
         }
 
         @nogc Vector opUnary(string op)() pure const nothrow
@@ -265,21 +263,57 @@ nothrow:
             return result;
         }
 
-        @nogc ref T opIndex(size_t i) pure nothrow
+        @nogc ref T opIndex(I)(I i) pure nothrow if (isIntegral!I)
+        {
+            return v[i];
+        }
+        
+        @nogc ref const(T) opIndex(I)(I i) pure const nothrow if (isIntegral!I)
         {
             return v[i];
         }
 
-        @nogc ref const(T) opIndex(size_t i) pure const nothrow
+        @nogc T opIndexAssign(U, I)(U u, I i) pure nothrow if (isIntegral!I && isAssignable!(T, U))
         {
-            return v[i];
+            return v[i] = u;
         }
-
-        @nogc T opIndexAssign(U : T)(U x, size_t i) pure nothrow
+        
+        /**
+        Assign only a part of Vector, from a range.
+        Example:
+        ---
+        vec4i v = [1, 2, 3, 4];
+        v[1..3] = [5, 6];
+        assert(v == [1, 5, 6, 4]);
+        ---
+        **/
+        @nogc void opSliceAssign(R)(R r, size_t i, size_t j) pure nothrow if (isAssignable!(T, ElementType!R))
         {
-            return v[i] = x;
+            assert(j <= N);
+            foreach (e; i..j)
+            {
+                v[e] = r[e - i];
+            }
+            return v[i..j];
         }
-
+        
+        /**
+        Assign only a part of Vector, from a compatible variable.
+        Example:
+        ---
+        vec4i v = [1, 2, 3, 4];
+        v[1..3] = 5;
+        assert(v == [1, 5, 5, 4]);
+        ---
+        **/
+        @nogc void opSliceAssign(U)(U u, size_t i, size_t j) pure nothrow if (isAssignable!(T, U))
+        {
+            assert(j <= N);
+            foreach (e; i..j)
+            {
+                v[e] = u;
+            }
+        }
 
         /// Implements swizzling.
         ///
@@ -343,11 +377,15 @@ nothrow:
         {
             return v[];
         }
-
-        // vec[a..b]
-        @nogc T[] opSlice(int a, int b) pure nothrow
+        
+        @nogc const(T[]) opSlice() pure nothrow const
         {
-            return v[a..b];
+            return v[];
+        }
+
+        @nogc T[] opSlice(I, J)(I i, J j) pure nothrow if (isIntegral!I && isIntegral!J)
+        {
+            return v[i..j];
         }
 
         /// Returns: squared length.
@@ -731,5 +769,8 @@ unittest
     vec4ub j;
 
     assert(lerp(vec2f(-10, -1), vec2f(10, 1), 0.5) == vec2f(0, 0));
+    h[0..2] = [3, 9];
+    h[1..3] = 5;
+    assert(h == [3, 5, 5]);
 }
 
