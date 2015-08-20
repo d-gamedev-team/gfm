@@ -294,7 +294,6 @@ nothrow:
             {
                 v[e] = r[e - i];
             }
-            return v[i..j];
         }
         
         /**
