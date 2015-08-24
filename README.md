@@ -7,9 +7,6 @@ GFM is a feature-rich library to ease the creation of video games / multimedia a
 Documentation and overview can be found here: http://d-gamedev-team.github.io/gfm/
 
 
-**Tested compilers:** ![dmd-2.067.1](https://img.shields.io/badge/DMD-2.067.1-brightgreen.svg) ![LDC-0.15.1](https://img.shields.io/badge/LDC-0.15.1-brightgreen.svg) ![GDC-4.9.2](https://img.shields.io/badge/GDC-4.9.2-brightgreen.svg)
-
-
 ## License
 
 Public Domain (Unlicense).

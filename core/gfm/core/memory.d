@@ -266,7 +266,7 @@ void debugBreak() nothrow @nogc
     else version( GNU )
     {
         // __builtin_trap() is not the same thing unfortunately
-        asm 
+        asm
         {
             "int $0x03" : : : ;
         }
@@ -280,6 +280,12 @@ void debugBreak() nothrow @nogc
 auto assumeNoGC(T) (T t) if (isFunctionPointer!T || isDelegate!T)
 {
     enum attrs = functionAttributes!T | FunctionAttribute.nogc;
+    return cast(SetFunctionAttributes!(T, functionLinkage!T, attrs)) t;
+}
+
+auto assumeNothrow(T) (T t) if (isFunctionPointer!T || isDelegate!T)
+{
+    enum attrs = functionAttributes!T | FunctionAttribute.nothrow_;
     return cast(SetFunctionAttributes!(T, functionLinkage!T, attrs)) t;
 }
 
@@ -309,7 +315,7 @@ unittest
 
 /// Must return -1 if a < b
 ///              0 if a == b
-///              1 if a > b  
+///              1 if a > b
 alias nogcComparisonFunction(T) = int delegate(in T a, in T b) nothrow @nogc;
 
 /// @nogc quicksort
@@ -327,7 +333,7 @@ void nogc_qsort(T)(T[] array, nogcComparisonFunction!T comparison) nothrow @nogc
         swap(arr[mid],arr[left]);
         int i = left + 1;
         int j = right;
-        while (i <= j) 
+        while (i <= j)
         {
             while(i <= j && comparison(arr[i], pivot) <= 0 )
                 i++;
