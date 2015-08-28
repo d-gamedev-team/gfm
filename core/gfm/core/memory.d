@@ -208,6 +208,14 @@ unittest
     auto a = scoped!A();
 }
 
+/// Crash if the GC is running.
+/// Useful in destructors to avoid reliance GC resource release.
+void ensureNotInGC() nothrow
+{
+    assert(!isCalledByGC(), "Resource clean-up depends on destructors called by the GC");
+}
+
+
 /// Allocates and construct a struct or class object.
 /// Returns: Newly allocated object.
 auto mallocEmplace(T, Args...)(Args args)
