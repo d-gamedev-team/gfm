@@ -42,7 +42,7 @@ align(1) struct Matrix(T, int R, int C)
 
         @nogc this(U...)(U values) pure nothrow
         {
-            static if ((U.length == C*R) && allSatisfy!(isTConvertible, U))
+            static if ((U.length == C*R) && allSatisfy!(isTAssignable, U))
             {
                 // construct with components
                 foreach(int i, x; values)
@@ -628,12 +628,7 @@ align(1) struct Matrix(T, int R, int C)
     {
         template isAssignable(T)
         {
-            enum bool isAssignable =
-                is(typeof(
-                {
-                    T x;
-                    Matrix m = x;
-                }()));
+            enum bool isAssignable = std.traits.isAssignable!(Matrix, T);
         }
 
         template isConvertible(T)
@@ -641,9 +636,9 @@ align(1) struct Matrix(T, int R, int C)
             enum bool isConvertible = (!is(T : Matrix)) && isAssignable!T;
         }
 
-        template isTConvertible(U)
+        template isTAssignable(U)
         {
-            enum bool isTConvertible = is(U : T);
+            enum bool isTAssignable = std.traits.isAssignable!(T, U);
         }
 
         template isRowConvertible(U)
@@ -748,7 +743,6 @@ unittest
     x = [0, 1, 2, 3];
     assert(x == y);
 
-
     mat2i z = x * y;
     assert(z == mat2i([2, 3, 6, 11]));
     vec2i vz = z * vec2i(2, -1);
@@ -766,4 +760,13 @@ unittest
         mat3x4f B;
         mat2x4f C = A * B;
     }
+
+    // Support user-defined types
+    import gfm.math.half;
+    alias mat2h = Matrix!(half, 2, 2);
+    mat2h b = mat2h(1, 2.0, 3.0L, 4.0f);
+
+    alias vec2h = Vector!(half, 2);
+    vec2h c = vec2h(4, 5);
+    c = b * c;
 }
