@@ -155,6 +155,59 @@ unittest
 }
 
 
+/// Destructors called by the GC enjoy a variety of limitations and
+/// relying on them is dangerous.
+/// See_also: $(URL http://p0nce.github.io/d-idioms/#The-trouble-with-class-destructors)
+/// Example:
+/// ---
+/// class Resource
+/// {
+///     ~this()
+///     {
+///         close();
+///     }
+///
+///     void close()
+///     {
+///         if (!alreadyClosed)
+///         {
+///             if (isCalledByGC())
+///                 assert(false, "Resource release relies on Garbage Collection");
+///             alreadyClosed = true;
+///             releaseResource();
+///         }
+///     }
+/// }
+/// ---
+bool isCalledByGC() nothrow
+{
+    import core.exception;
+    try
+    {
+        import core.memory;
+        void* p = GC.malloc(1); // not ideal since it allocates
+        return false;
+    }
+    catch(InvalidMemoryOperationError e)
+    {
+        return true;
+    }
+}
+
+unittest
+{
+    import std.stdio;
+    class A
+    {
+        ~this()
+        {
+            assert(!isCalledByGC());
+        }
+    }
+    import std.typecons;
+    auto a = scoped!A();
+}
+
 /// Allocates and construct a struct or class object.
 /// Returns: Newly allocated object.
 auto mallocEmplace(T, Args...)(Args args)
