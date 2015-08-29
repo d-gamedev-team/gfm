@@ -185,7 +185,7 @@ final class GLProgram
             this(gl, shaders);
 
             foreach(shader; shaders)
-                shader.close();
+                shader.destroy();
         }
 
         /// Ditto, except with lines in a single string.
@@ -195,20 +195,17 @@ final class GLProgram
             this(gl, splitLines(wholeSource));
         }
 
-        ~this()
-        {
-            close();
-        }
-
         /// Releases the OpenGL program resource.
-        void close()
+        ~this()
         {
             if (_initialized)
             {
+                ensureNotInGC("GLProgram");
                 glDeleteProgram(_program);
                 _initialized = false;
             }
         }
+        deprecated("Use .destroy instead") void close(){}
 
         /// Attaches OpenGL shaders to this program.
         /// Throws: $(D OpenGLException) on error.

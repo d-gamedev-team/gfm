@@ -11,7 +11,7 @@ static if( __VERSION__ >= 2067 )
 else
     import std.historical.logger;
 
-import gfm.sdl2.sdl, 
+import gfm.sdl2.sdl,
        gfm.sdl2.surface;
 
 /// Load images using SDL_image, a SDL companion library able to load various image formats.
@@ -27,7 +27,7 @@ final class SDLImage
             _sdl2 = sdl2; // force loading of SDL first
             _logger = sdl2._logger;
             _SDLImageInitialized = false;
-            
+
             try
             {
                 DerelictSDL2Image.load();
@@ -41,22 +41,17 @@ final class SDLImage
             _SDLImageInitialized = true;
         }
 
+        /// Releases the SDL resource.
         ~this()
-        {
-            close();
-        }
-
-        /// Releases the SDL resource. 
-        void close()
         {
             if (_SDLImageInitialized)
             {
+                ensureNotInGC("SDLImage");
                 _SDLImageInitialized = false;
                 IMG_Quit();
             }
-
-            DerelictSDL2Image.unload();
         }
+        deprecated("Use .destroy instead") void close(){}
 
         /// Load an image.
         /// Returns: A SDL surface with loaded content.

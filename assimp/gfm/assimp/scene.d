@@ -51,20 +51,17 @@ class AssimpScene
                 assimp.throwAssimpException("aiImportFileFromMemoryWithProperties");
         }
 
-        ~this()
-        {
-            close();
-        }
-
         /// Releases the ASSIMP scene resource.
-        void close()
+        ~this()
         {
             if (_scene !is null)
             {
+                ensureNotInGC("AssimpScene");
                 aiReleaseImport(_scene);
                 _scene = null;
             }
         }
+        deprecated("Use .destroy instead") void close(){}
 
         /// Apply post-processing separately, to separate loading from post-processing.
         /// Throws: AssimpException on error.

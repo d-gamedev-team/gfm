@@ -60,22 +60,19 @@ final class Assimp
             aiAttachLogStream(&_logStream);
         }
 
-        ~this()
-        {
-            close();
-        }
-
         /// Releases the ASSIMP library and all resources.
         /// All resources should have been released at this point,
         /// since you won't be able to call any ASSIMP function afterwards.
-        void close()
+        ~this()
         {
             if (_libInitialized)
             {
+                ensureNotInGC("Assimp");
                 aiDetachLogStream(&_logStream);
                 _libInitialized = false;
             }
         }
+        deprecated("Use .destroy instead") void close(){}
 
         /// Returns: ASSIMP version string as returned by the dynamic library.
         string getVersion()
@@ -146,6 +143,29 @@ extern (C) private
         {
             // ignoring IO exceptions, format errors, etc... to be nothrow
             // making the whole Log interface nothrow is not that trivial
+        }
+    }
+}
+
+/// Crash if the GC is running.
+/// Useful in destructors to avoid reliance GC resource release.
+package void ensureNotInGC(string resourceName) nothrow
+{
+    debug
+    {
+        import core.exception;
+        try
+        {
+            import core.memory;
+            void* p = GC.malloc(1); // not ideal since it allocates
+            return;
+        }
+        catch(InvalidMemoryOperationError e)
+        {
+
+            import core.stdc.stdio;
+            fprintf(stderr, "Error: clean-up of %s incorrectly depends on destructors called by the GC.\n", resourceName.ptr);
+            assert(false);
         }
     }
 }

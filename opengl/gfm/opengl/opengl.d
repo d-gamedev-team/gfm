@@ -78,11 +78,6 @@ final class OpenGL
             getLimits(false);
         }
 
-        ~this()
-        {
-            close();
-        }
-
         /// Returns: true if the OpenGL extension is supported.
         bool supportsExtension(string extension)
         {
@@ -102,12 +97,6 @@ final class OpenGL
             getLimits(true);
         }
 
-        /// Releases the OpenGL dynamic library.
-        /// All resources should have been released at this point,
-        /// since you won't be able to call any OpenGL function afterwards.
-        void close()
-        {
-        }
 
         /// Redirects OpenGL debug output to the Logger.
         /// You still has to use glDebugMessageControl to set which messages are emitted.
@@ -502,3 +491,25 @@ extern(System) private
     }
 }
 
+/// Crash if the GC is running.
+/// Useful in destructors to avoid reliance GC resource release.
+package void ensureNotInGC(string resourceName) nothrow
+{
+    debug
+    {
+        import core.exception;
+        try
+        {
+            import core.memory;
+            void* p = GC.malloc(1); // not ideal since it allocates
+            return;
+        }
+        catch(InvalidMemoryOperationError e)
+        {
+
+            import core.stdc.stdio;
+            fprintf(stderr, "Error: clean-up of %s incorrectly depends on destructors called by the GC.\n", resourceName.ptr);
+            assert(false);
+        }
+    }
+}

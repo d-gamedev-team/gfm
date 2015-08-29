@@ -42,7 +42,7 @@ final class SDL2Surface
         /// Create surface from RGBA data. Pixels data is <b>not</b> and not owned.
         /// See_also: clone, $(WEB wiki.libsdl.org/SDL_CreateRGBSurfaceFrom,SDL_CreateRGBSurfaceFrom)
         /// Throws: $(D SDL2Exception) on error.
-        this(SDL2 sdl2, void* pixels, int width, int height, int depth, int pitch, 
+        this(SDL2 sdl2, void* pixels, int width, int height, int depth, int pitch,
              uint Rmask, uint Gmask, uint Bmask, uint Amask)
         {
             _sdl2 = sdl2;
@@ -52,21 +52,18 @@ final class SDL2Surface
             _handleOwned = Owned.YES;
         }
 
-        ~this()
-        {
-            close();
-        }
-
         /// Releases the SDL resource.
-        void close()
+        ~this()
         {
             if (_surface !is null)
             {
+                ensureNotInGC("SDL2Surface");
                 if (_handleOwned == Owned.YES)
                     SDL_FreeSurface(_surface);
                 _surface = null;
             }
         }
+        deprecated("Use .destroy instead") void close(){}
 
         /// Converts the surface to another format.
         /// See_also: $(LINK http://wiki.libsdl.org/SDL_ConvertSurface)
@@ -154,7 +151,7 @@ final class SDL2Surface
 
             if (y < 0 || y >= height())
                 assert(0);
-            
+
             SDL_PixelFormat* fmt = _surface.format;
 
             ubyte* pixels = cast(ubyte*)_surface.pixels;

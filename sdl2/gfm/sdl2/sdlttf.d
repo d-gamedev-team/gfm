@@ -44,21 +44,16 @@ final class SDLTTF
         }
 
         /// Releases the SDL_ttf library.
-        void close()
+        ~this()
         {
             if (_SDLTTFInitialized)
             {
+                ensureNotInGC("SDLTTF");
                 _SDLTTFInitialized = false;
                 TTF_Quit();
             }
-
-            DerelictSDL2ttf.unload();
         }
-
-        ~this()
-        {
-            close();
-        }   
+        deprecated("Use .destroy instead") void close(){}
     }
 
     private
@@ -97,20 +92,17 @@ final class SDLFont
                 _sdlttf.throwSDL2TTFException("TTF_OpenFont");
         }
 
-        ~this()
-        {
-            close();
-        }
-
         /// Releases the SDL resource.
-        void close()
+        ~this()
         {
             if (_font !is null)
             {
+                ensureNotInGC("SDLFont");
                 TTF_CloseFont(_font);
                 _font = null;
             }
         }
+        deprecated("Use .destroy instead") void close(){}
 
         /// Returns: Font style.
         int style()
@@ -199,7 +191,7 @@ final class SDLFont
             return SDL_Point(w, h);
         }
 
-        /// Create a 32-bit ARGB surface and render the given character at high quality, 
+        /// Create a 32-bit ARGB surface and render the given character at high quality,
         /// using alpha blending to dither the font with the given color.
         /// Throws: $(D SDL2Exception) on error.
         SDL2Surface renderGlyphBlended(dchar ch, SDL_Color color)
@@ -207,7 +199,7 @@ final class SDLFont
             return checkedSurface(TTF_RenderGlyph_Blended(_font, cast(ushort)ch, color));
         }
 
-        /// Create a 32-bit ARGB surface and render the given text at high quality, 
+        /// Create a 32-bit ARGB surface and render the given text at high quality,
         /// using alpha blending to dither the font with the given color.
         /// Throws: $(D SDL2Exception) on error.
         SDL2Surface renderTextBlended(string text, SDL_Color color)
@@ -215,7 +207,7 @@ final class SDLFont
             return checkedSurface(TTF_RenderUTF8_Blended(_font, toStringz(text), color));
         }
 
-        /// Create an 8-bit palettized surface and render the given text at fast 
+        /// Create an 8-bit palettized surface and render the given text at fast
         /// quality with the given font and color.
         /// Throws: $(D SDL2Exception) on error.
         SDL2Surface renderTextSolid(string text, SDL_Color color)
@@ -223,7 +215,7 @@ final class SDLFont
             return checkedSurface(TTF_RenderUTF8_Solid(_font, toStringz(text), color));
         }
 
-        /// Create an 8-bit palettized surface and render the given text at high 
+        /// Create an 8-bit palettized surface and render the given text at high
         /// quality with the given font and colors.
         /// Throws: $(D SDL2Exception) on error.
         SDL2Surface renderTextShaded(string text, SDL_Color fg, SDL_Color bg)
@@ -231,7 +223,7 @@ final class SDLFont
             return checkedSurface(TTF_RenderUTF8_Shaded(_font, toStringz(text), fg, bg));
         }
 
-        /// Create a 32-bit ARGB surface and render the given text at high quality, 
+        /// Create a 32-bit ARGB surface and render the given text at high quality,
         /// using alpha blending to dither the font with the given color.
         /// Uses multi-line text wrapping.
         /// Throws: $(D SDL2Exception) on error.

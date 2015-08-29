@@ -148,7 +148,7 @@ void main()
     uint lastTime = SDL_GetTicks();
 
     Postprocessing postprocessing = new Postprocessing(gl,  width, height);
-    scope(exit) postprocessing.close();
+    scope(exit) postprocessing.destroy();
     bool activatePostprocessing;
 
 
@@ -261,18 +261,13 @@ public:
             };
 
         _program = new GLProgram(gl, postprocProgramSource);
-    }    
+    }
 
     ~this()
     {
-        close();
-    }
-
-    void close()
-    {
-        _program.close();
-        _fbo.close();
-        _screenBuf.close();
+        _program.destroy();
+        _fbo.destroy();
+        _screenBuf.destroy();
     }
 
     void bindFBO()

@@ -85,11 +85,12 @@ final class SDL2
         /// All resources should have been released at this point,
         /// since you won't be able to call any SDL function afterwards.
         /// See_also: $(LINK http://wiki.libsdl.org/SDL_Quit)
-        void close()
+        ~this()
         {
             // restore previously set logging function
             if (_SDL2LoggingRedirected)
             {
+                ensureNotInGC("SDL2");
                 SDL_LogSetOutputFunction(_previousLogCallback, _previousLogUserdata);
                 _SDL2LoggingRedirected = false;
 
@@ -98,15 +99,12 @@ final class SDL2
 
             if (_SDLInitialized)
             {
+                ensureNotInGC("SDL2");
                 SDL_Quit();
                 _SDLInitialized = false;
             }
         }
-
-        ~this()
-        {
-            close();
-        }
+        deprecated("Use .destroy instead") void close(){}
 
         /// Returns: true if a subsystem is initialized.
         /// See_also: $(LINK http://wiki.libsdl.org/SDL_WasInit)
@@ -626,3 +624,25 @@ final class SDL2VideoDisplay
     }
 }
 
+/// Crash if the GC is running.
+/// Useful in destructors to avoid reliance GC resource release.
+package void ensureNotInGC(string resourceName) nothrow
+{
+    debug
+    {
+        import core.exception;
+        try
+        {
+            import core.memory;
+            void* p = GC.malloc(1); // not ideal since it allocates
+            return;
+        }
+        catch(InvalidMemoryOperationError e)
+        {
+
+            import core.stdc.stdio;
+            fprintf(stderr, "Error: clean-up of %s incorrectly depends on destructors called by the GC.\n", resourceName.ptr);
+            assert(false);
+        }
+    }
+}

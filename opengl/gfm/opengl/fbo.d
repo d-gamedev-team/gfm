@@ -43,16 +43,16 @@ final class GLFBO
             _depthStencil = new GLFBOAttachment(this, GL_DEPTH_STENCIL_ATTACHMENT);
 
             setUsage(usage);
-            
+
             _initialized = true;
             _isBound = false;
         }
 
         auto usage() pure const nothrow @nogc
         {
-            return _usage; 
+            return _usage;
         }
-        
+
         void setUsage(Usage usage) nothrow @nogc
         {
             _usage = usage;
@@ -66,16 +66,12 @@ final class GLFBO
             }
         }
 
-        ~this()
-        {
-            close();
-        }
-
         /// Releases the OpenGL FBO resource.
-        void close()
+        ~this()
         {
             if (_initialized)
             {
+                ensureNotInGC("GLFBO");
                 glBindFramebuffer(_target, _handle);
 
                 // detach all
@@ -89,6 +85,7 @@ final class GLFBO
                 _initialized = false;
             }
         }
+        deprecated("Use .destroy instead") void close(){}
 
         /// Binds this FBO.
         /// Throws: $(D OpenGLException) on error.

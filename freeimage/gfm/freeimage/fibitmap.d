@@ -60,20 +60,17 @@ final class FIBitmap
                 throw new FreeImageException("Cannot make FIBitmap from raw data");
         }
 
-        ~this()
-        {
-            close();
-        }
-
         /// Releases the FreeImage bitmap resource.
-        void close()
+        ~this()
         {
             if (_bitmap !is null)
             {
+                ensureNotInGC("FIBitmap");
                 FreeImage_Unload(_bitmap);
                 _bitmap = null;
             }
         }
+        deprecated("Use .destroy instead") void close(){}
 
         /// Saves an image to a file.
         /// Throws: FreeImage on error.

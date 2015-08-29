@@ -47,19 +47,17 @@ final class SDL2Renderer
 
         /// Releases the SDL ressource.
         /// See_also: $(LINK http://wiki.libsdl.org/SDL_DestroyRenderer)
-        void close()
+        ~this()
         {
             if (_renderer !is null)
             {
+                ensureNotInGC("SDL2Renderer");
                 SDL_DestroyRenderer(_renderer);
                 _renderer = null;
             }
         }
 
-        ~this()
-        {
-            close();
-        }
+        deprecated("Use .destroy instead") void close(){}
 
         /// Clear the current rendering target with the drawing color.
         /// See_also: $(LINK http://wiki.libsdl.org/SDL_RenderClear)
