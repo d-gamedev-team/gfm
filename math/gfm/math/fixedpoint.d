@@ -5,18 +5,16 @@ import std.traits;
 import gfm.math.wideint,
        gfm.math.funcs;
 
-static if( __VERSION__ < 2066 ) private enum nogc = 1;
-
 /**
     M.N fixed point integer.
     Only signed integers are supported.
     Only supports basic arithmetic.
     If M + N > 32, then wide integers are used and this will likely be slow.
 
-    Params: 
+    Params:
         M = number of bits before the mark, M > 0
         N = number of bits after the mark, N > 0
- 
+
     Bugs: No proper rounding.
  */
 align(1) struct FixedPoint(int M, int N)

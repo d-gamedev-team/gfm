@@ -12,8 +12,6 @@ import std.traits;
 import std.algorithm: swap;
 
 
-static if( __VERSION__ < 2066 ) private enum nogc = 1;
-
 /// Returns: next pointer aligned with alignment bytes.
 @nogc void* nextAlignedPointer(void* start, size_t alignment) pure nothrow
 {

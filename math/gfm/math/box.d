@@ -3,10 +3,8 @@ module gfm.math.box;
 import std.math,
        std.traits;
 
-import gfm.math.vector, 
+import gfm.math.vector,
        gfm.math.funcs;
-
-static if( __VERSION__ < 2066 ) private enum nogc = 1;
 
 /// N-dimensional half-open interval [a, b[.
 align(1) struct Box(T, int N)
@@ -185,7 +183,7 @@ align(1) struct Box(T, int N)
             return sqrt(squaredDistance(o));
         }
 
-        /// Assumes sorted boxes. 
+        /// Assumes sorted boxes.
         /// This function deals with empty boxes correctly.
         /// Returns: Intersection of two boxes.
         @nogc Box intersection(Box o) pure const nothrow
@@ -211,7 +209,7 @@ align(1) struct Box(T, int N)
             return result;
         }
 
-        /// Assumes sorted boxes. 
+        /// Assumes sorted boxes.
         /// This function deals with empty boxes correctly.
         /// Returns: Intersection of two boxes.
         @nogc bool intersects(Box other) pure const nothrow

@@ -8,8 +8,6 @@ import std.traits,
 
 import gfm.math.funcs;
 
-static if( __VERSION__ < 2066 ) private enum nogc = 1;
-
 /**
  * Generic 1D small vector.
  * Params:

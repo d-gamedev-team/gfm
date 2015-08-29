@@ -10,8 +10,6 @@ import std.math,
        std.range,
        std.math;
 
-static if( __VERSION__ < 2066 ) private enum nogc = 1;
-
 version( D_InlineAsm_X86 )
 {
     version = AsmX86;

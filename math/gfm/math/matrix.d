@@ -11,8 +11,6 @@ import gfm.math.vector,
        gfm.math.shapes,
        gfm.math.quaternion;
 
-static if( __VERSION__ < 2066 ) private enum nogc = 1;
-
 /// Generic non-resizeable matrix with R rows and C columns.
 /// Intended for 3D use (size 3x3 and 4x4).
 /// Important: <b>Matrices here are in row-major order whereas OpenGL is column-major.</b>

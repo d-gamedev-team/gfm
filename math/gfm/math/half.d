@@ -3,12 +3,10 @@ module gfm.math.half;
 import std.traits,
        std.string;
 
-static if( __VERSION__ < 2066 ) private enum nogc = 1;
-
-/** 
+/**
 
   16-bits floating point type (Half).
-  Implements conversion from ftp://www.fox-toolkit.org/pub/fasthalffloatconversion.pdf 
+  Implements conversion from ftp://www.fox-toolkit.org/pub/fasthalffloatconversion.pdf
   by Jeroen van der Zijp.
 
   Supports builtin operations that float support, but computations are performed in 32-bits
@@ -16,7 +14,7 @@ static if( __VERSION__ < 2066 ) private enum nogc = 1;
 
   Bugs: rounding is not IEEE compliant.
 
- */ 
+ */
 align(1) struct half
 {
     align(1):
@@ -37,7 +35,7 @@ align(1) struct half
         }
 
         /// Converts to a pretty string.
-        string toString() const 
+        string toString() const
         {
             return format("%s", value);
         }

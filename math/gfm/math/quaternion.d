@@ -7,8 +7,6 @@ import gfm.math.vector,
        gfm.math.matrix,
        funcs = gfm.math.funcs;
 
-static if( __VERSION__ < 2066 ) private enum nogc = 1;
-
 /// Quaternion implementation.
 /// Holds a rotation + angle in a proper but wild space.
 align(1) struct Quaternion(T)

@@ -14,3 +14,6 @@ examples/build
 output_log.html
 dub.selections.json
 __test__library__
+examples/image_io/image_io
+examples/simplehttp/simplehttp
+examples/simpleshader/simpleshader
