@@ -49,10 +49,6 @@ class ConsoleLogger : Logger
             import colorize.cwrite;
             cwritefln( color("%s: %s", foregroundColor), logLevelToString(payload.logLevel), payload.msg);
         }
-
-        ~this()
-        {
-        }
     }
 
     private

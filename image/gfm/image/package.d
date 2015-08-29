@@ -9,7 +9,7 @@ import ae.utils.graphics.color;
 /// The one function you probably want to use.
 /// Loads an image from a static array.
 /// Might throw internally.
-/// Throws: $(D STBImageException) on error.
+/// Throws: $(D ImageIOException) on error.
 Image!RGBA loadImage(in void[] imageData)
 {
     IFImage ifImage = read_image_from_mem(cast(const(ubyte[])) imageData, 4);
