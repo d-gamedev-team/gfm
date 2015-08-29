@@ -28,7 +28,7 @@ final class ENet
         /// Loads DerelictENet and initializes the ENet library.
         /// Throws: ENetException when enet_initialize fails.
         this(Logger logger = null)
-        {   
+        {
             _logger = logger is null ? new NullLogger() : logger;
 
             ShouldThrow missingSymFunc( string symName )
@@ -74,14 +74,14 @@ final class ENet
                 DerelictENet.load();
             catch(DerelictException e)
                 throw new ENetException(e.msg);
-     
+
             int errCode = enet_initialize();
             if(errCode < 0)
                 throw new ENetException("enet_initialize failed");
 
             _enetInitialized = true;
         }
-    
+
         ~this()
         {
             close();
@@ -93,7 +93,6 @@ final class ENet
             if(_enetInitialized)
             {
                 enet_deinitialize();
-                DerelictENet.unload();
                 _enetInitialized = false;
             }
         }
@@ -107,6 +106,5 @@ final class ENet
     private
     {
         bool _enetInitialized = false;
-
     }
 }

@@ -107,8 +107,6 @@ final class OpenGL
         /// since you won't be able to call any OpenGL function afterwards.
         void close()
         {
-            DerelictGL.unload();
-            DerelictGL3.unload();
         }
 
         /// Redirects OpenGL debug output to the Logger.

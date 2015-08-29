@@ -51,7 +51,6 @@ final class FreeImage
             if (_libInitialized)
             {
                 //FreeImage_DeInitialise(); // documentation says it's useless
-                DerelictFI.unload();
                 _libInitialized = false;
             }
         }

@@ -101,9 +101,6 @@ final class SDL2
                 SDL_Quit();
                 _SDLInitialized = false;
             }
-
-            if (DerelictSDL2.isLoaded())
-                DerelictSDL2.unload();
         }
 
         ~this()

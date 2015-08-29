@@ -73,7 +73,6 @@ final class Assimp
             if (_libInitialized)
             {
                 aiDetachLogStream(&_logStream);
-                DerelictASSIMP3.unload();
                 _libInitialized = false;
             }
         }
