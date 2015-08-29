@@ -19,18 +19,6 @@ else version( D_InlineAsm_X86_64 )
     version = AsmX86;
 }
 
-/// Returns: minimum of a and b.
-deprecated("Use std.algorithm.min instead") @nogc T min(T)(T a, T b) pure nothrow
-{
-    return a < b ? a : b;
-}
-
-/// Returns: maximum of a and b.
-deprecated("Use std.algorithm.max instead") @nogc T max(T)(T a, T b) pure nothrow
-{
-    return a > b ? a : b;
-}
-
 /// Convert from radians to degrees.
 @nogc T degrees(T)(T x) pure nothrow if (!isIntegral!T)
 {
