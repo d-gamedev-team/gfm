@@ -206,11 +206,27 @@ unittest
     auto a = scoped!A();
 }
 
-/// Crash if the GC is running.
+/// Crash if the GC is running, in debug mode.
 /// Useful in destructors to avoid reliance GC resource release.
-void ensureNotInGC() nothrow
+void ensureNotInGC(string resourceName = null) nothrow
 {
-    assert(!isCalledByGC(), "Resource clean-up depends on destructors called by the GC");
+    debug
+    {
+        import core.exception;
+        try
+        {
+            import core.memory;
+            void* p = GC.malloc(1); // not ideal since it allocates
+            return;
+        }
+        catch(InvalidMemoryOperationError e)
+        {
+            import core.stdc.stdio;
+            fprintf(stderr, "Error: clean-up of %s incorrectly depends on destructors called by the GC.\n",
+                            resourceName ? resourceName.ptr : "a resource".ptr);
+            assert(false); // crash
+        }
+    }
 }
 
 
