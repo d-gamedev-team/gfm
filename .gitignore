@@ -1,3 +1,7 @@
+*.a
+*.sublime-project
+*.sublime-workspace
+.DS_Store
 *.sln
 *.suo
 *.lib
