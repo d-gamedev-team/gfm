@@ -41,7 +41,7 @@ final class SDL2Texture
         {
             if (_handle !is null)
             {
-                ensureNotInGC("SDL2Texture");
+                debug ensureNotInGC("SDL2Texture");
                 SDL_DestroyTexture(_handle);
                 _handle = null;
             }

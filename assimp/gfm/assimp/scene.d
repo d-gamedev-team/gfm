@@ -56,7 +56,7 @@ class AssimpScene
         {
             if (_scene !is null)
             {
-                ensureNotInGC("AssimpScene");
+                debug ensureNotInGC("AssimpScene");
                 aiReleaseImport(_scene);
                 _scene = null;
             }

@@ -48,7 +48,7 @@ final class SDLTTF
         {
             if (_SDLTTFInitialized)
             {
-                ensureNotInGC("SDLTTF");
+                debug ensureNotInGC("SDLTTF");
                 _SDLTTFInitialized = false;
                 TTF_Quit();
             }
@@ -97,7 +97,7 @@ final class SDLFont
         {
             if (_font !is null)
             {
-                ensureNotInGC("SDLFont");
+                debug ensureNotInGC("SDLFont");
                 TTF_CloseFont(_font);
                 _font = null;
             }

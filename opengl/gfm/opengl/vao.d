@@ -27,7 +27,7 @@ final class GLVAO
         {
             if (_initialized)
             {
-                ensureNotInGC("GLVAO");
+                debug ensureNotInGC("GLVAO");
                 glDeleteVertexArrays(1, &_handle);
                 _initialized = false;
             }

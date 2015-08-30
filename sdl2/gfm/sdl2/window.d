@@ -74,14 +74,14 @@ final class SDL2Window
         {
             if (_glContext !is null)
             {
-                ensureNotInGC("SDL2Window");
+                debug ensureNotInGC("SDL2Window");
                 _glContext.destroy();
                 _glContext = null;
             }
 
             if (_window !is null)
             {
-                ensureNotInGC("SDL2Window");
+                debug ensureNotInGC("SDL2Window");
                 SDL_DestroyWindow(_window);
                 _window = null;
             }

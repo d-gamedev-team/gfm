@@ -90,7 +90,7 @@ final class SDL2
             // restore previously set logging function
             if (_SDL2LoggingRedirected)
             {
-                ensureNotInGC("SDL2");
+                debug ensureNotInGC("SDL2");
                 SDL_LogSetOutputFunction(_previousLogCallback, _previousLogUserdata);
                 _SDL2LoggingRedirected = false;
 
@@ -99,7 +99,7 @@ final class SDL2
 
             if (_SDLInitialized)
             {
-                ensureNotInGC("SDL2");
+                debug ensureNotInGC("SDL2");
                 SDL_Quit();
                 _SDLInitialized = false;
             }
@@ -628,21 +628,18 @@ final class SDL2VideoDisplay
 /// Useful in destructors to avoid reliance GC resource release.
 package void ensureNotInGC(string resourceName) nothrow
 {
-    debug
+    import core.exception;
+    try
     {
-        import core.exception;
-        try
-        {
-            import core.memory;
-            void* p = GC.malloc(1); // not ideal since it allocates
-            return;
-        }
-        catch(InvalidMemoryOperationError e)
-        {
+        import core.memory;
+        cast(void) GC.malloc(1); // not ideal since it allocates
+        return;
+    }
+    catch(InvalidMemoryOperationError e)
+    {
 
-            import core.stdc.stdio;
-            fprintf(stderr, "Error: clean-up of %s incorrectly depends on destructors called by the GC.\n", resourceName.ptr);
-            assert(false);
-        }
+        import core.stdc.stdio;
+        fprintf(stderr, "Error: clean-up of %s incorrectly depends on destructors called by the GC.\n", resourceName.ptr);
+        assert(false);
     }
 }

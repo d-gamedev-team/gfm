@@ -37,7 +37,7 @@ final class GLBuffer
         {
             if (_initialized)
             {
-                ensureNotInGC("GLBuffer");
+                debug ensureNotInGC("GLBuffer");
                 glDeleteBuffers(1, &_buffer);
                 _initialized = false;
             }

@@ -46,7 +46,7 @@ final class SDLImage
         {
             if (_SDLImageInitialized)
             {
-                ensureNotInGC("SDLImage");
+                debug ensureNotInGC("SDLImage");
                 _SDLImageInitialized = false;
                 IMG_Quit();
             }

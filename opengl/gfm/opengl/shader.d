@@ -38,7 +38,7 @@ final class GLShader
         {
             if (_initialized)
             {
-                ensureNotInGC("GLShader");
+                debug ensureNotInGC("GLShader");
                 glDeleteShader(_shader);
                 _initialized = false;
             }

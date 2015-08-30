@@ -33,7 +33,7 @@ class SDL2Timer
         {
             if (_id != 0)
             {
-                ensureNotInGC("SDL2Timer");
+                debug ensureNotInGC("SDL2Timer");
                 SDL_RemoveTimer(_id);
                 _id = 0;
             }

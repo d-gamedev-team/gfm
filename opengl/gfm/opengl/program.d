@@ -200,7 +200,7 @@ final class GLProgram
         {
             if (_initialized)
             {
-                ensureNotInGC("GLProgram");
+                debug ensureNotInGC("GLProgram");
                 glDeleteProgram(_program);
                 _initialized = false;
             }

@@ -36,7 +36,7 @@ class GLTexture
         {
             if (_initialized)
             {
-                ensureNotInGC("GLTexture");
+                debug ensureNotInGC("GLTexture");
                 glDeleteTextures(1, &_handle);
                 _initialized = false;
             }

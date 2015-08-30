@@ -65,7 +65,7 @@ final class FIBitmap
         {
             if (_bitmap !is null)
             {
-                ensureNotInGC("FIBitmap");
+                debug ensureNotInGC("FIBitmap");
                 FreeImage_Unload(_bitmap);
                 _bitmap = null;
             }

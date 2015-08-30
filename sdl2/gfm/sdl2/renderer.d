@@ -51,7 +51,7 @@ final class SDL2Renderer
         {
             if (_renderer !is null)
             {
-                ensureNotInGC("SDL2Renderer");
+                debug ensureNotInGC("SDL2Renderer");
                 SDL_DestroyRenderer(_renderer);
                 _renderer = null;
             }

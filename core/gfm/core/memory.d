@@ -155,17 +155,12 @@ unittest
 
 /// Destructors called by the GC enjoy a variety of limitations and
 /// relying on them is dangerous.
-/// See_also: $(URL http://p0nce.github.io/d-idioms/#The-trouble-with-class-destructors)
+/// See_also: $(WEB p0nce.github.io/d-idioms/#The-trouble-with-class-destructors)
 /// Example:
 /// ---
 /// class Resource
 /// {
 ///     ~this()
-///     {
-///         close();
-///     }
-///
-///     void close()
 ///     {
 ///         if (!alreadyClosed)
 ///         {
@@ -183,7 +178,7 @@ bool isCalledByGC() nothrow
     try
     {
         import core.memory;
-        void* p = GC.malloc(1); // not ideal since it allocates
+        cast(void) GC.malloc(1); // not ideal since it allocates
         return false;
     }
     catch(InvalidMemoryOperationError e)
@@ -206,26 +201,24 @@ unittest
     auto a = scoped!A();
 }
 
-/// Crash if the GC is running, in debug mode.
+/// Crash if the GC is running.
 /// Useful in destructors to avoid reliance GC resource release.
+/// See_also: $(WEB p0nce.github.io/d-idioms/#GC-proof-resource-class)
 void ensureNotInGC(string resourceName = null) nothrow
 {
-    debug
+    import core.exception;
+    try
     {
-        import core.exception;
-        try
-        {
-            import core.memory;
-            void* p = GC.malloc(1); // not ideal since it allocates
-            return;
-        }
-        catch(InvalidMemoryOperationError e)
-        {
-            import core.stdc.stdio;
-            fprintf(stderr, "Error: clean-up of %s incorrectly depends on destructors called by the GC.\n",
-                            resourceName ? resourceName.ptr : "a resource".ptr);
-            assert(false); // crash
-        }
+        import core.memory;
+        cast(void) GC.malloc(1); // not ideal since it allocates
+        return;
+    }
+    catch(InvalidMemoryOperationError e)
+    {
+        import core.stdc.stdio;
+        fprintf(stderr, "Error: clean-up of %s incorrectly depends on destructors called by the GC.\n",
+                        resourceName ? resourceName.ptr : "a resource".ptr);
+        assert(false); // crash
     }
 }
 

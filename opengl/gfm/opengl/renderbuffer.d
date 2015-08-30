@@ -71,7 +71,7 @@ final class GLRenderBuffer
         {
             if (_initialized)
             {
-                ensureNotInGC("GLRenderer");
+                debug ensureNotInGC("GLRenderer");
                 _initialized = false;
                 glDeleteRenderbuffers(1, &_handle);
             }

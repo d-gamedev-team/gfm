@@ -57,7 +57,7 @@ final class SDL2Surface
         {
             if (_surface !is null)
             {
-                ensureNotInGC("SDL2Surface");
+                debug ensureNotInGC("SDL2Surface");
                 if (_handleOwned == Owned.YES)
                     SDL_FreeSurface(_surface);
                 _surface = null;

@@ -69,7 +69,7 @@ final class Packet
     {
         if(_handle !is null && !_destroyed)
         {
-            ensureNotInGC("Packet");
+            debug ensureNotInGC("Packet");
             enet_packet_destroy(_handle);
             _handle = null;
         }
