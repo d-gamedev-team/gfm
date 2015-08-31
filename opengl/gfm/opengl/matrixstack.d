@@ -2,6 +2,8 @@ module gfm.opengl.matrixstack;
 
 import std.c.stdlib : malloc, free;
 
+import gfm.opengl.opengl;
+
 import gfm.math.vector,
        gfm.math.matrix;
 
@@ -27,20 +29,17 @@ final class MatrixStack(int R, T) if (R == 3 || R == 4)
             loadIdentity();
         }
 
-        ~this()
-        {
-            close();
-        }
-
         /// Releases the matrix stack memory.
-        void close()
+        ~this()
         {
             if (_matrices !is null)
             {
+                ensureNotInGC("MatrixStack");
                 free(_matrices);
                 _matrices = null;
             }
         }
+        deprecated("Use .destroy instead") void close(){}
 
         /// Replacement for $(D glLoadIdentity).
         void loadIdentity() pure nothrow
@@ -158,13 +157,16 @@ final class MatrixStack(int R, T) if (R == 3 || R == 4)
 unittest
 {
     auto s = new MatrixStack!(4, double)();
+    scope(exit) destroy(s);
     s.loadIdentity();
     s.push();
     s.pop();
     s.translate(vec3d(4, 5, 6));
     s.scale(vec3d(0.5));
 
+
     auto t = new MatrixStack!(3, float)();
+    scope(exit) destroy(t);
     t.loadIdentity();
     t.push();
     t.pop();

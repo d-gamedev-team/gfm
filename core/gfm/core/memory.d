@@ -12,8 +12,6 @@ import std.traits;
 import std.algorithm: swap;
 
 
-static if( __VERSION__ < 2066 ) private enum nogc = 1;
-
 /// Returns: next pointer aligned with alignment bytes.
 @nogc void* nextAlignedPointer(void* start, size_t alignment) pure nothrow
 {
@@ -155,6 +153,76 @@ unittest
 }
 
 
+/// Destructors called by the GC enjoy a variety of limitations and
+/// relying on them is dangerous.
+/// See_also: $(WEB p0nce.github.io/d-idioms/#The-trouble-with-class-destructors)
+/// Example:
+/// ---
+/// class Resource
+/// {
+///     ~this()
+///     {
+///         if (!alreadyClosed)
+///         {
+///             if (isCalledByGC())
+///                 assert(false, "Resource release relies on Garbage Collection");
+///             alreadyClosed = true;
+///             releaseResource();
+///         }
+///     }
+/// }
+/// ---
+bool isCalledByGC() nothrow
+{
+    import core.exception;
+    try
+    {
+        import core.memory;
+        cast(void) GC.malloc(1); // not ideal since it allocates
+        return false;
+    }
+    catch(InvalidMemoryOperationError e)
+    {
+        return true;
+    }
+}
+
+unittest
+{
+    import std.stdio;
+    class A
+    {
+        ~this()
+        {
+            assert(!isCalledByGC());
+        }
+    }
+    import std.typecons;
+    auto a = scoped!A();
+}
+
+/// Crash if the GC is running.
+/// Useful in destructors to avoid reliance GC resource release.
+/// See_also: $(WEB p0nce.github.io/d-idioms/#GC-proof-resource-class)
+void ensureNotInGC(string resourceName = null) nothrow
+{
+    import core.exception;
+    try
+    {
+        import core.memory;
+        cast(void) GC.malloc(1); // not ideal since it allocates
+        return;
+    }
+    catch(InvalidMemoryOperationError e)
+    {
+        import core.stdc.stdio;
+        fprintf(stderr, "Error: clean-up of %s incorrectly depends on destructors called by the GC.\n",
+                        resourceName ? resourceName.ptr : "a resource".ptr);
+        assert(false); // crash
+    }
+}
+
+
 /// Allocates and construct a struct or class object.
 /// Returns: Newly allocated object.
 auto mallocEmplace(T, Args...)(Args args)
@@ -266,7 +334,7 @@ void debugBreak() nothrow @nogc
     else version( GNU )
     {
         // __builtin_trap() is not the same thing unfortunately
-        asm 
+        asm
         {
             "int $0x03" : : : ;
         }
@@ -280,6 +348,12 @@ void debugBreak() nothrow @nogc
 auto assumeNoGC(T) (T t) if (isFunctionPointer!T || isDelegate!T)
 {
     enum attrs = functionAttributes!T | FunctionAttribute.nogc;
+    return cast(SetFunctionAttributes!(T, functionLinkage!T, attrs)) t;
+}
+
+auto assumeNothrow(T) (T t) if (isFunctionPointer!T || isDelegate!T)
+{
+    enum attrs = functionAttributes!T | FunctionAttribute.nothrow_;
     return cast(SetFunctionAttributes!(T, functionLinkage!T, attrs)) t;
 }
 
@@ -309,7 +383,7 @@ unittest
 
 /// Must return -1 if a < b
 ///              0 if a == b
-///              1 if a > b  
+///              1 if a > b
 alias nogcComparisonFunction(T) = int delegate(in T a, in T b) nothrow @nogc;
 
 /// @nogc quicksort
@@ -327,7 +401,7 @@ void nogc_qsort(T)(T[] array, nogcComparisonFunction!T comparison) nothrow @nogc
         swap(arr[mid],arr[left]);
         int i = left + 1;
         int j = right;
-        while (i <= j) 
+        while (i <= j)
         {
             while(i <= j && comparison(arr[i], pivot) <= 0 )
                 i++;

@@ -35,7 +35,7 @@ final class Peer
         packet._dirty = true;
     }
 
-    /** 
+    /**
      * Attempts to dequeue any incoming queued packet.
      * Returns: A ReceivedPacket struct, with packet member being null if no
      *          packet is received.
@@ -94,39 +94,39 @@ final class Peer
     }
 
     // Todo: Add all
-    /// Trivial getters for _ENetPeer struct.    
+    /// Trivial getters for _ENetPeer struct.
     ENetAddress address() pure const nothrow
-    { 
-        return _handle.address; 
+    {
+        return _handle.address;
     }
 
     size_t channelCount() pure const nothrow
-    { 
-        return _handle.channelCount; 
+    {
+        return _handle.channelCount;
     }
 
     uint incomingBandwidth() pure const nothrow
-    { 
-        return _handle.incomingBandwidth; 
+    {
+        return _handle.incomingBandwidth;
     }
 
     uint outgoingBandwidth() pure const nothrow
-    { 
-        return _handle.outgoingBandwidth; 
+    {
+        return _handle.outgoingBandwidth;
     }
 
     uint packetLoss() pure const nothrow
-    { 
-        return _handle.packetLoss; 
+    {
+        return _handle.packetLoss;
     }
 
     uint roundTripTime() pure const nothrow
-    { 
-        return _handle.roundTripTime; 
+    {
+        return _handle.roundTripTime;
     }
 
     ENetPeerState state() pure const nothrow
-    { 
-        return _handle.state; 
+    {
+        return _handle.state;
     }
 }

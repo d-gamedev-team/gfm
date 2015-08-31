@@ -3,10 +3,8 @@ module gfm.math.rational;
 import std.traits,
        std.string;
 
-static if( __VERSION__ < 2066 ) private enum nogc = 1;
-
 /**
-  
+
   A rational number, always in reduced form. Supports basic arithmetic.
 
   Bugs: Remove this module once std.rational is here.
@@ -21,19 +19,19 @@ align(1) struct Rational
         long denom; /// Denominator.
 
         /// Construct a Rational from an integer.
-        @nogc this(long n) pure nothrow 
+        @nogc this(long n) pure nothrow
         {
             opAssign!long(n);
         }
 
         /// Construct a Rational from another Rational.
-        @nogc this(Rational f) pure nothrow 
+        @nogc this(Rational f) pure nothrow
         {
             opAssign!Rational(f);
         }
 
         /// Construct a Rational from numerator and denominator.
-        @nogc this(long numerator, long denominator) pure nothrow 
+        @nogc this(long numerator, long denominator) pure nothrow
         {
             num = numerator;
             denom = denominator;
@@ -41,7 +39,7 @@ align(1) struct Rational
         }
 
         /// Converts to pretty string.
-        string toString() const 
+        string toString() const
         {
             return format("%s/%s", num, denom);
         }
@@ -68,7 +66,7 @@ align(1) struct Rational
             return this;
         }
 
-        @nogc Rational opBinary(string op, T)(T o) pure const nothrow 
+        @nogc Rational opBinary(string op, T)(T o) pure const nothrow
         {
             Rational r = this;
             Rational y = o;

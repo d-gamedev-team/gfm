@@ -33,20 +33,17 @@ final class GLShader
             compile();
         }
 
-        ~this()
-        {
-            close();
-        }
-
         /// Releases the OpenGL shader resource.
-        void close()
+        ~this()
         {
             if (_initialized)
             {
+                debug ensureNotInGC("GLShader");
                 glDeleteShader(_shader);
                 _initialized = false;
             }
         }
+        deprecated("Use .destroy instead") void close(){}
 
         /// Load source code for this shader.
         /// Throws: $(D OpenGLException) on error.
@@ -91,7 +88,7 @@ final class GLShader
                 throw new OpenGLException("shader did not compile");
         }
 
-        /// Gets the compiling report. 
+        /// Gets the compiling report.
         /// Returns: Log output of the GLSL compiler. Can return null!
         /// Throws: $(D OpenGLException) on error.
         const(char)[] getInfoLog()

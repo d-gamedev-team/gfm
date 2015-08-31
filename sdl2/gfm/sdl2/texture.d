@@ -36,20 +36,17 @@ final class SDL2Texture
                 _sdl2.throwSDL2Exception("SDL_CreateTextureFromSurface");
         }
 
-        ~this()
-        {
-            close();
-        }
-
         /// Releases the SDL resource.
-        void close() 
+        ~this()
         {
             if (_handle !is null)
             {
+                debug ensureNotInGC("SDL2Texture");
                 SDL_DestroyTexture(_handle);
                 _handle = null;
             }
         }
+        deprecated("Use .destroy instead") void close(){}
 
         /// See_also: $(LINK http://wiki.libsdl.org/SDL_SetTextureBlendMode)
         /// Throws: $(D SDL2Exception) on error.
@@ -153,7 +150,7 @@ final class SDL2Texture
                 _sdl2.throwSDL2Exception("SDL_UpdateTexture");
         }
 
-        /// Update a planar YV12 or IYUV texture with new pixel data. 
+        /// Update a planar YV12 or IYUV texture with new pixel data.
         /// See_also: $(LINK http://wiki.libsdl.org/SDL_UpdateYUVTexture)
         /// Throws: $(D SDL2Exception) on error.
         void updateYUVTexture(const(ubyte)* Yplane, int Ypitch, const(ubyte)* Uplane, int Upitch, const Uint8* Vplane, int Vpitch)

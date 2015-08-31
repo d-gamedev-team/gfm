@@ -7,7 +7,8 @@ import derelict.opengl3.gl3;
 import gfm.opengl.opengl;
 
 /// OpenGL Vertex Array Object wrapper.
-final class VAO
+deprecated("Use GLVAO instead") alias VAO = GLVAO;
+final class GLVAO
 {
     public
     {
@@ -21,20 +22,17 @@ final class VAO
             _initialized = true;
         }
 
-        ~this()
-        {
-            close();
-        }
-
         /// Releases the OpenGL VAO resource.
-        void close()
+        ~this()
         {
             if (_initialized)
             {
+                debug ensureNotInGC("GLVAO");
                 glDeleteVertexArrays(1, &_handle);
                 _initialized = false;
             }
         }
+        deprecated("Use .destroy instead") void close(){}
 
         /// Uses this VAO.
         /// Throws: $(D OpenGLException) on error.
@@ -46,7 +44,7 @@ final class VAO
 
         /// Unuses this VAO.
         /// Throws: $(D OpenGLException) on error.
-        void unbind() 
+        void unbind()
         {
             glBindVertexArray(0);
             _gl.runtimeCheck();

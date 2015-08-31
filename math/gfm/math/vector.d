@@ -8,8 +8,6 @@ import std.traits,
 
 import gfm.math.funcs;
 
-static if( __VERSION__ < 2066 ) private enum nogc = 1;
-
 /**
  * Generic 1D small vector.
  * Params:
@@ -53,112 +51,52 @@ nothrow:
             }
         }
 
-        static if (N == 2)
+        @nogc this(Args...)(Args args) pure nothrow
         {
-            /// Creates a vector of 2 elements.
-            @nogc this(X : T, Y : T)(X x_, Y y_) pure nothrow
+            static if (args.length == 1)
             {
-                x = x_;
-                y = y_;
+                // Construct a Vector from a single value.
+                opAssign!(Args[0])(args[0]);
             }
-        }
-        else static if (N == 3)
-        {
-            /// Creates a vector of 3 elements.
-            @nogc this(X : T, Y : T, Z : T)(X x_, Y y_, Z z_) pure nothrow
+            else
             {
-                x = x_;
-                y = y_;
-                z = z_;
+                int index = 0;
+                foreach(arg; args)
+                {
+                    static if (isAssignable!(T, typeof(arg)))
+                    {
+                        v[index] = arg;
+                        index++; // has to be on its own line (DMD 2.068)
+                    }
+                    else static if (is(typeof(arg._isVector)) && isAssignable!(T, arg._T))
+                    {
+                        mixin(generateLoopCode!("v[index + @] = arg[@];", arg._N)());
+                        index += arg._N;
+                    }
+                    else
+                        static assert(false, "Unrecognized argument in Vector constructor");
+                }
+                assert(index == N, "Bad arguments in Vector constructor");
             }
-
-            /// Creates a vector of 3 elements.
-            @nogc this(X : T, Y : T)(Vector!(X, 2) xy_, Y z_) pure nothrow
-            {
-                x = xy_.x;
-                y = xy_.y;
-                z = z_;
-            }
-
-            /// Creates a vector of 3 elements.
-            @nogc this(X : T, Y : T)(X x_, Vector!(Y, 2) yz_) pure nothrow
-            {
-                x = x_;
-                y = yz_.x;
-                z = yz_.y;
-            }
-        }
-        else static if (N == 4)
-        {
-            /// Creates a vector of 4 elements.
-            @nogc this(X : T, Y : T, Z : T, W : T)(X x_, Y y_, Z z_, W w_) pure nothrow
-            {
-                x = x_;
-                y = y_;
-                z = z_;
-                w = w_;
-            }
-
-            /// Creates a vector of 4 elements.
-            @nogc this(X : T, Y : T)(Vector!(X, 2) xy_, Vector!(Y, 2)zw_) pure nothrow
-            {
-                x = xy_.x;
-                y = xy_.y;
-                z = zw_.x;
-                w = zw_.y;
-            }
-
-            /// Creates a vector of 4 elements.
-            @nogc this(X : T, Y : T, Z : T)(Vector!(X, 2) xy_, Y z_, Z w_) pure nothrow
-            {
-                x = xy_.x;
-                y = xy_.y;
-                z = z_;
-                w = w_;
-            }
-
-            /// Creates a vector of 4 elements.
-            @nogc this(X : T, Y : T)(Vector!(X, 3) xyz_, Y w_) pure nothrow
-            {
-                x = xyz_.x;
-                y = xyz_.y;
-                z = xyz_.z;
-                w = w_;
-            }
-
-            /// Creates a vector of 4 elements.
-            @nogc this(X : T, Y : T)(X x_, Vector!(X, 3) yzw_) pure nothrow
-            {
-                x = x_;
-                y = yzw_.x;
-                z = yzw_.y;
-                w = yzw_.z;
-            }
-        }
-
-        /// Construct a Vector from a value.
-        @nogc this(U)(U x) pure nothrow
-        {
-            opAssign!U(x);
         }
 
         /// Assign a Vector from a compatible type.
-        @nogc ref Vector opAssign(U)(U x) pure nothrow if (is(U: T))
+        @nogc ref Vector opAssign(U)(U x) pure nothrow if (isAssignable!(T, U))
         {
-            v[] = x; // copy to each component
+            mixin(generateLoopCode!("v[@] = x;", N)()); // copy to each component
             return this;
         }
 
         /// Assign a Vector with a static array type.
-        @nogc ref Vector opAssign(U)(U arr) pure nothrow if ((isStaticArray!(U) && is(typeof(arr[0]) : T) && (arr.length == N)))
+        @nogc ref Vector opAssign(U)(U arr) pure nothrow if ((isStaticArray!(U) && isAssignable!(T, typeof(arr[0])) && (arr.length == N)))
         {
-            v[] = arr[];
+            mixin(generateLoopCode!("v[@] = arr[@];", N)());
             return this;
         }
 
         /// Assign with a dynamic array.
         /// Size is checked in debug-mode.
-        @nogc ref Vector opAssign(U)(U arr) pure nothrow if (isDynamicArray!(U) && is(typeof(arr[0]) : T))
+        @nogc ref Vector opAssign(U)(U arr) pure nothrow if (isDynamicArray!(U) && isAssignable!(T, typeof(arr[0])))
         {
             assert(arr.length == N);
             mixin(generateLoopCode!("v[@] = arr[@];", N)());
@@ -174,7 +112,7 @@ nothrow:
 
         /// Assign from other vectors types (same size, compatible type).
         @nogc ref Vector opAssign(U)(U x) pure nothrow if (is(typeof(U._isVector))
-                                                       && is(U._T : T)
+                                                       && isAssignable!(T, U._T)
                                                        && (!is(U: Vector))
                                                        && (U._N == _N))
         {
@@ -692,6 +630,8 @@ unittest
     assert(x.xxxxxxx == [4, 4, 4, 4, 4, 4, 4]);
     assert(x.abgr == [10, 83, 1, 4]);
     assert(a != b);
+    x = vec4i(x.xyz, 166);
+    assert(x == [4, 1, 83, 166]);
 
     vec2l e = a;
     vec2l f = a + b;
@@ -731,5 +671,15 @@ unittest
     vec4ub j;
 
     assert(lerp(vec2f(-10, -1), vec2f(10, 1), 0.5) == vec2f(0, 0));
+
+    // vectors of user-defined types
+    import gfm.math.half;
+    alias Vector!(half, 2) vec2h;
+    vec2h k = vec2h(1.0f, 2.0f);
+
+    // larger vectors
+    alias Vector!(float, 5) vec5f;
+    vec5f l = vec5f(1, 2.0f, 3.0, k.x.toFloat(), 5.0L);
+    l = vec5f(l.xyz, vec2i(1, 2));
 }
 

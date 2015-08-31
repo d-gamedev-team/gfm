@@ -13,7 +13,7 @@ final class GLRenderBuffer
     public
     {
         /// <p>Creates an OpenGL renderbuffer.</p>
-        /// <p>If asking for a multisampled render buffer fails, 
+        /// <p>If asking for a multisampled render buffer fails,
         /// a non multisampled buffer will be created instead.</p>
         /// Throws: $(D OpenGLException) if creation failed.
         this(OpenGL gl, GLenum internalFormat, int width, int height, int samples = 0)
@@ -21,7 +21,7 @@ final class GLRenderBuffer
             _gl = gl;
             glGenRenderbuffers(1, &_handle);
             gl.runtimeCheck();
-            
+
             use();
             scope(exit) unuse();
             if (samples > 1)
@@ -32,7 +32,7 @@ final class GLRenderBuffer
                     gl._logger.warningf("render-buffer multisampling is not supported, fallback to non-multisampled");
                     goto non_mutisampled;
                 }
-                
+
                 int maxSamples;
                 glGetIntegerv(GL_MAX_SAMPLES, &maxSamples);
                 if (maxSamples < 1)
@@ -66,20 +66,17 @@ final class GLRenderBuffer
             _initialized = true;
         }
 
-        ~this()
-        {
-            close();
-        }
-
         /// Releases the OpenGL renderbuffer resource.
-        void close()
+        ~this()
         {
             if (_initialized)
             {
+                debug ensureNotInGC("GLRenderer");
                 _initialized = false;
                 glDeleteRenderbuffers(1, &_handle);
             }
         }
+        deprecated("Use .destroy instead") void close(){}
 
         /// Binds this renderbuffer.
         /// Throws: $(D OpenGLException) on error.

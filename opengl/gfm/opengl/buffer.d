@@ -32,20 +32,17 @@ final class GLBuffer
             setData(buffer);
         }
 
-        ~this()
-        {
-            close();
-        }
-
         /// Releases the OpenGL buffer resource.
-        void close()
+        ~this()
         {
             if (_initialized)
             {
+                debug ensureNotInGC("GLBuffer");
                 glDeleteBuffers(1, &_buffer);
                 _initialized = false;
             }
         }
+        deprecated("Use .destroy instead") void close(){}
 
         /// Returns: Size of buffer in bytes.
         @property size_t size() pure const nothrow

@@ -10,8 +10,6 @@ import std.math,
        std.range,
        std.math;
 
-static if( __VERSION__ < 2066 ) private enum nogc = 1;
-
 version( D_InlineAsm_X86 )
 {
     version = AsmX86;
@@ -19,18 +17,6 @@ version( D_InlineAsm_X86 )
 else version( D_InlineAsm_X86_64 )
 {
     version = AsmX86;
-}
-
-/// Returns: minimum of a and b.
-deprecated("Use std.algorithm.min instead") @nogc T min(T)(T a, T b) pure nothrow
-{
-    return a < b ? a : b;
-}
-
-/// Returns: maximum of a and b.
-deprecated("Use std.algorithm.max instead") @nogc T max(T)(T a, T b) pure nothrow
-{
-    return a > b ? a : b;
 }
 
 /// Convert from radians to degrees.

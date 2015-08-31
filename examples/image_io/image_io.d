@@ -24,6 +24,6 @@ void main(string[] args)
         return RGBA(grey, grey, grey);
     }
 
-    auto processed = stbiLoadImageAE(std.file.read(source)).colorMap!toGrey.toPNG();
+    auto processed = loadImage(std.file.read(source)).colorMap!toGrey.toPNG();
     std.file.write("output.png", processed);
 }

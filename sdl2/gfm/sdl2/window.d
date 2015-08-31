@@ -70,26 +70,23 @@ final class SDL2Window
 
         /// Releases the SDL resource.
         /// See_also: $(LINK http://wiki.libsdl.org/SDL_DestroyWindow)
-        final void close()
+        ~this()
         {
             if (_glContext !is null)
             {
-                _glContext.close();
+                debug ensureNotInGC("SDL2Window");
+                _glContext.destroy();
                 _glContext = null;
             }
 
             if (_window !is null)
             {
+                debug ensureNotInGC("SDL2Window");
                 SDL_DestroyWindow(_window);
                 _window = null;
             }
         }
-
-        ///
-        ~this()
-        {
-            close();
-        }
+        deprecated("Use .destroy instead") void close(){}
 
         /// See_also: $(LINK http://wiki.libsdl.org/SDL_SetWindowFullscreen)
         /// Throws: $(D SDL2Exception) on error.

@@ -64,20 +64,17 @@ final class Packet
         this(enet, &data, 1, flags);
     }
 
-    ~this()
-    {
-        close();
-    }
-
     /// Cleans up the internal ENetPacket.
-    void close()
+    ~this()
     {
         if(_handle !is null && !_destroyed)
         {
+            debug ensureNotInGC("Packet");
             enet_packet_destroy(_handle);
             _handle = null;
         }
     }
+    deprecated("Use .destroy instead") void close(){}
 
     /**
      * Resizes the ENetPacket.
@@ -92,7 +89,7 @@ final class Packet
             {
                 if(dataLength > _largestPacketSize)
                     _enet._logger.warning("Packet size is larger than underlying data");
-                
+
                 auto errCode = enet_packet_resize(_handle, dataLength);
                 if(errCode < 0)
                     throw new ENetException("enet_packet_resize failed");

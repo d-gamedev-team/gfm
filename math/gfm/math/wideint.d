@@ -2,18 +2,16 @@
   Provide a 2^N-bit integer type.
   Guaranteed to never allocate and expected binary layout
   Recursive implementation with very slow division.
- 
+
   <b>Supports all operations that builtin integers support.</b>
-  
+
   Bugs: it's not sure if the unsigned operand would take precedence in a comparison/division.
-  TODO: add literals.  
+  TODO: add literals.
  */
 module gfm.math.wideint;
 
 import std.traits,
        std.ascii;
-
-static if( __VERSION__ < 2066 ) private enum nogc = 1;
 
 /// Wide signed integer.
 /// Params:
@@ -73,7 +71,7 @@ private template integer(bool signed, int bits)
         else
             alias ulong integer;
     }
-    else 
+    else
     {
         alias wideIntImpl!(signed, bits) integer;
     }
@@ -138,7 +136,7 @@ align(1) struct wideIntImpl(bool signed, int bits)
     }
 
     /// Assign with a wide integer of the same size (sign is lost).
-    @nogc ref self opAssign(T)(T n) pure nothrow if (is(typeof(T._isWideIntImpl)) && T._bits == bits) 
+    @nogc ref self opAssign(T)(T n) pure nothrow if (is(typeof(T._isWideIntImpl)) && T._bits == bits)
     {
         hi = n.hi;
         lo = n.lo;
@@ -146,7 +144,7 @@ align(1) struct wideIntImpl(bool signed, int bits)
     }
 
     /// Assign with a smaller wide integer (sign is extended accordingly).
-    @nogc ref self opAssign(T)(T n) pure nothrow if (is(typeof(T._isWideIntImpl)) && T._bits < bits) 
+    @nogc ref self opAssign(T)(T n) pure nothrow if (is(typeof(T._isWideIntImpl)) && T._bits < bits)
     {
         static if (T._signed)
         {
@@ -156,7 +154,7 @@ align(1) struct wideIntImpl(bool signed, int bits)
 
             // will also sign extend as well if needed
             lo = cast(sub_int_t)n;
-            return this;            
+            return this;
         }
         else
         {
@@ -453,7 +451,7 @@ align(1) struct wideIntImpl(bool signed, int bits)
 }
 
 private struct Internals(int bits)
-{    
+{
     alias wideIntImpl!(true, bits) wint_t;
     alias wideIntImpl!(false, bits) uwint_t;
 
@@ -471,7 +469,7 @@ private struct Internals(int bits)
 
             uwint_t N = 0;
             uwint_t cDivisor = divisor;
-            while (cDividend > cDivisor) 
+            while (cDividend > cDivisor)
             {
                 if (cDivisor.signBit())
                     break;
@@ -491,7 +489,7 @@ private struct Internals(int bits)
     }
 
     @nogc static void signedDivide(wint_t dividend, wint_t divisor,
-                                   out wint_t quotient, out wint_t remainder) pure nothrow 
+                                   out wint_t quotient, out wint_t remainder) pure nothrow
     {
         uwint_t q, r;
         unsignedDivide(uwint_t(abs(dividend)), uwint_t(abs(divisor)), q, r);

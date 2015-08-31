@@ -43,18 +43,14 @@ final class FreeImage
 
         ~this()
         {
-            close();
-        }
-
-        void close()
-        {
             if (_libInitialized)
             {
+                debug ensureNotInGC("FreeImage");
                 //FreeImage_DeInitialise(); // documentation says it's useless
-                DerelictFI.unload();
                 _libInitialized = false;
             }
         }
+        deprecated("Use .destroy instead") void close(){}
 
         const(char)[] getVersion()
         {
@@ -72,5 +68,25 @@ final class FreeImage
     private
     {
         bool _libInitialized;
+    }
+}
+
+/// Crash if the GC is running.
+/// Useful in destructors to avoid reliance GC resource release.
+package void ensureNotInGC(string resourceName) nothrow
+{
+    import core.exception;
+    try
+    {
+        import core.memory;
+        cast(void) GC.malloc(1); // not ideal since it allocates
+        return;
+    }
+    catch(InvalidMemoryOperationError e)
+    {
+
+        import core.stdc.stdio;
+        fprintf(stderr, "Error: clean-up of %s incorrectly depends on destructors called by the GC.\n", resourceName.ptr);
+        assert(false);
     }
 }

@@ -2,12 +2,9 @@
 
 [![Join the chat at https://gitter.im/d-gamedev-team/gfm](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/d-gamedev-team/gfm?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
-GFM is a feature-rich library to ease the creation of video games / multimedia applications with the D programming language.
+GFM is a lightweight library to ease the creation of video games / multimedia applications with the D programming language.
 
 Documentation and overview can be found here: http://d-gamedev-team.github.io/gfm/
-
-
-**Tested compilers:** ![dmd-2.067.1](https://img.shields.io/badge/DMD-2.067.1-brightgreen.svg) ![LDC-0.15.1](https://img.shields.io/badge/LDC-0.15.1-brightgreen.svg) ![GDC-4.9.2](https://img.shields.io/badge/GDC-4.9.2-brightgreen.svg)
 
 
 ## License
@@ -21,13 +18,16 @@ Add the sub-package you are interested in in your `dub.json`:
 ```d
    {
       "dependencies": {
-        "gfm:math": "~>2.0"
+        "gfm:math": "~>3.0"
       }
    }
 ```
 
 See the examples/ directory, or https://github.com/p0nce/aliasthis as an example of a game.
 
+## Changelog
+
+https://github.com/d-gamedev-team/gfm/wiki/Changelog
 
 ## Dependencies
 

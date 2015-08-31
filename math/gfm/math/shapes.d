@@ -17,8 +17,6 @@ import std.math,
 import gfm.math.vector,
        gfm.math.box;
 
-static if( __VERSION__ < 2066 ) private enum nogc = 1;
-
 /// A Segment is 2 points.
 /// When considered like a vector, it represents the arrow from a to b.
 align(1) struct Segment(T, int N)

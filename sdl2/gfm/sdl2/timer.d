@@ -21,12 +21,6 @@ class SDL2Timer
                 sdl2.throwSDL2Exception("SDL_AddTimer");
         }
 
-        ///
-        ~this()
-        {
-            close();
-        }
-
         /// Returns: Timer ID.
         SDL_TimerID id() pure const nothrow @nogc
         {
@@ -35,10 +29,16 @@ class SDL2Timer
 
         /// Timer clean-up.
         /// See_also: $(LINK https://wiki.libsdl.org/SDL_RemoveTimer)
-        void close()
+        ~this()
         {
-            SDL_RemoveTimer(_id);
+            if (_id != 0)
+            {
+                debug ensureNotInGC("SDL2Timer");
+                SDL_RemoveTimer(_id);
+                _id = 0;
+            }
         }
+        deprecated("Use .destroy instead") void close(){}
     }
 
     protected

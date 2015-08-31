@@ -31,20 +31,17 @@ class GLTexture
             _textureUnit = -1;
         }
 
+        /// Releases the OpenGL texture resource.
         ~this()
-        {
-            close();
-        }
-
-         /// Releases the OpenGL texture resource.
-        final void close()
         {
             if (_initialized)
             {
+                debug ensureNotInGC("GLTexture");
                 glDeleteTextures(1, &_handle);
                 _initialized = false;
             }
         }
+        deprecated("Use .destroy instead") void close(){}
 
         /// Use this texture, binding it to a texture unit.
         /// Params:
@@ -60,7 +57,7 @@ class GLTexture
         {
           // do nothing: texture unit binding is as needed
         }
-        
+
         /// Returns: Requested texture parameter.
         /// Throws: $(D OpenGLException) on error.
         /// Warning: Calling $(D glGetTexParameteriv) is generally not recommended
@@ -209,7 +206,7 @@ class GLTexture
         {
             return _target;
         }
-		
+
         /// Regenerates the mipmapped levels.
         /// Throws: $(D OpenGLException) on error.
         void generateMipmap()
@@ -367,7 +364,7 @@ final class GLTextureRectangle : GLTexture
     public
     {
         /// Creates a texture rectangle.
-        /// Throws: $(D OpenGLException) on error.        
+        /// Throws: $(D OpenGLException) on error.
         this(OpenGL gl)
         {
             super(gl, GL_TEXTURE_RECTANGLE);
