@@ -14,9 +14,8 @@ import gfm.math.funcs;
  *    N = number of elements
  *    T = type of elements
  */
-align(1) struct Vector(T, int N)
+struct Vector(T, int N)
 {
-align(1):
 nothrow:
     public
     {

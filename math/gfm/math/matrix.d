@@ -18,9 +18,8 @@ import gfm.math.vector,
 ///   T = type of elements
 ///   R = number of rows
 ///   C = number of columns
-align(1) struct Matrix(T, int R, int C)
+struct Matrix(T, int R, int C)
 {
-    align(1):
     public
     {
         static assert(R >= 1 && C >= 1);

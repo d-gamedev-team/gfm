@@ -19,9 +19,8 @@ import gfm.math.vector,
 
 /// A Segment is 2 points.
 /// When considered like a vector, it represents the arrow from a to b.
-align(1) struct Segment(T, int N)
+struct Segment(T, int N)
 {
-    align(1):
     public
     {
         alias Vector!(T, N) point_t;
@@ -37,9 +36,8 @@ alias Segment!(int, 2) seg2i;    /// 2D integer segment.
 alias Segment!(int, 3) seg3i;    /// 3D integer segment.
 
 /// A Triangle is 3 points.
-align(1) struct Triangle(T, int N)
+struct Triangle(T, int N)
 {
-    align(1):
     public
     {
         alias Vector!(T, N) point_t;
@@ -79,9 +77,8 @@ alias Triangle!(double, 2) triangle2d; /// 2D double triangle.
 alias Triangle!(double, 3) triangle3d; /// 3D double triangle.
 
 /// A Sphere is a point + a radius.
-align(1) struct Sphere(T, int N)
+struct Sphere(T, int N)
 {
-    align(1):
     public nothrow
     {
         alias Vector!(T, N) point_t;
@@ -147,9 +144,8 @@ alias Sphere!(double, 3) sphere3d; /// 3D double sphere (ie. a circle).
 
 
 /// A Ray ir a point + a direction.
-align(1) struct Ray(T, int N)
+struct Ray(T, int N)
 {
-align(1):
 nothrow:
     public
     {
@@ -210,9 +206,8 @@ alias Ray!(double, 3) ray3d; /// 3D double ray.
 
 /// 3D plane.
 /// See_also: Flipcode article by Nate Miller $(WEB www.flipcode.com/archives/Plane_Class.shtml).
-align(1) struct Plane(T) if (isFloatingPoint!T)
+struct Plane(T) if (isFloatingPoint!T)
 {
-    align(1):
     public
     {
         vec3!T n; /// Normal (always stored normalized).
@@ -299,9 +294,8 @@ unittest
 /// 3D frustum.
 /// See_also: Flipcode article by Dion Picco $(WEB www.flipcode.com/archives/Frustum_Culling.shtml).
 /// Bugs: verify proper signedness of half-spaces
-align(1) struct Frustum(T) if (isFloatingPoint!T)
+struct Frustum(T) if (isFloatingPoint!T)
 {
-    align(1):
     public
     {
         enum int LEFT   = 0,

@@ -4,7 +4,7 @@ import std.stdio;
 
 // Print the result of a GET request
 
-void main(string args[])
+void main(string[] args)
 {
     if (args.length != 2)
     {

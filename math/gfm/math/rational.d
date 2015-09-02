@@ -10,9 +10,8 @@ import std.traits,
   Bugs: Remove this module once std.rational is here.
 
  */
-align(1) struct Rational
+struct Rational
 {
-    align(1):
     public
     {
         long num;   /// Numerator.

@@ -7,9 +7,8 @@ import gfm.math.vector,
        gfm.math.funcs;
 
 /// N-dimensional half-open interval [a, b[.
-align(1) struct Box(T, int N)
+struct Box(T, int N)
 {
-    align(1):
     static assert(N > 0);
 
     public
