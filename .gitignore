@@ -6,9 +6,12 @@
 *.suo
 *.lib
 *.exe
+*.exe_cv
 *.pdb
 .dub
 *.dll
+*.jpg
+*.png
 examples/build
 *.visualdproj
 output_log.html
