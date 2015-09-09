@@ -1,5 +1,5 @@
 language: d
-sudo: true
+sudo: false
 
 d:
  - dmd-2.068.1
@@ -8,8 +8,10 @@ d:
  - ldc-0.15.1
  - gdc-4.9.2
 
-install:
-  - sudo apt-get install libenet-dev
+addons:
+  apt:
+    packages:
+    - libenet-dev
 
 script:
   - dub test --compiler=${DC} gfm:core
