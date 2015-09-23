@@ -493,6 +493,7 @@ private string definePostfixAliases(string type)
          ~ "alias " ~ type ~ "!long "   ~ type ~ "l;\n"
          ~ "alias " ~ type ~ "!ulong "  ~ type ~ "ul;\n"
          ~ "alias " ~ type ~ "!float "  ~ type ~ "f;\n"
+         ~ "alias " ~ type ~ "!real "  ~ type ~ "r;\n"
          ~ "alias " ~ type ~ "!double " ~ type ~ "d;\n";
 }
 
@@ -504,9 +505,105 @@ mixin(definePostfixAliases("vec2"));
 mixin(definePostfixAliases("vec3"));
 mixin(definePostfixAliases("vec4"));
 
-
 private
 {
+    import std.range : ElementType, hasLength, isInputRange;
+    import std.typetuple : allSatisfy, staticMap;
+    import std.traits : Unqual, isArray, isStaticArray, isMutable, CommonType, isFloatingPoint;
+    template CommonElementType(T...)
+    {
+        static if (allArrays!T)
+        {
+            static if (T.length == 1)
+            {
+                alias CommonElementType = T[0];
+            }
+            else static if (T.length >= 2)
+            {
+                alias CommonElementType = CommonType!(staticMap!(ElementType, T));
+            }
+        }
+        else
+        {
+            alias CommonElementType = void;
+        }
+    }
+
+    template CommonArrayType(T...) if (T.length >= 2)
+    {
+        static if (allSatisfy!(isStaticArray, T))
+        {
+            alias CommonArrayType = CommonElementType!T[Longest!T.length];
+        }
+        else static if (allSatisfy!(isArray, T))
+        {
+            alias CommonArrayType = CommonElementType!T[];
+        }
+        else
+        {
+            alias CommonArrayType = void;
+        }
+    }
+
+    /**
+    Same as std.traits.Largest, but for length.
+    */
+    template Longest(T...) if (T.length >= 1 && allSatisfy!(hasLength, T))
+    {
+        static if (T.length == 1)
+        {
+            alias Longest = T[0];
+        }
+        else static if (T.length == 2)
+        {
+            static if (T[0].length >= T[1].length)
+            {
+                alias Longest = T[0];
+            }
+            else
+            {
+                alias Longest = T[1];
+            }
+        }
+        else
+        {
+            alias Longest = Longest!(Longest!(T[0..$/2]), Longest!(T[$/2..$]));
+        }
+    }
+
+    template Shortest(T...) if (T.length >= 1 && allSatisfy!(hasLength, T))
+    {
+        static if (T.length == 1)
+        {
+            alias Shortest = T[0];
+        }
+        else static if (T.length == 2)
+        {
+            static if (T[0].length <= T[1].length)
+            {
+                alias Shortest = T[0];
+            }
+            else
+            {
+                alias Shortest = T[1];
+            }
+        }
+        else
+        {
+            alias Shortest = Shortest!(Shortest!(T[0..$/2]), Shortest!(T[$/2..$]));
+        }
+    }
+
+    enum bool isVoid(T) = !is(T == void);
+    
+    enum bool allArrays(T...) = allSatisfy!(isArray, T);
+    
+    enum bool hasCommonElementType(T...) = allArrays!T && isVoid!(CommonElementType!T);
+    
+    enum bool hasCommonArrayType(T...) = allArrays!T && isVoid!(CommonArrayType!T);
+
+    enum bool hasSameLength(T...) = is(Shortest!T == Longest!T);
+    
     static string generateLoopCode(string formatString, int N)() pure nothrow
     {
         string result;
@@ -528,8 +625,143 @@ private
         else
             return to!string(n);
     }
+    
+    // Refer to arguments in argument list by index
+    static string demux(string name = "a", size_t length = 1, string after = "") pure
+    {
+        import std.range : iota;
+        import std.algorithm : map;
+        import std.array : join;
+        import std.conv : to;
+        return iota(length).map!(a => name ~ "[" ~ a.to!string ~ "]" ~ after).join(", ");
+    }
+    static string defineFieldAccess(immutable string str)
+    {
+        import std.conv : to;
+        import std.array : Appender;
+        Appender!(dchar[]) app;
+        foreach (size; 1..str.length+1)
+        {
+            foreach (i; 0..str.length-size+1)
+            {
+                size_t j = i + size;
+                auto field = str[i..j];
+                app.put("ref auto " ~ field ~ "(V)(ref V v) pure if (isStaticArray!V && V.length == " ~ str.length.to!string ~ ")\n");
+                app.put("{ return v[");
+                // Return slice if accessing more than one element, otherwise return single element
+                if (size > 1)
+                {
+                    app.put(i.to!string ~ ".." ~ j.to!string);
+                }
+                else
+                {
+                    app.put(i.to!string);
+                }
+                app.put("]; }\n\n");
+            }
+        }
+        return app.data.to!string;
+    }
+    
+    // Pass parallel elements of static arrays to a function
+    auto dive(alias fun, Arrays...)(Arrays arrays) pure if (allSatisfy!(isStaticArray, Arrays) && hasCommonElementType!Arrays)
+    {
+        import std.algorithm : map;
+        import std.array : array, join;
+        import std.range : iota;
+        import std.conv : to;
+        immutable string str = "return dive!fun(" ~ demux("arrays", Arrays.length, ".to!(CommonArrayType!Arrays).array") ~ ");";
+        mixin(str);
+    }
+    
+    // Pass parallel elements of ranges to a function
+    auto dive(alias fun, Ranges...)(Ranges ranges) pure if (Ranges.length > 1 && allSatisfy!(isInputRange, Ranges))
+    {
+        import std.range : zip;
+        import std.algorithm : map, reduce;
+        return ranges.zip.map!(a => a.reduce!fun);
+    }
 }
 
+mixin(defineFieldAccess("xy"));
+mixin(defineFieldAccess("xyz"));
+mixin(defineFieldAccess("wxyz"));
+mixin(defineFieldAccess("wxyzt"));
+
+// Unit test for static arrays
+unittest
+{
+    import std.math : approxEqual;
+    import std.algorithm : equal;
+    
+    const int[2] arr1 = [1, 2];
+    int[3] arr2a = [4, 2, 6];
+    long[3] arr2b = [1, 5, 3];
+    real[3] arr2c = [1.2, 3.4, 5.6];
+    int[5] arr3 = [10, 11, 12, 13, 14];
+    
+    // Test named element access
+    
+    assert(arr2a.x == 4);
+    assert(arr2b.y == 5);
+    assert(arr2c.z == 5.6);
+    
+    assert(arr2a.xy == [4, 2]);
+    assert(arr2c.yz.approxEqual([3.4, 5.6]));
+    
+    assert(arr3.xyz == [11, 12, 13]);
+    
+    // Test vector operations
+    
+    assert(arr2a.minByElem(arr2b).equal([1, 2, 3]));
+    assert(arr2a.minByElem(arr2c).approxEqual([1.2, 2, 5.6]));
+    
+    assert(arr2a.maxByElem(arr2b).equal([4, 5, 6]));
+    assert(arr2a.maxByElem(arr2c).approxEqual([4, 3.4, 6]));
+    
+    assert(arr2a.dot(arr2b) == 32);
+    assert(arr2a.dot(arr2c).approxEqual(45.2));
+    
+    assert(arr2a.squaredLength == 56);
+    assert(arr2c.squaredLength.approxEqual(44.36));
+    
+    assert(arr2a.squaredDistanceTo(arr2b) == 27);
+    assert(arr2a.squaredDistanceTo(arr2c).approxEqual(9.96));
+    
+    assert(arr2a.floatingLength.approxEqual(7.48331));
+    assert(arr2c.floatingLength.approxEqual(6.66033));
+    
+    assert(arr2a.inverseLength.approxEqual(0.133631));
+    assert(arr2c.inverseLength.approxEqual(0.150143));
+    assert(arr2a.inverseLength!true.approxEqual(0.133631));
+    assert(arr2c.inverseLength!true.approxEqual(0.150143));
+    
+    assert(arr1.distanceTo(arr2a) == 3);
+    
+    assert(arr2a.reflect(arr2b) == [-60, -318, -186]);
+    assert(arr2a.reflect(arr2c)[].approxEqual([-104.48, -305.36, -500.24]));
+    
+    import std.conv : to;
+    auto arr2cCopy = arr2c.dup.to!(typeof(arr2c));
+    assert(arr2cCopy[].approxEqual([1.2, 3.4, 5.6]));
+    arr2cCopy.normalize();
+    assert(arr2cCopy[].approxEqual([0.180171, 0.510485, 0.840799]));
+    arr2cCopy = arr2c.dup;
+    assert(arr2cCopy[].approxEqual([1.2, 3.4, 5.6]));
+    arr2cCopy.normalize!true();
+    assert(arr2cCopy[].approxEqual([0.180171, 0.510485, 0.840799]));
+    
+    assert(arr2a.normalized[].approxEqual([0.534522, 0.267261, 0.801784]));
+    assert(arr2a.normalized!true[].approxEqual([0.534522, 0.267261, 0.801784]));
+    
+    assert(arr2a.cross(arr2b) == [-24, -6, 18]);
+    
+    assert(arr2a.orthogonal == [0, -6, 2]);
+    assert(arr2c.orthogonal[].approxEqual([0, -5.6, 3.4]));
+    
+    assert(arr2a.angleBetween(arr2b).approxEqual(0.762942));
+    assert(arr2a.angleBetween(arr2c).approxEqual(0.434982));
+}
 
 /// Element-wise minimum.
 deprecated("use minByElem instead") alias min = minByElem;
@@ -539,6 +771,12 @@ deprecated("use minByElem instead") alias min = minByElem;
     Vector!(T, N) res = void;
     mixin(generateLoopCode!("res.v[@] = min(a.v[@], b.v[@]);", N)());
     return res;
+}
+// For static arrays/ranges
+auto minByElem(T...)(T t) pure if (hasCommonElementType!T)
+{
+    import std.algorithm : min;
+    return t.dive!min;
 }
 
 /// Element-wise maximum.
@@ -550,6 +788,12 @@ deprecated("use maxByElem instead") alias max = maxByElem;
     mixin(generateLoopCode!("res.v[@] = max(a.v[@], b.v[@]);", N)());
     return res;
 }
+// For static arrays/ranges
+auto maxByElem(T...)(T t) pure if (hasCommonElementType!T)
+{
+    import std.algorithm : max;
+    return t.dive!max;
+}
 
 /// Returns: Dot product.
 @nogc T dot(T, int N)(const Vector!(T, N) a, const Vector!(T, N) b) pure nothrow
@@ -557,6 +801,23 @@ deprecated("use maxByElem instead") alias max = maxByElem;
     T sum = 0;
     mixin(generateLoopCode!("sum += a.v[@] * b.v[@];", N)());
     return sum;
+}
+// For static arrays
+auto dot(Arrays...)(Arrays arrays) pure if (allSatisfy!(isStaticArray, Arrays))
+{
+    import std.algorithm : reduce;
+    import std.range : zip;
+    import std.conv : to;
+    import std.array : array;
+    immutable string str = "return dot(" ~ demux("arrays", Arrays.length, ".to!(CommonArrayType!Arrays).array") ~ ");";
+    mixin(str);
+}
+// For ranges
+auto dot(Ranges...)(Ranges ranges) pure if (allSatisfy!(isInputRange, Ranges))
+{
+    import std.range : zip;
+    import std.algorithm : map, reduce;
+    return ranges.zip.map!(a => a.reduce!"a * b").reduce!"a + b";
 }
 
 /// Returns: 3D cross product.
@@ -567,6 +828,14 @@ deprecated("use maxByElem instead") alias max = maxByElem;
                          a.z * b.x - a.x * b.z,
                          a.x * b.y - a.y * b.x);
 }
+// For static arrays
+auto cross(A, B)(A a, B b) pure nothrow if (hasCommonArrayType!(A, B))
+{
+    CommonArrayType!(A, B) res = [a[1] * b[2] - a[2] * b[1],
+                                  a[2] * b[0] - a[0] * b[2],
+                                  a[0] * b[1] - a[1] * b[0]];
+    return res;
+}
 
 /// 3D reflect, like the GLSL function.
 /// Returns: a reflected by normal b.
@@ -574,7 +843,21 @@ deprecated("use maxByElem instead") alias max = maxByElem;
 {
     return a - (2 * dot(b, a)) * b;
 }
-
+// For static arrays
+auto reflect(A, B)(A a, B b) pure if (allSatisfy!(isStaticArray, A, B))
+in
+{
+	import std.algorithm : min;
+    assert(min(a.length, b.length) >= 3);
+}
+body
+{
+    import std.conv : to;
+    alias ReturnType = Unqual!(CommonArrayType!(A, B));
+    ReturnType res;
+    res[] = a.to!ReturnType[] - 2 * b.to!ReturnType[] * dot(b, a);
+    return res;
+}
 
 /// Returns: angle between vectors.
 /// See_also: "The Right Way to Calculate Stuff" at $(WEB www.plunk.org/~hatch/rightway.php)
@@ -589,11 +872,129 @@ deprecated("use maxByElem instead") alias max = maxByElem;
     else
         return 2 * asin((bN-aN).length / 2);
 }
+// For static arrays
+auto angleBetween(A, B)(A a, B b) if (allSatisfy!(isStaticArray, A, B))
+{
+    auto aN = a.normalized();
+    auto bN = b.normalized();
+    auto dp = dot(aN, bN);
+
+    import std.math : asin, PI;
+    import std.algorithm : max;
+    CommonArrayType!(typeof(aN), typeof(bN)) temp;
+    temp.length = max(a.length, b.length);
+    if (dp < 0)
+    {
+        temp[] = -bN[]-aN[];
+        return PI - 2 * asin(temp.floatingLength / 2);
+    }
+    else
+    {
+        temp[] = bN[]-aN[];
+        return 2 * asin(temp.floatingLength / 2);
+    }
+}
+
+auto squaredLength(V)(V v) pure nothrow
+{
+    static if (isStaticArray!V)
+    {
+        return v[].squaredLength;
+    }
+    else static if (isInputRange!V)
+    {
+        import std.algorithm : sum, map;
+        return v.map!(a => a * a).sum;
+    }
+}
+
+auto squaredDistanceTo(A, B)(A a, B b) pure if (hasCommonArrayType!(A, B))
+{
+    import std.conv : to;
+    alias ReturnType = CommonArrayType!(A, B);
+    ReturnType temp;
+    static if (!isStaticArray!ReturnType)
+    {
+        import std.algorithm : max;
+        temp.length = max(a.length, b.length);
+    }
+    temp[] = b.to!ReturnType[] - a.to!ReturnType[];
+    return temp.squaredLength;
+}
+
+auto inverseLength(bool fast = false, FloatingType = real, V)(V v) pure nothrow @property if (isInputRange!V || isStaticArray!V)
+{
+    static if (fast)
+    {
+        return inverseSqrt(cast(FloatingType)v.squaredLength);
+    }
+    else
+    {
+        return cast(FloatingType)(1) / v.floatingLength;
+    }
+}
+
+auto distanceTo(Lhs, Rhs)(Lhs lhs, Rhs rhs) if (allSatisfy!(isStaticArray, Lhs, Rhs))
+{
+    import std.array : array;
+    return dive!"a - b"(rhs[], lhs[]).array.floatingLength;
+}
+
+FloatingType floatingLength(FloatingType = real, V)(V v) pure nothrow @property if (isStaticArray!V)
+{
+    return floatingLength(v[]);
+}
+FloatingType floatingLength(FloatingType = real, V)(V v) pure nothrow @property if (isInputRange!V)
+{
+    import std.math : sqrt;
+    return sqrt(cast(FloatingType)v.squaredLength);
+}
+
+/**
+Returns: Normalized vector v.
+Parameters: fast - if should use SSE approximation,
+            v - vector to normalize
+*/
+auto normalized(bool fast = false, FloatingType = real, V)(V v) pure if (isStaticArray!V)
+{
+    alias ReturnType = FloatingType[V.length];
+    ReturnType res;
+    import std.conv : to;
+    res = v.to!ReturnType;
+    return res.normalize!fast.dup;
+}
+
+/**
+Normalizes vector v in place.
+Returns: Reference to v
+Parameters: fast - if should use SSE approximation,
+            v - vector to normalize
+*/
+auto ref normalize(bool fast = false, V)(ref V v) pure if (isStaticArray!V && isMutable!V && isFloatingPoint!(ElementType!V))
+{
+    return v[] *= v.inverseLength!fast;
+}
+
+alias getOrthogonalVector = orthogonal;
+
+auto orthogonal(V)(V v) pure nothrow if (V.length == 3)
+{
+    Unqual!V res = v.dup;
+    import std.math : abs;
+    if (v[0].abs > v[2].abs)
+    {
+        res[] = [-v[1], v[0], 0];
+    }
+    else
+    {
+        res[] = [0, -v[2], v[1]];
+    }
+    return res;
+}
 
 static assert(vec2f.sizeof == 8);
 static assert(vec3d.sizeof == 24);
 static assert(vec4i.sizeof == 16);
-
 
 unittest
 {
@@ -687,4 +1088,3 @@ unittest
     vec5f l = vec5f(1, 2.0f, 3.0, k.x.toFloat(), 5.0L);
     l = vec5f(l.xyz, vec2i(1, 2));
 }
-
