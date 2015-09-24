@@ -5,6 +5,7 @@ module gfm.core.memory;
 
 import core.memory : GC;
 import core.exception : onOutOfMemoryError;
+import core.stdc.string : memcpy;
 
 import std.c.stdlib : malloc, free, realloc;
 import std.conv : emplace;
@@ -34,7 +35,7 @@ import std.algorithm: swap;
             onOutOfMemoryError();
     }
 
-    return storeRawPointerAndReturnAligned(raw, alignment);
+    return storeRawPointerPlusSizeAndReturnAligned(raw, size, alignment);
 }
 
 /// Frees aligned memory allocated by alignedMalloc or alignedRealloc.
@@ -62,23 +63,31 @@ import std.algorithm: swap;
         return null;
     }
 
+    // TODO: store requested size instead
+    // TODO: heuristic for not calling malloc when reducing size by a small amount?
+    size_t previousSize = *cast(size_t*)(cast(char*)aligned - size_t.sizeof * 2);
+
+    // Already the right size, return current
+    if (size == previousSize)
+        return aligned;
+
     void* raw = *cast(void**)(cast(char*)aligned - size_t.sizeof);
-
     size_t request = requestedSize(size, alignment);
-    void* newRaw = realloc(raw, request);
 
+    void* newRaw = malloc(request);
     static if( __VERSION__ > 2067 ) // onOutOfMemoryError wasn't nothrow before July 2014
     {
         if (request > 0 && newRaw == null) // realloc(0) can validly return anything
             onOutOfMemoryError();
     }
 
-    // if newRaw is raw, nothing to do
-    if (raw is newRaw)
-        return aligned;
+    void* newAligned = storeRawPointerPlusSizeAndReturnAligned(newRaw, size, alignment);
+    size_t minSize = size < previousSize ? size : previousSize;
+    memcpy(newAligned, aligned, minSize);
 
-    // else write raw at the new location
-    return storeRawPointerAndReturnAligned(newRaw, alignment);
+    // Free previous data
+    alignedFree(aligned);
+    return newAligned;
 }
 
 private
@@ -88,16 +97,19 @@ private
     @nogc size_t requestedSize(size_t askedSize, size_t alignment) pure nothrow
     {
         enum size_t pointerSize = size_t.sizeof;
-        return askedSize + alignment - 1 + pointerSize;
+        return askedSize + alignment - 1 + pointerSize * 2;
     }
 
-    @nogc void* storeRawPointerAndReturnAligned(void* raw, size_t alignment) nothrow
+    // Store pointer given my malloc, and size in bytes initially requested (alignedRealloc needs it)
+    @nogc void* storeRawPointerPlusSizeAndReturnAligned(void* raw, size_t size, size_t alignment) nothrow
     {
         enum size_t pointerSize = size_t.sizeof;
-        char* start = cast(char*)raw + pointerSize;
+        char* start = cast(char*)raw + pointerSize * 2;
         void* aligned = nextAlignedPointer(start, alignment);
         void** rawLocation = cast(void**)(cast(char*)aligned - pointerSize);
         *rawLocation = raw;
+        size_t* sizeLocation = cast(size_t*)(cast(char*)aligned - 2 * pointerSize);
+        *sizeLocation = size;
         return aligned;
     }
 
