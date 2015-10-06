@@ -71,7 +71,7 @@ import std.algorithm: swap;
 
     // Heuristic: if new requested size is within 50% to 100% of what is already allocated
     //            then exit with the same pointer
-    if ( (previousSize < request * 2) && (request <= previousSize) )
+    if ( (previousSize < request * 4) && (request <= previousSize) )
         return aligned;
 
     void* newRaw = malloc(request);
