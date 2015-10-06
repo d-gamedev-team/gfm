@@ -63,16 +63,16 @@ import std.algorithm: swap;
         return null;
     }
 
-    // TODO: store requested size instead
-    // TODO: heuristic for not calling malloc when reducing size by a small amount?
     size_t previousSize = *cast(size_t*)(cast(char*)aligned - size_t.sizeof * 2);
 
-    // Already the right size, return current
-    if (size == previousSize)
-        return aligned;
 
     void* raw = *cast(void**)(cast(char*)aligned - size_t.sizeof);
     size_t request = requestedSize(size, alignment);
+
+    // Heuristic: if new requested size is within 50% to 100% of what is already allocated
+    //            then exit with the same pointer
+    if ( (previousSize < request * 2) && (request <= previousSize) )
+        return aligned;
 
     void* newRaw = malloc(request);
     static if( __VERSION__ > 2067 ) // onOutOfMemoryError wasn't nothrow before July 2014
@@ -81,7 +81,7 @@ import std.algorithm: swap;
             onOutOfMemoryError();
     }
 
-    void* newAligned = storeRawPointerPlusSizeAndReturnAligned(newRaw, size, alignment);
+    void* newAligned = storeRawPointerPlusSizeAndReturnAligned(newRaw, request, alignment);
     size_t minSize = size < previousSize ? size : previousSize;
     memcpy(newAligned, aligned, minSize);
 
