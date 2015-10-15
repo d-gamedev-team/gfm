@@ -82,13 +82,19 @@ final class VertexSpecification(Vertex)
             }
         }
 
-        /// Use this vertex specification.
-        /// Throws: $(D OpenGLException) on error.
-        void use()
+        /**
+         * Use this vertex specification.
+         *
+         * Divisor is the value passed to glVertexAttribDivisor.
+         * See $(WEB www.opengl.org/wiki/Vertex_Specification#Instanced_arrays) for details.
+         *
+         * Throws: $(D OpenGLException) on error.
+         */
+        void use(GLuint divisor = 0)
         {
             // use every attribute
             for (uint i = 0; i < _attributes.length; ++i)
-                _attributes[i].use(_gl, cast(GLsizei) vertexSize());
+                _attributes[i].use(_gl, cast(GLsizei) vertexSize(), divisor);
         }
 
         /// Unuse this vertex specification. If you are using a VAO, you don't need to call it,
@@ -127,21 +133,27 @@ struct VertexAttribute
         GLenum glType;
         GLint location;
         GLboolean normalize;
+        bool divisorSet;
 
 
         /// Use this attribute.
         /// Throws: $(D OpenGLException) on error.
-        void use(OpenGL gl, GLsizei sizeOfVertex)
+        void use(OpenGL gl, GLsizei sizeOfVertex, GLuint divisor)
         {
             // fake attribute, do not enable
             if (location == GLAttribute.fakeLocation)
                 return ;
+
+            if (divisor != 0)
+                divisorSet = true;
 
             glEnableVertexAttribArray(location);
             if (isIntegerType(glType))
                 glVertexAttribIPointer(location, n, glType, sizeOfVertex, cast(GLvoid*)offset);
             else
                 glVertexAttribPointer(location, n, glType, normalize, sizeOfVertex, cast(GLvoid*)offset);
+            if(divisorSet)
+                glVertexAttribDivisor(location, divisor);
             gl.runtimeCheck();
         }
 
@@ -149,6 +161,10 @@ struct VertexAttribute
         /// Throws: $(D OpenGLException) on error.
         void unuse(OpenGL gl)
         {
+            // couldn't figure out if glDisableVertexAttribArray resets this, so play it safe
+            if(divisorSet)
+                glVertexAttribDivisor(location, 0);
+            divisorSet = false;
             glDisableVertexAttribArray(location);
             gl.runtimeCheck();
         }
