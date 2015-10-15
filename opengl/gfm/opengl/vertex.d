@@ -43,12 +43,18 @@ final class VertexSpecification(Vertex)
 {
     public
     {
-        /// Creates a vertex specification.
-        /// The program is used to find the attribute location.
-        this(GLProgram program)
+        /**
+         * Creates a vertex specification.
+         * The program is used to find the attribute location.
+         *
+         * Divisor is the value passed to glVertexAttribDivisor.
+         * See $(WEB www.opengl.org/wiki/Vertex_Specification#Instanced_arrays) for details.
+         */
+        this(GLProgram program, GLuint divisor = 0)
         {
             _gl = program._gl;
             _program  = program;
+            _divisor = divisor;
 
             template isRWField(T, string M)
             {
@@ -88,7 +94,7 @@ final class VertexSpecification(Vertex)
         {
             // use every attribute
             for (uint i = 0; i < _attributes.length; ++i)
-                _attributes[i].use(_gl, cast(GLsizei) vertexSize());
+                _attributes[i].use(_gl, cast(GLsizei) vertexSize(), _divisor);
         }
 
         /// Unuse this vertex specification. If you are using a VAO, you don't need to call it,
@@ -114,6 +120,7 @@ final class VertexSpecification(Vertex)
         OpenGL _gl;
         GLProgram _program;
         VertexAttribute[] _attributes;
+        GLuint _divisor;
     }
 }
 
@@ -131,7 +138,7 @@ struct VertexAttribute
 
         /// Use this attribute.
         /// Throws: $(D OpenGLException) on error.
-        void use(OpenGL gl, GLsizei sizeOfVertex)
+        void use(OpenGL gl, GLsizei sizeOfVertex, GLuint divisor)
         {
             // fake attribute, do not enable
             if (location == GLAttribute.fakeLocation)
@@ -142,6 +149,7 @@ struct VertexAttribute
                 glVertexAttribIPointer(location, n, glType, sizeOfVertex, cast(GLvoid*)offset);
             else
                 glVertexAttribPointer(location, n, glType, normalize, sizeOfVertex, cast(GLvoid*)offset);
+            glVertexAttribDivisor(location, divisor);
             gl.runtimeCheck();
         }
 
@@ -149,6 +157,8 @@ struct VertexAttribute
         /// Throws: $(D OpenGLException) on error.
         void unuse(OpenGL gl)
         {
+            // couldn't figure out if glDisableVertexAttribArray resets this, so play it safe
+            glVertexAttribDivisor(location, 0);
             glDisableVertexAttribArray(location);
             gl.runtimeCheck();
         }
