@@ -43,18 +43,12 @@ final class VertexSpecification(Vertex)
 {
     public
     {
-        /**
-         * Creates a vertex specification.
-         * The program is used to find the attribute location.
-         *
-         * Divisor is the value passed to glVertexAttribDivisor.
-         * See $(WEB www.opengl.org/wiki/Vertex_Specification#Instanced_arrays) for details.
-         */
-        this(GLProgram program, GLuint divisor = 0)
+        /// Creates a vertex specification.
+        /// The program is used to find the attribute location.
+        this(GLProgram program)
         {
             _gl = program._gl;
             _program  = program;
-            _divisor = divisor;
 
             template isRWField(T, string M)
             {
@@ -88,13 +82,19 @@ final class VertexSpecification(Vertex)
             }
         }
 
-        /// Use this vertex specification.
-        /// Throws: $(D OpenGLException) on error.
-        void use()
+        /**
+         * Use this vertex specification.
+         *
+         * Divisor is the value passed to glVertexAttribDivisor.
+         * See $(WEB www.opengl.org/wiki/Vertex_Specification#Instanced_arrays) for details.
+         *
+         * Throws: $(D OpenGLException) on error.
+         */
+        void use(GLuint divisor = 0)
         {
             // use every attribute
             for (uint i = 0; i < _attributes.length; ++i)
-                _attributes[i].use(_gl, cast(GLsizei) vertexSize(), _divisor);
+                _attributes[i].use(_gl, cast(GLsizei) vertexSize(), divisor);
         }
 
         /// Unuse this vertex specification. If you are using a VAO, you don't need to call it,
@@ -120,7 +120,6 @@ final class VertexSpecification(Vertex)
         OpenGL _gl;
         GLProgram _program;
         VertexAttribute[] _attributes;
-        GLuint _divisor;
     }
 }
 
@@ -134,6 +133,7 @@ struct VertexAttribute
         GLenum glType;
         GLint location;
         GLboolean normalize;
+        bool divisorSet;
 
 
         /// Use this attribute.
@@ -144,12 +144,16 @@ struct VertexAttribute
             if (location == GLAttribute.fakeLocation)
                 return ;
 
+            if (divisor != 0)
+                divisorSet = true;
+
             glEnableVertexAttribArray(location);
             if (isIntegerType(glType))
                 glVertexAttribIPointer(location, n, glType, sizeOfVertex, cast(GLvoid*)offset);
             else
                 glVertexAttribPointer(location, n, glType, normalize, sizeOfVertex, cast(GLvoid*)offset);
-            glVertexAttribDivisor(location, divisor);
+            if(divisorSet)
+                glVertexAttribDivisor(location, divisor);
             gl.runtimeCheck();
         }
 
@@ -158,7 +162,9 @@ struct VertexAttribute
         void unuse(OpenGL gl)
         {
             // couldn't figure out if glDisableVertexAttribArray resets this, so play it safe
-            glVertexAttribDivisor(location, 0);
+            if(divisorSet)
+                glVertexAttribDivisor(location, 0);
+            divisorSet = false;
             glDisableVertexAttribArray(location);
             gl.runtimeCheck();
         }
