@@ -52,6 +52,7 @@ nothrow:
 
         @nogc this(Args...)(Args args) pure nothrow
         {
+            static assert(args.length <= N, "Too many arguments in vector constructor");
             static if (args.length == 1)
             {
                 // Construct a Vector from a single value.
