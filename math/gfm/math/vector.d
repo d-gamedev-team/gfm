@@ -59,6 +59,18 @@ nothrow:
             }
             else
             {
+                int argumentCount;
+
+                foreach(arg; args)
+                {
+                    static if(is(typeof(arg._isVector)))
+                        argumentCount += arg._N;
+                    else
+                        argumentCount += 1;
+                }
+
+                assert(argumentCount <= N, "Too many arguments in vector constructor");
+
                 int index = 0;
                 foreach(arg; args)
                 {
@@ -686,5 +698,11 @@ unittest
     alias Vector!(float, 5) vec5f;
     vec5f l = vec5f(1, 2.0f, 3.0, k.x.toFloat(), 5.0L);
     l = vec5f(l.xyz, vec2i(1, 2));
+
+    // too many arguments to ctor
+    import core.exception: AssertError;
+    import std.exception: assertThrown;
+    assertThrown!AssertError(vec2f(1, 2, 3));
+    assertThrown!AssertError(vec2f(vec2f(1, 2), 3));
 }
 
