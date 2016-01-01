@@ -33,6 +33,7 @@ else version( D_InlineAsm_X86_64 )
 
 /// Linear interpolation, akin to GLSL's mix.
 @nogc S lerp(S, T)(S a, S b, T t) pure nothrow
+  if (is(typeof(t * b + (1 - t) * a) : S))
 {
     return t * b + (1 - t) * a;
 }
