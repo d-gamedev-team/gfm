@@ -29,6 +29,21 @@ See the examples/ directory, or https://github.com/p0nce/aliasthis as an example
 
 https://github.com/d-gamedev-team/gfm/wiki/Changelog
 
+## Who uses GFM?
+- [aliasthis](https://github.com/p0nce/aliasthis)
+- [Despiker](https://github.com/kiith-sa/despiker/blob/master/dub.json)
+- [D gamedev intro](https://github.com/kiith-sa/d-gamedev-intro)
+- [Dido](https://github.com/p0nce/dido)
+- [Pacman](https://github.com/Yoplitein/pacman)
+- [petri-dish](https://github.com/Shriken/petri-dish)
+- [Vibrant](https://github.com/p0nce/Vibrant)
+- [vxlgen](https://github.com/p0nce/vxlgen)
+
+## Why use GFM
+  * GFM primarily provides math primitives that are useful for games like vectors/matrices/quaternions in the `gfm:math`package.
+  * Wrappers are transparent layers that expose the C libraries objects, turn every error code into an D exception and makes it easier to use the library correctly. They do almost nothing and perhaps you don't need them.
+  * GFM has low churn and has been maintained since 2012.
+
 ## Dependencies
 
 You absolutely don't need to use the whole of GFM. Pick just what you need to minimize the amount of dependencies.
@@ -38,25 +53,3 @@ You absolutely don't need to use the whole of GFM. Pick just what you need to mi
 There is an ongoing work to delete things in GFM that exist elsewhere but better.
 See http://code.dlang.org to discover lots of useful libraries for your programs.
 
-
-## Design goals
-
-  * Give some more power to the library user providing code that will probably need to be written anyway.
-  * Each module / sub-package is maximally decoupled.
-  * Logging interface for everything that has a logging callback.
-  * Correctness and functionality are favoured over speed.
-  * Wrappers are transparent layers that expose the C libraries objects, turn every error code into an D exception and makes it easier to use the library correctly. They do almost nothing and perhaps you don't need them.
-
-## Why use GFM?
-
-In the D1 days, I created several multimedia applications:
-
-  * Vibrant: http://www.gamesfrommars.fr/vibrant/
-  * Wormhol: http://www.gamesfrommars.fr/wormhol/
-  * Extatique: http://www.pouet.net/prod.php?which=53942
-  * The Orange Guy: http://www.pouet.net/prod.php?which=52780
-  * SeamzGood: http://www.dsource.org/projects/seamzgood
-
-This all came with some insight with how to do OpenGL applications in D.
-During this time I became acutely aware that my quick & dirty coding style wouldn't cut it in the long run.
-GFM is the clean successor library to the unfortunate code I was using at this time.
