@@ -39,8 +39,8 @@ alias uwideint!256 uint256;
 
 /// Use this template to get an arbitrary sized integer type.
 private template integer(bool signed, int bits)
+    if ((bits & (bits - 1)) == 0)
 {
-    static assert((bits & (bits - 1)) == 0); // bits must be a power of 2
 
     // forward to native type for lower numbers of bits
     static if (bits == 8)
@@ -75,6 +75,12 @@ private template integer(bool signed, int bits)
     {
         alias wideIntImpl!(signed, bits) integer;
     }
+}
+
+private template integer(bool signed, int bits)
+    if ((bits & (bits - 1)) != 0)
+{
+    static assert(0, "wide integer bits must be power of 2");
 }
 
 /// Recursive 2^n integer implementation.
