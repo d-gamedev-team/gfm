@@ -80,7 +80,7 @@ private template integer(bool signed, int bits)
 private template integer(bool signed, int bits)
     if ((bits & (bits - 1)) != 0)
 {
-    static assert(0, "wide integer bits must be power of 2");
+    static assert(0, "wide integer bits must be a power of 2");
 }
 
 /// Recursive 2^n integer implementation.
