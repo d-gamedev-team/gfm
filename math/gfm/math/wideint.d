@@ -114,6 +114,63 @@ struct wideIntImpl(bool signed, int bits)
         opAssign!T(x);
     }
 
+    // Private functions used by the `literal` template.
+    private static bool isValidDigitString(string digits)
+    {
+        import std.algorithm : startsWith;
+        import std.ascii : isDigit;
+
+        if (digits.startsWith("0x"))
+        {
+            foreach (d; digits[2 .. $])
+            {
+                if (!isHexDigit(d) && d != '_')
+                    return false;
+            }
+        }
+        else // decimal
+        {
+            foreach (d; digits)
+            {
+                if (!isDigit(d) && d != '_')
+                    return false;
+            }
+        }
+        return true;
+    }
+
+    private static typeof(this) literalImpl(string digits)
+    {
+        import std.algorithm : startsWith;
+        import std.ascii : isDigit;
+
+        typeof(this) value = 0;
+        if (digits.startsWith("0x"))
+        {
+            foreach (d; digits[2 .. $])
+            {
+                if (d == '_')
+                    continue;
+                value <<= 4;
+                if (isDigit(d))
+                    value += d - '0';
+                else
+                    value += 10 + toUpper(d) - 'A';
+            }
+        }
+        else
+        {
+            foreach (d; digits)
+            {
+                if (d == '_')
+                    continue;
+                value *= 10;
+                value += d - '0';
+            }
+        }
+        return value;
+    }
+
     /// Construct from compile-time digit string.
     ///
     /// Both decimal and hex digit strings are supported.
@@ -128,64 +185,9 @@ struct wideIntImpl(bool signed, int bits)
     /// ----
     template literal(string digits)
     {
-        static bool isValidDigitString(string digits)
-        {
-            import std.algorithm : startsWith;
-            import std.ascii : isDigit;
-
-            if (digits.startsWith("0x"))
-            {
-                foreach (d; digits[2 .. $])
-                {
-                    if (!isHexDigit(d) && d != '_')
-                        return false;
-                }
-            }
-            else // decimal
-            {
-                foreach (d; digits)
-                {
-                    if (!isDigit(d) && d != '_')
-                        return false;
-                }
-            }
-            return true;
-        }
-
-        static typeof(this) impl(string digits)
-        {
-            import std.algorithm : startsWith;
-            import std.ascii : isDigit;
-
-            typeof(this) value = 0;
-            if (digits.startsWith("0x"))
-            {
-                foreach (d; digits[2 .. $])
-                {
-                    if (d == '_')
-                        continue;
-                    value <<= 4;
-                    if (isDigit(d))
-                        value += d - '0';
-                    else
-                        value += 10 + toUpper(d) - 'A';
-                }
-            }
-            else
-            {
-                foreach (d; digits)
-                {
-                    if (d == '_')
-                        continue;
-                    value *= 10;
-                    value += d - '0';
-                }
-            }
-            return value;
-        }
         static assert(isValidDigitString(digits),
                       "invalid digits in literal: " ~ digits);
-        enum literal = impl(digits);
+        enum literal = literalImpl(digits);
     }
 
     /// Assign with a smaller unsigned type.
