@@ -114,6 +114,43 @@ struct wideIntImpl(bool signed, int bits)
         opAssign!T(x);
     }
 
+    /// Construct from compile-time digit string.
+    ///
+    /// Example:
+    /// ----
+    /// auto x = int128.literal!"20_000_000_000_000_000_001";
+    /// assert((x >>> 1) == 0x8AC7_2304_89E8_0000);
+    /// ----
+    template literal(string digits)
+    {
+        static bool isValidDigitString(string digits)
+        {
+            import std.ascii : isDigit;
+            foreach (d; digits)
+            {
+                if (!isDigit(d) && d != '_')
+                    return false;
+            }
+            return true;
+        }
+
+        static typeof(this) impl(string digits)
+        {
+            typeof(this) value = 0;
+            foreach (d; digits)
+            {
+                if (d == '_')
+                    continue;
+                value *= 10;
+                value += d - '0';
+            }
+            return value;
+        }
+        static assert(isValidDigitString(digits),
+                      "invalid digits in literal: " ~ digits);
+        enum literal = impl(digits);
+    }
+
     /// Assign with a smaller unsigned type.
     @nogc ref self opAssign(T)(T n) pure nothrow if (isIntegral!T && isUnsigned!T)
     {
@@ -570,4 +607,13 @@ unittest
             }
         }
     }
+}
+
+unittest
+{
+    // Just a little over 2^64, so it actually needs int128.
+    // Hex value should be 0x1_158E_4609_13D0_0001.
+    enum x = int128.literal!"20_000_000_000_000_000_001";
+    assert(x.hi == 0x1 && x.lo == 0x158E_4609_13D0_0001);
+    assert((x >>> 1) == 0x8AC7_2304_89E8_0000);
 }
