@@ -116,10 +116,15 @@ struct wideIntImpl(bool signed, int bits)
 
     /// Construct from compile-time digit string.
     ///
+    /// Both decimal and hex digit strings are supported.
+    ///
     /// Example:
     /// ----
     /// auto x = int128.literal!"20_000_000_000_000_000_001";
     /// assert((x >>> 1) == 0x8AC7_2304_89E8_0000);
+    ///
+    /// auto y = int126.literal!"0x1_158E_4609_13D0_0001";
+    /// assert(y == x);
     /// ----
     template literal(string digits)
     {
