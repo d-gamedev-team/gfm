@@ -12,6 +12,7 @@ module gfm.math.wideint;
 
 import std.traits,
        std.ascii;
+import std.format : FormatSpec;
 
 /// Wide signed integer.
 /// Params:
@@ -184,21 +185,62 @@ struct wideIntImpl(bool signed, int bits)
             return T(this);
     }
 
-    /// Converts to a hexadecimal string.
-    string toString() pure const nothrow
+    /// Converts to a string. Supports format specifiers %d, %s (both decimal)
+    /// and %x (hex).
+    void toString(scope void delegate(const(char)[]) sink, FormatSpec!char fmt)
+        const
     {
-        string outbuff = "0x";
-        enum hexdigits = bits / 8;
+        if (fmt.spec == 'x')
+        {
+            enum hexdigits = bits / 8;
+            char[1] buf;
 
-        for (int i = 0; i < hexdigits; ++i)
-        {
-            outbuff ~= hexDigits[cast(int)((hi >> ((15 - i) * 4)) & 15)];
+            sink("0x");
+            for (int i = 0; i < hexdigits; ++i)
+            {
+                buf[0] = hexDigits[cast(int)((hi >> ((15 - i) * 4)) & 15)];
+                sink(buf[]);
+            }
+            for (int i = 0; i < hexdigits; ++i)
+            {
+                buf[0] = hexDigits[cast(int)((lo >> ((15 - i) * 4)) & 15)];
+                sink(buf[]);
+            }
         }
-        for (int i = 0; i < hexdigits; ++i)
+        else // default to decimal
         {
-            outbuff ~= hexDigits[cast(int)((lo >> ((15 - i) * 4)) & 15)];
+            import std.algorithm : reverse;
+
+            if (this == 0)
+            {
+                sink("0");
+                return;
+            }
+
+            // The maximum number of decimal digits is basically
+            // ceil(log_10(2^^bits - 1)), which is slightly below
+            // ceil(bits * log(2)/log(10)). The value 0.30103 is a slight
+            // overestimate of log(2)/log(10), to be sure we never
+            // underestimate. We add 1 to account for rounding up.
+            enum maxDigits = cast(ulong)(0.30103 * bits) + 1;
+            char[maxDigits] buf;
+            size_t i;
+
+            wideIntImpl tmp = this;
+            if (tmp < 0)
+            {
+                sink("-");
+                tmp = -tmp;
+            }
+            for (i = maxDigits-1; tmp > 0; i--)
+            {
+                assert(i > 0);
+                buf[i] = cast(char)('0' + cast(int)(tmp % 10));
+                tmp /= 10;
+            }
+            assert(i+1 >= 0);
+            sink(buf[i+1 .. $]);
         }
-        return outbuff;
     }
 
     @nogc self opBinary(string op, T)(T o) pure const nothrow if (!isSelf!T)
@@ -506,6 +548,29 @@ private struct Internals(int bits)
 
         assert(remainder == 0 || ((remainder < 0) == (dividend < 0)));
     }
+}
+
+unittest
+{
+    import std.string : format;
+
+    int128 x;
+    x.hi = 1;
+    x.lo = 0x158E_4609_13D0_0001;
+    assert(format("%s", x) == "20000000000000000001");
+    assert(format("%d", x) == "20000000000000000001");
+    assert(format("%x", x) == "0x0000000000000001158E460913D00001");
+
+    x.hi = 0xFFFF_FFFF_FFFF_FFFE;
+    x.lo = 0xEA71_B9F6_EC2F_FFFF;
+    assert(format("%d", x) == "-20000000000000000001");
+    assert(format("%x", x) == "0xFFFFFFFFFFFFFFFEEA71B9F6EC2FFFFF");
+
+    x.hi = x.lo = 0;
+    assert(format("%d", x) == "0");
+
+    x.hi = x.lo = 0xFFFF_FFFF_FFFF_FFFF;
+    assert(format("%d", x) == "-1"); // array index boundary condition
 }
 
 unittest
