@@ -125,24 +125,56 @@ struct wideIntImpl(bool signed, int bits)
     {
         static bool isValidDigitString(string digits)
         {
+            import std.algorithm.searching : startsWith;
             import std.ascii : isDigit;
-            foreach (d; digits)
+
+            if (digits.startsWith("0x"))
             {
-                if (!isDigit(d) && d != '_')
-                    return false;
+                foreach (d; digits[2 .. $])
+                {
+                    if (!isHexDigit(d) && d != '_')
+                        return false;
+                }
+            }
+            else // decimal
+            {
+                foreach (d; digits)
+                {
+                    if (!isDigit(d) && d != '_')
+                        return false;
+                }
             }
             return true;
         }
 
         static typeof(this) impl(string digits)
         {
+            import std.algorithm.searching : startsWith;
+            import std.ascii : isDigit;
+
             typeof(this) value = 0;
-            foreach (d; digits)
+            if (digits.startsWith("0x"))
             {
-                if (d == '_')
-                    continue;
-                value *= 10;
-                value += d - '0';
+                foreach (d; digits[2 .. $])
+                {
+                    if (d == '_')
+                        continue;
+                    value <<= 4;
+                    if (isDigit(d))
+                        value += d - '0';
+                    else
+                        value += 10 + toUpper(d) - 'A';
+                }
+            }
+            else
+            {
+                foreach (d; digits)
+                {
+                    if (d == '_')
+                        continue;
+                    value *= 10;
+                    value += d - '0';
+                }
             }
             return value;
         }
@@ -616,4 +648,8 @@ unittest
     enum x = int128.literal!"20_000_000_000_000_000_001";
     assert(x.hi == 0x1 && x.lo == 0x158E_4609_13D0_0001);
     assert((x >>> 1) == 0x8AC7_2304_89E8_0000);
+
+    enum y = int128.literal!"0x1_158E_4609_13D0_0001";
+    enum z = int128.literal!"0x1_158e_4609_13d0_0001"; // case insensitivity
+    assert(x == y && y == z && x == z);
 }
