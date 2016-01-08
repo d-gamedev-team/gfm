@@ -125,7 +125,7 @@ struct wideIntImpl(bool signed, int bits)
     {
         static bool isValidDigitString(string digits)
         {
-            import std.algorithm.searching : startsWith;
+            import std.algorithm : startsWith;
             import std.ascii : isDigit;
 
             if (digits.startsWith("0x"))
@@ -149,7 +149,7 @@ struct wideIntImpl(bool signed, int bits)
 
         static typeof(this) impl(string digits)
         {
-            import std.algorithm.searching : startsWith;
+            import std.algorithm : startsWith;
             import std.ascii : isDigit;
 
             typeof(this) value = 0;
