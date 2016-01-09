@@ -187,13 +187,13 @@ struct wideIntImpl(bool signed, int bits)
 
     /// Converts to a string. Supports format specifiers %d, %s (both decimal)
     /// and %x (hex).
-    void toString(scope void delegate(const(char)[]) sink, FormatSpec!char fmt)
-        const
+    void toString(DG, Char)(DG sink, FormatSpec!Char fmt) const
+        if (is(typeof(sink((const(Char)[]).init))))
     {
         if (fmt.spec == 'x')
         {
             enum hexdigits = bits / 8;
-            char[1] buf;
+            Char[1] buf;
 
             sink("0x");
             for (int i = 0; i < hexdigits; ++i)
@@ -223,7 +223,7 @@ struct wideIntImpl(bool signed, int bits)
             // overestimate of log(2)/log(10), to be sure we never
             // underestimate. We add 1 to account for rounding up.
             enum maxDigits = cast(ulong)(0.30103 * bits) + 1;
-            char[maxDigits] buf;
+            Char[maxDigits] buf;
             size_t i;
 
             wideIntImpl tmp = this;
@@ -235,7 +235,7 @@ struct wideIntImpl(bool signed, int bits)
             for (i = maxDigits-1; tmp > 0; i--)
             {
                 assert(i > 0);
-                buf[i] = cast(char)('0' + cast(int)(tmp % 10));
+                buf[i] = cast(Char)('0' + cast(int)(tmp % 10));
                 tmp /= 10;
             }
             assert(i+1 >= 0);
@@ -548,6 +548,22 @@ private struct Internals(int bits)
 
         assert(remainder == 0 || ((remainder < 0) == (dividend < 0)));
     }
+}
+
+// Verify that toString is callable from pure / nothrow / @nogc code as long as
+// the callback also has these attributes.
+pure nothrow @nogc unittest
+{
+    int256 x = 123;
+    FormatSpec!char fspec;
+
+    fspec.spec = 's';
+    x.toString((const(char)[]) {}, fspec);
+
+    // Verify that wide strings actually work
+    FormatSpec!dchar dfspec;
+    dfspec.spec = 's';
+    x.toString((const(dchar)[] x) { assert(x == "123"); }, dfspec);
 }
 
 unittest
