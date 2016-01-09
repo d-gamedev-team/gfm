@@ -114,6 +114,82 @@ struct wideIntImpl(bool signed, int bits)
         opAssign!T(x);
     }
 
+    // Private functions used by the `literal` template.
+    private static bool isValidDigitString(string digits)
+    {
+        import std.algorithm : startsWith;
+        import std.ascii : isDigit;
+
+        if (digits.startsWith("0x"))
+        {
+            foreach (d; digits[2 .. $])
+            {
+                if (!isHexDigit(d) && d != '_')
+                    return false;
+            }
+        }
+        else // decimal
+        {
+            foreach (d; digits)
+            {
+                if (!isDigit(d) && d != '_')
+                    return false;
+            }
+        }
+        return true;
+    }
+
+    private static typeof(this) literalImpl(string digits)
+    {
+        import std.algorithm : startsWith;
+        import std.ascii : isDigit;
+
+        typeof(this) value = 0;
+        if (digits.startsWith("0x"))
+        {
+            foreach (d; digits[2 .. $])
+            {
+                if (d == '_')
+                    continue;
+                value <<= 4;
+                if (isDigit(d))
+                    value += d - '0';
+                else
+                    value += 10 + toUpper(d) - 'A';
+            }
+        }
+        else
+        {
+            foreach (d; digits)
+            {
+                if (d == '_')
+                    continue;
+                value *= 10;
+                value += d - '0';
+            }
+        }
+        return value;
+    }
+
+    /// Construct from compile-time digit string.
+    ///
+    /// Both decimal and hex digit strings are supported.
+    ///
+    /// Example:
+    /// ----
+    /// auto x = int128.literal!"20_000_000_000_000_000_001";
+    /// assert((x >>> 1) == 0x8AC7_2304_89E8_0000);
+    ///
+    /// auto y = int126.literal!"0x1_158E_4609_13D0_0001";
+    /// assert(y == x);
+    /// ----
+    template literal(string digits)
+    {
+        static assert(isValidDigitString(digits),
+                      "invalid digits in literal: " ~ digits);
+        enum literal = literalImpl(digits);
+    }
+
     /// Assign with a smaller unsigned type.
     @nogc ref self opAssign(T)(T n) pure nothrow if (isIntegral!T && isUnsigned!T)
     {
@@ -570,4 +646,17 @@ unittest
             }
         }
     }
+}
+
+unittest
+{
+    // Just a little over 2^64, so it actually needs int128.
+    // Hex value should be 0x1_158E_4609_13D0_0001.
+    enum x = int128.literal!"20_000_000_000_000_000_001";
+    assert(x.hi == 0x1 && x.lo == 0x158E_4609_13D0_0001);
+    assert((x >>> 1) == 0x8AC7_2304_89E8_0000);
+
+    enum y = int128.literal!"0x1_158E_4609_13D0_0001";
+    enum z = int128.literal!"0x1_158e_4609_13d0_0001"; // case insensitivity
+    assert(x == y && y == z && x == z);
 }
