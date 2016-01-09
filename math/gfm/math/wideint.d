@@ -137,8 +137,9 @@ struct wideIntImpl(bool signed, int bits)
         }
         else // decimal
         {
-            if (digits.startsWith("-"))
-                digits = digits[1 .. $];
+            static if (signed)
+                if (digits.startsWith("-"))
+                    digits = digits[1 .. $];
             if (digits.length < 1)
                 return false;   // at least 1 digit required
             foreach (d; digits)
@@ -171,11 +172,14 @@ struct wideIntImpl(bool signed, int bits)
         }
         else
         {
-            bool negative = false;
-            if (digits.startsWith("-"))
+            static if (signed)
             {
-                negative = true;
-                digits = digits[1 .. $];
+                bool negative = false;
+                if (digits.startsWith("-"))
+                {
+                    negative = true;
+                    digits = digits[1 .. $];
+                }
             }
             foreach (d; digits)
             {
@@ -184,8 +188,9 @@ struct wideIntImpl(bool signed, int bits)
                 value *= 10;
                 value += d - '0';
             }
-            if (negative)
-                value = -value;
+            static if (signed)
+                if (negative)
+                    value = -value;
         }
         return value;
     }
@@ -774,4 +779,7 @@ unittest
            x.lo == 0xEA71_B9F6_EC2F_FFFF);
     assert(format("%d", x) == "-20000000000000000001");
     assert(format("%x", x) == "0xFFFFFFFFFFFFFFFEEA71B9F6EC2FFFFF");
+
+    // Negative literals should not be supported for unsigned types
+    assert(!__traits(compiles, uint128.literal!"-1"));
 }
