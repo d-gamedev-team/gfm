@@ -1,0 +1,49 @@
+<?xml version="1.0"?>
+<svg width="200" height="200" xmlns="http://www.w3.org/2000/svg" >
+  <defs>
+    <linearGradient id="g0" x1="0%" y1="0%" x2="50%" y2="100%">
+      <stop offset="0%" stop-color="#755"/>
+      <stop offset="100%" stop-color="#445"/>
+    </linearGradient>
+    <linearGradient id="g1" x1="0%" y1="0%" x2="30%" y2="100%">
+      <stop offset="0%" stop-color="#667"/>
+      <stop offset="100%" stop-color="#335"/>
+    </linearGradient>
+    <linearGradient id="g2" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#656"/>
+      <stop offset="100%" stop-color="#668"/>
+    </linearGradient>
+    <radialGradient id="g4" cx="30%" cy="40%" r="80%" fx="30%" fy="60%">
+      <stop offset="0%" style="stop-color:#cb6;"/>
+      <stop offset="100%" style="stop-color:#a88;"/>
+    </radialGradient>
+    <filter id="blur" x="-100%" y="-100%" width="300%" height="300%">
+      <feOffset result="offOut" in="SourceGraphic" dx="0.4" dy="3"/>
+      <feColorMatrix result="matrixOut" in="offOut" type="matrix"
+        values = "0.3 0 0 0 0 0 0.3 0 0 0 0 0 0.3 0 0 0 0 0 0.2 0"/>
+      <feGaussianBlur result="blurOut" in="matrixOut"
+                      stdDeviation="2.5"/>
+      <feBlend in="SourceGraphic" in2="blurOut" mode="normal"/>
+    </filter>
+  </defs>
+
+  <g transform="scale(2.5) translate(-10,-3)">
+<g filter="url(#blur)" >
+  <polygon points="46,45 49.5,52.5 50.5,52.5 54,45 70,50 50,60 30,50" fill="url(#g2)"/>
+  <polygon transform="translate(1,1.1)" points="70,62 50,72 50,60 70,50" fill="url(#g1)"/>
+  <polygon transform="translate(-0.5,1.4)" points="30,62 50,72 50,60 30,50" fill="url(#g0)"/>
+    </g>
+    <g filter="url(#blur)" >
+  <polygon transform="translate(-0.5,1)" points="46,50 50,52 50,25 46,25" fill="url(#g0)"/>
+  <polygon transform="translate(0.5,1)" points="54,50 50,52 50,25 54,25" fill="url(#g1)"/>
+    </g>
+
+
+    <ellipse cx="49.8" cy="22.9" rx="11" ry="11" fill="#fff"/>
+  <ellipse  filter="url(#blur)" cx="50" cy="23" rx="10" ry="10" fill="url(#g4)"/>
+
+
+
+  </g>
+
+</svg>
