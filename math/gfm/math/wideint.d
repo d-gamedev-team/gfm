@@ -137,6 +137,10 @@ struct wideIntImpl(bool signed, int bits)
         }
         else // decimal
         {
+            if (digits.startsWith("-"))
+                digits = digits[1 .. $];
+            if (digits.length < 1)
+                return false;   // at least 1 digit required
             foreach (d; digits)
             {
                 if (!isDigit(d) && d != '_')
@@ -167,6 +171,12 @@ struct wideIntImpl(bool signed, int bits)
         }
         else
         {
+            bool negative = false;
+            if (digits.startsWith("-"))
+            {
+                negative = true;
+                digits = digits[1 .. $];
+            }
             foreach (d; digits)
             {
                 if (d == '_')
@@ -174,6 +184,8 @@ struct wideIntImpl(bool signed, int bits)
                 value *= 10;
                 value += d - '0';
             }
+            if (negative)
+                value = -value;
         }
         return value;
     }
@@ -746,4 +758,20 @@ unittest
     enum y = int128.literal!"0x1_158E_4609_13D0_0001";
     enum z = int128.literal!"0x1_158e_4609_13d0_0001"; // case insensitivity
     assert(x == y && y == z && x == z);
+}
+
+unittest
+{
+    import std.string : format;
+
+    // Malformed literals that should be rejected
+    assert(!__traits(compiles, int128.literal!""));
+    assert(!__traits(compiles, int128.literal!"-"));
+
+    // Negative literals should be supported
+    auto x = int128.literal!"-20000000000000000001";
+    assert(x.hi == 0xFFFF_FFFF_FFFF_FFFE &&
+           x.lo == 0xEA71_B9F6_EC2F_FFFF);
+    assert(format("%d", x) == "-20000000000000000001");
+    assert(format("%x", x) == "0xFFFFFFFFFFFFFFFEEA71B9F6EC2FFFFF");
 }
