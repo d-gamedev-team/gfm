@@ -334,7 +334,7 @@ struct wideIntImpl(bool signed, int bits)
             for (i = maxDigits-1; tmp > 0; i--)
             {
                 assert(i > 0);
-                buf[i] = cast(Char)('0' + cast(int)(tmp % 10));
+                buf[i] = digits[cast(int)(tmp % 10)];
                 tmp /= 10;
             }
             assert(i+1 >= 0);
