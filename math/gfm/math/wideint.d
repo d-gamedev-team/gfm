@@ -291,20 +291,24 @@ struct wideIntImpl(bool signed, int bits)
     {
         if (fmt.spec == 'x')
         {
-            enum hexdigits = bits / 8;
-            Char[1] buf;
+            if (this == 0)
+            {
+                sink("0");
+                return;
+            }
 
-            sink("0x");
-            for (int i = 0; i < hexdigits; ++i)
+            enum maxDigits = bits / 4;
+            Char[maxDigits] buf;
+            wideIntImpl tmp = this;
+            size_t i;
+
+            for (i = maxDigits-1; tmp != 0 && i < buf.length; i--)
             {
-                buf[0] = hexDigits[cast(int)((hi >> ((15 - i) * 4)) & 15)];
-                sink(buf[]);
+                buf[i] = hexDigits[cast(int)tmp & 0b00001111];
+                tmp >>= 4;
             }
-            for (int i = 0; i < hexdigits; ++i)
-            {
-                buf[0] = hexDigits[cast(int)((lo >> ((15 - i) * 4)) & 15)];
-                sink(buf[]);
-            }
+            assert(i+1 < buf.length);
+            sink(buf[i+1 .. $]);
         }
         else // default to decimal
         {
@@ -333,11 +337,11 @@ struct wideIntImpl(bool signed, int bits)
             }
             for (i = maxDigits-1; tmp > 0; i--)
             {
-                assert(i > 0);
+                assert(i < buf.length);
                 buf[i] = digits[cast(int)(tmp % 10)];
                 tmp /= 10;
             }
-            assert(i+1 >= 0);
+            assert(i+1 < buf.length);
             sink(buf[i+1 .. $]);
         }
     }
@@ -674,12 +678,12 @@ unittest
     x.lo = 0x158E_4609_13D0_0001;
     assert(format("%s", x) == "20000000000000000001");
     assert(format("%d", x) == "20000000000000000001");
-    assert(format("%x", x) == "0x0000000000000001158E460913D00001");
+    assert(format("%x", x) == "1158E460913D00001");
 
     x.hi = 0xFFFF_FFFF_FFFF_FFFE;
     x.lo = 0xEA71_B9F6_EC2F_FFFF;
     assert(format("%d", x) == "-20000000000000000001");
-    assert(format("%x", x) == "0xFFFFFFFFFFFFFFFEEA71B9F6EC2FFFFF");
+    assert(format("%x", x) == "FFFFFFFFFFFFFFFEEA71B9F6EC2FFFFF");
 
     x.hi = x.lo = 0;
     assert(format("%d", x) == "0");
@@ -778,8 +782,14 @@ unittest
     assert(x.hi == 0xFFFF_FFFF_FFFF_FFFE &&
            x.lo == 0xEA71_B9F6_EC2F_FFFF);
     assert(format("%d", x) == "-20000000000000000001");
-    assert(format("%x", x) == "0xFFFFFFFFFFFFFFFEEA71B9F6EC2FFFFF");
+    assert(format("%x", x) == "FFFFFFFFFFFFFFFEEA71B9F6EC2FFFFF");
 
     // Negative literals should not be supported for unsigned types
     assert(!__traits(compiles, uint128.literal!"-1"));
+
+    // Hex formatting tests
+    x = 0;
+    assert(format("%x", x) == "0");
+    x = -1;
+    assert(format("%x", x) == "FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF");
 }
