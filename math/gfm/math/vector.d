@@ -494,28 +494,42 @@ nothrow:
     }
 }
 
-private string definePostfixAliases(string type)
-{
-    return "alias " ~ type ~ "!byte "   ~ type ~ "b;\n"
-         ~ "alias " ~ type ~ "!ubyte "  ~ type ~ "ub;\n"
-         ~ "alias " ~ type ~ "!short "  ~ type ~ "s;\n"
-         ~ "alias " ~ type ~ "!ushort " ~ type ~ "us;\n"
-         ~ "alias " ~ type ~ "!int "    ~ type ~ "i;\n"
-         ~ "alias " ~ type ~ "!uint "   ~ type ~ "ui;\n"
-         ~ "alias " ~ type ~ "!long "   ~ type ~ "l;\n"
-         ~ "alias " ~ type ~ "!ulong "  ~ type ~ "ul;\n"
-         ~ "alias " ~ type ~ "!float "  ~ type ~ "f;\n"
-         ~ "alias " ~ type ~ "!double " ~ type ~ "d;\n";
-}
-
 template vec2(T) { alias Vector!(T, 2) vec2; }
 template vec3(T) { alias Vector!(T, 3) vec3; }
 template vec4(T) { alias Vector!(T, 4) vec4; }
 
-mixin(definePostfixAliases("vec2"));
-mixin(definePostfixAliases("vec3"));
-mixin(definePostfixAliases("vec4"));
+alias vec2!byte   vec2b;
+alias vec2!ubyte  vec2ub;
+alias vec2!short  vec2s;
+alias vec2!ushort vec2us;
+alias vec2!int    vec2i;
+alias vec2!uint   vec2ui;
+alias vec2!long   vec2l;
+alias vec2!ulong  vec2ul;
+alias vec2!float  vec2f;
+alias vec2!double vec2d;
 
+alias vec3!byte   vec3b;
+alias vec3!ubyte  vec3ub;
+alias vec3!short  vec3s;
+alias vec3!ushort vec3us;
+alias vec3!int    vec3i;
+alias vec3!uint   vec3ui;
+alias vec3!long   vec3l;
+alias vec3!ulong  vec3ul;
+alias vec3!float  vec3f;
+alias vec3!double vec3d;
+
+alias vec4!byte   vec4b;
+alias vec4!ubyte  vec4ub;
+alias vec4!short  vec4s;
+alias vec4!ushort vec4us;
+alias vec4!int    vec4i;
+alias vec4!uint   vec4ui;
+alias vec4!long   vec4l;
+alias vec4!ulong  vec4ul;
+alias vec4!float  vec4f;
+alias vec4!double vec4d;
 
 private
 {
