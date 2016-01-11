@@ -1,6 +1,6 @@
 # GFM [![Build Status](https://travis-ci.org/d-gamedev-team/gfm.png?branch=master)](https://travis-ci.org/d-gamedev-team/gfm)
 
-[![Join the chat at https://gitter.im/d-gamedev-team/gfm](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/d-gamedev-team/gfm?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+<img alt="logo" src="https://cdn.rawgit.com/p0nce/gfm/master/logo.svg" width="200">
 
 GFM is a lightweight library to ease the creation of video games / multimedia applications with the D programming language.
 
@@ -29,7 +29,7 @@ See the examples/ directory, or https://github.com/p0nce/aliasthis as an example
 
 https://github.com/d-gamedev-team/gfm/wiki/Changelog
 
-## Who uses GFM?
+## Who is using GFM?
 - [aliasthis](https://github.com/p0nce/aliasthis)
 - [Despiker](https://github.com/kiith-sa/despiker/blob/master/dub.json)
 - [D gamedev intro](https://github.com/kiith-sa/d-gamedev-intro)
@@ -39,10 +39,10 @@ https://github.com/d-gamedev-team/gfm/wiki/Changelog
 - [Vibrant](https://github.com/p0nce/Vibrant)
 - [vxlgen](https://github.com/p0nce/vxlgen)
 
-## Why use GFM
-  * GFM primarily provides math primitives that are useful for games like vectors/matrices/quaternions in the `gfm:math`package.
-  * Wrappers are transparent layers that expose the C libraries objects, turn every error code into an D exception and makes it easier to use the library correctly. They do almost nothing and perhaps you don't need them.
+## Why using GFM?
   * GFM has low churn and has been maintained since 2012.
+  * GFM primarily provides math primitives that are useful for games like vectors/matrices/quaternions in the `gfm:math`package.
+  * Other subpackagesare wrappers: transparent layers that expose the C libraries objects, turn every error code into an D exception and makes it easier to use the library correctly. They do almost nothing and perhaps you don't need them.
 
 ## Dependencies
 

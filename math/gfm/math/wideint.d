@@ -12,6 +12,7 @@ module gfm.math.wideint;
 
 import std.traits,
        std.ascii;
+import std.format : FormatSpec;
 
 /// Wide signed integer.
 /// Params:
@@ -39,8 +40,8 @@ alias uwideint!256 uint256;
 
 /// Use this template to get an arbitrary sized integer type.
 private template integer(bool signed, int bits)
+    if ((bits & (bits - 1)) == 0)
 {
-    static assert((bits & (bits - 1)) == 0); // bits must be a power of 2
 
     // forward to native type for lower numbers of bits
     static if (bits == 8)
@@ -75,6 +76,12 @@ private template integer(bool signed, int bits)
     {
         alias wideIntImpl!(signed, bits) integer;
     }
+}
+
+private template integer(bool signed, int bits)
+    if ((bits & (bits - 1)) != 0)
+{
+    static assert(0, "wide integer bits must be a power of 2");
 }
 
 /// Recursive 2^n integer implementation.
@@ -112,6 +119,99 @@ struct wideIntImpl(bool signed, int bits)
     @nogc this(T)(T x) pure nothrow
     {
         opAssign!T(x);
+    }
+
+    // Private functions used by the `literal` template.
+    private static bool isValidDigitString(string digits)
+    {
+        import std.algorithm : startsWith;
+        import std.ascii : isDigit;
+
+        if (digits.startsWith("0x"))
+        {
+            foreach (d; digits[2 .. $])
+            {
+                if (!isHexDigit(d) && d != '_')
+                    return false;
+            }
+        }
+        else // decimal
+        {
+            static if (signed)
+                if (digits.startsWith("-"))
+                    digits = digits[1 .. $];
+            if (digits.length < 1)
+                return false;   // at least 1 digit required
+            foreach (d; digits)
+            {
+                if (!isDigit(d) && d != '_')
+                    return false;
+            }
+        }
+        return true;
+    }
+
+    private static typeof(this) literalImpl(string digits)
+    {
+        import std.algorithm : startsWith;
+        import std.ascii : isDigit;
+
+        typeof(this) value = 0;
+        if (digits.startsWith("0x"))
+        {
+            foreach (d; digits[2 .. $])
+            {
+                if (d == '_')
+                    continue;
+                value <<= 4;
+                if (isDigit(d))
+                    value += d - '0';
+                else
+                    value += 10 + toUpper(d) - 'A';
+            }
+        }
+        else
+        {
+            static if (signed)
+            {
+                bool negative = false;
+                if (digits.startsWith("-"))
+                {
+                    negative = true;
+                    digits = digits[1 .. $];
+                }
+            }
+            foreach (d; digits)
+            {
+                if (d == '_')
+                    continue;
+                value *= 10;
+                value += d - '0';
+            }
+            static if (signed)
+                if (negative)
+                    value = -value;
+        }
+        return value;
+    }
+
+    /// Construct from compile-time digit string.
+    ///
+    /// Both decimal and hex digit strings are supported.
+    ///
+    /// Example:
+    /// ----
+    /// auto x = int128.literal!"20_000_000_000_000_000_001";
+    /// assert((x >>> 1) == 0x8AC7_2304_89E8_0000);
+    ///
+    /// auto y = int126.literal!"0x1_158E_4609_13D0_0001";
+    /// assert(y == x);
+    /// ----
+    template literal(string digits)
+    {
+        static assert(isValidDigitString(digits),
+                      "invalid digits in literal: " ~ digits);
+        enum literal = literalImpl(digits);
     }
 
     /// Assign with a smaller unsigned type.
@@ -184,21 +284,66 @@ struct wideIntImpl(bool signed, int bits)
             return T(this);
     }
 
-    /// Converts to a hexadecimal string.
-    string toString() pure const nothrow
+    /// Converts to a string. Supports format specifiers %d, %s (both decimal)
+    /// and %x (hex).
+    void toString(DG, Char)(DG sink, FormatSpec!Char fmt) const
+        if (is(typeof(sink((const(Char)[]).init))))
     {
-        string outbuff = "0x";
-        enum hexdigits = bits / 8;
+        if (fmt.spec == 'x')
+        {
+            if (this == 0)
+            {
+                sink("0");
+                return;
+            }
 
-        for (int i = 0; i < hexdigits; ++i)
-        {
-            outbuff ~= hexDigits[cast(int)((hi >> ((15 - i) * 4)) & 15)];
+            enum maxDigits = bits / 4;
+            Char[maxDigits] buf;
+            wideIntImpl tmp = this;
+            size_t i;
+
+            for (i = maxDigits-1; tmp != 0 && i < buf.length; i--)
+            {
+                buf[i] = hexDigits[cast(int)tmp & 0b00001111];
+                tmp >>= 4;
+            }
+            assert(i+1 < buf.length);
+            sink(buf[i+1 .. $]);
         }
-        for (int i = 0; i < hexdigits; ++i)
+        else // default to decimal
         {
-            outbuff ~= hexDigits[cast(int)((lo >> ((15 - i) * 4)) & 15)];
+            import std.algorithm : reverse;
+
+            if (this == 0)
+            {
+                sink("0");
+                return;
+            }
+
+            // The maximum number of decimal digits is basically
+            // ceil(log_10(2^^bits - 1)), which is slightly below
+            // ceil(bits * log(2)/log(10)). The value 0.30103 is a slight
+            // overestimate of log(2)/log(10), to be sure we never
+            // underestimate. We add 1 to account for rounding up.
+            enum maxDigits = cast(ulong)(0.30103 * bits) + 1;
+            Char[maxDigits] buf;
+            size_t i;
+
+            wideIntImpl tmp = this;
+            if (tmp < 0)
+            {
+                sink("-");
+                tmp = -tmp;
+            }
+            for (i = maxDigits-1; tmp > 0; i--)
+            {
+                assert(i < buf.length);
+                buf[i] = digits[cast(int)(tmp % 10)];
+                tmp /= 10;
+            }
+            assert(i+1 < buf.length);
+            sink(buf[i+1 .. $]);
         }
-        return outbuff;
     }
 
     @nogc self opBinary(string op, T)(T o) pure const nothrow if (!isSelf!T)
@@ -508,6 +653,45 @@ private struct Internals(int bits)
     }
 }
 
+// Verify that toString is callable from pure / nothrow / @nogc code as long as
+// the callback also has these attributes.
+pure nothrow @nogc unittest
+{
+    int256 x = 123;
+    FormatSpec!char fspec;
+
+    fspec.spec = 's';
+    x.toString((const(char)[]) {}, fspec);
+
+    // Verify that wide strings actually work
+    FormatSpec!dchar dfspec;
+    dfspec.spec = 's';
+    x.toString((const(dchar)[] x) { assert(x == "123"); }, dfspec);
+}
+
+unittest
+{
+    import std.string : format;
+
+    int128 x;
+    x.hi = 1;
+    x.lo = 0x158E_4609_13D0_0001;
+    assert(format("%s", x) == "20000000000000000001");
+    assert(format("%d", x) == "20000000000000000001");
+    assert(format("%x", x) == "1158E460913D00001");
+
+    x.hi = 0xFFFF_FFFF_FFFF_FFFE;
+    x.lo = 0xEA71_B9F6_EC2F_FFFF;
+    assert(format("%d", x) == "-20000000000000000001");
+    assert(format("%x", x) == "FFFFFFFFFFFFFFFEEA71B9F6EC2FFFFF");
+
+    x.hi = x.lo = 0;
+    assert(format("%d", x) == "0");
+
+    x.hi = x.lo = 0xFFFF_FFFF_FFFF_FFFF;
+    assert(format("%d", x) == "-1"); // array index boundary condition
+}
+
 unittest
 {
     long step = 164703072086692425;
@@ -570,4 +754,42 @@ unittest
             }
         }
     }
+}
+
+unittest
+{
+    // Just a little over 2^64, so it actually needs int128.
+    // Hex value should be 0x1_158E_4609_13D0_0001.
+    enum x = int128.literal!"20_000_000_000_000_000_001";
+    assert(x.hi == 0x1 && x.lo == 0x158E_4609_13D0_0001);
+    assert((x >>> 1) == 0x8AC7_2304_89E8_0000);
+
+    enum y = int128.literal!"0x1_158E_4609_13D0_0001";
+    enum z = int128.literal!"0x1_158e_4609_13d0_0001"; // case insensitivity
+    assert(x == y && y == z && x == z);
+}
+
+unittest
+{
+    import std.string : format;
+
+    // Malformed literals that should be rejected
+    assert(!__traits(compiles, int128.literal!""));
+    assert(!__traits(compiles, int128.literal!"-"));
+
+    // Negative literals should be supported
+    auto x = int128.literal!"-20000000000000000001";
+    assert(x.hi == 0xFFFF_FFFF_FFFF_FFFE &&
+           x.lo == 0xEA71_B9F6_EC2F_FFFF);
+    assert(format("%d", x) == "-20000000000000000001");
+    assert(format("%x", x) == "FFFFFFFFFFFFFFFEEA71B9F6EC2FFFFF");
+
+    // Negative literals should not be supported for unsigned types
+    assert(!__traits(compiles, uint128.literal!"-1"));
+
+    // Hex formatting tests
+    x = 0;
+    assert(format("%x", x) == "0");
+    x = -1;
+    assert(format("%x", x) == "FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF");
 }
