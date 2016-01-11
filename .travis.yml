@@ -2,6 +2,7 @@ language: d
 sudo: false
 
 d:
+ - dmd # latest
  - dmd-2.070.0-b1
  - dmd-2.069.1
  - dmd-2.068.2
