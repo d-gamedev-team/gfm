@@ -6,8 +6,8 @@ module gfm.core.memory;
 import core.memory : GC;
 import core.exception : onOutOfMemoryError;
 import core.stdc.string : memcpy;
+import core.stdc.stdlib : malloc, free, realloc;
 
-import std.c.stdlib : malloc, free, realloc;
 import std.conv : emplace;
 import std.traits;
 import std.algorithm: swap;
