@@ -27,6 +27,7 @@ final class Client : Host
      * Creates a new Client, a subclass of Host
      *
      * Params:
+     *  enet              = Library object.
      *  peerCount         = The maximum number of peers that should be allocated
      *                      for the host, for clients this is useful for
      *                      connecting to multiple servers.
@@ -63,6 +64,7 @@ final class Client : Host
      * singular Peer.
      *
      * Params:
+     *  enet              = Library object.
      *  channelLimit      = The maximum number of channels allowed; if 0, then
      *                      this is equivalent to
      *                      ENET_PROTOCOL_MAXIMUM_CHANNEL_COUNT
@@ -93,6 +95,7 @@ class Server : Host
      * Creates a new Server, which is a type of Host.
      *
      * Params:
+     *  enet              = Library object.
      *  port              = Port that the server binds to
      *  peerCount         = The maximum number of peers that should be allocated
      *                      for the host
@@ -143,6 +146,7 @@ class Host
      * Creates a new Host
      *
      * Params:
+     *  enet              = Library object.
      *  address           = The address at which other peers may connect to this
      *                      host; if null, then no peers may connect to the host
      *  peerCount         = The maximum number of peers that should be allocated
