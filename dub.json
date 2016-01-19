@@ -13,7 +13,8 @@
         "John D. Cook: SimpleRNG author",
         "Sam Hocevar: many bits of code",
         "Daniel Cousens / RommelVR: GL fix",
-        "Daniele Bondi / maeriden: Euler angles fix"
+        "Daniele Bondi / maeriden: Euler angles fix",
+        "H. S. Teoh / quickfur: wideint improvements"
     ],
 
     "targetType": "none",
