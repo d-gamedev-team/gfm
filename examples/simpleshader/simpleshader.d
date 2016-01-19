@@ -2,8 +2,6 @@ import std.math,
        std.random,
        std.typecons;
 
-import std.experimental.logger;
-
 import derelict.util.loader;
 
 import gfm.logger,
@@ -25,7 +23,7 @@ void main()
     int height = 720;
     double ratio = width / cast(double)height;
 
-    // create a logger
+    // create a coloured console logger
     auto log = new ConsoleLogger();
 
     // load dynamic libraries

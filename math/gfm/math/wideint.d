@@ -110,8 +110,7 @@ struct wideIntImpl(bool signed, int bits)
 
         alias sub_uint_t low_t;   // low_t is always unsigned
 
-        enum _isWideIntImpl = true,
-             _bits = bits,
+        enum _bits = bits,
              _signed = signed;
     }
 
@@ -235,7 +234,7 @@ struct wideIntImpl(bool signed, int bits)
     }
 
     /// Assign with a wide integer of the same size (sign is lost).
-    @nogc ref self opAssign(T)(T n) pure nothrow if (is(typeof(T._isWideIntImpl)) && T._bits == bits)
+    @nogc ref self opAssign(T)(T n) pure nothrow if (isWideIntInstantiation!T && T._bits == bits)
     {
         hi = n.hi;
         lo = n.lo;
@@ -243,7 +242,7 @@ struct wideIntImpl(bool signed, int bits)
     }
 
     /// Assign with a smaller wide integer (sign is extended accordingly).
-    @nogc ref self opAssign(T)(T n) pure nothrow if (is(typeof(T._isWideIntImpl)) && T._bits < bits)
+    @nogc ref self opAssign(T)(T n) pure nothrow if (isWideIntInstantiation!T && T._bits < bits)
     {
         static if (T._signed)
         {
@@ -276,7 +275,7 @@ struct wideIntImpl(bool signed, int bits)
     }
 
     /// Cast to wide integer of any size.
-    @nogc T opCast(T)() pure const nothrow if (is(typeof(T._isWideIntImpl)))
+    @nogc T opCast(T)() pure const nothrow if (isWideIntInstantiation!T)
     {
         static if (T._bits < bits)
             return cast(T)lo;
@@ -584,6 +583,15 @@ struct wideIntImpl(bool signed, int bits)
             return p;
         }
     }
+}
+
+template isWideIntInstantiation(U)
+{
+    private static void isWideInt(bool signed, int bits)(wideIntImpl!(signed, bits) x)
+    {
+    }
+
+    enum bool isWideIntInstantiation = is(typeof(isWideInt(U.init)));
 }
 
 @nogc public wideIntImpl!(signed, bits) abs(bool signed, int bits)(wideIntImpl!(signed, bits) x) pure nothrow

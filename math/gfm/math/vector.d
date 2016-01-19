@@ -63,7 +63,7 @@ nothrow:
 
                 foreach(arg; args)
                 {
-                    static if(is(typeof(arg._isVector)))
+                    static if(isVectorInstantiation!(typeof(arg)))
                         argumentCount += arg._N;
                     else
                         argumentCount += 1;
@@ -79,7 +79,7 @@ nothrow:
                         v[index] = arg;
                         index++; // has to be on its own line (DMD 2.068)
                     }
-                    else static if (is(typeof(arg._isVector)) && isAssignable!(T, arg._T))
+                    else static if (isVectorInstantiation!(typeof(arg)) && isAssignable!(T, arg._T))
                     {
                         mixin(generateLoopCode!("v[index + @] = arg[@];", arg._N)());
                         index += arg._N;
@@ -122,7 +122,7 @@ nothrow:
         }
 
         /// Assign from other vectors types (same size, compatible type).
-        @nogc ref Vector opAssign(U)(U x) pure nothrow if (is(typeof(U._isVector))
+        @nogc ref Vector opAssign(U)(U x) pure nothrow if (isVectorInstantiation!U
                                                        && isAssignable!(T, U._T)
                                                        && (!is(U: Vector))
                                                        && (U._N == _N))
@@ -272,7 +272,7 @@ nothrow:
         /// vec4f vf;
         /// vec4d vd = cast!(vec4d)vf;
         /// ---
-        @nogc U opCast(U)() pure const nothrow if (is(typeof(U._isVector)) && (U._N == _N))
+        @nogc U opCast(U)() pure const nothrow if (isVectorInstantiation!U && (U._N == _N))
         {
             U res = void;
             mixin(generateLoopCode!("res.v[@] = cast(U._T)v[@];", N)());
@@ -387,8 +387,6 @@ nothrow:
 
     private
     {
-        enum _isVector = true; // do we really need this? I don't know.
-
         enum _N = N;
         alias T _T;
 
@@ -492,6 +490,15 @@ nothrow:
                 enum swizzleTuple = [ swizzleIndex!(op[0]) ] ~ swizzleTuple!(op[1..op.length]);
         }
     }
+}
+
+template isVectorInstantiation(U)
+{
+    private static void isVector(T, int N)(Vector!(T, N) x)
+    {
+    }
+
+    enum bool isVectorInstantiation = is(typeof(isVector(U.init)));
 }
 
 template vec2(T) { alias Vector!(T, 2) vec2; }

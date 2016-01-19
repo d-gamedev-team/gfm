@@ -92,7 +92,7 @@ struct Matrix(T, int R, int C)
 
         /// Assign from other small matrices (same size, compatible type).
         @nogc ref Matrix opAssign(U)(U x) pure nothrow
-            if (is(typeof(U._isMatrix))
+            if (isMatrixInstantiation!U
                 && is(U._T : _T)
                 && (!is(U: Matrix))
                 && (U._R == R) && (U._C == C))
@@ -172,7 +172,7 @@ struct Matrix(T, int R, int C)
 
         /// Matrix * matrix multiplication.
         @nogc auto opBinary(string op, U)(U x) pure const nothrow
-            if (is(typeof(U._isMatrix)) && (U._R == C) && (op == "*"))
+            if (isMatrixInstantiation!U && (U._R == C) && (op == "*"))
         {
             Matrix!(T, R, U._C) result = void;
 
@@ -222,7 +222,7 @@ struct Matrix(T, int R, int C)
         /// Cast to other matrix types.
         /// If the size are different, the resulting matrix is truncated
         /// and/or filled with identity coefficients.
-        @nogc U opCast(U)() pure const nothrow if (is(typeof(U._isMatrix)))
+        @nogc U opCast(U)() pure const nothrow if (isMatrixInstantiation!U)
         {
             U res = U.identity();
             enum minR = R < U._R ? R : U._R;
@@ -261,7 +261,7 @@ struct Matrix(T, int R, int C)
 
         /// Convert 3x3 rotation matrix to quaternion.
         /// See_also: 3D Math Primer for Graphics and Game Development.
-        @nogc U opCast(U)() pure const nothrow if (is(typeof(U._isQuaternion))
+        @nogc U opCast(U)() pure const nothrow if (isQuaternionInstantiation!U
                                                    && is(U._T : _T)
                                                    && (_R == 3) && (_C == 3))
         {
@@ -330,7 +330,7 @@ struct Matrix(T, int R, int C)
         }
 
         /// Converts a 4x4 rotation matrix to quaternion.
-        @nogc U opCast(U)() pure const nothrow if (is(typeof(U._isQuaternion))
+        @nogc U opCast(U)() pure const nothrow if (isQuaternionInstantiation!U
                                                    && is(U._T : _T)
                                                    && (_R == 4) && (_C == 4))
         {
@@ -618,7 +618,6 @@ struct Matrix(T, int R, int C)
         alias T _T;
         enum _R = R;
         enum _C = C;
-        enum bool _isMatrix = true;
     }
 
     private
@@ -673,6 +672,15 @@ struct Matrix(T, int R, int C)
             return res;
         }
     }
+}
+
+template isMatrixInstantiation(U)
+{
+    private static void isMatrix(T, int R, int C)(Matrix!(T, R, C) x)
+    {
+    }
+
+    enum bool isMatrixInstantiation = is(typeof(isMatrix(U.init)));
 }
 
 // GLSL is a big inspiration here

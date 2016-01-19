@@ -99,7 +99,7 @@ struct Quaternion(T)
         }
 
         /// Assign from another Quaternion.
-        @nogc ref Quaternion opAssign(U)(U u) pure nothrow if (is(typeof(U._isQuaternion)) && is(U._T : T))
+        @nogc ref Quaternion opAssign(U)(U u) pure nothrow if (isQuaternionInstantiation!U && is(U._T : T))
         {
             v = u.v;
             return this;
@@ -194,7 +194,7 @@ struct Quaternion(T)
 
         /// Convert to a 3x3 rotation matrix.
         /// TODO: check out why we can't do is(Unqual!U == mat3!T)
-        @nogc U opCast(U)() pure const nothrow if (is(typeof(U._isMatrix))
+        @nogc U opCast(U)() pure const nothrow if (isMatrixInstantiation!U
                                                    && is(U._T : _T)
                                                    && (U._R == 3) && (U._C == 3))
         {
@@ -215,7 +215,7 @@ struct Quaternion(T)
 
         /// Converts a to a 4x4 rotation matrix.
         /// Bugs: check why we can't do is(Unqual!U == mat4!T)
-        @nogc U opCast(U)() pure const nothrow if (is(typeof(U._isMatrix))
+        @nogc U opCast(U)() pure const nothrow if (isMatrixInstantiation!U
                                                    && is(U._T : _T)
                                                    && (U._R == 4) && (U._C == 4))
         {
@@ -236,7 +236,6 @@ struct Quaternion(T)
     private
     {
         alias T _T;
-        enum _isQuaternion = true;
 
         template isAssignable(T)
         {
@@ -254,6 +253,15 @@ struct Quaternion(T)
             enum bool isConvertible = (!is(T : Quaternion)) && isAssignable!T;
         }
     }
+}
+
+template isQuaternionInstantiation(U)
+{
+    private static void isQuaternion(T)(Quaternion!T x)
+    {
+    }
+
+    enum bool isQuaternionInstantiation = is(typeof(isQuaternion(U.init)));
 }
 
 alias Quaternion!float quatf;
