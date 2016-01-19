@@ -142,7 +142,7 @@ void main()
     // Create an OpenGL vertex description from the Vertex structure.
     auto quadVS = new VertexSpecification!Vertex(program);
 
-    auto vao = scoped!VAO(gl);
+    auto vao = scoped!GLVAO(gl);
     double time = 0;
 
     uint lastTime = SDL_GetTicks();
