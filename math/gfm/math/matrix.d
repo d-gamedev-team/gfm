@@ -92,7 +92,7 @@ struct Matrix(T, int R, int C)
 
         /// Assign from other small matrices (same size, compatible type).
         @nogc ref Matrix opAssign(U)(U x) pure nothrow
-            if (hasMember!(U, "_isMatrix")
+            if (is(typeof(U._isMatrix))
                 && is(U._T : _T)
                 && (!is(U: Matrix))
                 && (U._R == R) && (U._C == C))
@@ -172,9 +172,7 @@ struct Matrix(T, int R, int C)
 
         /// Matrix * matrix multiplication.
         @nogc auto opBinary(string op, U)(U x) pure const nothrow
-            if (hasMember!(U, "_isMatrix")
-                && (U._R == C) 
-                && (op == "*"))
+            if (is(typeof(U._isMatrix)) && (U._R == C) && (op == "*"))
         {
             Matrix!(T, R, U._C) result = void;
 
@@ -224,8 +222,7 @@ struct Matrix(T, int R, int C)
         /// Cast to other matrix types.
         /// If the size are different, the resulting matrix is truncated
         /// and/or filled with identity coefficients.
-        @nogc U opCast(U)() pure const nothrow
-            if (hasMember!(U, "_isMatrix"))
+        @nogc U opCast(U)() pure const nothrow if (is(typeof(U._isMatrix)))
         {
             U res = U.identity();
             enum minR = R < U._R ? R : U._R;
