@@ -1,7 +1,6 @@
 module gfm.logger.log;
 
-import std.stream,
-       std.string;
+import std.string;
 
 static if( __VERSION__ >= 2067 )
     import std.experimental.logger;
