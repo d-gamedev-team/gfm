@@ -25,4 +25,5 @@ script:
   - dub test --compiler=${DC} gfm:assimp
   - dub test --compiler=${DC} gfm:freeimage
   - dub test --compiler=${DC} gfm:image
+  - dub test --compiler=${DC} gfm:integers
   - dub test --compiler=${DC} gfm:logger
