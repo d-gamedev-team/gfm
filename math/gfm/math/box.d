@@ -256,7 +256,7 @@ struct Box(T, int N)
         @nogc Box expand(bound_t point) pure const nothrow
         {
             import vector = gfm.math.vector;
-            return Box(vector.min(min, point), vector.max(max, point));
+            return Box(vector.minByElem(min, point), vector.maxByElem(max, point));
         }
 
         /// Expands the box to include another box.
