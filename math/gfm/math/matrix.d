@@ -765,13 +765,4 @@ unittest
         mat3x4f B;
         mat2x4f C = A * B;
     }
-
-    // Support user-defined types
-    import gfm.math.half;
-    alias mat2h = Matrix!(half, 2, 2);
-    mat2h b = mat2h(1, 2.0, 3.0L, 4.0f);
-
-    alias vec2h = Vector!(half, 2);
-    vec2h c = vec2h(4, 5);
-    c = b * c;
 }

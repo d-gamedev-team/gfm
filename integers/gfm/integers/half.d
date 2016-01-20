@@ -1,4 +1,4 @@
-module gfm.math.half;
+module gfm.integers.half;
 
 import std.traits,
        std.string;

@@ -7,4 +7,5 @@ dub test gfm:opengl
 dub test gfm:assimp
 dub test gfm:freeimage
 dub test gfm:image
+dub test gfm:integers
 dub test gfm:logger

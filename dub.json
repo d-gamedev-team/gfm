@@ -25,6 +25,7 @@
         "gfm:enet": "*",
         "gfm:freeimage": "*",
         "gfm:image": "*",
+        "gfm:integers": "*",
         "gfm:math": "*",
         "gfm:net": "*",
         "gfm:opengl": "*",
@@ -53,6 +54,11 @@
                 "ae-graphics": "~>0.0",
                 "imageformats": "~>5.0"
             }
+        },
+        {
+            "name": "integers",
+            "sourcePaths": [ "integers/gfm/integers" ],
+            "importPaths": [ "integers" ]
         },
         {
             "name": "net",

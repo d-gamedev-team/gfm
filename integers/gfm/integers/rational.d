@@ -1,4 +1,4 @@
-module gfm.math.rational;
+module gfm.integers.rational;
 
 import std.traits,
        std.string;

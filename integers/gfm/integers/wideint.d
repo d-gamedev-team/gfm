@@ -8,7 +8,7 @@
   Bugs: it's not sure if the unsigned operand would take precedence in a comparison/division.
   TODO: add literals.
  */
-module gfm.math.wideint;
+module gfm.integers.wideint;
 
 import std.traits,
        std.ascii;

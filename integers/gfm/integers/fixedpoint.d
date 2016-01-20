@@ -1,9 +1,8 @@
-module gfm.math.fixedpoint;
+module gfm.integers.fixedpoint;
 
 import std.traits;
 
-import gfm.math.wideint,
-       gfm.math.funcs;
+import gfm.integers.wideint;
 
 /**
     M.N fixed point integer.
@@ -218,4 +217,23 @@ unittest
     assert(d.value == 7 * d.ONE);
     assert(d == 7);
     assert(32768 * (d / 32768) == 7);
+}
+
+private bool isPowerOf2(T)(T i) pure nothrow @nogc if (isIntegral!T) 
+{
+    assert(i >= 0);
+    return (i != 0) && ((i & (i - 1)) == 0);
+}
+
+private int nextPowerOf2(int i) pure nothrow @nogc
+{
+    int v = i - 1;
+    v |= v >> 1;
+    v |= v >> 2;
+    v |= v >> 4;
+    v |= v >> 8;
+    v |= v >> 16;
+    v++;
+    assert(isPowerOf2(v));
+    return v;
 }
