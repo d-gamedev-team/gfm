@@ -41,7 +41,6 @@ class GLTexture
                 _initialized = false;
             }
         }
-        deprecated("Use .destroy instead") void close(){}
 
         /// Use this texture, binding it to a texture unit.
         /// Params:

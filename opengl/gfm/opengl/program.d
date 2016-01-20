@@ -205,7 +205,6 @@ final class GLProgram
                 _initialized = false;
             }
         }
-        deprecated("Use .destroy instead") void close(){}
 
         /// Attaches OpenGL shaders to this program.
         /// Throws: $(D OpenGLException) on error.

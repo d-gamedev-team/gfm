@@ -83,7 +83,6 @@ final class SDL2Window
                 _window = null;
             }
         }
-        deprecated("Use .destroy instead") void close(){}
 
         /// See_also: $(LINK http://wiki.libsdl.org/SDL_SetWindowFullscreen)
         /// Throws: $(D SDL2Exception) on error.

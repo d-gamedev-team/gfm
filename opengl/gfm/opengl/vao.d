@@ -7,7 +7,6 @@ import derelict.opengl3.gl3;
 import gfm.opengl.opengl;
 
 /// OpenGL Vertex Array Object wrapper.
-deprecated("Use GLVAO instead") alias VAO = GLVAO;
 final class GLVAO
 {
     public
@@ -32,7 +31,6 @@ final class GLVAO
                 _initialized = false;
             }
         }
-        deprecated("Use .destroy instead") void close(){}
 
         /// Uses this VAO.
         /// Throws: $(D OpenGLException) on error.

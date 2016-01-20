@@ -42,7 +42,6 @@ final class GLBuffer
                 _initialized = false;
             }
         }
-        deprecated("Use .destroy instead") void close(){}
 
         /// Returns: Size of buffer in bytes.
         @property size_t size() pure const nothrow

@@ -50,7 +50,6 @@ final class FreeImage
                 _libInitialized = false;
             }
         }
-        deprecated("Use .destroy instead") void close(){}
 
         const(char)[] getVersion()
         {

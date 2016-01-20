@@ -43,7 +43,6 @@ final class GLShader
                 _initialized = false;
             }
         }
-        deprecated("Use .destroy instead") void close(){}
 
         /// Load source code for this shader.
         /// Throws: $(D OpenGLException) on error.

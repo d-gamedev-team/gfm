@@ -70,7 +70,6 @@ final class FIBitmap
                 _bitmap = null;
             }
         }
-        deprecated("Use .destroy instead") void close(){}
 
         /// Saves an image to a file.
         /// Throws: FreeImage on error.

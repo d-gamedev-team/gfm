@@ -48,7 +48,6 @@ final class SDLImage
                 IMG_Quit();
             }
         }
-        deprecated("Use .destroy instead") void close(){}
 
         /// Load an image.
         /// Returns: A SDL surface with loaded content.

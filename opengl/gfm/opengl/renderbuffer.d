@@ -76,7 +76,6 @@ final class GLRenderBuffer
                 glDeleteRenderbuffers(1, &_handle);
             }
         }
-        deprecated("Use .destroy instead") void close(){}
 
         /// Binds this renderbuffer.
         /// Throws: $(D OpenGLException) on error.

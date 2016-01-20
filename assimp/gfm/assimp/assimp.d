@@ -69,8 +69,7 @@ final class Assimp
                 _libInitialized = false;
             }
         }
-        deprecated("Use .destroy instead") void close(){}
-
+       
         /// Returns: ASSIMP version string as returned by the dynamic library.
         string getVersion()
         {

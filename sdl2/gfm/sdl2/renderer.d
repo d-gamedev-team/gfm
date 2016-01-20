@@ -54,8 +54,6 @@ final class SDL2Renderer
             }
         }
 
-        deprecated("Use .destroy instead") void close(){}
-
         /// Clear the current rendering target with the drawing color.
         /// See_also: $(LINK http://wiki.libsdl.org/SDL_RenderClear)
         /// Throws: $(D SDL2Exception) on error.

@@ -191,7 +191,6 @@ class Host
             _handle = null;
         }
     }
-    deprecated("Use .destroy instead") void close(){}
 
     /**
      * Initiates a connection to a foreign host

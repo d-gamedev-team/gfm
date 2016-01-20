@@ -74,7 +74,6 @@ final class Packet
             _handle = null;
         }
     }
-    deprecated("Use .destroy instead") void close(){}
 
     /**
      * Resizes the ENetPacket.

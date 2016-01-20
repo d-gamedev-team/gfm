@@ -88,7 +88,6 @@ final class ENet
                 _enetInitialized = false;
             }
         }
-        deprecated("Use .destroy instead") void close(){}
     }
 
     package

@@ -565,7 +565,6 @@ private
 
 
 /// Element-wise minimum.
-deprecated("use minByElem instead") alias min = minByElem;
 @nogc Vector!(T, N) minByElem(T, int N)(const Vector!(T, N) a, const Vector!(T, N) b) pure nothrow
 {
     import std.algorithm: min;
@@ -575,7 +574,6 @@ deprecated("use minByElem instead") alias min = minByElem;
 }
 
 /// Element-wise maximum.
-deprecated("use maxByElem instead") alias max = maxByElem;
 @nogc Vector!(T, N) maxByElem(T, int N)(const Vector!(T, N) a, const Vector!(T, N) b) pure nothrow
 {
     import std.algorithm: max;

@@ -63,7 +63,6 @@ final class SDL2Surface
                 _surface = null;
             }
         }
-        deprecated("Use .destroy instead") void close(){}
 
         /// Converts the surface to another format.
         /// See_also: $(LINK http://wiki.libsdl.org/SDL_ConvertSurface)

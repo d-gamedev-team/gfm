@@ -38,7 +38,6 @@ class SDL2Timer
                 _id = 0;
             }
         }
-        deprecated("Use .destroy instead") void close(){}
     }
 
     protected

@@ -39,7 +39,6 @@ final class MatrixStack(int R, T) if (R == 3 || R == 4)
                 _matrices = null;
             }
         }
-        deprecated("Use .destroy instead") void close(){}
 
         /// Replacement for $(D glLoadIdentity).
         void loadIdentity() pure nothrow

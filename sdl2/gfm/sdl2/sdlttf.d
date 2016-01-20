@@ -50,7 +50,6 @@ final class SDLTTF
                 TTF_Quit();
             }
         }
-        deprecated("Use .destroy instead") void close(){}
     }
 
     private
@@ -101,7 +100,6 @@ final class SDLFont
                 _font = null;
             }
         }
-        deprecated("Use .destroy instead") void close(){}
 
         /// Returns: Font style.
         int style()

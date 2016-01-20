@@ -22,9 +22,6 @@ Image!RGBA loadImage(in void[] imageData)
     return loaded;
 }
 
-deprecated("Use loadImage instead") alias stbiLoadImageAE = loadImage;
-
-
 /// Loads two different images:
 /// - the first the 2nd is interpreted as greyscale 
 /// and fetch in the alpha channel of the result.

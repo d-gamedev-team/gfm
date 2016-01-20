@@ -82,7 +82,6 @@ final class GLFBO
                 _initialized = false;
             }
         }
-        deprecated("Use .destroy instead") void close(){}
 
         /// Binds this FBO.
         /// Throws: $(D OpenGLException) on error.

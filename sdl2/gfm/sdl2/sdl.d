@@ -101,7 +101,6 @@ final class SDL2
                 _SDLInitialized = false;
             }
         }
-        deprecated("Use .destroy instead") void close(){}
 
         /// Returns: true if a subsystem is initialized.
         /// See_also: $(LINK http://wiki.libsdl.org/SDL_WasInit)

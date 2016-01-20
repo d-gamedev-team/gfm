@@ -61,7 +61,6 @@ class AssimpScene
                 _scene = null;
             }
         }
-        deprecated("Use .destroy instead") void close(){}
 
         /// Apply post-processing separately, to separate loading from post-processing.
         /// Throws: AssimpException on error.
