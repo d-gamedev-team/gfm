@@ -3,11 +3,7 @@ module gfm.enet.enet;
 import derelict.enet.enet;
 import derelict.util.exception;
 
-static if( __VERSION__ >= 2067 )
-    import std.experimental.logger;
-else
-    import std.historical.logger;
-
+import std.experimental.logger;
 
 /// General ENet exception thrown for all cases.
 final class ENetException : Exception

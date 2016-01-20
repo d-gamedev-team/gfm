@@ -7,8 +7,8 @@ Consider using $(WEB vibed.org,vibe.d) if you need something better.
  */
 module gfm.net.httpclient;
 
-import std.socketstream,
-       std.stream,
+import undead.socketstream,
+       undead.stream,
        std.socket,
        std.string,
        std.conv,
@@ -221,4 +221,3 @@ class HTTPClient
         }
     }
 }
-

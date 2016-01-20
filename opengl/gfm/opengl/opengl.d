@@ -12,10 +12,7 @@ import derelict.util.exception;
 import derelict.opengl3.gl3,
        derelict.opengl3.gl;
 
-static if( __VERSION__ >= 2067 )
-    import std.experimental.logger;
-else
-    import std.historical.logger;
+import std.experimental.logger;
 
 /// The one exception type thrown in this wrapper.
 /// A failing OpenGL function should <b>always</b> throw an $(D OpenGLException).

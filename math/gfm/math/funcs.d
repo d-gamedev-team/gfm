@@ -473,10 +473,12 @@ private
         {
             float result;
 
-            static if( __VERSION__ >= 2067 )
-                mixin(`asm pure nothrow @nogc { movss XMM0, x; rsqrtss XMM0, XMM0; movss result, XMM0; }`);
-            else
-                mixin(`asm { movss XMM0, x; rsqrtss XMM0, XMM0; movss result, XMM0; }`);
+            asm pure nothrow @nogc 
+            {
+                movss XMM0, x; 
+                rsqrtss XMM0, XMM0; 
+                movss result, XMM0; 
+            }
             return result;
         }
         else

@@ -334,13 +334,9 @@ void debugBreak() nothrow @nogc
 {
     version( AsmX86 )
     {
-        static if( __VERSION__ >= 2067 )
+        asm nothrow @nogc 
         {
-            mixin("asm nothrow @nogc { int 3; }");
-        }
-        else
-        {
-            mixin("asm { int 3; }");
+            int 3; 
         }
     }
     else version( GNU )

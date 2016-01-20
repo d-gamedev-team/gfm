@@ -4,10 +4,7 @@ import std.conv,
        std.string,
        std.array : join;
 
-static if( __VERSION__ >= 2067 )
-    import std.experimental.logger;
-else
-    import std.historical.logger;
+import std.experimental.logger;
 
 import derelict.assimp3.assimp,
        derelict.util.exception;
