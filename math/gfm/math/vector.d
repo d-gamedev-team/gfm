@@ -601,7 +601,7 @@ private
 
 /// 3D reflect, like the GLSL function.
 /// Returns: a reflected by normal b.
-@nogc Vector!(T, 3) reflect(T)(const Vector!(T, 3) a, const Vector!(T, 3) b) pure nothrow
+@nogc Vector!(T, N) reflect(T, int N)(const Vector!(T, N) a, const Vector!(T, N) b) pure nothrow
 {
     return a - (2 * dot(b, a)) * b;
 }
