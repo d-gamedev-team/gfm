@@ -601,11 +601,25 @@ private
 
 /// 3D reflect, like the GLSL function.
 /// Returns: a reflected by normal b.
-@nogc Vector!(T, 3) reflect(T)(const Vector!(T, 3) a, const Vector!(T, 3) b) pure nothrow
+@nogc Vector!(T, N) reflect(T, int N)(const Vector!(T, N) a, const Vector!(T, N) b) pure nothrow
 {
     return a - (2 * dot(b, a)) * b;
 }
 
+///
+@nogc unittest
+{
+    // reflect a 2D vector across the x axis (the normal points along the y axis)
+    assert(vec2f(1,1).reflect(vec2f(0,1)) == vec2f(1,-1));
+    assert(vec2f(1,1).reflect(vec2f(0,-1)) == vec2f(1,-1));
+
+    // note that the normal must be, well, normalized:
+    assert(vec2f(1,1).reflect(vec2f(0,20)) != vec2f(1,-1));
+
+    // think of this like a ball hitting a flat floor at an angle.
+    // the x and y components remain unchanged, and the z inverts
+    assert(vec3f(2,3,-0.5).reflect(vec3f(0,0,1)) == vec3f(2,3,0.5));
+}
 
 /// Returns: angle between vectors.
 /// See_also: "The Right Way to Calculate Stuff" at $(WEB www.plunk.org/~hatch/rightway.php)
