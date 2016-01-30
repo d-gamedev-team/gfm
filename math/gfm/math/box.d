@@ -312,7 +312,7 @@ struct Box(T, int N)
             }
             else
             {
-                static assert(false, Format!("no conversion from %s to %s", U.element_t.stringof, element_t.stringof));
+                static assert(false, "no conversion from " ~ U.element_t.stringof ~ " to " ~ element_t.stringof);
             }
             return this;
         }
