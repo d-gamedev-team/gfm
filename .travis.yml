@@ -10,16 +10,9 @@ d:
  - dmd-2.067.1
  - ldc-0.16.0
 
-addons:
-  apt:
-    packages:
-    - libenet-dev
-
 script:
   - dub test --compiler=${DC} gfm:core
   - dub test --compiler=${DC} gfm:math
-  - dub test --compiler=${DC} gfm:net
-  - dub test --compiler=${DC} gfm:enet
   - dub test --compiler=${DC} gfm:sdl2
   - dub test --compiler=${DC} gfm:opengl
   - dub test --compiler=${DC} gfm:assimp

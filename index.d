@@ -43,12 +43,6 @@ $(UL
          )
     )</p>
 
-    <p>$(LI gfm.net:
-        $(UL
-            $(LI $(D uri.d): URI parsing (RFC 3986).)
-            $(LI $(D httpclient.d): HTTP client (RFC 2616).)
-         )
-    )</p>
     <p>$(LI gfm.sdl2:
         $(UL
             $(LI SDL 2.x wrapper based on package derelict-sdl2.)
@@ -81,14 +75,6 @@ $(UL
             $(LI Assimp wrapper based on package derelict-assimp3.)
          )
     )</p>
-
-    <p>$(LI gfm.enet:
-        $(UL
-            $(LI ENet wrapper based on package derelict-enet.)
-         )
-    )</p>
-
-
 )
 
 

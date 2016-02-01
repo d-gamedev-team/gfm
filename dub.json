@@ -22,12 +22,10 @@
     "dependencies": {
         "gfm:core": "*",
         "gfm:assimp": "*",
-        "gfm:enet": "*",
         "gfm:freeimage": "*",
         "gfm:image": "*",
         "gfm:integers": "*",
         "gfm:math": "*",
-        "gfm:net": "*",
         "gfm:opengl": "*",
         "gfm:sdl2": "*",
         "gfm:logger": "*"
@@ -59,23 +57,6 @@
             "name": "integers",
             "sourcePaths": [ "integers/gfm/integers" ],
             "importPaths": [ "integers" ]
-        },
-        {
-            "name": "net",
-            "sourcePaths": [ "net/gfm/net" ],
-            "importPaths": [ "net" ],
-            "dependencies": {
-                "undead": "~>1.0"
-            }
-             
-        },
-        {
-            "name": "enet",
-            "sourcePaths": [ "enet/gfm/enet" ],
-            "importPaths": [ "enet" ],
-             "dependencies": {
-                "derelict-enet": "~>2.0"
-            }
         },
         {
             "name": "assimp",
