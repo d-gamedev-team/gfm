@@ -6,6 +6,8 @@ GFM is a lightweight library to ease the creation of video games / multimedia ap
 
 (Oudated) documentation and overview can be found here: http://d-gamedev-team.github.io/gfm/
 
+See the changelog here to upgrade: [https://github.com/d-gamedev-team/gfm/wiki/Changelog](https://github.com/d-gamedev-team/gfm/wiki/Changelog)
+
 
 ## License
 
