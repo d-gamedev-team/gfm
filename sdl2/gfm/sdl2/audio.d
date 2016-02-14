@@ -35,7 +35,43 @@ final class SDL2AudioDevice
         nothrow @nogc
         {
             /++
-            Checks if this audio device is currently playing sound
+            Starts playing sound on this device
+            See_also: $(D pause), $(LINK https://wiki.libsdl.org/SDL_PauseAudioDevice)
+            +/
+            void play()
+            {
+                SDL_PauseAudioDevice(_id, 0);
+            }
+
+            /++
+            Stops playing sound on this device
+            See_also: $(D play), $(LINK https://wiki.libsdl.org/SDL_PauseAudioDevice)
+            +/
+            void pause()
+            {
+                SDL_PauseAudioDevice(_id, 1);
+            }
+
+            /++
+            Makes SDL not run the callback from $(D desired).callback.
+            See_also: $(D unlock), $(LINK https://wiki.libsdl.org/SDL_LockAudioDevice)
+            +/
+            void lock()
+            {
+                SDL_LockAudioDevice(_id);
+            }
+
+            /++
+            Makes SDL run the callback from $(D desired).callback again.
+            See_also: $(D lock), $(LINK https://wiki.libsdl.org/SDL_UnlockAudioDevice)
+            +/
+            void unlock()
+            {
+                SDL_UnlockAudioDevice(_id);
+            }
+
+            /++
+            Checks if this audio device is currently playing sound.
             See_also: $(D status), $(LINK https://wiki.libsdl.org/SDL_AudioStatus)
             +/
             bool playing()
