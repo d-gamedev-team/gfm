@@ -20,9 +20,25 @@ void main()
     spec.channels = 1;
     spec.samples = 4096;
 
+    // Get all available audio devices
     auto devices = sdl2.getAudioDevices();
 
+    // Open the first audio device
     auto device = new SDL2AudioDevice(sdl2, devices[0], 0, &spec, null, 0);
 
-    SDL_Delay(2_000);
+    // Play audio on the device for 1 second
+    device.play();
+    SDL_Delay(1_000);
+
+    // Lock the device
+    device.lock();
+
+    // Unlock the device after 1 second
+    SDL_Delay(1_000);
+    device.unlock();
+
+    // Pause the device
+    device.pause();
+
+    SDL_Delay(1_000);
 }
