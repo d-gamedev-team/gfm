@@ -1,0 +1,13 @@
+{
+    "targetType": "executable",
+    "name": "audio",
+    "sourcePaths": [ "." ],
+    "importPaths": [ "." ],
+    "mainSourceFile": "audio.d",
+
+    "dependencies":
+    {
+        "gfm:sdl2": {"path": "../../"},
+        "gfm:logger": {"path": "../../"}
+    }
+}

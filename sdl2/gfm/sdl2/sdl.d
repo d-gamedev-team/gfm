@@ -297,13 +297,27 @@ final class SDL2
         }
 
         /// Returns: Available SDL video drivers.
-        const(char)[][] getVideoDrivers()
+        alias getVideoDrivers = getDrivers!(SDL_GetNumVideoDrivers, SDL_GetVideoDriver);
+
+        /// Returns: Available SDL audio drivers.
+        alias getAudioDrivers = getDrivers!(SDL_GetNumAudioDrivers, SDL_GetAudioDriver);
+
+        /++
+        Returns: Available audio device names.
+        See_also: https://wiki.libsdl.org/SDL_GetAudioDeviceName
+        Bugs: SDL2 currently doesn't support recording, so it's best to
+              call this without any arguments.
+        +/
+        const(char)[][] getAudioDevices(int type = 0)
         {
-            const int numDrivers = SDL_GetNumVideoDrivers();
+            const(int) numDevices = SDL_GetNumAudioDevices(type);
+
             const(char)[][] res;
-            res.length = numDrivers;
-            for(int i = 0; i < numDrivers; ++i)
-                res[i] = fromStringz(SDL_GetVideoDriver(i));
+            foreach (i; 0..numDevices)
+            {
+                res ~= fromStringz(SDL_GetAudioDeviceName(i, type));
+            }
+
             return res;
         }
 
@@ -392,6 +406,18 @@ final class SDL2
 
         // Holds mouse state
         SDL2Mouse _mouse;
+
+        const(char)[][] getDrivers(alias numFn, alias elemFn)()
+        {
+            const(int) numDrivers = numFn();
+            const(char)[][] res;
+            res.length = numDrivers;
+            foreach (i; 0..numDrivers)
+            {
+                res[i] = fromStringz(elemFn(i));
+            }
+            return res;
+        }
 
         void onLogMessage(int category, SDL_LogPriority priority, const(char)* message)
         {
