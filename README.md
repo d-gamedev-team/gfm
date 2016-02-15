@@ -32,6 +32,7 @@ See the examples/ directory, or https://github.com/p0nce/aliasthis as an example
 https://github.com/d-gamedev-team/gfm/wiki/Changelog
 
 ## Who is using GFM?
+- [3ddemo](https://github.com/clinei/3ddemo)
 - [aliasthis](https://github.com/p0nce/aliasthis)
 - [Despiker](https://github.com/kiith-sa/despiker/blob/master/dub.json)
 - [D gamedev intro](https://github.com/kiith-sa/d-gamedev-intro)
