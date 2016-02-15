@@ -14,7 +14,8 @@
         "Sam Hocevar: many bits of code",
         "Daniel Cousens / RommelVR: GL fix",
         "Daniele Bondi / maeriden: Euler angles fix",
-        "H. S. Teoh / quickfur: wideint improvements"
+        "H. S. Teoh / quickfur: wideint improvements",
+        "Tanel Tagaväli / clinei: SDL audio wrapper"
     ],
 
     "targetType": "none",
