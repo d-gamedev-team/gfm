@@ -20,7 +20,7 @@ Add the sub-package you are interested in in your `dub.json`:
 ```d
    {
       "dependencies": {
-        "gfm:math": "~>4.0"
+        "gfm:math": "~>5.0"
       }
    }
 ```
@@ -44,7 +44,7 @@ https://github.com/d-gamedev-team/gfm/wiki/Changelog
 
 ## Why using GFM?
   * GFM has low churn and has been maintained since 2012.
-  * GFM primarily provides math primitives that are useful for games like vectors/matrices/quaternions in the `gfm:math` a,d `gfm:integers` package.
+  * GFM primarily provides math primitives that are useful for games like vectors/matrices/quaternions in the `gfm:math` and `gfm:integers` package.
   * Other subpackages are wrappers: transparent layers that expose the C libraries objects, turn every error code into an D exception and makes it easier to use the library correctly. They do almost nothing and perhaps you don't need them.
 
 ## Dependencies
