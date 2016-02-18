@@ -59,17 +59,17 @@ nothrow:
             }
             else
             {
-                int argumentCount;
-
-                foreach(arg; args)
-                {
-                    static if(isVectorInstantiation!(typeof(arg)))
-                        argumentCount += arg._N;
+                // validate the total argument count across scalars and vectors
+                template argCount(T...) {
+                    static if(T.length == 0)
+                        enum argCount = 0; // done recursing
+                    else static if(isVectorInstantiation!(T[0]))
+                        enum argCount = T[0]._N + argCount!(T[1..$]);
                     else
-                        argumentCount += 1;
+                        enum argCount = 1 + argCount!(T[1..$]);
                 }
 
-                assert(argumentCount <= N, "Too many arguments in vector constructor");
+                static assert(argCount!Args <= N, "Too many arguments in vector constructor");
 
                 int index = 0;
                 foreach(arg; args)
@@ -727,10 +727,10 @@ unittest
     vec5f l = vec5f(1, 2.0f, 3.0, 4u, 5.0L);
     l = vec5f(l.xyz, vec2i(1, 2));
 
-    // too many arguments to ctor
-    import core.exception: AssertError;
-    import std.exception: assertThrown;
-    assertThrown!AssertError(vec2f(1, 2, 3));
-    assertThrown!AssertError(vec2f(vec2f(1, 2), 3));
+    // the ctor should not compile if given too many arguments
+    static assert(!is(typeof(vec2f(1, 2, 3))));
+    static assert(!is(typeof(vec2f(vec2f(1, 2), 3))));
+    static assert( is(typeof(vec3f(vec2f(1, 2), 3))));
+    static assert( is(typeof(vec3f(1, 2, 3))));
 }
 
