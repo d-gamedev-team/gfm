@@ -404,7 +404,7 @@ void nogc_qsort(T)(T[] array, nogcComparisonFunction!T comparison) nothrow @nogc
     int partition(T* arr, int left, int right) nothrow @nogc
     {
         immutable int mid = left + (right - left) / 2;
-        immutable T pivot = arr[mid];
+        T pivot = arr[mid];
         // move the mid point value to the front.
         swap(arr[mid],arr[left]);
         int i = left + 1;
