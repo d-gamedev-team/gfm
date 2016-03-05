@@ -23,8 +23,8 @@ Image!RGBA loadImage(in void[] imageData)
 }
 
 /// Loads two different images:
-/// - the first the 2nd is interpreted as greyscale 
-/// and fetch in the alpha channel of the result.
+/// - the 1st is the RGB channels
+/// - the 2nd is interpreted as greyscale and fetch in the alpha channel of the result.
 Image!RGBA loadImageSeparateAlpha(in void[] imageDataRGB, in void[] imageDataAlpha)
 {
     IFImage ifImageRGB = read_image_from_mem(cast(const(ubyte[])) imageDataRGB, 3);
