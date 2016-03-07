@@ -322,6 +322,15 @@ struct Box(T, int N)
         {
             return (min == other.min) && (max == other.max);
         }
+
+        static if (N == 2)
+        {
+            /// Helper function to create rectangle with a given point, width and height.
+            static @nogc Box rectangle(T x, T y, T width, T height) pure nothrow
+            {
+                return Box(x, y, x + width, y + height);
+            }
+        }
     }
 
     private
@@ -383,4 +392,6 @@ unittest
 
     // intersection with empty box is empty
     assert(a.intersection(box2i(10, 4, 10, 6)).empty);
+
+    assert(box2i.rectangle(1, 2, 3, 4) == box2i(1, 2, 4, 6));
 }
