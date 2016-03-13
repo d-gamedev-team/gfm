@@ -212,6 +212,15 @@ final class SDL2Renderer
                 _sdl2.throwSDL2Exception("SDL_RenderCopyEx");
         }
 
+        /// Set a texture as the current rendering target.
+        /// See_also: $(LINK http://wiki.libsdl.org/SDL_SetRenderTarget)
+        /// Throws: $(D SDL2Exception) on error.
+        void setRenderTarget(SDL2Texture texture)
+        {
+            if (0 != SDL_SetRenderTarget(_renderer, texture is null ? cast(SDL_Texture*)0 : texture._handle))
+                _sdl2.throwSDL2Exception("SDL_SetRenderTarget");
+        }
+
         /// Returns: Renderer information.
         /// See_also: $(LINK http://wiki.libsdl.org/SDL_GetRendererInfo)
         /// Throws: $(D SDL2Exception) on error.
