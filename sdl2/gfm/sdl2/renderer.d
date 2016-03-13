@@ -281,6 +281,18 @@ final class SDL2RendererInfo
             return (_info.flags & SDL_RENDERER_PRESENTVSYNC) != 0;
         }
 
+        /// Returns: the maximum supported texture width
+        int maxTextureWidth()
+        {
+            return _info.max_texture_width;
+        }
+
+        /// Returns: the maximum supported texture height
+        int maxTextureHeight()
+        {
+            return _info.max_texture_height;
+        }
+
         /// Returns: Pretty string describing the renderer.
         override string toString()
         {
@@ -290,7 +302,7 @@ final class SDL2RendererInfo
             if (hasRenderToTexture()) res ~= " render-to-texture";
             if (isVsyncEnabled()) res ~= " vsync";
             res ~= "]\n";
-            res ~= format("max. texture: %sx%s", _info.max_texture_width, _info.max_texture_height);
+            res ~= format("max. supported texture size: %sx%s", maxTextureWidth(), maxTextureHeight());
             return res;
         }
     }
