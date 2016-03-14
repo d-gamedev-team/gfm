@@ -212,6 +212,15 @@ final class SDL2Renderer
                 _sdl2.throwSDL2Exception("SDL_RenderCopyEx");
         }
 
+        /// Set a texture as the current rendering target.
+        /// See_also: $(LINK http://wiki.libsdl.org/SDL_SetRenderTarget)
+        /// Throws: $(D SDL2Exception) on error.
+        void setRenderTarget(SDL2Texture texture)
+        {
+            if (0 != SDL_SetRenderTarget(_renderer, texture is null ? cast(SDL_Texture*)0 : texture._handle))
+                _sdl2.throwSDL2Exception("SDL_SetRenderTarget");
+        }
+
         /// Returns: Renderer information.
         /// See_also: $(LINK http://wiki.libsdl.org/SDL_GetRendererInfo)
         /// Throws: $(D SDL2Exception) on error.
@@ -281,6 +290,18 @@ final class SDL2RendererInfo
             return (_info.flags & SDL_RENDERER_PRESENTVSYNC) != 0;
         }
 
+        /// Returns: the maximum supported texture width
+        int maxTextureWidth()
+        {
+            return _info.max_texture_width;
+        }
+
+        /// Returns: the maximum supported texture height
+        int maxTextureHeight()
+        {
+            return _info.max_texture_height;
+        }
+
         /// Returns: Pretty string describing the renderer.
         override string toString()
         {
@@ -290,7 +311,7 @@ final class SDL2RendererInfo
             if (hasRenderToTexture()) res ~= " render-to-texture";
             if (isVsyncEnabled()) res ~= " vsync";
             res ~= "]\n";
-            res ~= format("max. texture: %sx%s", _info.max_texture_width, _info.max_texture_height);
+            res ~= format("max. supported texture size: %sx%s", maxTextureWidth(), maxTextureHeight());
             return res;
         }
     }
