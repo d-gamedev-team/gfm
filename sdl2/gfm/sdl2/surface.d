@@ -161,6 +161,24 @@ final class SDL2Surface
             SDL_GetRGBA(*pixel, fmt, &r, &g, &b, &a);
             return RGBA(r, g, b, a);
         }
+
+        /// Perform a fast surface copy of given source surface to this destination surface.
+        /// See_also: $(LINK http://wiki.libsdl.org/SDL_BlitSurface)
+        /// Throws: $(D SDL2Exception) on error.
+        void blit(SDL2Surface source, SDL_Rect srcRect, SDL_Rect dstRect)
+        {
+            if (0 != SDL_BlitSurface(source._surface, &srcRect, _surface, &dstRect))
+                _sdl2.throwSDL2Exception("SDL_BlitSurface");
+        }
+
+        /// Perform a scaled surface copy of given source surface to this destination surface.
+        /// See_also: $(LINK http://wiki.libsdl.org/SDL_BlitScaled)
+        /// Throws: $(D SDL2Exception) on error.
+        void blitScaled(SDL2Surface source, SDL_Rect srcRect, SDL_Rect dstRect)
+        {
+            if (0 != SDL_BlitScaled(source._surface, &srcRect, _surface, &dstRect))
+                _sdl2.throwSDL2Exception("SDL_BlitScaled");
+        }
     }
 
     package
