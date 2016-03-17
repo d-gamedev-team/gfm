@@ -1,23 +1,31 @@
 module gfm.sdl2.gfx;
 
-import std.conv;
+import std.conv,
+       std.string;
 
 import derelict.sdl2.sdl,
        derelict.util.exception;
 
 import derelict.sdl2.gfx.gfx,
-       derelict.sdl2.gfx.primitives;
+       derelict.sdl2.gfx.primitives,
+       derelict.sdl2.gfx.rotozoom;
 
 import gfm.sdl2.sdl,
        gfm.sdl2.renderer,
+       gfm.sdl2.surface,
        gfm.math.vector;
 
-/// Collection of graphics primitives and surface functions that can be called onto the specified SDL2Renderer.
+union ColorAndRGBA {
+    uint rgba;
+    struct { ubyte r, g, b, a; };
+}
+
+/// Collection of graphic primitives rendering functions that can be applied onto the assigned SDL2Renderer.
 final class SDL2Graphics
 {
     public
     {
-        /// Creates a SDL2_gfx wrapper which targets a renderer.
+        /// Creates a SDL2_gfx function call wrapper which targets a renderer.
         /// See_also: $(LINK http://www.ferzkopp.net/Software/SDL2_gfx/Docs/html/)
         /// Throws: $(D SDL2Exception) on error.
         this(SDL2Renderer renderer)
@@ -33,84 +41,87 @@ final class SDL2Graphics
             }
         }
 
-        /// Gets the current color set for drawing operations.
+        /// Gets the color used by the renderer for drawing operations and stores it for graphics operations.
         /// See_also: $(LINK http://wiki.libsdl.org/SDL_GetRenderDrawColor)
         /// Throws: $(D SDL2Exception) on error.
         uint getColor()
         {
-            union U {
-                struct { ubyte r, g, b, a; };
-                uint rgba;
-            }
-            U u;
-
-            if (0 != SDL_GetRenderDrawColor(_renderer._renderer, &u.r, &u.g, &u.b, &u.a))
+            if (0 != SDL_GetRenderDrawColor(_renderer._renderer, &color.r, &color.g, &color.b, &color.a))
                 _renderer._sdl2.throwSDL2Exception("SDL_GetRenderDrawColor");
 
-            return u.rgba;
+            return color.rgba;
         }
 
-        /+
-int     roundedRectangleColor (SDL_Renderer *renderer, Sint16 x1, Sint16 y1, Sint16 x2, Sint16 y2, Sint16 rad, Uint32 color)
-    Draw rounded-corner rectangle with blending.
-int     roundedBoxColor (SDL_Renderer *renderer, Sint16 x1, Sint16 y1, Sint16 x2, Sint16 y2, Sint16 rad, Uint32 color)
-    Draw rounded-corner box (filled rectangle) with blending.
-int     boxColor (SDL_Renderer *renderer, Sint16 x1, Sint16 y1, Sint16 x2, Sint16 y2, Uint32 color)
-    Draw box (filled rectangle) with blending.
-int     aalineColor (SDL_Renderer *renderer, Sint16 x1, Sint16 y1, Sint16 x2, Sint16 y2, Uint32 color)
-    Draw anti-aliased line with alpha blending.
-int     arcColor (SDL_Renderer *renderer, Sint16 x, Sint16 y, Sint16 rad, Sint16 start, Sint16 end, Uint32 color)
-    Arc with blending.
-int     aacircleColor (SDL_Renderer *renderer, Sint16 x, Sint16 y, Sint16 rad, Uint32 color)
-    Draw anti-aliased circle with blending.
-int     ellipseColor (SDL_Renderer *renderer, Sint16 x, Sint16 y, Sint16 rx, Sint16 ry, Uint32 color)
-    Draw ellipse with blending.
-int     aaellipseColor (SDL_Renderer *renderer, Sint16 x, Sint16 y, Sint16 rx, Sint16 ry, Uint32 color)
-    Draw anti-aliased ellipse with blending.
-int     filledEllipseColor (SDL_Renderer *renderer, Sint16 x, Sint16 y, Sint16 rx, Sint16 ry, Uint32 color)
-    Draw filled ellipse with blending.
-int     pieColor (SDL_Renderer *renderer, Sint16 x, Sint16 y, Sint16 rad, Sint16 start, Sint16 end, Uint32 color)
-    Draw pie (outline) with alpha blending.
-int     filledPieColor (SDL_Renderer *renderer, Sint16 x, Sint16 y, Sint16 rad, Sint16 start, Sint16 end, Uint32 color)
-    Draw filled pie with alpha blending.
-int     trigonColor (SDL_Renderer *renderer, Sint16 x1, Sint16 y1, Sint16 x2, Sint16 y2, Sint16 x3, Sint16 y3, Uint32 color)
-    Draw trigon (triangle outline) with alpha blending.
-int     aatrigonColor (SDL_Renderer *renderer, Sint16 x1, Sint16 y1, Sint16 x2, Sint16 y2, Sint16 x3, Sint16 y3, Uint32 color)
-    Draw anti-aliased trigon (triangle outline) with alpha blending.
-int     filledTrigonColor (SDL_Renderer *renderer, Sint16 x1, Sint16 y1, Sint16 x2, Sint16 y2, Sint16 x3, Sint16 y3, Uint32 color)
-    Draw filled trigon (triangle) with alpha blending.
-int     polygon (SDL_Renderer *renderer, const Sint16 *vx, const Sint16 *vy, int n)
-    Draw polygon with the currently set color and blend mode.
-int     aapolygonColor (SDL_Renderer *renderer, const Sint16 *vx, const Sint16 *vy, int n, Uint32 color)
-    Draw anti-aliased polygon with alpha blending.
+        /// Sets the color used for graphics operations.
+        void setColor(int r, int g, int b, int a = 255)
+        {
+            color.r = to!ubyte(r);
+            color.g = to!ubyte(g);
+            color.b = to!ubyte(b);
+            color.a = to!ubyte(a);
+        }
 
-int     filledPolygonRGBAMT (SDL_Renderer *renderer, const Sint16 *vx, const Sint16 *vy, int n, Uint8 r, Uint8 g, Uint8 b, Uint8 a, int **polyInts, int *polyAllocated)
-    Draw filled polygon with alpha blending (multi-threaded capable).
-int     filledPolygonColor (SDL_Renderer *renderer, const Sint16 *vx, const Sint16 *vy, int n, Uint32 color)
-    Draw filled polygon with alpha blending.
+        /// Draw a line.
+        /// See_also: $(LINK http://www.ferzkopp.net/Software/SDL2_gfx/Docs/html/_s_d_l2__gfx_primitives_8c.html)
+        /// Throws: $(D SDL2Exception) on error.
+        void drawLine(int x1, int y1, int x2, int y2, bool antialias)
+        {
+            if (antialias) {
+                if (0 != aalineColor(_renderer._renderer, to!short(x1), to!short(y1), to!short(x2), to!short(y2), color.rgba))
+                    _renderer._sdl2.throwSDL2Exception("aalineColor");
+            } else {
+                _renderer.drawLine(x1, y1, x2, y2);
+            }
+        }
 
-int     texturedPolygonMT (SDL_Renderer *renderer, const Sint16 *vx, const Sint16 *vy, int n, SDL_Surface *texture, int texture_dx, int texture_dy, int **polyInts, int *polyAllocated)
-    Draws a polygon filled with the given texture (Multi-Threading Capable).
-int     texturedPolygon (SDL_Renderer *renderer, const Sint16 *vx, const Sint16 *vy, int n, SDL_Surface *texture, int texture_dx, int texture_dy)
-    Draws a polygon filled with the given texture.
+        /// Draw rounded-corner rectangle.
+        /// See_also: $(LINK http://www.ferzkopp.net/Software/SDL2_gfx/Docs/html/_s_d_l2__gfx_primitives_8c.html)
+        /// Throws: $(D SDL2Exception) on error.
+        void drawRoundedRect(int x, int y, int width, int height, int cornerArc)
+        {
+            if (0 != roundedRectangleColor(_renderer._renderer, to!short(x), to!short(y), to!short(x + width), to!short(y + height), to!short(cornerArc), color.rgba))
+                _renderer._sdl2.throwSDL2Exception("roundedRectangleColor");
+        }
 
-void    gfxPrimitivesSetFont (const void *fontdata, Uint32 cw, Uint32 ch)
-    Sets or resets the current global font data.
-void    gfxPrimitivesSetFontRotation (Uint32 rotation)
-    Sets current global font character rotation steps.
-int     characterColor (SDL_Renderer *renderer, Sint16 x, Sint16 y, char c, Uint32 color)
-    Draw a character of the currently set font.
-int     stringColor (SDL_Renderer *renderer, Sint16 x, Sint16 y, const char *s, Uint32 color)
-    Draw a string in the currently set font.
-+/
+        /// Draw a filled rounded-corner rectangle.
+        /// See_also: $(LINK http://www.ferzkopp.net/Software/SDL2_gfx/Docs/html/_s_d_l2__gfx_primitives_8c.html)
+        /// Throws: $(D SDL2Exception) on error.
+        void fillRoundedRect(int x, int y, int width, int height, int cornerArc)
+        {
+            if (0 != roundedBoxColor(_renderer._renderer, to!short(x), to!short(y), to!short(x + width), to!short(y + height), to!short(cornerArc), color.rgba))
+                _renderer._sdl2.throwSDL2Exception("roundedBoxColor");
+        }
+
+        /// Draw pie.
+        /// See_also: $(LINK http://www.ferzkopp.net/Software/SDL2_gfx/Docs/html/_s_d_l2__gfx_primitives_8c.html)
+        /// Throws: $(D SDL2Exception) on error.
+        void drawPie(int x, int y, int radius, int startDegree, int endDegree)
+        {
+            if (0 != pieColor(_renderer._renderer, to!short(x), to!short(y), to!short(radius), to!short(startDegree), to!short(endDegree), color.rgba))
+                _renderer._sdl2.throwSDL2Exception("pieColor");
+        }
+
+        /// Draw filled pie.
+        /// See_also: $(LINK http://www.ferzkopp.net/Software/SDL2_gfx/Docs/html/_s_d_l2__gfx_primitives_8c.html)
+        /// Throws: $(D SDL2Exception) on error.
+        void fillPie(int x, int y, int radius, int startDegree, int endDegree)
+        {
+            if (0 != filledPieColor(_renderer._renderer, to!short(x), to!short(y), to!short(radius), to!short(startDegree), to!short(endDegree), color.rgba))
+                _renderer._sdl2.throwSDL2Exception("filledPieColor");
+        }
 
         /// Draw a circle.
         /// See_also: $(LINK http://www.ferzkopp.net/Software/SDL2_gfx/Docs/html/_s_d_l2__gfx_primitives_8c.html)
         /// Throws: $(D SDL2Exception) on error.
-        void drawCircle(int x, int y, int radius)
+        void drawCircle(int x, int y, int radius, bool antialias)
         {
-            if (0 != circleColor(_renderer._renderer, to!short(x), to!short(y), to!short(radius), getColor()))
-                _renderer._sdl2.throwSDL2Exception("circleColor");
+            if (antialias) {
+                if (0 != aacircleColor(_renderer._renderer, to!short(x), to!short(y), to!short(radius), color.rgba))
+                    _renderer._sdl2.throwSDL2Exception("aacircleColor");
+            } else {
+                if (0 != circleColor(_renderer._renderer, to!short(x), to!short(y), to!short(radius), color.rgba))
+                    _renderer._sdl2.throwSDL2Exception("circleColor");
+            }
         }
 
         /// Draw a filled circle.
@@ -118,36 +129,258 @@ int     stringColor (SDL_Renderer *renderer, Sint16 x, Sint16 y, const char *s, 
         /// Throws: $(D SDL2Exception) on error.
         void fillCircle(int x, int y, int radius)
         {
-            if (0 != filledCircleColor(_renderer._renderer, to!short(x), to!short(y), to!short(radius), getColor()))
+            if (0 != filledCircleColor(_renderer._renderer, to!short(x), to!short(y), to!short(radius), color.rgba))
                 _renderer._sdl2.throwSDL2Exception("circleColor");
+        }
+
+        /// Draw a ellipse.
+        /// See_also: $(LINK http://www.ferzkopp.net/Software/SDL2_gfx/Docs/html/_s_d_l2__gfx_primitives_8c.html)
+        /// Throws: $(D SDL2Exception) on error.
+        void drawEllipse(int x, int y, int radiusx, int radiusy, bool antialias)
+        {
+            if (antialias) {
+                if (0 != aaellipseColor(_renderer._renderer, to!short(x), to!short(y), to!short(radiusx), to!short(radiusy), color.rgba))
+                    _renderer._sdl2.throwSDL2Exception("aaellipseColor");
+            } else {
+                if (0 != ellipseColor(_renderer._renderer, to!short(x), to!short(y), to!short(radiusx), to!short(radiusy), color.rgba))
+                    _renderer._sdl2.throwSDL2Exception("ellipseColor");
+            }
+        }
+
+        /// Draw a filled ellipse.
+        /// See_also: $(LINK http://www.ferzkopp.net/Software/SDL2_gfx/Docs/html/_s_d_l2__gfx_primitives_8c.html)
+        /// Throws: $(D SDL2Exception) on error.
+        void fillEllipse(int x, int y, int radiusx, int radiusy)
+        {
+            if (0 != filledEllipseColor(_renderer._renderer, to!short(x), to!short(y), to!short(radiusx), to!short(radiusy), color.rgba))
+                _renderer._sdl2.throwSDL2Exception("filledEllipseColor");
+        }
+
+        /// Draw a trigon.
+        /// See_also: $(LINK http://www.ferzkopp.net/Software/SDL2_gfx/Docs/html/_s_d_l2__gfx_primitives_8c.html)
+        /// Throws: $(D SDL2Exception) on error.
+        void drawTrigon(int x1, int y1, int x2, int y2, int x3, int y3, bool antialias)
+        {
+            if (antialias) {
+                if (0 != aatrigonColor(_renderer._renderer, to!short(x1), to!short(y1), to!short(x2), to!short(y2), to!short(x3), to!short(y3), color.rgba))
+                    _renderer._sdl2.throwSDL2Exception("aatrigonColor");
+            } else {
+                if (0 != trigonColor(_renderer._renderer, to!short(x1), to!short(y1), to!short(x2), to!short(y2), to!short(x3), to!short(y3), color.rgba))
+                    _renderer._sdl2.throwSDL2Exception("trigonColor");
+            }
+        }
+
+        /// Draw a filled trigon.
+        /// See_also: $(LINK http://www.ferzkopp.net/Software/SDL2_gfx/Docs/html/_s_d_l2__gfx_primitives_8c.html)
+        /// Throws: $(D SDL2Exception) on error.
+        void fillTrigon(int x1, int y1, int x2, int y2, int x3, int y3)
+        {
+            if (0 != filledTrigonColor(_renderer._renderer, to!short(x1), to!short(y1), to!short(x2), to!short(y2), to!short(x3), to!short(y3), color.rgba))
+                _renderer._sdl2.throwSDL2Exception("filledTrigonColor");
+        }
+
+        /// Draw arc.
+        /// See_also: $(LINK http://www.ferzkopp.net/Software/SDL2_gfx/Docs/html/_s_d_l2__gfx_primitives_8c.html)
+        /// Throws: $(D SDL2Exception) on error.
+        void drawArc(int x, int y, int radius, int startDegree, int endDegree)
+        {
+            if (0 != arcColor(_renderer._renderer, to!short(x), to!short(y), to!short(radius), to!short(startDegree), to!short(endDegree), color.rgba))
+                _renderer._sdl2.throwSDL2Exception("arcColor");
+        }
+
+        /// Draw polygon.
+        /// See_also: $(LINK http://www.ferzkopp.net/Software/SDL2_gfx/Docs/html/_s_d_l2__gfx_primitives_8c.html)
+        /// Throws: $(D SDL2Exception) on error.
+        void drawPolygon(vec2i[] vertexes, bool antialias)
+        {
+            short[] vx, vy;
+            foreach (v; vertexes) {
+                vx ~= to!short(v.x);
+                vy ~= to!short(v.y);
+            }
+            if (antialias) {
+                if (0 != aapolygonColor(_renderer._renderer, vx.ptr, vy.ptr, vx.length, color.rgba))
+                    _renderer._sdl2.throwSDL2Exception("aapolygonColor");
+            } else {
+                if (0 != polygonColor(_renderer._renderer, vx.ptr, vy.ptr, vx.length, color.rgba))
+                    _renderer._sdl2.throwSDL2Exception("polygonColor");
+            }
+        }
+
+        /// Draw a filled polygon.
+        /// See_also: $(LINK http://www.ferzkopp.net/Software/SDL2_gfx/Docs/html/_s_d_l2__gfx_primitives_8c.html)
+        /// Throws: $(D SDL2Exception) on error.
+        void fillPolygon(vec2i[] vertexes)
+        {
+            short[] vx, vy;
+            foreach (v; vertexes) {
+                vx ~= to!short(v.x);
+                vy ~= to!short(v.y);
+            }
+            if (0 != filledPolygonColor(_renderer._renderer, vx.ptr, vy.ptr, vx.length, color.rgba))
+                _renderer._sdl2.throwSDL2Exception("filledPolygonColor");
+        }
+
+        /// Draw a textured polygon.
+        /// See_also: $(LINK http://www.ferzkopp.net/Software/SDL2_gfx/Docs/html/_s_d_l2__gfx_primitives_8c.html)
+        /// Throws: $(D SDL2Exception) on error.
+        void drawTexturedPolygon(vec2i[] vertexes, SDL2Surface* surface, int offsetx, int offsety)
+        {
+            short[] vx, vy;
+            foreach (v; vertexes) {
+                vx ~= to!short(v.x);
+                vy ~= to!short(v.y);
+            }
+            if (texturedPolygon(_renderer._renderer, vx.ptr, vy.ptr, vx.length, surface._surface, offsetx, offsety) < 0)
+                _renderer._sdl2.throwSDL2Exception("texturedPolygon");
         }
 
         /// Draw a bezier curve with alpha blending.
         /// See_also: $(LINK http://www.ferzkopp.net/Software/SDL2_gfx/Docs/html/_s_d_l2__gfx_primitives_8c.html)
         /// Throws: $(D SDL2Exception) on error.
-        void bezier(vec2i[] vectors, int interpolationSteps = 2)
+        void drawBezier(vec2i[] vertexes, int interpolationSteps = 2)
         {
             short[] vx, vy;
-            foreach (v; vectors) {
+            foreach (v; vertexes) {
                 vx ~= to!short(v.x);
                 vy ~= to!short(v.y);
             }
-            if (0 != bezierColor(_renderer._renderer, vx.ptr, vy.ptr, to!uint(vx.length), to!uint(interpolationSteps), getColor()))
+            if (0 != bezierColor(_renderer._renderer, vx.ptr, vy.ptr, vx.length, to!uint(interpolationSteps), color.rgba))
                 _renderer._sdl2.throwSDL2Exception("bezierColor");
         }
 
         /// Draw a thick line with alpha blending.
         /// See_also: $(LINK http://www.ferzkopp.net/Software/SDL2_gfx/Docs/html/_s_d_l2__gfx_primitives_8c.html)
         /// Throws: $(D SDL2Exception) on error.
-        void thickLine(int x1, int y1, int x2, int y2, int width)
+        void drawThickLine(int x1, int y1, int x2, int y2, int width)
         {
-            if (0 != thickLineColor(_renderer._renderer, to!short(x1), to!short(y1), to!short(x2), to!short(y2), to!uint(width), getColor()))
+            if (0 != thickLineColor(_renderer._renderer, to!short(x1), to!short(y1), to!short(x2), to!short(y2), to!uint(width), color.rgba))
                 _renderer._sdl2.throwSDL2Exception("circleColor");
         }
+
+        /+
+         +  These should not be used in favor of SDL2_ttf but are here for reference.
+         + 
+        /// Set the current font.
+        /// See_also: $(LINK http://www.ferzkopp.net/Software/SDL2_gfx/Docs/html/_s_d_l2__gfx_primitives_8c.html)
+        /// Throws: $(D SDL2Exception) on error.
+        void setFont(void* fontdata, int cw, int ch)
+        {
+            if (0 != gfxPrimitivesSetFont(fontdata, cw, ch))
+                _renderer._sdl2.throwSDL2Exception("gfxPrimitivesSetFont");
+            if (0 != gfxPrimitivesSetFontRotation(rotation))
+                _renderer._sdl2.throwSDL2Exception("gfxPrimitivesSetFontRotation");
+        }
+
+        /// Draw a character in the current font.
+        /// See_also: $(LINK http://www.ferzkopp.net/Software/SDL2_gfx/Docs/html/_s_d_l2__gfx_primitives_8c.html)
+        /// Throws: $(D SDL2Exception) on error.
+        void drawCharacter(int x, int y, char character)
+        {
+            if (0 != characterColor(_renderer._renderer, to!short(x), to!short(y), character, color.rgba))
+                _renderer._sdl2.throwSDL2Exception("characterColor");
+        }
+
+        /// Draw a text with the current font.
+        /// See_also: $(LINK http://www.ferzkopp.net/Software/SDL2_gfx/Docs/html/_s_d_l2__gfx_primitives_8c.html)
+        /// Throws: $(D SDL2Exception) on error.
+        void drawText(int x, int y, string text)
+        {
+            if (0 != stringColor(_renderer._renderer, to!short(x), to!short(y), text.toStringz(), color.rgba))
+                _renderer._sdl2.throwSDL2Exception("stringColor");
+        }
+        +/
+
+        ColorAndRGBA color;
     }
 
     private
     {
         SDL2Renderer _renderer;
+    }
+}
+
+/// Collection of rotate and zoom functions that can be applied onto the assigned SDL2Surface.
+final class SDL2Rotozoomer
+{
+    public
+    {
+        /// Creates a SDL2_gfx function call wrapper which targets a surface.
+        /// See_also: $(LINK http://www.ferzkopp.net/Software/SDL2_gfx/Docs/html/)
+        /// Throws: $(D SDL2Exception) on error.
+        this(SDL2Surface surface)
+        {
+            _surface = surface;
+            try
+            {
+                DerelictSDL2Gfx.load();
+            }
+            catch(DerelictException e)
+            {
+                throw new SDL2Exception(e.msg);
+            }
+        }
+
+        /// Rotate the surface.
+        /// Automatically uses the faster rotateSurface90Degrees if applicable.
+        /// See_also: $(LINK http://www.ferzkopp.net/Software/SDL2_gfx/Docs/html/_s_d_l2__rotozoom_8c.html)
+        /// Throws: $(D SDL2Exception) on error.
+        void rotate(double angle, int smooth)
+        {
+            if (angle % 90.0 == 0) {
+                auto s = rotateSurface90Degrees(_surface._surface, to!int(angle / 90.0));
+                if (s is null)
+                    _surface._sdl2.throwSDL2Exception("rotateSurface90Degrees");
+                replaceSurfaceHandle(s);
+            } else {
+                rotozoom(angle, 1.0, 1.0, smooth);
+            }
+        }
+
+        /// Rotate and zoom the surface.
+        /// See_also: $(LINK http://www.ferzkopp.net/Software/SDL2_gfx/Docs/html/_s_d_l2__rotozoom_8c.html)
+        /// Throws: $(D SDL2Exception) on error.
+        void rotozoom(double angle, double zoomx, double zoomy, int smooth)
+        {
+            auto s = rotozoomSurfaceXY(_surface._surface, angle, zoomx, zoomy, smooth);
+            if (s is null)
+                _surface._sdl2.throwSDL2Exception("rotozoomSurfaceXY");
+            replaceSurfaceHandle(s);
+        }
+
+        /// Zoom the surface.
+        /// See_also: $(LINK http://www.ferzkopp.net/Software/SDL2_gfx/Docs/html/_s_d_l2__rotozoom_8c.html)
+        /// Throws: $(D SDL2Exception) on error.
+        void zoom(double zoomx, double zoomy, int smooth)
+        {
+            auto s = zoomSurface(_surface._surface, zoomx, zoomy, smooth);
+            if (s is null)
+                _surface._sdl2.throwSDL2Exception("zoomSurface");
+            replaceSurfaceHandle(s);
+        }
+
+        /// Shrink the surface.
+        /// See_also: $(LINK http://www.ferzkopp.net/Software/SDL2_gfx/Docs/html/_s_d_l2__rotozoom_8c.html)
+        /// Throws: $(D SDL2Exception) on error.
+        void shrink(int factorx, int factory)
+        {
+            auto s = shrinkSurface(_surface._surface, factorx, factory);
+            if (s is null)
+                _surface._sdl2.throwSDL2Exception("shrinkSurface");
+            replaceSurfaceHandle(s);
+        }
+    }
+    
+    private
+    {
+        void replaceSurfaceHandle(SDL_Surface* handle)
+        {
+            if (_surface._handleOwned == SDL2Surface.Owned.YES)
+                SDL_FreeSurface(_surface._surface);
+            _surface._surface = handle;
+            _surface._handleOwned = SDL2Surface.Owned.YES;
+        }
+
+        SDL2Surface _surface;
     }
 }
