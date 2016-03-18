@@ -492,13 +492,16 @@ nothrow:
     }
 }
 
-template isVectorInstantiation(U)
-{
-    private static void isVector(T, int N)(Vector!(T, N) x)
-    {
-    }
+/// True if `T` is some kind of `Vector`
+enum isVectorInstantiation(T) = is(T : Vector!U, U...);
 
-    enum bool isVectorInstantiation = is(typeof(isVector(U.init)));
+///
+unittest
+{
+    static assert(isVectorInstantiation!vec2f);
+    static assert(isVectorInstantiation!vec3d);
+    static assert(isVectorInstantiation!(vec4!real));
+    static assert(!isVectorInstantiation!float);
 }
 
 template vec2(T) { alias Vector!(T, 2) vec2; }
