@@ -514,3 +514,27 @@ unittest
         test!(Frustum!double  , frustum , 0);
     }
 }
+
+/// Get the numeric type used to measure a shape's dimensions.
+alias DimensionType(T : Segment!U, U...) = U[0];
+/// ditto
+alias DimensionType(T : Triangle!U, U...) = U[0];
+/// ditto
+alias DimensionType(T : Sphere!U, U...) = U[0];
+/// ditto
+alias DimensionType(T : Ray!U, U...) = U[0];
+/// ditto
+alias DimensionType(T : Plane!U, U) = U;
+/// ditto
+alias DimensionType(T : Frustum!U, U) = U;
+
+///
+unittest
+{
+    static assert(is(DimensionType!seg2i          == int));
+    static assert(is(DimensionType!triangle3d     == double));
+    static assert(is(DimensionType!sphere2d       == double));
+    static assert(is(DimensionType!ray3f          == float));
+    static assert(is(DimensionType!planed         == double));
+    static assert(is(DimensionType!(Frustum!real) == real));
+}

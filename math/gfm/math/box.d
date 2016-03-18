@@ -406,3 +406,13 @@ unittest
     static assert( isBox!(Box!(real, 2)));
     static assert(!isBox!vec2f);
 }
+
+/// Get the numeric type used to measure a box's dimensions.
+alias DimensionType(T : Box!U, U...) = U[0];
+
+///
+unittest
+{
+    static assert(is(DimensionType!box2f == float));
+    static assert(is(DimensionType!box3d == double));
+}

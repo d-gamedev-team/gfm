@@ -504,6 +504,16 @@ unittest
     static assert(!isVectorInstantiation!float);
 }
 
+/// Get the numeric type used to measure a vectors's coordinates.
+alias DimensionType(T : Vector!U, U...) = U[0];
+
+///
+unittest
+{
+    static assert(is(DimensionType!vec2f == float));
+    static assert(is(DimensionType!vec3d == double));
+}
+
 template vec2(T) { alias Vector!(T, 2) vec2; }
 template vec3(T) { alias Vector!(T, 3) vec3; }
 template vec4(T) { alias Vector!(T, 4) vec4; }
