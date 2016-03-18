@@ -439,6 +439,30 @@ enum isPlane(T) = is(T : Plane!U, U);
 /// True if `T` is a kind of Plane
 enum isFrustum(T) = is(T : Frustum!U, U);
 
+/// True if `T` is a kind of 2 dimensional Segment
+enum isSegment2D(T) = is(T : Segment!(U, 2), U);
+
+/// True if `T` is a kind of 2 dimensional Triangle
+enum isTriangle2D(T) = is(T : Triangle!(U, 2), U);
+
+/// True if `T` is a kind of 2 dimensional Sphere
+enum isSphere2D(T) = is(T : Sphere!(U, 2), U);
+
+/// True if `T` is a kind of 2 dimensional Ray
+enum isRay2D(T) = is(T : Ray!(U, 2), U);
+
+/// True if `T` is a kind of 3 dimensional Segment
+enum isSegment3D(T) = is(T : Segment!(U, 3), U);
+
+/// True if `T` is a kind of 3 dimensional Triangle
+enum isTriangle3D(T) = is(T : Triangle!(U, 3), U);
+
+/// True if `T` is a kind of 3 dimensional Sphere
+enum isSphere3D(T) = is(T : Sphere!(U, 3), U);
+
+/// True if `T` is a kind of 3 dimensional Ray
+enum isRay3D(T) = is(T : Ray!(U, 3), U);
+
 unittest
 {
     enum ShapeType
@@ -451,7 +475,7 @@ unittest
         frustum
     }
 
-    void test(T, ShapeType type)()
+    void test(T, ShapeType type, int dim)()
     {
         with (ShapeType)
         {
@@ -461,21 +485,32 @@ unittest
             static assert(isRay!T      == (type == ray     ));
             static assert(isPlane!T    == (type == plane   ));
             static assert(isFrustum!T  == (type == frustum ));
+
+            static assert(isSegment2D!T  == (type == segment  && dim == 2));
+            static assert(isTriangle2D!T == (type == triangle && dim == 2));
+            static assert(isSphere2D!T   == (type == sphere   && dim == 2));
+            static assert(isRay2D!T      == (type == ray      && dim == 2));
+
+            static assert(isSegment3D!T  == (type == segment  && dim == 3));
+            static assert(isTriangle3D!T == (type == triangle && dim == 3));
+            static assert(isSphere3D!T   == (type == sphere   && dim == 3));
+            static assert(isRay3D!T      == (type == ray      && dim == 3));
         }
     }
 
     with (ShapeType)
     {
-        test!(seg2f           , segment);
-        test!(seg3d           , segment);
-        test!(triangle2d      , triangle);
-        test!(triangle3f      , triangle);
-        test!(Sphere!(uint, 3), sphere);
-        test!(sphere2d        , sphere);
-        test!(ray2f           , ray);
-        test!(Ray!(real, 3)   , ray);
-        test!(planed          , plane);
-        test!(Plane!float     , plane);
-        test!(Frustum!double  , frustum);
+        //    test case         type      #dimensions
+        test!(seg2f           , segment , 2);
+        test!(seg3d           , segment , 3);
+        test!(triangle2d      , triangle, 2);
+        test!(triangle3f      , triangle, 3);
+        test!(sphere2d        , sphere  , 2);
+        test!(Sphere!(uint, 3), sphere  , 3);
+        test!(ray2f           , ray     , 2);
+        test!(Ray!(real, 3)   , ray     , 3);
+        test!(planed          , plane   , 0); // ignore dimension (always 3D)
+        test!(Plane!float     , plane   , 0);
+        test!(Frustum!double  , frustum , 0);
     }
 }
