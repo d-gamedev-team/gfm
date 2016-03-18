@@ -420,3 +420,62 @@ unittest
     Frustum!double frust;
     planed pl;
 }
+
+/// True if `T` is a kind of Segment
+enum isSegment(T) = is(T : Segment!U, U...);
+
+/// True if `T` is a kind of Triangle
+enum isTriangle(T) = is(T : Triangle!U, U...);
+
+/// True if `T` is a kind of Sphere
+enum isSphere(T) = is(T : Sphere!U, U...);
+
+/// True if `T` is a kind of Ray
+enum isRay(T) = is(T : Ray!U, U...);
+
+/// True if `T` is a kind of Plane
+enum isPlane(T) = is(T : Plane!U, U);
+
+/// True if `T` is a kind of Plane
+enum isFrustum(T) = is(T : Frustum!U, U);
+
+unittest
+{
+    enum ShapeType
+    {
+        segment,
+        triangle,
+        sphere,
+        ray,
+        plane,
+        frustum
+    }
+
+    void test(T, ShapeType type)()
+    {
+        with (ShapeType)
+        {
+            static assert(isSegment!T  == (type == segment ));
+            static assert(isTriangle!T == (type == triangle));
+            static assert(isSphere!T   == (type == sphere  ));
+            static assert(isRay!T      == (type == ray     ));
+            static assert(isPlane!T    == (type == plane   ));
+            static assert(isFrustum!T  == (type == frustum ));
+        }
+    }
+
+    with (ShapeType)
+    {
+        test!(seg2f           , segment);
+        test!(seg3d           , segment);
+        test!(triangle2d      , triangle);
+        test!(triangle3f      , triangle);
+        test!(Sphere!(uint, 3), sphere);
+        test!(sphere2d        , sphere);
+        test!(ray2f           , ray);
+        test!(Ray!(real, 3)   , ray);
+        test!(planed          , plane);
+        test!(Plane!float     , plane);
+        test!(Frustum!double  , frustum);
+    }
+}

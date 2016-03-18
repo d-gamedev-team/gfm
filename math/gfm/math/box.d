@@ -395,3 +395,14 @@ unittest
 
     assert(box2i.rectangle(1, 2, 3, 4) == box2i(1, 2, 4, 6));
 }
+
+/// True if `T` is a kind of Box
+enum isBox(T) = is(T : Box!U, U...);
+
+unittest
+{
+    static assert( isBox!box2f);
+    static assert( isBox!box3d);
+    static assert( isBox!(Box!(real, 2)));
+    static assert(!isBox!vec2f);
+}
