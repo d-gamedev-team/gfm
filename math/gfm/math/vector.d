@@ -63,7 +63,7 @@ nothrow:
                 template argCount(T...) {
                     static if(T.length == 0)
                         enum argCount = 0; // done recursing
-                    else static if(isVectorInstantiation!(T[0]))
+                    else static if(isVector!(T[0]))
                         enum argCount = T[0]._N + argCount!(T[1..$]);
                     else
                         enum argCount = 1 + argCount!(T[1..$]);
@@ -79,7 +79,7 @@ nothrow:
                         v[index] = arg;
                         index++; // has to be on its own line (DMD 2.068)
                     }
-                    else static if (isVectorInstantiation!(typeof(arg)) && isAssignable!(T, arg._T))
+                    else static if (isVector!(typeof(arg)) && isAssignable!(T, arg._T))
                     {
                         mixin(generateLoopCode!("v[index + @] = arg[@];", arg._N)());
                         index += arg._N;
@@ -122,7 +122,7 @@ nothrow:
         }
 
         /// Assign from other vectors types (same size, compatible type).
-        @nogc ref Vector opAssign(U)(U x) pure nothrow if (isVectorInstantiation!U
+        @nogc ref Vector opAssign(U)(U x) pure nothrow if (isVector!U
                                                        && isAssignable!(T, U._T)
                                                        && (!is(U: Vector))
                                                        && (U._N == _N))
@@ -272,7 +272,7 @@ nothrow:
         /// vec4f vf;
         /// vec4d vd = cast!(vec4d)vf;
         /// ---
-        @nogc U opCast(U)() pure const nothrow if (isVectorInstantiation!U && (U._N == _N))
+        @nogc U opCast(U)() pure const nothrow if (isVector!U && (U._N == _N))
         {
             U res = void;
             mixin(generateLoopCode!("res.v[@] = cast(U._T)v[@];", N)());
@@ -493,15 +493,18 @@ nothrow:
 }
 
 /// True if `T` is some kind of `Vector`
-enum isVectorInstantiation(T) = is(T : Vector!U, U...);
+enum isVector(T) = is(T : Vector!U, U...);
+
+// Previous name, but the alias doesn't seem to show deprecation messages
+deprecated("Use isVector instead") alias isVectorInstantiation(T) = isVector!T;
 
 ///
 unittest
 {
-    static assert(isVectorInstantiation!vec2f);
-    static assert(isVectorInstantiation!vec3d);
-    static assert(isVectorInstantiation!(vec4!real));
-    static assert(!isVectorInstantiation!float);
+    static assert(isVector!vec2f);
+    static assert(isVector!vec3d);
+    static assert(isVector!(vec4!real));
+    static assert(!isVector!float);
 }
 
 /// Get the numeric type used to measure a vectors's coordinates.
