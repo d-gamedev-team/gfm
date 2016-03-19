@@ -420,3 +420,121 @@ unittest
     Frustum!double frust;
     planed pl;
 }
+
+/// True if `T` is a kind of Segment
+enum isSegment(T) = is(T : Segment!U, U...);
+
+/// True if `T` is a kind of Triangle
+enum isTriangle(T) = is(T : Triangle!U, U...);
+
+/// True if `T` is a kind of Sphere
+enum isSphere(T) = is(T : Sphere!U, U...);
+
+/// True if `T` is a kind of Ray
+enum isRay(T) = is(T : Ray!U, U...);
+
+/// True if `T` is a kind of Plane
+enum isPlane(T) = is(T : Plane!U, U);
+
+/// True if `T` is a kind of Plane
+enum isFrustum(T) = is(T : Frustum!U, U);
+
+/// True if `T` is a kind of 2 dimensional Segment
+enum isSegment2D(T) = is(T : Segment!(U, 2), U);
+
+/// True if `T` is a kind of 2 dimensional Triangle
+enum isTriangle2D(T) = is(T : Triangle!(U, 2), U);
+
+/// True if `T` is a kind of 2 dimensional Sphere
+enum isSphere2D(T) = is(T : Sphere!(U, 2), U);
+
+/// True if `T` is a kind of 2 dimensional Ray
+enum isRay2D(T) = is(T : Ray!(U, 2), U);
+
+/// True if `T` is a kind of 3 dimensional Segment
+enum isSegment3D(T) = is(T : Segment!(U, 3), U);
+
+/// True if `T` is a kind of 3 dimensional Triangle
+enum isTriangle3D(T) = is(T : Triangle!(U, 3), U);
+
+/// True if `T` is a kind of 3 dimensional Sphere
+enum isSphere3D(T) = is(T : Sphere!(U, 3), U);
+
+/// True if `T` is a kind of 3 dimensional Ray
+enum isRay3D(T) = is(T : Ray!(U, 3), U);
+
+unittest
+{
+    enum ShapeType
+    {
+        segment,
+        triangle,
+        sphere,
+        ray,
+        plane,
+        frustum
+    }
+
+    void test(T, ShapeType type, int dim)()
+    {
+        with (ShapeType)
+        {
+            static assert(isSegment!T  == (type == segment ));
+            static assert(isTriangle!T == (type == triangle));
+            static assert(isSphere!T   == (type == sphere  ));
+            static assert(isRay!T      == (type == ray     ));
+            static assert(isPlane!T    == (type == plane   ));
+            static assert(isFrustum!T  == (type == frustum ));
+
+            static assert(isSegment2D!T  == (type == segment  && dim == 2));
+            static assert(isTriangle2D!T == (type == triangle && dim == 2));
+            static assert(isSphere2D!T   == (type == sphere   && dim == 2));
+            static assert(isRay2D!T      == (type == ray      && dim == 2));
+
+            static assert(isSegment3D!T  == (type == segment  && dim == 3));
+            static assert(isTriangle3D!T == (type == triangle && dim == 3));
+            static assert(isSphere3D!T   == (type == sphere   && dim == 3));
+            static assert(isRay3D!T      == (type == ray      && dim == 3));
+        }
+    }
+
+    with (ShapeType)
+    {
+        //    test case         type      #dimensions
+        test!(seg2f           , segment , 2);
+        test!(seg3d           , segment , 3);
+        test!(triangle2d      , triangle, 2);
+        test!(triangle3f      , triangle, 3);
+        test!(sphere2d        , sphere  , 2);
+        test!(Sphere!(uint, 3), sphere  , 3);
+        test!(ray2f           , ray     , 2);
+        test!(Ray!(real, 3)   , ray     , 3);
+        test!(planed          , plane   , 0); // ignore dimension (always 3D)
+        test!(Plane!float     , plane   , 0);
+        test!(Frustum!double  , frustum , 0);
+    }
+}
+
+/// Get the numeric type used to measure a shape's dimensions.
+alias DimensionType(T : Segment!U, U...) = U[0];
+/// ditto
+alias DimensionType(T : Triangle!U, U...) = U[0];
+/// ditto
+alias DimensionType(T : Sphere!U, U...) = U[0];
+/// ditto
+alias DimensionType(T : Ray!U, U...) = U[0];
+/// ditto
+alias DimensionType(T : Plane!U, U) = U;
+/// ditto
+alias DimensionType(T : Frustum!U, U) = U;
+
+///
+unittest
+{
+    static assert(is(DimensionType!seg2i          == int));
+    static assert(is(DimensionType!triangle3d     == double));
+    static assert(is(DimensionType!sphere2d       == double));
+    static assert(is(DimensionType!ray3f          == float));
+    static assert(is(DimensionType!planed         == double));
+    static assert(is(DimensionType!(Frustum!real) == real));
+}

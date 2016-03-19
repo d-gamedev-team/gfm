@@ -492,13 +492,26 @@ nothrow:
     }
 }
 
-template isVectorInstantiation(U)
-{
-    private static void isVector(T, int N)(Vector!(T, N) x)
-    {
-    }
+/// True if `T` is some kind of `Vector`
+enum isVectorInstantiation(T) = is(T : Vector!U, U...);
 
-    enum bool isVectorInstantiation = is(typeof(isVector(U.init)));
+///
+unittest
+{
+    static assert(isVectorInstantiation!vec2f);
+    static assert(isVectorInstantiation!vec3d);
+    static assert(isVectorInstantiation!(vec4!real));
+    static assert(!isVectorInstantiation!float);
+}
+
+/// Get the numeric type used to measure a vectors's coordinates.
+alias DimensionType(T : Vector!U, U...) = U[0];
+
+///
+unittest
+{
+    static assert(is(DimensionType!vec2f == float));
+    static assert(is(DimensionType!vec3d == double));
 }
 
 template vec2(T) { alias Vector!(T, 2) vec2; }
