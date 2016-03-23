@@ -90,7 +90,7 @@
             "sourcePaths": [ "sdl2_gfx/gfm/sdl2" ],
             "importPaths": [ "sdl2_gfx", "sdl2", "math" ],
             "dependencies": {
-                "derelict-sdl2_gfx": "~>0.0.1"
+                "derelict-sdl2_gfx": "~>1.0"
             }
         },
         {
