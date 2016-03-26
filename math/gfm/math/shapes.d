@@ -60,7 +60,7 @@ struct Triangle(T, int N)
             }
         }
 
-        static if (N == 3)
+        static if (N == 3 && isFloatingPoint!T)
         {
             /// Returns: Triangle normal.
             @nogc Vector!(T, 3) computeNormal() pure const nothrow
@@ -159,7 +159,7 @@ nothrow:
             return orig + dir * t;
         }
 
-        static if (N == 3)
+        static if (N == 3 && isFloatingPoint!T)
         {
             /// Ray vs triangle intersection.
             /// See_also: "Fast, Minimum Storage Ray/Triangle intersection", Mommer & Trumbore (1997)
