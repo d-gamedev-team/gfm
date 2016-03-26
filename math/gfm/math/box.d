@@ -296,7 +296,7 @@ struct Box(T, int N)
         }
 
         /// Assign with another box.
-        @nogc ref Box opAssign(U)(U x) nothrow if (is(typeof(x.isBox)))
+        @nogc ref Box opAssign(U)(U x) nothrow if (isBox!U)
         {
             static if(is(U.element_t : T))
             {
@@ -335,7 +335,6 @@ struct Box(T, int N)
 
     private
     {
-        enum isBox = true;
         enum _size = N;
         alias T element_t;
     }
