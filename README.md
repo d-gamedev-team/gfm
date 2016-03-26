@@ -37,15 +37,17 @@ https://github.com/d-gamedev-team/gfm/wiki/Changelog
 - [Despiker](https://github.com/kiith-sa/despiker/blob/master/dub.json)
 - [D gamedev intro](https://github.com/kiith-sa/d-gamedev-intro)
 - [Dido](https://github.com/p0nce/dido)
+- [discord](https://github.com/rcorre/discord)
 - [Pacman](https://github.com/Yoplitein/pacman)
 - [petri-dish](https://github.com/Shriken/petri-dish)
 - [Vibrant](https://github.com/p0nce/Vibrant)
 - [vxlgen](https://github.com/p0nce/vxlgen)
 
-## Why using GFM?
+## Why use GFM?
   * GFM has low churn and has been maintained since 2012.
   * GFM primarily provides math primitives that are useful for games like vectors/matrices/quaternions in the `gfm:math` and `gfm:integers` package.
   * Other subpackages are wrappers: transparent layers that expose the C libraries objects, turn every error code into an D exception and makes it easier to use the library correctly. They do almost nothing and perhaps you don't need them.
+  * GFM has a changelog and respects SemVer.
 
 ## Dependencies
 

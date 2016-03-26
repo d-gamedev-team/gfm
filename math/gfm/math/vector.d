@@ -374,7 +374,7 @@ nothrow:
             static if (N == 3)
             {
                 /// Gets an orthogonal vector from a 3-dimensional vector.
-                /// Doesn’t normalise the output.
+                /// Doesn’t normalize the output.
                 /// Authors: Sam Hocevar
                 /// See_also: Source at $(WEB lolengine.net/blog/2013/09/21/picking-orthogonal-vector-combing-coconuts).
                 @nogc Vector getOrthogonalVector() pure const nothrow
