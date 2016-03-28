@@ -228,6 +228,12 @@ final class SDL2Renderer
         {
             return _info;
         }
+
+        /// Returns: SDL handle.
+        SDL_Renderer* handle()
+        {
+            return _renderer;
+        }
     }
 
     package

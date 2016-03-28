@@ -169,6 +169,12 @@ final class SDL2Texture
                 _sdl2.throwSDL2Exception("SDL_UpdateYUVTexture");
         }
 
+        /// Returns: SDL handle.
+        SDL_Texture* handle()
+        {
+            return _handle;
+        }
+
     }
 
     package
