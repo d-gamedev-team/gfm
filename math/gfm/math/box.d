@@ -1,3 +1,6 @@
+/**
+  This module implements a generic axis-aligned bounding box (AABB).
+ */
 module gfm.math.box;
 
 import std.math,

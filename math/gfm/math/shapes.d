@@ -436,7 +436,7 @@ enum isRay(T) = is(T : Ray!U, U...);
 /// True if `T` is a kind of Plane
 enum isPlane(T) = is(T : Plane!U, U);
 
-/// True if `T` is a kind of Plane
+/// True if `T` is a kind of Frustum
 enum isFrustum(T) = is(T : Frustum!U, U);
 
 /// True if `T` is a kind of 2 dimensional Segment
