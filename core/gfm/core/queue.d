@@ -5,6 +5,8 @@ import std.range;
 import core.sync.mutex,
        core.sync.semaphore;
 
+import gfm.core.memory;
+
 // what to do when capacity is exceeded?
 private enum OverflowPolicy
 {
@@ -362,6 +364,15 @@ final class LockedQueue(T)
             _writerSemaphore = new Semaphore(cast(uint)capacity);
         }
 
+        ~this()
+        {
+            debug ensureNotInGC("LockedQueue");
+            clear();
+            _rwMutex.destroy();
+            _readerSemaphore.destroy();
+            _writerSemaphore.destroy();
+        }
+
         /// Returns: Capacity of the locked queue.
         size_t capacity() const
         {
@@ -473,6 +484,7 @@ unittest
 {
     import std.stdio;
     auto lq = new LockedQueue!int(3);
+    scope(exit) lq.destroy();
     lq.clear();
     lq.pushFront(2);
     lq.pushBack(3);
@@ -486,4 +498,5 @@ unittest
     {
         assert(res == 2);
     }
+
 }
