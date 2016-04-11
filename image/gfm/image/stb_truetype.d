@@ -1250,6 +1250,7 @@ ubyte *stbtt_GetCodepointBitmapSubpixel(const stbtt_fontinfo *info, float scale_
 
 /// Same as stbtt_MakeCodepointBitmap, but you can specify a subpixel
 /// shift for the character.
+deprecated("gfm:image package has been merged into package dplug:gui, use it instead")
 void stbtt_MakeCodepointBitmapSubpixel(const stbtt_fontinfo *info, ubyte *output, int out_w, int out_h, int out_stride, float scale_x, float scale_y, float shift_x, float shift_y, int codepoint) nothrow @nogc
 {
    stbtt_MakeGlyphBitmapSubpixel(info, output, out_w, out_h, out_stride, scale_x, scale_y, shift_x, shift_y, stbtt_FindGlyphIndex(info,codepoint));
@@ -1271,6 +1272,7 @@ ubyte *stbtt_GetCodepointBitmap(const stbtt_fontinfo *info, float scale_x, float
 /// in the form of 'output', with row spacing of 'out_stride' bytes. the bitmap
 /// is clipped to out_w/out_h bytes. Call stbtt_GetCodepointBitmapBox to get the
 /// width and height and positioning info for it first.
+deprecated("gfm:image package has been merged into package dplug:gui, use it instead")
 void stbtt_MakeCodepointBitmap(const stbtt_fontinfo *info, ubyte *output, int out_w, int out_h, int out_stride, float scale_x, float scale_y, int codepoint) nothrow @nogc
 {
    stbtt_MakeCodepointBitmapSubpixel(info, output, out_w, out_h, out_stride, scale_x, scale_y, 0.0f,0.0f, codepoint);

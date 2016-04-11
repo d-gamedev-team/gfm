@@ -351,7 +351,7 @@ template RingBuffer(T)
 
     See_also: $(LINK2 #Queue, Queue)
  */
-final class LockedQueue(T)
+deprecated("LockedQueue has been moved to package dplug:core, use it instead") final class LockedQueue(T)
 {
     public
     {
@@ -479,7 +479,7 @@ final class LockedQueue(T)
     }
 }
 
-
+/+
 unittest
 {
     import std.stdio;
@@ -498,5 +498,5 @@ unittest
     {
         assert(res == 2);
     }
-
 }
++/

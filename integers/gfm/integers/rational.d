@@ -10,7 +10,7 @@ import std.traits,
   Bugs: Remove this module once std.rational is here.
 
  */
-struct Rational
+deprecated("Use package rationald instead") struct Rational
 {
     public
     {
@@ -195,30 +195,3 @@ struct Rational
     }
 }
 
-unittest
-{
-    Rational x = Rational(9, 3);
-    assert(x.num == 3);
-    assert(x.denom == 1);
-
-    assert(x < 4);
-    assert(x > 2);
-    assert(x > Rational(8,3));
-    assert(x > Rational(-8,3));
-    assert(x == Rational(-27, -9));
-
-    assert(Rational(-4, 7) + 2 == Rational(10, 7));
-    assert(Rational(-4, 7) == Rational(10, 7) - 2);
-
-    assert(++Rational(3,7) == Rational(10,7));
-    assert(--Rational(3,7) == Rational(-4,7));
-    assert(+x == 3);
-    assert(-x == -3);
-
-    Rational y = -4;
-    assert(y.num == -4);
-    assert(y.denom == 1);
-
-    assert(Rational(2, 3) * Rational(15, 7) == Rational(10, 7));
-    assert(Rational(2, 3) == Rational(10, 7) / Rational(15, 7));
-}
