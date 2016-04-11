@@ -8,7 +8,7 @@ $(LINK2 https://github.com/p0nce/gfm, GFM) is a feature-rich library to ease the
 $(UL
     <p>$(LI gfm.core:
         $(UL
-            $(LI $(D queue.d): a dead simple queue/fifo/stack/ring-buffer, with a range interface. Synchronized queue for threads.)
+            $(LI $(D queue.d): a dead simple queue/fifo/stack/ring-buffer, with a range interface.)
             $(LI $(D memory.d): aligned malloc/free/realloc.)
          )
     )</p>
@@ -28,7 +28,6 @@ $(UL
             $(LI $(D half.d): 16-bit floating point type.)
             $(LI $(D wideint.d): 2^N bits integers (recursive implementation, covers cent/ucent).)
             $(LI $(D fixedpoint.d): fixed-point numbers.)
-            $(LI $(D rational.d): rational numbers.)
          )
     )</p>
     <p>$(LI gfm.opengl:
@@ -48,13 +47,6 @@ $(UL
             $(LI SDL 2.x wrapper based on package derelict-sdl2.)
             $(LI including SDL_image and SDL_ttf wrappers.)
             $(LI built-in SDL logging forwarding.)
-         )
-    )</p>
-
-    <p>$(LI gfm.image:
-        $(UL
-            $(LI $(D stb_image.d): stb_image port, loads BMP, PNG, GIF and JPEG.)
-            $(LI $(D stb_truetype.d): stb_truetype port.)
          )
     )</p>
 
