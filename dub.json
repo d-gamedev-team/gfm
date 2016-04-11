@@ -24,7 +24,6 @@
         "gfm:core": "*",
         "gfm:assimp": "*",
         "gfm:freeimage": "*",
-        "gfm:image": "*",
         "gfm:integers": "*",
         "gfm:math": "*",
         "gfm:opengl": "*",
@@ -42,17 +41,6 @@
             "name": "math",
             "sourcePaths": [ "math/gfm/math" ],
             "importPaths": [ "math" ]
-        },
-        {
-            "name": "image",
-
-            "sourcePaths": [ "image/gfm/image" ],
-            "importPaths": [ "image" ],
-            "dependencies": {
-                "gfm:core": "*",
-                "ae-graphics": "~>0.0",
-                "imageformats": "~>5.0"
-            }
         },
         {
             "name": "integers",

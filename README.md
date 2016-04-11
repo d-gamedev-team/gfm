@@ -56,3 +56,5 @@ You absolutely don't need to use the whole of GFM. Pick just what you need to mi
 There is an ongoing work to delete things in GFM that exist elsewhere but better.
 See http://code.dlang.org to discover lots of useful libraries for your programs.
 
+So you'll find that GFM actually decreases in size over time.
+
