@@ -20,7 +20,7 @@ Add the sub-package you are interested in in your `dub.json`:
 ```d
    {
       "dependencies": {
-        "gfm:math": "~>5.0"
+        "gfm:math": "~>6.0"
       }
    }
 ```
