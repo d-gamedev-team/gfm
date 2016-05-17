@@ -138,10 +138,10 @@ struct Box(T, int N)
 
         /// Euclidean squared distance from a point.
         /// See_also: Numerical Recipes Third Edition (2007)
-        @nogc double squaredDistance(bound_t point) pure const nothrow
+        @nogc real squaredDistance(bound_t point) pure const nothrow
         {
             assert(isSorted());
-            double distanceSquared = 0;
+            real distanceSquared = 0;
             for (int i = 0; i < N; ++i)
             {
                 if (point[i] < min[i])
@@ -155,18 +155,18 @@ struct Box(T, int N)
 
         /// Euclidean distance from a point.
         /// See_also: squaredDistance.
-        @nogc double distance(bound_t point) pure const nothrow
+        @nogc real distance(bound_t point) pure const nothrow
         {
             return sqrt(squaredDistance(point));
         }
 
         /// Euclidean squared distance from another box.
         /// See_also: Numerical Recipes Third Edition (2007)
-        @nogc double squaredDistance(Box o) pure const nothrow
+        @nogc real squaredDistance(Box o) pure const nothrow
         {
             assert(isSorted());
             assert(o.isSorted());
-            double distanceSquared = 0;
+            real distanceSquared = 0;
             for (int i = 0; i < N; ++i)
             {
                 if (o.max[i] < min[i])
@@ -180,7 +180,7 @@ struct Box(T, int N)
 
         /// Euclidean distance from another box.
         /// See_also: squaredDistance.
-        @nogc double distance(Box o) pure const nothrow
+        @nogc real distance(Box o) pure const nothrow
         {
             return sqrt(squaredDistance(o));
         }
