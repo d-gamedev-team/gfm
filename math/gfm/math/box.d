@@ -4,7 +4,9 @@
 module gfm.math.box;
 
 import std.math,
-       std.traits;
+       std.traits,
+       std.conv,
+       std.string;
 
 import gfm.math.vector,
        gfm.math.funcs;
@@ -106,9 +108,7 @@ struct Box(T, int N)
             @nogc bool empty() pure const nothrow
             {
                 bound_t size = size();
-                for(int i = 0; i < N; ++i)
-                    if (size[i] == 0)
-                        return true;
+                mixin(generateLoopCode!("if (min[@] == max[@]) return true;", N)());
                 return false;
             }
         }
@@ -130,9 +130,7 @@ struct Box(T, int N)
             assert(isSorted());
             assert(other.isSorted());
 
-            for(int i = 0; i < N; ++i)
-                if ( (other.min[i] < min[i]) || (other.max[i] > max[i]) )
-                    return false;
+            mixin(generateLoopCode!("if ( (other.min[@] < min[@]) || (other.max[@] > max[@]) ) return false;", N)());
             return true;
         }
 
@@ -200,7 +198,7 @@ struct Box(T, int N)
             if (o.empty())
                 return o;
 
-            Box result;
+            Box result = void;
             for (int i = 0; i < N; ++i)
             {
                 T maxOfMins = (min.v[i] > o.min.v[i]) ? min.v[i] : o.min.v[i];
@@ -276,7 +274,7 @@ struct Box(T, int N)
             if (other.empty())
                 return this;
 
-            Box result;
+            Box result = void;
             for (int i = 0; i < N; ++i)
             {
                 T minOfMins = (min.v[i] < other.min.v[i]) ? min.v[i] : other.min.v[i];
@@ -417,4 +415,29 @@ unittest
 {
     static assert(is(DimensionType!box2f == float));
     static assert(is(DimensionType!box3d == double));
+}
+
+private
+{
+    static string generateLoopCode(string formatString, int N)() pure nothrow
+    {
+        string result;
+        for (int i = 0; i < N; ++i)
+        {
+            string index = ctIntToString(i);
+            // replace all @ by indices
+            result ~= formatString.replace("@", index);
+        }
+        return result;
+    }
+
+    // Speed-up CTFE conversions
+    static string ctIntToString(int n) pure nothrow
+    {
+        static immutable string[16] table = ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9"];
+        if (n < 10)
+            return table[n];
+        else
+            return to!string(n);
+    }
 }
