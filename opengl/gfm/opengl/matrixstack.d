@@ -1,6 +1,6 @@
 module gfm.opengl.matrixstack;
 
-import std.c.stdlib : malloc, free;
+import core.stdc.stdlib: malloc, free;
 
 import gfm.opengl.opengl;
 
