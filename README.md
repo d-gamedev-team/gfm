@@ -44,10 +44,12 @@ https://github.com/d-gamedev-team/gfm/wiki/Changelog
 - [vxlgen](https://github.com/p0nce/vxlgen)
 
 ## Why use GFM?
-  * GFM has low churn and has been maintained since 2012.
-  * GFM primarily provides math primitives that are useful for games like vectors/matrices/quaternions in the `gfm:math` and `gfm:integers` package.
+  * GFM has a [changelog](https://github.com/d-gamedev-team/gfm/wiki/Changelog) and respects SemVer,
+  * GFM has low churn and has been maintained since 2012,
+  * GFM primarily provides math primitives that are useful for games like vectors/matrices/quaternions in the `gfm:math` package,
+  * Also provide arbitrary sized integers, fixed point numbers, and half-float numbers in `gfm:integers`,
   * Other subpackages are wrappers: transparent layers that expose the C libraries objects, turn every error code into an D exception and makes it easier to use the library correctly. They do almost nothing and perhaps you don't need them.
-  * GFM has a changelog and respects SemVer.
+
 
 ## Dependencies
 
