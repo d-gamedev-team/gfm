@@ -6,7 +6,8 @@
   <b>Supports all operations that builtin integers support.</b>
 
   Bugs: it's not sure if the unsigned operand would take precedence in a comparison/division.
-  TODO: add literals.
+          - a < b should be an unsigned comparison if at least one operand is unsigned
+          - a / b should be an unsigned division   if at least one operand is unsigned
  */
 module gfm.integers.wideint;
 
