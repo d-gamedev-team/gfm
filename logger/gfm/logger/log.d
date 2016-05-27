@@ -1,6 +1,7 @@
 module gfm.logger.log;
 
 import std.string;
+import std.stdio;
 
 import std.experimental.logger;
 
@@ -43,7 +44,7 @@ class ConsoleLogger : Logger
             }
 
             import colorize.cwrite;
-            cwritefln( color("%s: %s", foregroundColor), logLevelToString(payload.logLevel), payload.msg);
+            stderr.cwritef( color("%s: %s\n", foregroundColor), logLevelToString(payload.logLevel), payload.msg);
         }
     }
 
