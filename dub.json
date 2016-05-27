@@ -1,21 +1,22 @@
 {
     "name": "gfm",
-    "description": "D gamedev toolkit. 3D maths, OpenGL/SDL/FreeImage/Assimp/ENet wrapper, stb_image port.",
+    "description": "D gamedev toolkit. 3D maths, 128-bit integers, OpenGL/SDL/FreeImage/Assimp/ENet wrapper, stb_image port.",
     "homepage": "http://github.com/d-gamedev-team/gfm/",
     "copyright": "none",
     "license": "public domain",
 
     "authors": [
-        "Guillaume Piolat / ponce: main author",
+        "Daniele Bondi / maeriden: Euler angles fix",
+        "Francesco Cattoglio: OpenGL wrapper improvements",
+        "John D. Cook: original SimpleRNG author",
+        "Daniel Cousens / RommelVR: GL fix",
         "Gerbrand Kamphuis / vuaru: many fixes",
         "Kyle Hunter / Kelet: ENet wrapper",
-        "Francesco Cattoglio: OpenGL wrapper improvements",
-        "John D. Cook: SimpleRNG author",
-        "Sam Hocevar: many bits of code",
-        "Daniel Cousens / RommelVR: GL fix",
-        "Daniele Bondi / maeriden: Euler angles fix",
-        "H. S. Teoh / quickfur: wideint improvements",
-        "Tanel Tagaväli / clinei: SDL audio wrapper"
+        "Sam Hocevar: original author of some bits of code",
+        "Guillaume Piolat / ponce: main author of GFM",
+        "Ryan Roden-Corrent / rcorre: math package improvements",
+        "Tanel Tagaväli / clinei: SDL audio wrapper",
+        "H. S. Teoh / quickfur: wideint improvements"
     ],
 
     "targetType": "none",
