@@ -229,9 +229,10 @@ final class SDLSample
         ///     channel = channel to play on. -1 plays on first inactive channel.
         ///     loops = number of times to loop this sample.
         ///     fadeInTime = time over which this sample is faded in.
-        void play(int channel, int loops = 0, Duration fadeInTime = 0.seconds)
+        /// Returns: channel the sample is now playing on.
+        int play(int channel, int loops = 0, Duration fadeInTime = 0.seconds)
         {
-            Mix_FadeInChannel(channel, _chunk, loops, cast(int)fadeInTime.total!"msecs");
+            reutrn Mix_FadeInChannel(channel, _chunk, loops, cast(int)fadeInTime.total!"msecs");
         }
         
         /// Plays this sample only within a certain time limit.
@@ -240,9 +241,10 @@ final class SDLSample
         ///     timeLimit = time after which the sample stops playing.
         ///     loops = number of times to loop this sample.
         ///     fadeInTime = time over which this sample is faded in.
-        void playTimed(int channel, Duration timeLimit, int loops = 0, Duration fadeInTime = 0.seconds)
+        /// Returns: channel the sample is now playing on.
+        int playTimed(int channel, Duration timeLimit, int loops = 0, Duration fadeInTime = 0.seconds)
         {
-            Mix_FadeInChannelTimed(channel, _chunk, loops, cast(int)fadeInTime.total!"msecs", cast(int)timeLimit.total!"msecs");
+            return Mix_FadeInChannelTimed(channel, _chunk, loops, cast(int)fadeInTime.total!"msecs", cast(int)timeLimit.total!"msecs");
         }
         
         /// Returns: The volume this sample plays at.
