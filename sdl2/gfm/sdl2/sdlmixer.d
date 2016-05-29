@@ -57,6 +57,51 @@ final class SDLMixer
                 Mix_Quit();
             }
         }
+        
+        int getChannels()
+        {
+            return Mix_AllocateChannels(-1);
+        }
+        
+        void setChannels(int numChannels)
+        {
+            Mix_AllocateChannels(numChannels);
+        }
+        
+        void pauseChannel(int channel)
+        {
+            Mix_Pause(channel);
+        }
+        
+        void unpauseChannel(int channel)
+        {
+            Mix_Resume(channel);
+        }
+        
+        bool isChannelPaused(int channel)
+        {
+            return Mix_Paused(channel) != 0;
+        }
+        
+        void haltChannel(int channel, int delayMsecs = 0)
+        {
+            Mix_ExpireChannel(channel, delayMsecs);
+        }
+        
+        void fadeChannel(int channel, int timeMsecs)
+        {
+            Mix_FadeOutChannel(channel, timeMsecs);
+        }
+        
+        Mix_Fading channelFading(int channel)
+        {
+            return Mix_FadingChannel(channel);
+        }
+        
+        bool isChannelPlaying(int channel)
+        {
+            return Mix_Playing(channel) != 0;
+        }
     }
     
     private
