@@ -123,6 +123,18 @@ final class SDLMixer
         {
             return Mix_Playing(channel) != 0;
         }
+        
+        /// Returns: The volume of the channel.
+        int getChannelVolume(int channel)
+        {
+            return Mix_Volume(channel, -1);
+        }
+        
+        /// Sets the volume of the channel. Passing -1 sets volume of all channels.
+        void setChannelVolume(int channel, int volume)
+        {
+            Mix_Volume(channel, volume);
+        }
     }
     
     private
@@ -198,6 +210,18 @@ final class SDLSample
         void playTimed(int channel, Duration timeLimit, int loops = 0, Duration fadeInTime = 0.seconds)
         {
             Mix_FadeInChannelTimed(channel, _chunk, loops, cast(int)fadeInTime.total!"msecs", cast(int)timeLimit.total!"msecs");
+        }
+        
+        /// Returns: The volume this sample plays at.
+        int getVolume()
+        {
+            return Mix_VolumeChunk(_chunk, -1);
+        }
+        
+        /// Sets the volume this sample plays at.
+        void setVolume(int volume)
+        {
+            Mix_VolumeChunk(_chunk, volume);
         }
     }
     
