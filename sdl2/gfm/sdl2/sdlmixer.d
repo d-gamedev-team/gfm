@@ -232,7 +232,7 @@ final class SDLSample
         /// Returns: channel the sample is now playing on.
         int play(int channel, int loops = 0, Duration fadeInTime = 0.seconds)
         {
-            reutrn Mix_FadeInChannel(channel, _chunk, loops, cast(int)fadeInTime.total!"msecs");
+            return Mix_FadeInChannel(channel, _chunk, loops, cast(int)fadeInTime.total!"msecs");
         }
         
         /// Plays this sample only within a certain time limit.
