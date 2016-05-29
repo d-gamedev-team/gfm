@@ -135,6 +135,39 @@ final class SDLMixer
         {
             Mix_Volume(channel, volume);
         }
+        
+        /// Sets stereo panning on the channel. The library must have been opened with two output channels.
+        /// See_also: $(LINK https://www.libsdl.org/projects/SDL_mixer/docs/SDL_mixer.html#SEC80)
+        void setChannelPanning(int channel, ubyte volumeLeft, ubyte volumeRight)
+        {
+            Mix_SetPanning(channel, volumeLeft, volumeRight);
+        }
+        
+        /// Sets distance from the listener on the channel, used to simulate attenuation.
+        /// See_also: $(LINK https://www.libsdl.org/projects/SDL_mixer/docs/SDL_mixer.html#SEC81)
+        void setChannelDistance(int channel, ubyte distance)
+        {
+            Mix_SetDistance(channel, distance);
+        }
+        
+        /// Sets angle and distance relative to listener on the channel, used to simulate positional audio.
+        /// See_also: $(LINK https://www.libsdl.org/projects/SDL_mixer/docs/SDL_mixer.html#SEC82)
+        void setChannelPosition(int channel, short angle, ubyte distance)
+        {
+            Mix_SetPosition(channel, angle, distance);
+        }
+        
+        /// Sets whether reverse stereo is enabled on the channel.
+        void setChannelReverseStereo(int channel, bool reverse)
+        {
+            Mix_SetReverseStereo(channel, reverse);
+        }
+        
+        /// Clears all effects from the channel.
+        void clearChannelEffects(int channel)
+        {
+            Mix_UnregisterAllEffects(channel);
+        }
     }
     
     private
