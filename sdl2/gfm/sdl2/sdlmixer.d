@@ -150,7 +150,7 @@ final class SDLMixer
             Mix_SetDistance(channel, distance);
         }
         
-        /// Sets angle and distance relative to listener on the channel, used to simulate positional audio.
+        /// Set panning and distance on the channel to simulate positional audio.
         /// See_also: $(LINK https://www.libsdl.org/projects/SDL_mixer/docs/SDL_mixer.html#SEC82)
         void setPosition(int channel, short angle, ubyte distance)
         {
