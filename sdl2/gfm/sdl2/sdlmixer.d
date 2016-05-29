@@ -14,7 +14,12 @@ final class SDLMixer
 {
     public
     {
-        this(SDL2 sdl2, int flags = MIX_INIT_FLAC | MIX_INIT_MOD | MIX_INIT_MP3 | MIX_INIT_OGG)
+        this(SDL2 sdl2,
+             int flags = MIX_INIT_FLAC | MIX_INIT_MOD | MIX_INIT_MP3 | MIX_INIT_OGG,
+             int frequency = MIX_DEFAULT_FREQUENCY,
+             ushort format = MIX_DEFAULT_FORMAT,
+             int channels = MIX_DEFAULT_CHANNELS,
+             int chunksize = 1024)
         {
             _sdl2 = sdl2;
             _logger = sdl2._logger;
@@ -34,6 +39,11 @@ final class SDLMixer
                 throwSDL2MixerException("Mix_Init");
             }
             
+            if(Mix_OpenAudio(frequency, format, channels, chunksize) != 0)
+            {
+                throwSDL2MixerException("Mix_OpenAudio");
+            }
+            
             _SDLMixerInitialized = true;
         }
         
@@ -43,6 +53,7 @@ final class SDLMixer
             {
                 debug ensureNotInGC("SDLMixer");
                 _SDLMixerInitialized = false;
+                Mix_CloseAudio();
                 Mix_Quit();
             }
         }
