@@ -1,5 +1,6 @@
 module gfm.sdl2.sdlmixer;
 
+import std.datetime;
 import std.string;
 
 import derelict.sdl2.sdl,
@@ -83,14 +84,14 @@ final class SDLMixer
             return Mix_Paused(channel) != 0;
         }
         
-        void haltChannel(int channel, int delayMsecs = 0)
+        void haltChannel(int channel, Duration delay = 0.msecs)
         {
-            Mix_ExpireChannel(channel, delayMsecs);
+            Mix_ExpireChannel(channel, cast(int)delay.total!"msecs");
         }
         
-        void fadeChannel(int channel, int timeMsecs)
+        void fadeChannel(int channel, Duration time)
         {
-            Mix_FadeOutChannel(channel, timeMsecs);
+            Mix_FadeOutChannel(channel, cast(int)time.total!"msecs");
         }
         
         Mix_Fading channelFading(int channel)
