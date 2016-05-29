@@ -73,7 +73,9 @@ $(UL
 <h3>Dealing with resources in D.</h3>
 
 Be sure to read these entries on d-idioms:
-- http://p0nce.github.io/d-idioms/#The-trouble-with-class-destructors
-- http://p0nce.github.io/d-idioms/#GC-proof-resource-class
+$(UL
+    $(LI $(LINK http://p0nce.github.io/d-idioms/#The-trouble-with-class-destructors))
+    $(LI $(LINK http://p0nce.github.io/d-idioms/#GC-proof-resource-class))
+)
 
 
