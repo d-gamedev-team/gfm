@@ -123,3 +123,48 @@ final class SDLMixer
         }
     }
 }
+
+final class SDLSample
+{
+    public
+    {
+        this(SDLMixer sdlmixer, string filename)
+        {
+            _sdlmixer = sdlmixer;
+            _chunk = Mix_LoadWAV(toStringz(filename));
+            if(_chunk is null)
+                _sdlmixer.throwSDL2MixerException("Mix_LoadWAV");
+        }
+        
+        ~this()
+        {
+            if(_chunk !is null)
+            {
+                debug ensureNotInGC("SDLSample");
+                Mix_FreeChunk(_chunk);
+                _chunk = null;
+            }
+        }
+        
+        Mix_Chunk* handle()
+        {
+            return _chunk;
+        }
+        
+        void play(int channel, int loops = 0, Duration fadeInTime = 0.seconds)
+        {
+            Mix_FadeInChannel(channel, _chunk, loops, cast(int)fadeInTime.total!"msecs");
+        }
+        
+        void playTimed(int channel, Duration timeLimit, int loops = 0, Duration fadeInTime = 0.seconds)
+        {
+            Mix_FadeInChannelTimed(channel, _chunk, loops, cast(int)fadeInTime.total!"msecs", cast(int)timeLimit.total!"msecs");
+        }
+    }
+    
+    private
+    {
+        SDLMixer _sdlmixer;
+        Mix_Chunk* _chunk;
+    }
+}
