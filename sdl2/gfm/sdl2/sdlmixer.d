@@ -77,19 +77,19 @@ final class SDLMixer
         }
         
         /// Pauses the channel. Passing -1 pauses all channels.
-        void pauseChannel(int channel)
+        void pause(int channel)
         {
             Mix_Pause(channel);
         }
         
         /// Unpauses the channel. Passing -1 unpauses all channels.
-        void unpauseChannel(int channel)
+        void unpause(int channel)
         {
             Mix_Resume(channel);
         }
         
         /// Returns: Whether the channel is paused.
-        bool isChannelPaused(int channel)
+        bool isPaused(int channel)
         {
             return Mix_Paused(channel) != 0;
         }
@@ -98,7 +98,7 @@ final class SDLMixer
         /// Params:
         ///     channel = channel to halt. -1 halts all channels.
         ///     delay = time after which to perform the halt.
-        void haltChannel(int channel, Duration delay = 0.msecs)
+        void halt(int channel, Duration delay = 0.msecs)
         {
             Mix_ExpireChannel(channel, cast(int)delay.total!"msecs");
         }
@@ -107,64 +107,64 @@ final class SDLMixer
         /// Params:
         ///     channel = channel to halt. -1 fades all channels.
         ///     time = time over which the channel is faded out.
-        void fadeChannel(int channel, Duration time)
+        void fade(int channel, Duration time)
         {
             Mix_FadeOutChannel(channel, cast(int)time.total!"msecs");
         }
         
         /// Returns: Fading status of the channel.
-        Mix_Fading channelFading(int channel)
+        Mix_Fading getFading(int channel)
         {
             return Mix_FadingChannel(channel);
         }
         
         /// Returns: Whether the channel is currently playing.
-        bool isChannelPlaying(int channel)
+        bool isPlaying(int channel)
         {
             return Mix_Playing(channel) != 0;
         }
         
         /// Returns: The volume of the channel.
-        int getChannelVolume(int channel)
+        int getVolume(int channel)
         {
             return Mix_Volume(channel, -1);
         }
         
         /// Sets the volume of the channel. Passing -1 sets volume of all channels.
-        void setChannelVolume(int channel, int volume)
+        void setVolume(int channel, int volume)
         {
             Mix_Volume(channel, volume);
         }
         
         /// Sets stereo panning on the channel. The library must have been opened with two output channels.
         /// See_also: $(LINK https://www.libsdl.org/projects/SDL_mixer/docs/SDL_mixer.html#SEC80)
-        void setChannelPanning(int channel, ubyte volumeLeft, ubyte volumeRight)
+        void setPanning(int channel, ubyte volumeLeft, ubyte volumeRight)
         {
             Mix_SetPanning(channel, volumeLeft, volumeRight);
         }
         
         /// Sets distance from the listener on the channel, used to simulate attenuation.
         /// See_also: $(LINK https://www.libsdl.org/projects/SDL_mixer/docs/SDL_mixer.html#SEC81)
-        void setChannelDistance(int channel, ubyte distance)
+        void setDistance(int channel, ubyte distance)
         {
             Mix_SetDistance(channel, distance);
         }
         
         /// Sets angle and distance relative to listener on the channel, used to simulate positional audio.
         /// See_also: $(LINK https://www.libsdl.org/projects/SDL_mixer/docs/SDL_mixer.html#SEC82)
-        void setChannelPosition(int channel, short angle, ubyte distance)
+        void setPosition(int channel, short angle, ubyte distance)
         {
             Mix_SetPosition(channel, angle, distance);
         }
         
         /// Sets whether reverse stereo is enabled on the channel.
-        void setChannelReverseStereo(int channel, bool reverse)
+        void setReverseStereo(int channel, bool reverse)
         {
             Mix_SetReverseStereo(channel, reverse);
         }
         
         /// Clears all effects from the channel.
-        void clearChannelEffects(int channel)
+        void clearEffects(int channel)
         {
             Mix_UnregisterAllEffects(channel);
         }
