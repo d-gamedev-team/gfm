@@ -2,7 +2,7 @@
 <html lang="en">
 	<head>
 	<meta charset="utf-8">
-	<title>gfm.freeimage.fibitmap - gfm documentation</title>
+	<title>gfm.sdl2.sdlmixer - gfm documentation</title>
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<meta name="description" content="">
 	<meta name="author" content="">
@@ -34,7 +34,7 @@
 	
 	<!-- Introduce DDoc settings required by JavaScript -->
 	<script type="text/javascript">
-		var Title = 'gfm.freeimage.fibitmap';
+		var Title = 'gfm.sdl2.sdlmixer';
 		var SourceRepository = 'http://github.com/p0nce/gfm/tree/master';
 		var PackageSeparator = '.';
 	</script>
@@ -125,7 +125,7 @@
 					</ul>
 					
 					<form id="gotosymbol" class="navbar-search pull-left hidden">
-						<input type="text" class="search-query" placeholder="Go to symbol in gfm.freeimage.fibitmap" data-provide="typeahead" data-items="4">
+						<input type="text" class="search-query" placeholder="Go to symbol in gfm.sdl2.sdlmixer" data-provide="typeahead" data-items="4">
 					</form>
 					
 					<p class="navbar-text pull-right"><a href="https://github.com/p0nce/gfm">Github Page</a></p>
@@ -193,7 +193,7 @@
 
     <li class="sidebar-list-entry tree-leaf"><a href="gfm.logger.log.html" title="gfm.logger.log"><i class="icon-th"></i>gfm.logger.log</a></li>
 					</noscript>
-					<li id="symbol-list" class="nav-header sidebar-list-entry hidden">gfm.freeimage.fibitmap</li>
+					<li id="symbol-list" class="nav-header sidebar-list-entry hidden">gfm.sdl2.sdlmixer</li>
 				</ul>
 				</div><!--/.well -->
 			</div><!--/span-->
@@ -202,7 +202,7 @@
 				<div class="row-fluid">
 					<div class="span11">
 						<ul id="module-breadcrumb" class="breadcrumb">
-							<noscript><h1>gfm.freeimage.fibitmap</h1></noscript>
+							<noscript><h1>gfm.sdl2.sdlmixer</h1></noscript>
 						</ul>
 						
 					</div>
@@ -212,214 +212,179 @@
 				</div>
 				<div id="declaration-list">
 					<br><br>
-<hr><div class="row-fluid declaration"><h3>class <span class="symbol-target" id="FIBitmap">&nbsp;</span><a class="symbol-link" href="#FIBitmap">FIBitmap</a>;
+<hr><div class="row-fluid declaration"><h3>class <span class="symbol-target" id="SDLMixer">&nbsp;</span><a class="symbol-link" href="#SDLMixer">SDLMixer</a>;
 </h3></div>
-<div class="declaration-content"><dl><p>FreeImage bitmap wrapper.</p>
+<div class="declaration-content"><dl><p>SDL_mixer library wrapper.</p>
 </dl>
-<div class="offset1 member-list"><hr><div class="row-fluid declaration"><h3>this(FreeImage <i>lib</i>, string <i>filename</i>, int <i>flags</i> = 0);
+<div class="offset1 member-list"><hr><div class="row-fluid declaration"><h3>this(SDL2 <i>sdl2</i>, int <i>flags</i> = MIX_INIT_FLAC | MIX_INIT_MOD | MIX_INIT_MP3 | MIX_INIT_OGG, int <i>frequency</i> = MIX_DEFAULT_FREQUENCY, ushort <i>format</i> = MIX_DEFAULT_FORMAT, int <i>channels</i> = MIX_DEFAULT_CHANNELS, int <i>chunksize</i> = 1024);
 </h3></div>
-<div class="declaration-content"><dl><p>Load an image from file.
+<div class="declaration-content"><dl><p>Loads the SDL_mixer library and opens audio.
 </p>
-<dt>Throws</dt><dd>FreeImage on error.</dd>
-</dl>
-</div>
-<hr><div class="row-fluid declaration"><h3>this(FreeImage <i>lib</i>, FIBITMAP* <i>bitmap</i>);
-</h3></div>
-<div class="declaration-content"><dl><p>Loads from existing <i>bitmap</i> handle.
-</p>
-<dt>Throws</dt><dd>FreeImage on error.</dd>
-</dl>
-</div>
-<hr><div class="row-fluid declaration"><h3>this(FreeImage <i>lib</i>, ubyte* <i>data</i>, int <i>width</i>, int <i>height</i>, int <i>pitch</i>, uint <i>bpp</i>, uint <i>redMask</i>, uint <i>blueMask</i>, uint <i>greenMask</i>, bool <i>topDown</i> = false);
-</h3></div>
-<div class="declaration-content"><dl><p>Creates an image from from existing memory <i>data</i>.
-</p>
-<dt>Throws</dt><dd>FreeImage on error.</dd>
-</dl>
-</div>
-<hr><div class="row-fluid declaration"><h3>void <span class="symbol-target" id="save">&nbsp;</span><a class="symbol-link" href="#save">save</a>(string <i>filename</i>, int <i>flags</i> = 0);
-</h3></div>
-<div class="declaration-content"><dl><p>Saves an image to a file.
-</p>
-<dt>Throws</dt><dd>FreeImage on error.</dd>
-</dl>
-</div>
-<hr><div class="row-fluid declaration"><h3>uint <span class="symbol-target" id="width">&nbsp;</span><a class="symbol-link" href="#width">width</a>();
-</h3></div>
-<div class="declaration-content"><dl><dt>Returns</dt><dd>Width of the image.</dd>
-</dl>
-</div>
-<hr><div class="row-fluid declaration"><h3>uint <span class="symbol-target" id="height">&nbsp;</span><a class="symbol-link" href="#height">height</a>();
-</h3></div>
-<div class="declaration-content"><dl><dt>Returns</dt><dd>Height of the image.</dd>
-</dl>
-</div>
-<hr><div class="row-fluid declaration"><h3>uint <span class="symbol-target" id="redMask">&nbsp;</span><a class="symbol-link" href="#redMask">redMask</a>();
-</h3></div>
-<div class="declaration-content"><dl><dt>Returns</dt><dd>Red channel bit mask.</dd>
-</dl>
-</div>
-<hr><div class="row-fluid declaration"><h3>uint <span class="symbol-target" id="greenMask">&nbsp;</span><a class="symbol-link" href="#greenMask">greenMask</a>();
-</h3></div>
-<div class="declaration-content"><dl><dt>Returns</dt><dd>Green channel bit mask.</dd>
-</dl>
-</div>
-<hr><div class="row-fluid declaration"><h3>uint <span class="symbol-target" id="blueMask">&nbsp;</span><a class="symbol-link" href="#blueMask">blueMask</a>();
-</h3></div>
-<div class="declaration-content"><dl><dt>Returns</dt><dd>Blue channel bit mask.</dd>
-</dl>
-</div>
-<hr><div class="row-fluid declaration"><h3>uint <span class="symbol-target" id="BPP">&nbsp;</span><a class="symbol-link" href="#BPP">BPP</a>();
-</h3></div>
-<div class="declaration-content"><dl><dt>Returns</dt><dd>Bits per pixels.</dd>
-</dl>
-</div>
-<hr><div class="row-fluid declaration"><h3>void* <span class="symbol-target" id="data">&nbsp;</span><a class="symbol-link" href="#data">data</a>();
-</h3></div>
-<div class="declaration-content"><dl><dt>Returns</dt><dd>A pointer to pixels <span class="symbol-target" id="data">&nbsp;</span><a class="symbol-link" href="#data">data</a>.</dd>
-</dl>
-</div>
-<hr><div class="row-fluid declaration"><h3>uint <span class="symbol-target" id="pitch">&nbsp;</span><a class="symbol-link" href="#pitch">pitch</a>();
-</h3></div>
-<div class="declaration-content"><dl><dt>Returns</dt><dd>Pitch between scanlines in bytes.</dd>
-</dl>
-</div>
-<hr><div class="row-fluid declaration"><h3>void* <span class="symbol-target" id="scanLine">&nbsp;</span><a class="symbol-link" href="#scanLine">scanLine</a>(int <i>y</i>);
-</h3></div>
-<div class="declaration-content"><dl><dt>Returns</dt><dd>A pointer to scanline <i>y</i>.</dd>
-</dl>
-</div>
-<hr><div class="row-fluid declaration"><h3>FIBitmap <span class="symbol-target" id="convertTo4Bits">&nbsp;</span><a class="symbol-link" href="#convertTo4Bits">convertTo4Bits</a>();
-</h3></div>
-<div class="declaration-content"><dl><p>Converts an image to 4-bits.
-</p>
-<dt>Returns</dt><dd>Converted image.</dd>
-</dl>
-</div>
-<hr><div class="row-fluid declaration"><h3>FIBitmap <span class="symbol-target" id="convertTo8Bits">&nbsp;</span><a class="symbol-link" href="#convertTo8Bits">convertTo8Bits</a>();
-</h3></div>
-<div class="declaration-content"><dl><p>Converts an image to 8-bits.
-</p>
-<dt>Returns</dt><dd>Converted image.</dd>
-</dl>
-</div>
-<hr><div class="row-fluid declaration"><h3>FIBitmap <span class="symbol-target" id="convertToGreyscale">&nbsp;</span><a class="symbol-link" href="#convertToGreyscale">convertToGreyscale</a>();
-</h3></div>
-<div class="declaration-content"><dl><p>Converts an image to greyscale.
-</p>
-<dt>Returns</dt><dd>Converted image.</dd>
-</dl>
-</div>
-<hr><div class="row-fluid declaration"><h3>FIBitmap <span class="symbol-target" id="convertTo16Bits555">&nbsp;</span><a class="symbol-link" href="#convertTo16Bits555">convertTo16Bits555</a>();
-</h3></div>
-<div class="declaration-content"><dl><p>Converts an image to 16-bits 555.
-</p>
-<dt>Returns</dt><dd>Converted image.</dd>
-</dl>
-</div>
-<hr><div class="row-fluid declaration"><h3>FIBitmap <span class="symbol-target" id="convertTo16Bits565">&nbsp;</span><a class="symbol-link" href="#convertTo16Bits565">convertTo16Bits565</a>();
-</h3></div>
-<div class="declaration-content"><dl><p>Converts an image to 16-bits 565.
-</p>
-<dt>Returns</dt><dd>Converted image.</dd>
-</dl>
-</div>
-<hr><div class="row-fluid declaration"><h3>FIBitmap <span class="symbol-target" id="convertTo24Bits">&nbsp;</span><a class="symbol-link" href="#convertTo24Bits">convertTo24Bits</a>();
-</h3></div>
-<div class="declaration-content"><dl><p>Converts an image to 24-bits.
-</p>
-<dt>Returns</dt><dd>Converted image.</dd>
-</dl>
-</div>
-<hr><div class="row-fluid declaration"><h3>FIBitmap <span class="symbol-target" id="convertTo32Bits">&nbsp;</span><a class="symbol-link" href="#convertTo32Bits">convertTo32Bits</a>();
-</h3></div>
-<div class="declaration-content"><dl><p>Converts an image to 32-bits.
-</p>
-<dt>Throws</dt><dd>FreeImageException on error.
+<dt>Throws</dt><dd><span class="inlinecode">SDL2Exception</span> on error.
 
 </dd>
-<dt>Returns</dt><dd>Converted image.</dd>
+<dt>See Also</dt><dd><a href="https://www.libsdl.org/projects/SDL_mixer/docs/SDL_mixer.html#SEC11">https://www.libsdl.org/projects/SDL_mixer/docs/SDL_mixer.html#SEC11</a></dd>
 </dl>
 </div>
-<hr><div class="row-fluid declaration"><h3>FIBitmap <span class="symbol-target" id="convertToType">&nbsp;</span><a class="symbol-link" href="#convertToType">convertToType</a>(FREE_IMAGE_TYPE <i>dstType</i>, bool <i>scaleLinear</i> = true);
+<hr><div class="row-fluid declaration"><h3>int <span class="symbol-target" id="getChannels">&nbsp;</span><a class="symbol-link" href="#getChannels">getChannels</a>();
 </h3></div>
-<div class="declaration-content"><dl><p>Converts an image to another format.
+<div class="declaration-content"><dl><dt>Returns</dt><dd>The number of mixing channels currently allocated.</dd>
+</dl>
+</div>
+<hr><div class="row-fluid declaration"><h3>void <span class="symbol-target" id="setChannels">&nbsp;</span><a class="symbol-link" href="#setChannels">setChannels</a>(int <i>numChannels</i>);
+</h3></div>
+<div class="declaration-content"><dl><p>Sets the number of mixing channels.</p>
+</dl>
+</div>
+<hr><div class="row-fluid declaration"><h3>void <span class="symbol-target" id="pause">&nbsp;</span><a class="symbol-link" href="#pause">pause</a>(int <i>channel</i>);
+</h3></div>
+<div class="declaration-content"><dl><p>Pauses the <i>channel</i>. Passing -1 pauses all channels.</p>
+</dl>
+</div>
+<hr><div class="row-fluid declaration"><h3>void <span class="symbol-target" id="unpause">&nbsp;</span><a class="symbol-link" href="#unpause">unpause</a>(int <i>channel</i>);
+</h3></div>
+<div class="declaration-content"><dl><p>Unpauses the <i>channel</i>. Passing -1 unpauses all channels.</p>
+</dl>
+</div>
+<hr><div class="row-fluid declaration"><h3>bool <span class="symbol-target" id="isPaused">&nbsp;</span><a class="symbol-link" href="#isPaused">isPaused</a>(int <i>channel</i>);
+</h3></div>
+<div class="declaration-content"><dl><dt>Returns</dt><dd>Whether the <i>channel</i> is paused.</dd>
+</dl>
+</div>
+<hr><div class="row-fluid declaration"><h3>void <span class="symbol-target" id="halt">&nbsp;</span><a class="symbol-link" href="#halt">halt</a>(int <i>channel</i>, Duration <i>delay</i> = 0.msecs);
+</h3></div>
+<div class="declaration-content"><dl><p>Clears the <i>channel</i> and pauses it.
 </p>
-<dt>Throws</dt><dd>FreeImageException on error.
-
-</dd>
-<dt>Returns</dt><dd>Converted image.</dd>
+<dt>Parameters</dt><dd><table class="table table-condensed table-bordered"><tr><td>int <i>channel</i></td>
+<td><i>channel</i> to <span class="symbol-target" id="halt">&nbsp;</span><a class="symbol-link" href="#halt">halt</a>. -1 halts all channels.</td></tr>
+<tr><td>Duration <i>delay</i></td>
+<td>time after which to perform the <span class="symbol-target" id="halt">&nbsp;</span><a class="symbol-link" href="#halt">halt</a>.</td></tr>
+</table></dd>
 </dl>
 </div>
-<hr><div class="row-fluid declaration"><h3>FIBitmap <span class="symbol-target" id="convertToFloat">&nbsp;</span><a class="symbol-link" href="#convertToFloat">convertToFloat</a>();
+<hr><div class="row-fluid declaration"><h3>void <span class="symbol-target" id="fade">&nbsp;</span><a class="symbol-link" href="#fade">fade</a>(int <i>channel</i>, Duration <i>time</i>);
 </h3></div>
-<div class="declaration-content"><dl><p>Converts an image to float format.
+<div class="declaration-content"><dl><p>Fades out the <i>channel</i> and then halts it.
 </p>
-<dt>Returns</dt><dd>Converted image.</dd>
+<dt>Parameters</dt><dd><table class="table table-condensed table-bordered"><tr><td>int <i>channel</i></td>
+<td><i>channel</i> to halt. -1 fades all channels.</td></tr>
+<tr><td>Duration <i>time</i></td>
+<td><i>time</i> over which the <i>channel</i> is faded out.</td></tr>
+</table></dd>
 </dl>
 </div>
-<hr><div class="row-fluid declaration"><h3>FIBitmap <span class="symbol-target" id="convertToRGBF">&nbsp;</span><a class="symbol-link" href="#convertToRGBF">convertToRGBF</a>();
+<hr><div class="row-fluid declaration"><h3>Mix_Fading <span class="symbol-target" id="getFading">&nbsp;</span><a class="symbol-link" href="#getFading">getFading</a>(int <i>channel</i>);
 </h3></div>
-<div class="declaration-content"><dl><p>Converts an image to RGBF format.
+<div class="declaration-content"><dl><dt>Returns</dt><dd>Fading status of the <i>channel</i>.</dd>
+</dl>
+</div>
+<hr><div class="row-fluid declaration"><h3>bool <span class="symbol-target" id="isPlaying">&nbsp;</span><a class="symbol-link" href="#isPlaying">isPlaying</a>(int <i>channel</i>);
+</h3></div>
+<div class="declaration-content"><dl><dt>Returns</dt><dd>Whether the <i>channel</i> is currently playing.</dd>
+</dl>
+</div>
+<hr><div class="row-fluid declaration"><h3>int <span class="symbol-target" id="getVolume">&nbsp;</span><a class="symbol-link" href="#getVolume">getVolume</a>(int <i>channel</i>);
+</h3></div>
+<div class="declaration-content"><dl><dt>Returns</dt><dd>The volume of the <i>channel</i>.</dd>
+</dl>
+</div>
+<hr><div class="row-fluid declaration"><h3>void <span class="symbol-target" id="setVolume">&nbsp;</span><a class="symbol-link" href="#setVolume">setVolume</a>(int <i>channel</i>, int <i>volume</i>);
+</h3></div>
+<div class="declaration-content"><dl><p>Sets the <i>volume</i> of the <i>channel</i>. Passing -1 sets <i>volume</i> of all channels.</p>
+</dl>
+</div>
+<hr><div class="row-fluid declaration"><h3>void <span class="symbol-target" id="setPanning">&nbsp;</span><a class="symbol-link" href="#setPanning">setPanning</a>(int <i>channel</i>, ubyte <i>volumeLeft</i>, ubyte <i>volumeRight</i>);
+</h3></div>
+<div class="declaration-content"><dl><p>Sets stereo panning on the <i>channel</i>. The library must have been opened with two output channels.
 </p>
-<dt>Returns</dt><dd>Converted image.</dd>
+<dt>See Also</dt><dd><a href="https://www.libsdl.org/projects/SDL_mixer/docs/SDL_mixer.html#SEC80">https://www.libsdl.org/projects/SDL_mixer/docs/SDL_mixer.html#SEC80</a></dd>
 </dl>
 </div>
-<hr><div class="row-fluid declaration"><h3>FIBitmap <span class="symbol-target" id="convertToUINT16">&nbsp;</span><a class="symbol-link" href="#convertToUINT16">convertToUINT16</a>();
+<hr><div class="row-fluid declaration"><h3>void <span class="symbol-target" id="setDistance">&nbsp;</span><a class="symbol-link" href="#setDistance">setDistance</a>(int <i>channel</i>, ubyte <i>distance</i>);
 </h3></div>
-<div class="declaration-content"><dl><p>Converts an image to UINT16 format.
+<div class="declaration-content"><dl><p>Sets <i>distance</i> from the listener on the <i>channel</i>, used to simulate attenuation.
 </p>
-<dt>Returns</dt><dd>Converted image.</dd>
+<dt>See Also</dt><dd><a href="https://www.libsdl.org/projects/SDL_mixer/docs/SDL_mixer.html#SEC81">https://www.libsdl.org/projects/SDL_mixer/docs/SDL_mixer.html#SEC81</a></dd>
 </dl>
 </div>
-<hr><div class="row-fluid declaration"><h3>FIBitmap <span class="symbol-target" id="convertToRGB16">&nbsp;</span><a class="symbol-link" href="#convertToRGB16">convertToRGB16</a>();
+<hr><div class="row-fluid declaration"><h3>void <span class="symbol-target" id="setPosition">&nbsp;</span><a class="symbol-link" href="#setPosition">setPosition</a>(int <i>channel</i>, short <i>angle</i>, ubyte <i>distance</i>);
 </h3></div>
-<div class="declaration-content"><dl><p>Converts an image to RGB16 format.
+<div class="declaration-content"><dl><p>Set panning and <i>distance</i> on the <i>channel</i> to simulate positional audio.
 </p>
-<dt>Returns</dt><dd>Converted image.</dd>
+<dt>See Also</dt><dd><a href="https://www.libsdl.org/projects/SDL_mixer/docs/SDL_mixer.html#SEC82">https://www.libsdl.org/projects/SDL_mixer/docs/SDL_mixer.html#SEC82</a></dd>
 </dl>
 </div>
-<hr><div class="row-fluid declaration"><h3>FIBitmap <span class="symbol-target" id="clone">&nbsp;</span><a class="symbol-link" href="#clone">clone</a>();
+<hr><div class="row-fluid declaration"><h3>void <span class="symbol-target" id="setReverseStereo">&nbsp;</span><a class="symbol-link" href="#setReverseStereo">setReverseStereo</a>(int <i>channel</i>, bool <i>reverse</i>);
 </h3></div>
-<div class="declaration-content"><dl><p>Clones an image.
+<div class="declaration-content"><dl><p>Sets whether <i>reverse</i> stereo is enabled on the <i>channel</i>.</p>
+</dl>
+</div>
+<hr><div class="row-fluid declaration"><h3>void <span class="symbol-target" id="clearEffects">&nbsp;</span><a class="symbol-link" href="#clearEffects">clearEffects</a>(int <i>channel</i>);
+</h3></div>
+<div class="declaration-content"><dl><p>Clears all effects from the <i>channel</i>.</p>
+</dl>
+</div>
+</div>
+</div>
+<hr><div class="row-fluid declaration"><h3>class <span class="symbol-target" id="SDLSample">&nbsp;</span><a class="symbol-link" href="#SDLSample">SDLSample</a>;
+</h3></div>
+<div class="declaration-content"><dl><p>SDL_mixer audio chunk wrapper.</p>
+</dl>
+<div class="offset1 member-list"><hr><div class="row-fluid declaration"><h3>this(SDLMixer <i>sdlmixer</i>, string <i>filename</i>);
+</h3></div>
+<div class="declaration-content"><dl><p>Loads a sample from a file.
 </p>
-<dt>Returns</dt><dd>Cloned image.</dd>
+<dt>Parameters</dt><dd><table class="table table-condensed table-bordered"><tr><td>SDLMixer <i>sdlmixer</i></td>
+<td>library object.</td></tr>
+<tr><td>string <i>filename</i></td>
+<td>path to the audio sample.</td></tr>
+</table></dd>
+<dt>Throws</dt><dd><span class="inlinecode">SDL2Exception</span> on error.</dd>
 </dl>
 </div>
-<hr><div class="row-fluid declaration"><h3>FIBitmap <span class="symbol-target" id="colorQuantize">&nbsp;</span><a class="symbol-link" href="#colorQuantize">colorQuantize</a>(FREE_IMAGE_QUANTIZE <i>quantize</i>);
+<hr><div class="row-fluid declaration"><h3>Mix_Chunk* <span class="symbol-target" id="handle">&nbsp;</span><a class="symbol-link" href="#handle">handle</a>();
 </h3></div>
-<div class="declaration-content"><dl><p>Applies color quantization.</p>
+<div class="declaration-content"><dl><dt>Returns</dt><dd>SDL <span class="symbol-target" id="handle">&nbsp;</span><a class="symbol-link" href="#handle">handle</a>.</dd>
 </dl>
 </div>
-<hr><div class="row-fluid declaration"><h3>FIBitmap <span class="symbol-target" id="toneMapDrago03">&nbsp;</span><a class="symbol-link" href="#toneMapDrago03">toneMapDrago03</a>(double <i>gamma</i> = 2.2, double <i>exposure</i> = 0.000000);
+<hr><div class="row-fluid declaration"><h3>int <span class="symbol-target" id="play">&nbsp;</span><a class="symbol-link" href="#play">play</a>(int <i>channel</i>, int <i>loops</i> = 0, Duration <i>fadeInTime</i> = 0.seconds);
 </h3></div>
-<div class="declaration-content"><dl><p>Applies tone-mapping operator.</p>
-</dl>
-</div>
-<hr><div class="row-fluid declaration"><h3>FIBitmap <span class="symbol-target" id="rescale">&nbsp;</span><a class="symbol-link" href="#rescale">rescale</a>(int <i>dstWidth</i>, int <i>dstHeight</i>, FREE_IMAGE_FILTER <i>filter</i>);
-</h3></div>
-<div class="declaration-content"><dl><p>Rescales the image.</p>
-</dl>
-</div>
-<hr><div class="row-fluid declaration"><h3>void <span class="symbol-target" id="horizontalFlip">&nbsp;</span><a class="symbol-link" href="#horizontalFlip">horizontalFlip</a>();
-</h3></div>
-<div class="declaration-content"><dl><p>Flips the image vertically.
+<div class="declaration-content"><dl><p>Plays this sample.
 </p>
-<dt>Throws</dt><dd>FreeImageException on error.</dd>
+<dt>Parameters</dt><dd><table class="table table-condensed table-bordered"><tr><td>int <i>channel</i></td>
+<td><i>channel</i> to <span class="symbol-target" id="play">&nbsp;</span><a class="symbol-link" href="#play">play</a> on. -1 plays on first inactive <i>channel</i>.</td></tr>
+<tr><td>int <i>loops</i></td>
+<td>number of times to loop this sample.</td></tr>
+<tr><td>Duration <i>fadeInTime</i></td>
+<td>time over which this sample is faded in.</td></tr>
+</table></dd>
+<dt>Returns</dt><dd><i>channel</i> the sample is now playing on.</dd>
 </dl>
 </div>
-<hr><div class="row-fluid declaration"><h3>void <span class="symbol-target" id="verticalFlip">&nbsp;</span><a class="symbol-link" href="#verticalFlip">verticalFlip</a>();
+<hr><div class="row-fluid declaration"><h3>int <span class="symbol-target" id="playTimed">&nbsp;</span><a class="symbol-link" href="#playTimed">playTimed</a>(int <i>channel</i>, Duration <i>timeLimit</i>, int <i>loops</i> = 0, Duration <i>fadeInTime</i> = 0.seconds);
 </h3></div>
-<div class="declaration-content"><dl><p>Flips the image horizontally.
+<div class="declaration-content"><dl><p>Plays this sample only within a certain time limit.
 </p>
-<dt>Throws</dt><dd>FreeImageException on error.</dd>
+<dt>Parameters</dt><dd><table class="table table-condensed table-bordered"><tr><td>int <i>channel</i></td>
+<td><i>channel</i> to play on. -1 plays on first inactive <i>channel</i>.</td></tr>
+<tr><td>Duration <i>timeLimit</i></td>
+<td>time after which the sample stops playing.</td></tr>
+<tr><td>int <i>loops</i></td>
+<td>number of times to loop this sample.</td></tr>
+<tr><td>Duration <i>fadeInTime</i></td>
+<td>time over which this sample is faded in.</td></tr>
+</table></dd>
+<dt>Returns</dt><dd><i>channel</i> the sample is now playing on.</dd>
 </dl>
 </div>
-<hr><div class="row-fluid declaration"><h3>FIBitmap <span class="symbol-target" id="rotate">&nbsp;</span><a class="symbol-link" href="#rotate">rotate</a>(double <i>angle</i>, void* <i>bkColor</i> = null);
+<hr><div class="row-fluid declaration"><h3>int <span class="symbol-target" id="getVolume">&nbsp;</span><a class="symbol-link" href="#getVolume">getVolume</a>();
 </h3></div>
-<div class="declaration-content"><dl><p>Rotates the image.
-</p>
-<dt>Returns</dt><dd>Rotated image.</dd>
+<div class="declaration-content"><dl><dt>Returns</dt><dd>The volume this sample plays at.</dd>
+</dl>
+</div>
+<hr><div class="row-fluid declaration"><h3>void <span class="symbol-target" id="setVolume">&nbsp;</span><a class="symbol-link" href="#setVolume">setVolume</a>(int <i>volume</i>);
+</h3></div>
+<div class="declaration-content"><dl><p>Sets the <i>volume</i> this sample plays at.</p>
 </dl>
 </div>
 </div>
