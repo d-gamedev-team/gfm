@@ -2,7 +2,7 @@
 <html lang="en">
 	<head>
 	<meta charset="utf-8">
-	<title>gfm.freeimage.fibitmap - gfm documentation</title>
+	<title>gfm.integers.half - gfm documentation</title>
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<meta name="description" content="">
 	<meta name="author" content="">
@@ -34,7 +34,7 @@
 	
 	<!-- Introduce DDoc settings required by JavaScript -->
 	<script type="text/javascript">
-		var Title = 'gfm.freeimage.fibitmap';
+		var Title = 'gfm.integers.half';
 		var SourceRepository = 'http://github.com/p0nce/gfm/tree/master';
 		var PackageSeparator = '.';
 	</script>
@@ -125,7 +125,7 @@
 					</ul>
 					
 					<form id="gotosymbol" class="navbar-search pull-left hidden">
-						<input type="text" class="search-query" placeholder="Go to symbol in gfm.freeimage.fibitmap" data-provide="typeahead" data-items="4">
+						<input type="text" class="search-query" placeholder="Go to symbol in gfm.integers.half" data-provide="typeahead" data-items="4">
 					</form>
 					
 					<p class="navbar-text pull-right"><a href="https://github.com/p0nce/gfm">Github Page</a></p>
@@ -193,7 +193,7 @@
 
     <li class="sidebar-list-entry tree-leaf"><a href="gfm.logger.log.html" title="gfm.logger.log"><i class="icon-th"></i>gfm.logger.log</a></li>
 					</noscript>
-					<li id="symbol-list" class="nav-header sidebar-list-entry hidden">gfm.freeimage.fibitmap</li>
+					<li id="symbol-list" class="nav-header sidebar-list-entry hidden">gfm.integers.half</li>
 				</ul>
 				</div><!--/.well -->
 			</div><!--/span-->
@@ -202,7 +202,7 @@
 				<div class="row-fluid">
 					<div class="span11">
 						<ul id="module-breadcrumb" class="breadcrumb">
-							<noscript><h1>gfm.freeimage.fibitmap</h1></noscript>
+							<noscript><h1>gfm.integers.half</h1></noscript>
 						</ul>
 						
 					</div>
@@ -212,217 +212,59 @@
 				</div>
 				<div id="declaration-list">
 					<br><br>
-<hr><div class="row-fluid declaration"><h3>class <span class="symbol-target" id="FIBitmap">&nbsp;</span><a class="symbol-link" href="#FIBitmap">FIBitmap</a>;
+<hr><div class="row-fluid declaration"><h3>struct <span class="symbol-target" id="half">&nbsp;</span><a class="symbol-link" href="#half">half</a>;
 </h3></div>
-<div class="declaration-content"><dl><p>FreeImage bitmap wrapper.</p>
-</dl>
-<div class="offset1 member-list"><hr><div class="row-fluid declaration"><h3>this(FreeImage <i>lib</i>, string <i>filename</i>, int <i>flags</i> = 0);
-</h3></div>
-<div class="declaration-content"><dl><p>Load an image from file.
+<div class="declaration-content"><dl><p>16-bits floating point type (Half).
+  Implements conversion from ftp://www.fox-toolkit.org/pub/fasthalffloatconversion.pdf
+  by Jeroen van der Zijp.
 </p>
-<dt>Throws</dt><dd>FreeImage on error.</dd>
-</dl>
-</div>
-<hr><div class="row-fluid declaration"><h3>this(FreeImage <i>lib</i>, FIBITMAP* <i>bitmap</i>);
-</h3></div>
-<div class="declaration-content"><dl><p>Loads from existing <i>bitmap</i> handle.
-</p>
-<dt>Throws</dt><dd>FreeImage on error.</dd>
-</dl>
-</div>
-<hr><div class="row-fluid declaration"><h3>this(FreeImage <i>lib</i>, ubyte* <i>data</i>, int <i>width</i>, int <i>height</i>, int <i>pitch</i>, uint <i>bpp</i>, uint <i>redMask</i>, uint <i>blueMask</i>, uint <i>greenMask</i>, bool <i>topDown</i> = false);
-</h3></div>
-<div class="declaration-content"><dl><p>Creates an image from from existing memory <i>data</i>.
-</p>
-<dt>Throws</dt><dd>FreeImage on error.</dd>
-</dl>
-</div>
-<hr><div class="row-fluid declaration"><h3>void <span class="symbol-target" id="save">&nbsp;</span><a class="symbol-link" href="#save">save</a>(string <i>filename</i>, int <i>flags</i> = 0);
-</h3></div>
-<div class="declaration-content"><dl><p>Saves an image to a file.
-</p>
-<dt>Throws</dt><dd>FreeImage on error.</dd>
-</dl>
-</div>
-<hr><div class="row-fluid declaration"><h3>uint <span class="symbol-target" id="width">&nbsp;</span><a class="symbol-link" href="#width">width</a>();
-</h3></div>
-<div class="declaration-content"><dl><dt>Returns</dt><dd>Width of the image.</dd>
-</dl>
-</div>
-<hr><div class="row-fluid declaration"><h3>uint <span class="symbol-target" id="height">&nbsp;</span><a class="symbol-link" href="#height">height</a>();
-</h3></div>
-<div class="declaration-content"><dl><dt>Returns</dt><dd>Height of the image.</dd>
-</dl>
-</div>
-<hr><div class="row-fluid declaration"><h3>uint <span class="symbol-target" id="redMask">&nbsp;</span><a class="symbol-link" href="#redMask">redMask</a>();
-</h3></div>
-<div class="declaration-content"><dl><dt>Returns</dt><dd>Red channel bit mask.</dd>
-</dl>
-</div>
-<hr><div class="row-fluid declaration"><h3>uint <span class="symbol-target" id="greenMask">&nbsp;</span><a class="symbol-link" href="#greenMask">greenMask</a>();
-</h3></div>
-<div class="declaration-content"><dl><dt>Returns</dt><dd>Green channel bit mask.</dd>
-</dl>
-</div>
-<hr><div class="row-fluid declaration"><h3>uint <span class="symbol-target" id="blueMask">&nbsp;</span><a class="symbol-link" href="#blueMask">blueMask</a>();
-</h3></div>
-<div class="declaration-content"><dl><dt>Returns</dt><dd>Blue channel bit mask.</dd>
-</dl>
-</div>
-<hr><div class="row-fluid declaration"><h3>uint <span class="symbol-target" id="BPP">&nbsp;</span><a class="symbol-link" href="#BPP">BPP</a>();
-</h3></div>
-<div class="declaration-content"><dl><dt>Returns</dt><dd>Bits per pixels.</dd>
-</dl>
-</div>
-<hr><div class="row-fluid declaration"><h3>void* <span class="symbol-target" id="data">&nbsp;</span><a class="symbol-link" href="#data">data</a>();
-</h3></div>
-<div class="declaration-content"><dl><dt>Returns</dt><dd>A pointer to pixels <span class="symbol-target" id="data">&nbsp;</span><a class="symbol-link" href="#data">data</a>.</dd>
-</dl>
-</div>
-<hr><div class="row-fluid declaration"><h3>uint <span class="symbol-target" id="pitch">&nbsp;</span><a class="symbol-link" href="#pitch">pitch</a>();
-</h3></div>
-<div class="declaration-content"><dl><dt>Returns</dt><dd>Pitch between scanlines in bytes.</dd>
-</dl>
-</div>
-<hr><div class="row-fluid declaration"><h3>void* <span class="symbol-target" id="scanLine">&nbsp;</span><a class="symbol-link" href="#scanLine">scanLine</a>(int <i>y</i>);
-</h3></div>
-<div class="declaration-content"><dl><dt>Returns</dt><dd>A pointer to scanline <i>y</i>.</dd>
-</dl>
-</div>
-<hr><div class="row-fluid declaration"><h3>FIBitmap <span class="symbol-target" id="convertTo4Bits">&nbsp;</span><a class="symbol-link" href="#convertTo4Bits">convertTo4Bits</a>();
-</h3></div>
-<div class="declaration-content"><dl><p>Converts an image to 4-bits.
-</p>
-<dt>Returns</dt><dd>Converted image.</dd>
-</dl>
-</div>
-<hr><div class="row-fluid declaration"><h3>FIBitmap <span class="symbol-target" id="convertTo8Bits">&nbsp;</span><a class="symbol-link" href="#convertTo8Bits">convertTo8Bits</a>();
-</h3></div>
-<div class="declaration-content"><dl><p>Converts an image to 8-bits.
-</p>
-<dt>Returns</dt><dd>Converted image.</dd>
-</dl>
-</div>
-<hr><div class="row-fluid declaration"><h3>FIBitmap <span class="symbol-target" id="convertToGreyscale">&nbsp;</span><a class="symbol-link" href="#convertToGreyscale">convertToGreyscale</a>();
-</h3></div>
-<div class="declaration-content"><dl><p>Converts an image to greyscale.
-</p>
-<dt>Returns</dt><dd>Converted image.</dd>
-</dl>
-</div>
-<hr><div class="row-fluid declaration"><h3>FIBitmap <span class="symbol-target" id="convertTo16Bits555">&nbsp;</span><a class="symbol-link" href="#convertTo16Bits555">convertTo16Bits555</a>();
-</h3></div>
-<div class="declaration-content"><dl><p>Converts an image to 16-bits 555.
-</p>
-<dt>Returns</dt><dd>Converted image.</dd>
-</dl>
-</div>
-<hr><div class="row-fluid declaration"><h3>FIBitmap <span class="symbol-target" id="convertTo16Bits565">&nbsp;</span><a class="symbol-link" href="#convertTo16Bits565">convertTo16Bits565</a>();
-</h3></div>
-<div class="declaration-content"><dl><p>Converts an image to 16-bits 565.
-</p>
-<dt>Returns</dt><dd>Converted image.</dd>
-</dl>
-</div>
-<hr><div class="row-fluid declaration"><h3>FIBitmap <span class="symbol-target" id="convertTo24Bits">&nbsp;</span><a class="symbol-link" href="#convertTo24Bits">convertTo24Bits</a>();
-</h3></div>
-<div class="declaration-content"><dl><p>Converts an image to 24-bits.
-</p>
-<dt>Returns</dt><dd>Converted image.</dd>
-</dl>
-</div>
-<hr><div class="row-fluid declaration"><h3>FIBitmap <span class="symbol-target" id="convertTo32Bits">&nbsp;</span><a class="symbol-link" href="#convertTo32Bits">convertTo32Bits</a>();
-</h3></div>
-<div class="declaration-content"><dl><p>Converts an image to 32-bits.
-</p>
-<dt>Throws</dt><dd>FreeImageException on error.
+<p>Supports builtin operations that float support, but computations are performed in 32-bits
+  float and converted back.
 
-</dd>
-<dt>Returns</dt><dd>Converted image.</dd>
-</dl>
-</div>
-<hr><div class="row-fluid declaration"><h3>FIBitmap <span class="symbol-target" id="convertToType">&nbsp;</span><a class="symbol-link" href="#convertToType">convertToType</a>(FREE_IMAGE_TYPE <i>dstType</i>, bool <i>scaleLinear</i> = true);
-</h3></div>
-<div class="declaration-content"><dl><p>Converts an image to another format.
 </p>
-<dt>Throws</dt><dd>FreeImageException on error.
-
-</dd>
-<dt>Returns</dt><dd>Converted image.</dd>
+<dt>Known Bugs</dt><dd>rounding is not IEEE compliant.</dd>
 </dl>
-</div>
-<hr><div class="row-fluid declaration"><h3>FIBitmap <span class="symbol-target" id="convertToFloat">&nbsp;</span><a class="symbol-link" href="#convertToFloat">convertToFloat</a>();
+<div class="offset1 member-list"><hr><div class="row-fluid declaration"><h3>pure nothrow @nogc this(float <i>n</i>);
 </h3></div>
-<div class="declaration-content"><dl><p>Converts an image to float format.
-</p>
-<dt>Returns</dt><dd>Converted image.</dd>
+<div class="declaration-content"><dl><p>Construct a half from a float.</p>
 </dl>
 </div>
-<hr><div class="row-fluid declaration"><h3>FIBitmap <span class="symbol-target" id="convertToRGBF">&nbsp;</span><a class="symbol-link" href="#convertToRGBF">convertToRGBF</a>();
+<hr><div class="row-fluid declaration"><h3>pure nothrow @nogc this(half <i>h</i>);
 </h3></div>
-<div class="declaration-content"><dl><p>Converts an image to RGBF format.
-</p>
-<dt>Returns</dt><dd>Converted image.</dd>
+<div class="declaration-content"><dl><p>Construct a half from another half.</p>
 </dl>
 </div>
-<hr><div class="row-fluid declaration"><h3>FIBitmap <span class="symbol-target" id="convertToUINT16">&nbsp;</span><a class="symbol-link" href="#convertToUINT16">convertToUINT16</a>();
+<hr><div class="row-fluid declaration"><h3>const string <span class="symbol-target" id="toString">&nbsp;</span><a class="symbol-link" href="#toString">toString</a>();
 </h3></div>
-<div class="declaration-content"><dl><p>Converts an image to UINT16 format.
-</p>
-<dt>Returns</dt><dd>Converted image.</dd>
+<div class="declaration-content"><dl><p>Converts to a pretty string.</p>
 </dl>
 </div>
-<hr><div class="row-fluid declaration"><h3>FIBitmap <span class="symbol-target" id="convertToRGB16">&nbsp;</span><a class="symbol-link" href="#convertToRGB16">convertToRGB16</a>();
+<hr><div class="row-fluid declaration"><h3>const pure nothrow @nogc float <span class="symbol-target" id="toFloat">&nbsp;</span><a class="symbol-link" href="#toFloat">toFloat</a>();
 </h3></div>
-<div class="declaration-content"><dl><p>Converts an image to RGB16 format.
-</p>
-<dt>Returns</dt><dd>Converted image.</dd>
+<div class="declaration-content"><dl><p>Converts to a float.</p>
 </dl>
 </div>
-<hr><div class="row-fluid declaration"><h3>FIBitmap <span class="symbol-target" id="clone">&nbsp;</span><a class="symbol-link" href="#clone">clone</a>();
+<hr><div class="row-fluid declaration"><h3>pure nothrow @nogc ref half <span class="symbol-target" id="opAssign">&nbsp;</span><a class="symbol-link" href="#opAssign">opAssign</a>(T)(T <i>other</i>) if (is(T : float));
 </h3></div>
-<div class="declaration-content"><dl><p>Clones an image.
-</p>
-<dt>Returns</dt><dd>Cloned image.</dd>
+<div class="declaration-content"><dl><p>Assign with float.</p>
 </dl>
 </div>
-<hr><div class="row-fluid declaration"><h3>FIBitmap <span class="symbol-target" id="colorQuantize">&nbsp;</span><a class="symbol-link" href="#colorQuantize">colorQuantize</a>(FREE_IMAGE_QUANTIZE <i>quantize</i>);
+<hr><div class="row-fluid declaration"><h3>pure nothrow @nogc ref half <span class="symbol-target" id="opAssign">&nbsp;</span><a class="symbol-link" href="#opAssign">opAssign</a>(T)(T <i>other</i>) if (is(Unqual!T == half));
 </h3></div>
-<div class="declaration-content"><dl><p>Applies color quantization.</p>
+<div class="declaration-content"><dl><p>Assign with another half.</p>
 </dl>
 </div>
-<hr><div class="row-fluid declaration"><h3>FIBitmap <span class="symbol-target" id="toneMapDrago03">&nbsp;</span><a class="symbol-link" href="#toneMapDrago03">toneMapDrago03</a>(double <i>gamma</i> = 2.2, double <i>exposure</i> = 0.000000);
+</div>
+</div>
+<hr><div class="row-fluid declaration"><h3>pure nothrow @nogc ushort <span class="symbol-target" id="floatToHalf">&nbsp;</span><a class="symbol-link" href="#floatToHalf">floatToHalf</a>(float <i>f</i>);
 </h3></div>
-<div class="declaration-content"><dl><p>Applies tone-mapping operator.</p>
+<div class="declaration-content"><dl><p>Converts from float to half.</p>
 </dl>
 </div>
-<hr><div class="row-fluid declaration"><h3>FIBitmap <span class="symbol-target" id="rescale">&nbsp;</span><a class="symbol-link" href="#rescale">rescale</a>(int <i>dstWidth</i>, int <i>dstHeight</i>, FREE_IMAGE_FILTER <i>filter</i>);
+<hr><div class="row-fluid declaration"><h3>pure nothrow @nogc float <span class="symbol-target" id="halfToFloat">&nbsp;</span><a class="symbol-link" href="#halfToFloat">halfToFloat</a>(ushort <i>h</i>);
 </h3></div>
-<div class="declaration-content"><dl><p>Rescales the image.</p>
+<div class="declaration-content"><dl><p>Converts from half to float.</p>
 </dl>
-</div>
-<hr><div class="row-fluid declaration"><h3>void <span class="symbol-target" id="horizontalFlip">&nbsp;</span><a class="symbol-link" href="#horizontalFlip">horizontalFlip</a>();
-</h3></div>
-<div class="declaration-content"><dl><p>Flips the image vertically.
-</p>
-<dt>Throws</dt><dd>FreeImageException on error.</dd>
-</dl>
-</div>
-<hr><div class="row-fluid declaration"><h3>void <span class="symbol-target" id="verticalFlip">&nbsp;</span><a class="symbol-link" href="#verticalFlip">verticalFlip</a>();
-</h3></div>
-<div class="declaration-content"><dl><p>Flips the image horizontally.
-</p>
-<dt>Throws</dt><dd>FreeImageException on error.</dd>
-</dl>
-</div>
-<hr><div class="row-fluid declaration"><h3>FIBitmap <span class="symbol-target" id="rotate">&nbsp;</span><a class="symbol-link" href="#rotate">rotate</a>(double <i>angle</i>, void* <i>bkColor</i> = null);
-</h3></div>
-<div class="declaration-content"><dl><p>Rotates the image.
-</p>
-<dt>Returns</dt><dd>Rotated image.</dd>
-</dl>
-</div>
-</div>
 </div>
 
 
