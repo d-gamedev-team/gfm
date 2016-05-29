@@ -60,6 +60,16 @@ function qualifiedModuleNameToUrl(modName) {
 }
 
 /**
+ * Returns a module name corresponding to the filesystem structure.
+ * May differ from module <name>; decl in the module, for example for package.d modules.
+ */
+function currentModuleFilesystemBasedName() {
+	var url = window.location.pathname;
+	var filename = url.substring(url.lastIndexOf('/')+1);
+	return filename.substring(0, filename.lastIndexOf('.'));
+}
+
+/**
  * Create the module list in the sidebar.
  */
 function populateModuleList(modTree) {
@@ -78,6 +88,7 @@ function populateModuleList(modTree) {
 	var $listHeader = $('#module-list');
 
 	function traverser(node, $parentList) {
+		var currentModuleName = currentModuleFilesystemBasedName();
 		for(var name in node.members) {
 			var member = node.members[name];
 
@@ -97,7 +108,7 @@ function populateModuleList(modTree) {
 				var $elem = $(treeModuleNode(name, url));
 				$parentList.append($elem);
 
-				if(member.qualifiedName == Title) { // Current module.
+				if(member.qualifiedName == currentModuleName) {
 					$elem.find('a').append(' <i class="icon-asterisk"></i>');
 
 					var $up = $parentList;
@@ -132,13 +143,7 @@ function updateBreadcrumb(qualifiedName, sourceRepoUrl) {
 		var part = parts[i];
 
 		if(i == parts.length - 1) {
-			var modulePath = moduleNameToPath(qualifiedName);
-			var sourceUrl;
-			if (parts.length > 1) {
-				sourceUrl = sourceRepoUrl + '/' + parts[1] + '/' + modulePath;
-			} else {
-				sourceUrl = sourceRepoUrl + '/' + modulePath;
-			}
+			var sourceUrl = sourceRepoUrl + '/' + moduleNameToPath(currentModuleFilesystemBasedName());
 			$breadcrumb.append('<li class="active"><h2>' + part + ' <a href="' + sourceUrl + '"><small>view source</small></a></h2></li>');
 		} else {
 			$breadcrumb.append('<li><h2>' + part + '<span class="divider">/</span></h2></li>');
