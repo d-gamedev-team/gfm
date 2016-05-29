@@ -8,7 +8,8 @@ public
 
     import derelict.sdl2.sdl,
            derelict.sdl2.image,
-           derelict.sdl2.ttf;
+           derelict.sdl2.ttf,
+           derelict.sdl2.mixer;
 
     import gfm.sdl2.sdl,
            gfm.sdl2.surface,
@@ -19,5 +20,6 @@ public
            gfm.sdl2.sdlttf,
            gfm.sdl2.mouse,
            gfm.sdl2.timer,
-           gfm.sdl2.sdlimage;
+           gfm.sdl2.sdlimage,
+           gfm.sdl2.sdlmixer;
 }
