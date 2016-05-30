@@ -1,6 +1,6 @@
 {
     "name": "gfm",
-    "description": "D gamedev toolkit. 3D maths, 128-bit integers, OpenGL/SDL/FreeImage/Assimp/ENet wrapper, stb_image port.",
+    "description": "D gamedev toolkit. 3D maths, 128-bit integers, OpenGL/SDL/FreeImage/Assimp wrapper, coloured logger",
     "homepage": "http://github.com/d-gamedev-team/gfm/",
     "copyright": "none",
     "license": "public domain",
@@ -9,6 +9,7 @@
         "Daniele Bondi / maeriden: Euler angles fix",
         "Francesco Cattoglio: OpenGL wrapper improvements",
         "John D. Cook: original SimpleRNG author",
+        "Steven Dwy / Yoplitein: sdl_mixer wrapper, documentation improvements",
         "Daniel Cousens / RommelVR: GL fix",
         "Gerbrand Kamphuis / vuaru: many fixes",
         "Kyle Hunter / Kelet: ENet wrapper",
