@@ -334,9 +334,9 @@ void debugBreak() nothrow @nogc
 {
     version( AsmX86 )
     {
-        asm nothrow @nogc 
+        asm nothrow @nogc
         {
-            int 3; 
+            int 3;
         }
     }
     else version( GNU )
@@ -386,6 +386,17 @@ unittest
     void aThirdFunction() @nogc
     {
         assumeNoGC( () { funcThatDoesGC(); } )();
+    }
+}
+
+/// Stresses the GC for a collect to occur, can be useful to reproduce bugs
+void stressGC() pure nothrow
+{
+    class A { }
+    A[] a;
+    for (int i = 0; i < 1000; ++i)
+    {
+        a ~= new A;
     }
 }
 
