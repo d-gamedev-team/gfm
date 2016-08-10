@@ -248,6 +248,9 @@ auto mallocEmplace(T, Args...)(Args args)
     if (!rawMemory)
         onOutOfMemoryError();
 
+    static if (hasIndirections!T)
+        GC.addRange(rawMemory, allocSize);
+
     static if (is(T == class))
     {
         T obj = emplace!T(rawMemory[0 .. allocSize], args);
@@ -258,9 +261,6 @@ auto mallocEmplace(T, Args...)(Args args)
         emplace!T(obj, args);
     }
 
-    static if (hasIndirections!T)
-        GC.addRange(rawMemory, allocSize);
-
     return obj;
 }
 
@@ -269,7 +269,7 @@ void destroyFree(T)(T p) if (is(T == class))
 {
     if (p !is null)
     {
-        destroy(p);
+        .destroy(p);
 
         static if (hasIndirections!T)
             GC.removeRange(cast(void*)p);
@@ -283,7 +283,7 @@ void destroyFree(T)(T* p) if (!is(T == class))
 {
     if (p !is null)
     {
-        destroy(p);
+        .destroy(p);
 
         static if (hasIndirections!T)
             GC.removeRange(cast(void*)p);
