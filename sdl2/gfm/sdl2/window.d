@@ -127,6 +127,30 @@ final class SDL2Window
             SDL_SetWindowSize(_window, width, height);
         }
 
+        final SDL_Point getMinimumSize()
+        {
+            SDL_Point p;
+            SDL_GetWindowMinimumSize(_window, &p.x, &p.y);
+            return p;
+        }
+
+        final void setMinimumSize(int width, int height)
+        {
+            SDL_SetWindowMinimumSize(_window, width, height);
+        }
+
+        final SDL_Point getMaximumSize()
+        {
+            SDL_Point p;
+            SDL_GetWindowMaximumSize(_window, &p.x, &p.y);
+            return p;
+        }
+
+        final void setMaximumSize(int width, int height)
+        {
+            SDL_SetWindowMaximumSize(_window, width, height);
+        }
+
         /// See_also: $(LINK http://wiki.libsdl.org/SDL_GetWindowSize)
         /// Returns: Window size in pixels.
         final SDL_Point getSize()
