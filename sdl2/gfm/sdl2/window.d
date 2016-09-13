@@ -106,6 +106,16 @@ final class SDL2Window
             return getPosition().y;
         }
 
+        /// Gets information about the window's display mode
+        /// See_also: $(LINK https://wiki.libsdl.org/SDL_GetWindowDisplayMode)
+        final SDL_DisplayMode getWindowDisplayMode()
+        {
+            SDL_DisplayMode mode;
+            if (0 != SDL_GetWindowDisplayMode(_window, &mode))
+                _sdl2.throwSDL2Exception("SDL_GetWindowDisplayMode");
+            return mode;
+        }
+
         /// Returns: Window coordinates.
         /// See_also: $(LINK http://wiki.libsdl.org/SDL_GetWindowPosition)
         final SDL_Point getPosition()
@@ -125,6 +135,38 @@ final class SDL2Window
         final void setSize(int width, int height)
         {
             SDL_SetWindowSize(_window, width, height);
+        }
+
+        /// Get the minimum size setting for the window
+        /// See_also: $(LINK https://wiki.libsdl.org/SDL_GetWindowMinimumSize)
+        final SDL_Point getMinimumSize()
+        {
+            SDL_Point p;
+            SDL_GetWindowMinimumSize(_window, &p.x, &p.y);
+            return p;
+        }
+
+        /// Get the minimum size setting for the window
+        /// See_also: $(LINK https://wiki.libsdl.org/SDL_SetWindowMinimumSize)
+        final void setMinimumSize(int width, int height)
+        {
+            SDL_SetWindowMinimumSize(_window, width, height);
+        }
+
+        /// Get the minimum size setting for the window
+        /// See_also: $(LINK https://wiki.libsdl.org/SDL_GetWindowMaximumSize)
+        final SDL_Point getMaximumSize()
+        {
+            SDL_Point p;
+            SDL_GetWindowMaximumSize(_window, &p.x, &p.y);
+            return p;
+        }
+
+        /// Get the minimum size setting for the window
+        /// See_also: $(LINK https://wiki.libsdl.org/SDL_SetWindowMaximumSize)
+        final void setMaximumSize(int width, int height)
+        {
+            SDL_SetWindowMaximumSize(_window, width, height);
         }
 
         /// See_also: $(LINK http://wiki.libsdl.org/SDL_GetWindowSize)

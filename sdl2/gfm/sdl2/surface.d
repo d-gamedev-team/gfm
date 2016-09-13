@@ -162,6 +162,24 @@ final class SDL2Surface
             return RGBA(r, g, b, a);
         }
 
+        /// Enable the key color as the transparent key.
+        /// See_also: $(LINK https://wiki.libsdl.org/SDL_SetColorKey)
+        /// Throws: $(D SDL2Exception) on error.
+        void setColorKey(bool enable, uint key)
+        {
+            if (0 != SDL_SetColorKey(this._surface, enable ? SDL_TRUE : SDL_FALSE, key))
+                _sdl2.throwSDL2Exception("SDL_SetColorKey");
+        }
+
+        /// Enable the (r, g, b, a) key color as the transparent key.
+        /// See_also: $(LINK https://wiki.libsdl.org/SDL_SetColorKey) $(https://wiki.libsdl.org/SDL_MapRGBA)
+        /// Throws: $(D SDL2Exception) on error.
+        void setColorKey(bool enable, ubyte r, ubyte g, ubyte b, ubyte a = 0)
+        {
+            uint key = SDL_MapRGBA(cast(const)this._surface.format, r, g, b, a);
+            this.setColorKey(enable, key);
+        }
+
         /// Perform a fast surface copy of given source surface to this destination surface.
         /// See_also: $(LINK http://wiki.libsdl.org/SDL_BlitSurface)
         /// Throws: $(D SDL2Exception) on error.
