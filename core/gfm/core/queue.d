@@ -23,7 +23,7 @@ private enum OverflowPolicy
         Doesn't call struct destructors, don't scan memory.
         You should probably only put POD types in them.
  */
-final class QueueImpl(T, OverflowPolicy overflowPolicy)
+deprecated("Use emsi_containers instead") final class QueueImpl(T, OverflowPolicy overflowPolicy)
 {
     public
     {
@@ -274,36 +274,6 @@ final class QueueImpl(T, OverflowPolicy overflowPolicy)
 }
 
 static assert (isRandomAccessRange!(Queue!int.Range));
-
-unittest
-{
-    // fifo
-    {
-        int N = 7;
-        auto fifo = new Queue!int(N);
-        foreach(n; 0..N)
-            fifo.pushBack(n);
-
-        assert(fifo.back() == N - 1);
-        assert(fifo.front() == 0);
-
-        foreach(n; 0..N)
-        {
-            assert(fifo.popFront() == n);
-        }
-    }
-
-    // stack
-    {
-        int N = 7;
-        auto fifo = new Queue!int(N);
-        foreach(n; 0..N)
-            fifo.pushBack(n);
-
-        foreach(n; 0..N)
-            assert(fifo.popBack() == N - 1 - n);
-    }
-}
 
 
 /**
