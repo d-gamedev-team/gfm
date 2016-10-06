@@ -338,7 +338,16 @@ struct Matrix(T, int R, int C)
             return cast(U)(m3);
         }
 
-        /// Matrix inversion is provided for 2x2, 3x3 and 4x4 floating point matrices.
+        /// Matrix inversion is provided for 1x1, 2x2, 3x3 and 4x4 floating point matrices.
+
+        static if (isSquare && isFloatingPoint!T && R == 1)
+        {
+            /// Returns: inverse of matrix.
+            @nogc Matrix inverse() pure const nothrow
+            {
+                return Matrix( 1 / c[0][0]);
+            }
+        }
 
         static if (isSquare && isFloatingPoint!T && R == 2)
         {
