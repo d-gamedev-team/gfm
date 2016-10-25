@@ -15,6 +15,7 @@ public
            gfm.sdl2.surface,
            gfm.sdl2.window,
            gfm.sdl2.keyboard,
+           gfm.sdl2.joystick,
            gfm.sdl2.renderer,
            gfm.sdl2.texture,
            gfm.sdl2.sdlttf,
