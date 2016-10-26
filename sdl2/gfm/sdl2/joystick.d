@@ -10,6 +10,7 @@ import gfm.sdl2.sdl;
 final class SDLJoystick
 {
     private SDL_Joystick *_joystick = null;
+    private SDL2 _sdl = null;
 
     public static int joystickCount()
     {
@@ -31,24 +32,26 @@ final class SDLJoystick
         SDL_JoystickEventState(autoProc ? SDL_ENABLE : SDL_IGNORE);
     }
 
-    this(int joystickIdx)
+    this(SDL2 sdl2, int joystickIdx)
     {
+        this._sdl = sdl2;
         this._joystick = SDL_JoystickOpen(joystickIdx);
 
         if (this._joystick is null)
-            throw new SDL2Exception("Call to SDL_JoystickOpen failed");
+            this._sdl.throwSDL2Exception("SDL_JoystickOpen");
     }
 
-    this(string joystickName)
+    this(SDL2 sdl2, string joystickName)
     {
-        for(int i = 0; i < SDLJoystick.joystickCount(); i++)
+        this._sdl = sdl2;
+        for (int i = 0; i < SDLJoystick.joystickCount(); i++)
         {
-            if(joystickName == SDL_JoystickNameForIndex(i).fromStringz)
+            if (joystickName == SDL_JoystickNameForIndex(i).fromStringz)
             {
                 this._joystick = SDL_JoystickOpen(i);
 
-                if(this._joystick is null)
-                    throw new SDL2Exception("Call to SDL_JoystickOpen failed");
+                if (this._joystick is null)
+                    this._sdl.throwSDL2Exception("SDL_JoystickOpen");
                 else
                     break;
             }
@@ -59,8 +62,11 @@ final class SDLJoystick
 
     ~this()
     {
-        if(this._joystick)
+        if (this._joystick)
+        {
             SDL_JoystickClose(this._joystick);
+            this._joystick = null;
+        }
     }
 
     @property string name()
@@ -116,7 +122,7 @@ final class SDLJoystick
     void getBall(int idx, out int dx, out int dy)
     {
         if (0 != SDL_JoystickGetBall(this._joystick, idx, &dx, &dy))
-            throw new SDL2Exception("Failed to get joystick ball %d".format(idx));
+            this._sdl.throwSDL2Exception("SDL_JoystickGetBall");
     }
 
     bool getButton(int idx)
