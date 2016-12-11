@@ -92,6 +92,13 @@ final class SDL2Window
                 _sdl2.throwSDL2Exception("SDL_SetWindowFullscreen");
         }
 
+        /// Returns: The flags associated with the window.
+        /// See_also: $(LINK https://wiki.libsdl.org/SDL_GetWindowFlags)
+        final uint getWindowFlags()
+        {
+            return SDL_GetWindowFlags(_window);
+        }
+
         /// Returns: X window coordinate.
         /// See_also: $(LINK http://wiki.libsdl.org/SDL_GetWindowPosition)
         final int getX()
