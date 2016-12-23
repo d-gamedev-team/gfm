@@ -11,7 +11,7 @@ import std.string,
 
 import derelict.opengl3.gl3;
 
-import gfm.math,
+import gfm.math.vector,
        gfm.opengl.opengl,
        gfm.opengl.program,
        gfm.opengl.buffer;
@@ -61,6 +61,10 @@ final class VertexSpecification(Vertex)
             // Create all attribute description
             foreach (member; __traits(allMembers, Vertex))
             {
+                // Nested struct have a context pointer
+                static assert(member != "this",
+                              `Found a 'this' member in vertex struct. Use a 'static struct' instead.`);
+
                 enum fullName = "Vertex." ~ member;
                 mixin("alias T = typeof(" ~ fullName ~ ");");
 
@@ -247,4 +251,34 @@ private
             assert(false, "Could not use " ~ T.stringof ~ " in a vertex description");
         }
     }
+}
+
+
+/// A helper template to define a simple vertex type from a vector type.
+/// By default the unique field will be name "position".
+/// Note: it's important the struct isn't larger than the vector itself.
+///
+/// Example:
+///     VertexSpecification!(VertexPosition!vec3f);
+///
+align(1) struct VertexPosition(Vec, string fieldName = "position") if (isVector!Vec)
+{
+    align(1):
+    mixin("Vec " ~ fieldName ~ ";");
+    static assert(VertexPosition.sizeof == Vec.sizeof);
+}
+
+unittest
+{
+   static struct MyVertex
+   {
+       vec3f position;
+       vec4f diffuse;
+       float shininess;
+       @Normalized vec2i uv;
+       vec3f normal;
+   }
+   alias Test = VertexSpecification!MyVertex;
+
+   alias Test2 = VertexSpecification!(VertexPosition!vec3f);
 }
