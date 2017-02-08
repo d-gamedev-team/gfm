@@ -217,7 +217,7 @@ struct Plane(T) if (isFloatingPoint!T)
         @nogc this(vec4!T abcd) pure nothrow
         {
             n = vec3!T(abcd.x, abcd.y, abcd.z).normalized();
-            d = abcd.z;
+            d = abcd.w;
         }
 
         /// Create from a point and a normal.
