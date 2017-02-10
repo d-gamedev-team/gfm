@@ -25,6 +25,40 @@ struct Segment(T, int N)
     {
         alias Vector!(T, N) point_t;
         point_t a, b;
+        
+        static if (N == 3 && isFloatingPoint!T)
+        {
+            /// Segment vs plane intersection.
+            /// See_also: "Geometry for Computer Graphics: Formulae, Examples
+            ///     and Proofs", Vince (2005), p. 62
+            /// Returns: $(D true) if the segment crosses the plane exactly
+            ///     once, or $(D false) if the segment is parallel to or does
+            ///     not reach the plane
+            /// Params:
+            ///     intersection = set to the point of intersection
+            ///     progress = set to the point's progress between endpoints
+            ///                $(D a) at 0.0 and $(D b) at 1.0, or T.infinity
+            ///                if parallel to the plane
+            @nogc @safe bool intersect(Plane!T plane, out point_t intersection, out T progress) pure const nothrow
+            {
+                // direction vector from a to b
+                point_t dir = b-a;
+                
+                // dot product will be 0 if angle to plane is 0
+                T dp = dot(plane.n, dir);
+                if (abs(dp) < T.epsilon)
+                {
+                    progress = T.infinity;
+                    return false; // parallel to plane
+                }
+                
+                // relative distance along segment where intersection happens
+                progress = -(dot(plane.n, a) - plane.d) / dp;
+                
+                intersection = progress*dir + a;
+                return progress >= 0 && progress <= 1;
+            }
+        }
     }
 }
 
@@ -194,6 +228,33 @@ nothrow:
                 t = dot(edge2, qvec) * invDet;
                 return true;
             }
+            
+            /// Ray vs plane intersection.
+            /// See_also: "Geometry for Computer Graphics: Formulae, Examples
+            ///     and Proofs", Vince (2005), p. 62
+            /// Returns: $(D true) if the ray crosses the plane exactly once,
+            ///     or $(D false) if the ray is parallel to or points away from
+            ///     the plane
+            /// Params:
+            ///     intersection = set to the point of intersection
+            ///     distance = set to the point's distance along the ray, or
+            ///                T.infinity if parallel to the plane
+            @nogc @safe bool intersect(Plane!T plane, out point_t intersection, out T distance) pure const nothrow
+            {
+                // dot product will be 0 if angle to plane is 0
+                T dp = dot(plane.n, dir);
+                if (abs(dp) < T.epsilon)
+                {
+                    distance = T.infinity;
+                    return false; // parallel to plane
+                }
+                
+                // distance along ray where intersection happens
+                distance = -(dot(plane.n, orig) - plane.d) / dp;
+                
+                intersection = distance*dir + orig;
+                return distance >= 0;
+            }
         }
     }
 }
@@ -289,6 +350,48 @@ unittest
     assert(p2.isBack(vec3d(0.0, 0.0, 0.0)));
 }
 
+/// Plane intersection tests
+@nogc @safe pure nothrow unittest
+{
+    void testR(planed p, ray3d r, bool shouldIntersect, double expectedDistance, vec3d expectedPoint = vec3d.init)
+    {
+        vec3d point;
+        double distance;
+        assert(r.intersect(p, point, distance) == shouldIntersect);
+        assert(approxEqual(distance, expectedDistance));
+        if (shouldIntersect)
+            assert(approxEqual(point.v[], expectedPoint.v[]));
+    }
+    // ray facing plane
+    testR(planed(vec4d(1.0, 0.0, 0.0, 1.0)), ray3d(vec3d(2.0, 3.0, 4.0), vec3d(-1.0, 0.0, 0.0)),
+        true, 1.0, vec3d(1.0, 3.0, 4.0));
+    testR(planed(vec4d(1.0, 1.0, 1.0, -sqrt(3.0))), ray3d(vec3d(1.0, 1.0, 1.0), vec3d(-1.0, -1.0, -1.0).normalized()),
+        true, 2.0*sqrt(3.0), vec3d(-1.0, -1.0, -1.0));
+    // ray facing away
+    testR(planed(vec4d(1.0, 0.0, 0.0, 1.0)), ray3d(vec3d(2.0, 3.0, 4.0), vec3d(1.0, 0.0, 0.0)),
+        false, -1.0);
+    testR(planed(vec4d(1.0, 0.0, 0.0, 5.0)), ray3d(vec3d(2.0, 3.0, 4.0), vec3d(-1.0, 0.0, 0.0)),
+        false, -3.0);
+    // ray parallel
+    testR(planed(vec4d(0.0, 0.0, 1.0, 1.0)), ray3d(vec3d(1.0, 2.0, 3.0), vec3d(1.0, 0.0, 0.0)),
+        false, double.infinity);
+    
+    void testS(planed p, seg3d s, bool shouldIntersect, double expectedProgress, vec3d expectedPoint = vec3d.init)
+    {
+        vec3d point;
+        double progress;
+        assert(s.intersect(p, point, progress) == shouldIntersect);
+        assert(approxEqual(progress, expectedProgress));
+        if (shouldIntersect)
+            assert(approxEqual(point.v[], expectedPoint.v[]));
+    }
+    // segment crossing plane
+    testS(planed(vec4d(1.0, 0.0, 0.0, 2.0)), seg3d(vec3d(1.0, 2.0, 3.0), vec3d(3.0, 4.0, 5.0)),
+        true, 0.5, vec3d(2.0, 3.0, 4.0));
+    // segment too short
+    testS(planed(vec4d(1.0, 0.0, 0.0, 0.0)), seg3d(vec3d(1.0, 2.0, 3.0), vec3d(3.0, 4.0, 5.0)),
+        false, -0.5);
+}
 
 
 /// 3D frustum.
