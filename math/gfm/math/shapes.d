@@ -39,7 +39,7 @@ struct Segment(T, int N)
             ///     progress = set to the point's progress between endpoints
             ///                $(D a) at 0.0 and $(D b) at 1.0, or T.infinity
             ///                if parallel to the plane
-            @nogc @safe bool intersect(Plane!T plane, out point_t intersection, out T progress) pure const nothrow
+            @nogc bool intersect(Plane!T plane, out point_t intersection, out T progress) pure const nothrow
             {
                 // direction vector from a to b
                 point_t dir = b-a;
@@ -239,7 +239,7 @@ nothrow:
             ///     intersection = set to the point of intersection
             ///     distance = set to the point's distance along the ray, or
             ///                T.infinity if parallel to the plane
-            @nogc @safe bool intersect(Plane!T plane, out point_t intersection, out T distance) pure const nothrow
+            @nogc bool intersect(Plane!T plane, out point_t intersection, out T distance) pure const nothrow
             {
                 // dot product will be 0 if angle to plane is 0
                 T dp = dot(plane.n, dir);
@@ -351,9 +351,9 @@ unittest
 }
 
 /// Plane intersection tests
-@nogc @safe pure nothrow unittest
+@nogc pure nothrow unittest
 {
-    void testR(planed p, ray3d r, bool shouldIntersect, double expectedDistance, vec3d expectedPoint = vec3d.init)
+    void testR(planed p, ray3d r, bool shouldIntersect, double expectedDistance, vec3d expectedPoint = vec3d.init) pure nothrow @nogc
     {
         vec3d point;
         double distance;
@@ -376,7 +376,7 @@ unittest
     testR(planed(vec4d(0.0, 0.0, 1.0, 1.0)), ray3d(vec3d(1.0, 2.0, 3.0), vec3d(1.0, 0.0, 0.0)),
         false, double.infinity);
     
-    void testS(planed p, seg3d s, bool shouldIntersect, double expectedProgress, vec3d expectedPoint = vec3d.init)
+    void testS(planed p, seg3d s, bool shouldIntersect, double expectedProgress, vec3d expectedPoint = vec3d.init) pure nothrow @nogc
     {
         vec3d point;
         double progress;
