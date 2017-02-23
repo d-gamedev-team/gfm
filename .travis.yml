@@ -13,7 +13,7 @@ d:
  - dmd-2.070.2
  - dmd-2.069.1
  - dmd-2.068.2
- - dmd # latest
+ - dmd-beta
 
 script:
   - dub test --compiler=${DC} gfm:core
