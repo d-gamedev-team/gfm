@@ -598,6 +598,14 @@ private
     return res;
 }
 
+/// Element-wise absolute value.
+@nogc Vector!(T, N) absByElem(T, int N)(const Vector!(T, N) a) pure nothrow
+{
+    Vector!(T, N) res = void;
+    mixin(generateLoopCode!("res.v[@] = abs(a.v[@]);", N)());
+    return res;
+}
+
 /// Returns: Dot product.
 @nogc T dot(T, int N)(const Vector!(T, N) a, const Vector!(T, N) b) pure nothrow
 {
@@ -748,5 +756,7 @@ unittest
     static assert(!is(typeof(vec2f(vec2f(1, 2), 3))));
     static assert( is(typeof(vec3f(vec2f(1, 2), 3))));
     static assert( is(typeof(vec3f(1, 2, 3))));
+
+    assert(absByElem(vec3i(-1, 0, 2)) == vec3i(1, 0, 2));
 }
 
