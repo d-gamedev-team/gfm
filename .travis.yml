@@ -12,7 +12,6 @@ d:
  - dmd-2.071.2
  - dmd-2.070.2
  - dmd-2.069.1
- - dmd-2.068.2
  - dmd-beta
 
 script:
