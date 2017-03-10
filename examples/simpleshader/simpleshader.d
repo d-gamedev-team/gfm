@@ -44,8 +44,11 @@ void main()
                                     width, height,
                                     SDL_WINDOW_OPENGL);
 
-    // reload OpenGL now that a context exists
-    gl.reload();
+    // Reload OpenGL now that a context exists
+    // Always provide a maximum version else the maximum known 
+    // OpenGL 4.5 may be loaded and you risk hitting missing
+    // functions bugs from drivers.
+    gl.reload( GLVersion.None, GLVersion.GL33 );
 
     // redirect OpenGL output to our Logger
     gl.redirectDebugOutput();

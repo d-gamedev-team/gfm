@@ -7,6 +7,8 @@ import std.string,
        std.array,
        std.algorithm;
 
+public import derelict.opengl3.types: GLVersion;
+
 import derelict.util.exception;
 
 import derelict.opengl3.gl3,
@@ -87,9 +89,12 @@ final class OpenGL
         /// Reload OpenGL function pointers.
         /// Once a first OpenGL context has been created,
         /// you should call reload() to get the context you want.
-        void reload()
+        /// Use GLVersion.None as minVersion to load older functions.
+        /// Use GLVersion.HighestSupported for maxVersion to load the highest supported version
+        /// (warning, this may be dangerous because drivers may miss some functions).
+        void reload(GLVersion minVersion, GLVersion maxVersion)
         {
-            DerelictGL3.reload();
+            DerelictGL3.reload(minVersion, maxVersion);
 
             getLimits(true);
         }
