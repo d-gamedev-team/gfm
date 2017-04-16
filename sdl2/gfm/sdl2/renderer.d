@@ -191,6 +191,16 @@ final class SDL2Renderer
                 _sdl2.throwSDL2Exception("SDL_RenderCopy");
         }
 
+
+        /// Blit a rectangle from a texture and apply rotation/reflection.
+        /// See_also: $(LINK http://wiki.libsdl.org/SDL_RenderCopyEx)
+        /// Throws: $(D SDL2Exception) on error.
+        void copy(SDL2Texture texture, SDL_Rect srcRect, SDL_Rect dstRect, double rotangle, SDL_RendererFlip flip, SDL_Point* rotcenter = null)
+        {
+            if (0 != SDL_RenderCopyEx(_renderer, texture._handle, &srcRect, &dstRect, rotangle, rotcenter, flip))
+                _sdl2.throwSDL2Exception("SDL_RenderCopyEx");
+        }
+
         /// Draws a whole texture.
         /// See_also: $(LINK http://wiki.libsdl.org/SDL_RenderCopy)
         /// Throws: $(D SDL2Exception) on error.
