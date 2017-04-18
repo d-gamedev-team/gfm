@@ -30,6 +30,7 @@
         "gfm:math": "*",
         "gfm:opengl": "*",
         "gfm:sdl2": "*",
+        "gfm:sdl2_gfx": "*",
         "gfm:logger": "*"
     },
 
@@ -72,6 +73,14 @@
             "importPaths": [ "sdl2" ],
             "dependencies": {
                 "derelict-sdl2": "~>1.9"
+            }
+        },
+        {
+            "name": "sdl2_gfx",
+            "sourcePaths": [ "sdl2_gfx/gfm/sdl2" ],
+            "importPaths": [ "sdl2_gfx", "sdl2", "math" ],
+            "dependencies": {
+                "derelict-sdl2_gfx": "~>1.0"
             }
         },
         {
