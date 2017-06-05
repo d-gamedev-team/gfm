@@ -128,15 +128,16 @@ void main()
     {
         vec3f position;
         vec2f coordinates;
+        float foo;
     }
 
     Vertex[] quad;
-    quad ~= Vertex(vec3f(-1, -1, 0), vec2f(0, 0));
-    quad ~= Vertex(vec3f(+1, -1, 0), vec2f(1, 0));
-    quad ~= Vertex(vec3f(+1, +1, 0), vec2f(1, 1));
-    quad ~= Vertex(vec3f(+1, +1, 0), vec2f(1, 1));
-    quad ~= Vertex(vec3f(-1, +1, 0), vec2f(0, 1));
-    quad ~= Vertex(vec3f(-1, -1, 0), vec2f(0, 0));
+    quad ~= Vertex(vec3f(-1, -1, 0), vec2f(0, 0), float.nan);
+    quad ~= Vertex(vec3f(+1, -1, 0), vec2f(1, 0), float.nan);
+    quad ~= Vertex(vec3f(+1, +1, 0), vec2f(1, 1), float.nan);
+    quad ~= Vertex(vec3f(+1, +1, 0), vec2f(1, 1), float.nan);
+    quad ~= Vertex(vec3f(-1, +1, 0), vec2f(0, 1), float.nan);
+    quad ~= Vertex(vec3f(-1, -1, 0), vec2f(0, 0), float.nan);
 
     auto quadVBO = scoped!GLBuffer(gl, GL_ARRAY_BUFFER, GL_STATIC_DRAW, quad[]);
 
