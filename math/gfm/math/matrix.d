@@ -154,6 +154,21 @@ struct Matrix(T, int R, int C)
                 assert(false); // should not happen since format is right
         }
 
+        /// Matrix * scalar multiplication.
+        @nogc Matrix opBinary(string op)(T factor) pure const nothrow if (op == "*")
+        {
+            Matrix result = void;
+
+            for (int i = 0; i < R; ++i)
+            {
+                for (int j = 0; j < C; ++j)
+                {
+                    result.c[i][j] = c[i][j] * factor;
+                }
+            }
+            return result;
+        }
+
         /// Matrix * vector multiplication.
         @nogc column_t opBinary(string op)(row_t x) pure const nothrow if (op == "*")
         {
