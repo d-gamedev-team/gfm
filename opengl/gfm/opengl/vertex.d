@@ -200,6 +200,11 @@ private
         GL_DOUBLE
     ];
 
+    template isSupportedScalarType(T)
+    {
+        enum isSupportedScalarType = staticIndexOf!(Unqual!T, VectorTypes) != -1;
+    }
+
     template typeToGLScalar(T)
     {
         alias U = Unqual!T;
@@ -214,10 +219,15 @@ private
 
     void toGLTypeAndSize(T)(out GLenum type, out int n)
     {
-        static if (isStaticArray!T)
+        static if (isSupportedScalarType!T)
         {
-            type = typeToGLScalar(typeof(T[0]));
-            n = U.length;
+            type = typeToGLScalar!T;
+            n = 1;
+        }
+        else static if (isStaticArray!T)
+        {
+            type = typeToGLScalar!(typeof(T.init[0]));
+            n = T.length;
         }
         else
         {
