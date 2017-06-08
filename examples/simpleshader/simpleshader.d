@@ -124,7 +124,7 @@ void main()
     noiseTexture.generateMipmap();
 
 
-    struct Vertex
+    static struct Vertex
     {
         vec3f position;
         vec2f coordinates;
