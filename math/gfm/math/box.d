@@ -324,6 +324,18 @@ struct Box(T, int N)
             return (min == other.min) && (max == other.max);
         }
 
+        /// Cast to other box types.
+        @nogc U opCast(U)() pure const nothrow if (isBox!U)
+        {
+            U b = void;
+            for(int i = 0; i < N; ++i)
+            {
+                b.min[i] = cast(U.element_t)(min[i]);
+                b.max[i] = cast(U.element_t)(max[i]);
+            }
+            return b; // return a box where each element has been casted
+        }
+
         static if (N == 2)
         {
             /// Helper function to create rectangle with a given point, width and height.
@@ -369,6 +381,10 @@ unittest
     assert(a.volume == 4);
     box2i b = box2i(vec2i(1, 2), vec2i(3, 4));
     assert(a == b);
+
+    box2f bf = cast(box2f)b;
+    assert(bf == box2f(1.0f, 2.0f, 3.0f, 4.0f));
+
     box2i c = box2i(0, 0, 1,1);
     assert(c.translate(vec2i(3, 3)) == box2i(3, 3, 4, 4));
     assert(c.contains(vec2i(0, 0)));
