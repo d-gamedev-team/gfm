@@ -210,6 +210,9 @@ unittest
 /**
  * Finds the root roots of a quadratic polynomial a + b x + c x^2 = 0
  * Params:
+ *     a = Coefficient.
+ *     b = Coefficient.
+ *     c = Coefficient.
  *     outRoots = array of root results, should have room for at least 2 elements.
  * Returns: Number of roots in outRoots.
  */
@@ -235,6 +238,10 @@ unittest
 /**
  * Finds the roots of a cubic polynomial  a + b x + c x^2 + d x^3 = 0
  * Params:
+ *     a = Coefficient.
+ *     b = Coefficient.
+ *     c = Coefficient.
+ *     d = Coefficient.
  *     outRoots = array of root results, should have room for at least 2 elements.
  * Returns: Number of roots in outRoots.
  * See_also: $(WEB www.codeguru.com/forum/archive/index.php/t-265551.html)
