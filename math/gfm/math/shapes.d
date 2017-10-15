@@ -35,8 +35,9 @@ struct Segment(T, int N)
             ///     once, or $(D false) if the segment is parallel to or does
             ///     not reach the plane
             /// Params:
-            ///     intersection = set to the point of intersection
-            ///     progress = set to the point's progress between endpoints
+            ///     plane = The plane to intersect.
+            ///     intersection = Point of intersection.
+            ///     progress = Set to the point's progress between endpoints
             ///                $(D a) at 0.0 and $(D b) at 1.0, or T.infinity
             ///                if parallel to the plane
             @nogc bool intersect(Plane!T plane, out point_t intersection, out T progress) pure const nothrow
@@ -236,7 +237,8 @@ nothrow:
             ///     or $(D false) if the ray is parallel to or points away from
             ///     the plane
             /// Params:
-            ///     intersection = set to the point of intersection
+            ///     plane = Plane to intersect.
+            ///     intersection = Point of intersection.
             ///     distance = set to the point's distance along the ray, or
             ///                T.infinity if parallel to the plane
             @nogc bool intersect(Plane!T plane, out point_t intersection, out T distance) pure const nothrow
