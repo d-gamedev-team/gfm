@@ -25,7 +25,7 @@ struct Segment(T, int N)
     {
         alias Vector!(T, N) point_t;
         point_t a, b;
-        
+
         static if (N == 3 && isFloatingPoint!T)
         {
             /// Segment vs plane intersection.
@@ -44,7 +44,7 @@ struct Segment(T, int N)
             {
                 // direction vector from a to b
                 point_t dir = b-a;
-                
+
                 // dot product will be 0 if angle to plane is 0
                 T dp = dot(plane.n, dir);
                 if (abs(dp) < T.epsilon)
@@ -52,10 +52,10 @@ struct Segment(T, int N)
                     progress = T.infinity;
                     return false; // parallel to plane
                 }
-                
+
                 // relative distance along segment where intersection happens
                 progress = -(dot(plane.n, a) - plane.d) / dp;
-                
+
                 intersection = progress*dir + a;
                 return progress >= 0 && progress <= 1;
             }
@@ -229,7 +229,7 @@ nothrow:
                 t = dot(edge2, qvec) * invDet;
                 return true;
             }
-            
+
             /// Ray vs plane intersection.
             /// See_also: "Geometry for Computer Graphics: Formulae, Examples
             ///     and Proofs", Vince (2005), p. 62
@@ -250,10 +250,10 @@ nothrow:
                     distance = T.infinity;
                     return false; // parallel to plane
                 }
-                
+
                 // distance along ray where intersection happens
                 distance = -(dot(plane.n, orig) - plane.d) / dp;
-                
+
                 intersection = distance*dir + orig;
                 return distance >= 0;
             }
@@ -377,7 +377,7 @@ unittest
     // ray parallel
     testR(planed(vec4d(0.0, 0.0, 1.0, 1.0)), ray3d(vec3d(1.0, 2.0, 3.0), vec3d(1.0, 0.0, 0.0)),
         false, double.infinity);
-    
+
     void testS(planed p, seg3d s, bool shouldIntersect, double expectedProgress, vec3d expectedPoint = vec3d.init) pure nothrow @nogc
     {
         vec3d point;
@@ -476,8 +476,8 @@ struct Frustum(T) if (isFloatingPoint!T)
                     for (int k = 0; k < 2; ++k)
                     {
                         auto x = i == 0 ? box.min.x : box.max.x;
-                        auto y = i == 0 ? box.min.y : box.max.y;
-                        auto z = i == 0 ? box.min.z : box.max.z;
+                        auto y = j == 0 ? box.min.y : box.max.y;
+                        auto z = k == 0 ? box.min.z : box.max.z;
                         corners[i*4 + j*2 + k] = vec3!T(x, y, z);
                     }
 
