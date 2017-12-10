@@ -39,16 +39,17 @@ struct Normalized
  * --------------------
  * Member names MUST match those used in the vertex shader as attributes.
  */
-final class VertexSpecification(Vertex)
+final class VertexSpecification
 {
     public
     {
         /// Creates a vertex specification.
         /// The program is used to find the attribute location.
-        this(GLProgram program)
+        this(Vertex)(GLProgram program)
         {
             _gl = program._gl;
             _program  = program;
+            _size = Vertex.sizeof;
 
             template isRWField(T, string M)
             {
@@ -115,7 +116,7 @@ final class VertexSpecification(Vertex)
         /// after you added all your attributes
         size_t vertexSize() pure const nothrow
         {
-            return Vertex.sizeof;
+            return _size;
         }
     }
 
@@ -124,6 +125,7 @@ final class VertexSpecification(Vertex)
         OpenGL _gl;
         GLProgram _program;
         VertexAttribute[] _attributes;
+        size_t _size;
     }
 }
 
