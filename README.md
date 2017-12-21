@@ -40,7 +40,7 @@ https://github.com/d-gamedev-team/gfm/wiki/Changelog
 - [discord](https://github.com/rcorre/discord)
 - [Pacman](https://github.com/Yoplitein/pacman)
 - [petri-dish](https://github.com/Shriken/petri-dish)
-- [Vibrant](https://github.com/p0nce/Vibrant)
+- [Vibrant](http://store.steampowered.com/app/712430/Vibrant/)
 - [vxlgen](https://github.com/p0nce/vxlgen)
 
 ## Why use GFM?
