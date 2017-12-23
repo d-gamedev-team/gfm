@@ -328,6 +328,7 @@ struct wideIntImpl(bool signed, int bits)
             enum maxDigits = cast(ulong)(0.30103 * bits) + 1;
             Char[maxDigits] buf;
             size_t i;
+            self q = void, r = void;
 
             wideIntImpl tmp = this;
             if (tmp < 0)
@@ -338,8 +339,13 @@ struct wideIntImpl(bool signed, int bits)
             for (i = maxDigits-1; tmp > 0; i--)
             {
                 assert(i < buf.length);
-                buf[i] = digits[cast(int)(tmp % 10)];
-                tmp /= 10;
+                static if (signed)
+                    Internals!bits.signedDivide(tmp, self.literal!"10", q, r);
+                else
+                    Internals!bits.unsignedDivide(tmp, self.literal!"10", q, r);
+
+                buf[i] = digits[cast(int)(r)];
+                tmp = q;
             }
             assert(i+1 < buf.length);
             sink(buf[i+1 .. $]);
