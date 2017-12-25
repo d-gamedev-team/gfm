@@ -483,6 +483,16 @@ struct Matrix(T, int R, int C)
 
         static if (isSquare && R > 1)
         {
+            /// Makes a diagonal matrix from a vector.
+            @nogc static Matrix diag(Vector!(T, R) v) pure nothrow
+            {
+                Matrix res = void;
+                for (int i = 0; i < R; ++i)
+                    for (int j = 0; j < C; ++j)
+                        res.c[i][j] = (i == j) ? v[i] : 0;
+                return res;
+            }
+
             /// In-place translate by (v, 1)
             @nogc void translate(Vector!(T, R-1) v) pure nothrow
             {
@@ -848,4 +858,7 @@ unittest
         mat3x4f B;
         mat2x4f C = A * B;
     }
+
+    assert(mat2i.diag(vec2i(1, 2)) == mat2i(1, 0, 
+                                            0, 2));
 }
