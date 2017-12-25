@@ -7,12 +7,11 @@ import std.string,
        std.array,
        std.algorithm;
 
-public import derelict.opengl3.types: GLVersion;
-
+public import derelict.opengl.types: GLVersion;
+import derelict.opengl;
 import derelict.util.exception;
 
-import derelict.opengl3.gl3,
-       derelict.opengl3.gl;
+import derelict.opengl.gl;
 
 import std.experimental.logger;
 
@@ -72,9 +71,7 @@ final class OpenGL
 
             DerelictGL3.load(); // load latest available version
 
-            DerelictGL.load(); // load deprecated functions too
-
-            getLimits(false);
+             getLimits(false);
         }
 
         /// Returns: true if the OpenGL extension is supported.
@@ -87,15 +84,14 @@ final class OpenGL
         }
 
         /// Reload OpenGL function pointers.
+        /// 
         /// Once a first OpenGL context has been created,
         /// you should call reload() to get the context you want.
-        /// Use GLVersion.None as minVersion to load older functions.
-        /// Use GLVersion.HighestSupported for maxVersion to load the highest supported version
+        /// This will attempt to load every OpenGL function except deprecated.
         /// (warning, this may be dangerous because drivers may miss some functions).
-        void reload(GLVersion minVersion, GLVersion maxVersion)
+        void reload()
         {
-            DerelictGL3.reload(minVersion, maxVersion);
-
+            DerelictGL3.reload();
             getLimits(true);
         }
 
@@ -106,7 +102,7 @@ final class OpenGL
         /// glDebugMessageControl(GL_DONT_CARE, GL_DONT_CARE, GL_DONT_CARE, 0, null, GL_TRUE);
         void redirectDebugOutput()
         {
-            if (KHR_debug())
+            if (glDebugMessageCallback !is null)
             {
                 glDebugMessageCallback(&loggingCallbackOpenGL, cast(void*)this);
                 runtimeCheck();
@@ -289,10 +285,7 @@ final class OpenGL
                 case GL_INVALID_VALUE:     return "GL_INVALID_VALUE";
                 case GL_INVALID_OPERATION: return "GL_INVALID_OPERATION";
                 case GL_OUT_OF_MEMORY:     return "GL_OUT_OF_MEMORY";
-                case GL_TABLE_TOO_LARGE:   return "GL_TABLE_TOO_LARGE";
-                case GL_STACK_OVERFLOW:    return "GL_STACK_OVERFLOW";
-                case GL_STACK_UNDERFLOW:   return "GL_STACK_UNDERFLOW";
-                default:                   return "Unknown OpenGL error";
+               default:                   return "Unknown OpenGL error";
             }
         }
 
@@ -323,7 +316,7 @@ final class OpenGL
         int _minorVersion;
         int _maxColorAttachments;
 
-        void getLimits(bool isReload)
+        public void getLimits(bool isReload)
         {
             // parse GL_VERSION string
             if (isReload)

@@ -9,7 +9,7 @@ import std.string,
        std.typecons,
        std.traits;
 
-import derelict.opengl3.gl3;
+import derelict.opengl;
 
 import gfm.math.vector,
        gfm.opengl.opengl,

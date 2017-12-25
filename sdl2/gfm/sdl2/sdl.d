@@ -435,9 +435,9 @@ final class SDL2
                 }
             }
 
-            static string readableCategory(SDL_LogPriority priority) pure
+            static string readableCategory(int category) pure
             {
-                switch(priority)
+                switch(category)
                 {
                     case SDL_LOG_CATEGORY_APPLICATION : return "application";
                     case SDL_LOG_CATEGORY_ERROR       : return "error";

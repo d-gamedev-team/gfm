@@ -22,7 +22,7 @@ final class SDL2Renderer
         this(SDL2Window window, int flags = 0)
         {
             _sdl2 = window._sdl2;
-            _renderer = SDL_CreateRenderer(window._window, -1, flags);
+            _renderer = SDL_CreateRenderer(window._window, -1, cast(SDL_RendererFlags)flags);
             if (_renderer is null)
                 _sdl2.throwSDL2Exception("SDL_CreateRenderer");
 
@@ -121,7 +121,7 @@ final class SDL2Renderer
         /// Throws: $(D SDL2Exception) on error.
         void setBlend(int blendMode)
         {
-            if (0 != SDL_SetRenderDrawBlendMode(_renderer, blendMode))
+            if (0 != SDL_SetRenderDrawBlendMode(_renderer, cast(SDL_BlendMode)blendMode))
                 _sdl2.throwSDL2Exception("SDL_SetRenderDrawBlendMode");
         }
 

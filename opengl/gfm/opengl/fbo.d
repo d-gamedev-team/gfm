@@ -2,7 +2,7 @@ module gfm.opengl.fbo;
 
 import std.string;
 
-import derelict.opengl3.gl3;
+import derelict.opengl;
 
 import std.experimental.logger;
 
@@ -156,11 +156,11 @@ final class GLFBO
                 case GL_FRAMEBUFFER_INCOMPLETE_MISSING_ATTACHMENT:
                     throw new OpenGLException("GL_FRAMEBUFFER_INCOMPLETE_MISSING_ATTACHMENT");
 
-                case GL_FRAMEBUFFER_INCOMPLETE_DIMENSIONS_EXT:
+/*                case GL_FRAMEBUFFER_INCOMPLETE_DIMENSIONS_EXT:
                     throw new OpenGLException("GL_FRAMEBUFFER_INCOMPLETE_DIMENSIONS_EXT");
 
                 case GL_FRAMEBUFFER_INCOMPLETE_FORMATS_EXT:
-                    throw new OpenGLException("GL_FRAMEBUFFER_INCOMPLETE_FORMATS_EXT");
+                    throw new OpenGLException("GL_FRAMEBUFFER_INCOMPLETE_FORMATS_EXT");*/
 
                 case GL_FRAMEBUFFER_INCOMPLETE_DRAW_BUFFER:
                     throw new OpenGLException("GL_FRAMEBUFFER_INCOMPLETE_DRAW_BUFFER");

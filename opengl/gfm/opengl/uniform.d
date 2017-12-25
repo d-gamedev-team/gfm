@@ -4,7 +4,7 @@ import std.conv,
        std.string,
        core.stdc.string;
 
-import derelict.opengl3.gl3;
+import derelict.opengl;
 
 import gfm.math.vector, 
        gfm.math.matrix,

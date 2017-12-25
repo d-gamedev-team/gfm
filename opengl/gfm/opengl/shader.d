@@ -3,7 +3,7 @@ module gfm.opengl.shader;
 import std.string,
        std.conv;
 
-import derelict.opengl3.gl3;
+import derelict.opengl;
 
 import gfm.opengl.opengl;
 

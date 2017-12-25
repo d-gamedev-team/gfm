@@ -16,7 +16,7 @@ final class SDL2Texture
         /// Creates a SDL Texture for a specific renderer.
         /// See_also: $(LINK http://wiki.libsdl.org/SDL_CreateTexture)
         /// Throws: $(D SDL2Exception) on error.
-        this(SDL2Renderer renderer, uint format, uint access, int width, int height)
+        this(SDL2Renderer renderer, uint format, SDL_TextureAccess access, int width, int height)
         {
             _sdl2 = renderer._sdl2;
             _renderer = renderer;

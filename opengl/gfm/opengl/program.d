@@ -5,7 +5,7 @@ import std.conv,
        std.regex,
        std.algorithm;
 
-import derelict.opengl3.gl3;
+import derelict.opengl;
 
 import gfm.math.vector,
        gfm.math.matrix,

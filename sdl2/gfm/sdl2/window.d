@@ -22,7 +22,7 @@ final class SDL2Window
         /// Creates a SDL window which targets a window.
         /// See_also: $(LINK http://wiki.libsdl.org/SDL_CreateWindow)
         /// Throws: $(D SDL2Exception) on error.
-        this(SDL2 sdl2, int x, int y, int width, int height, int flags)
+        this(SDL2 sdl2, int x, int y, int width, int height, SDL_WindowFlags flags)
         {
             _sdl2 = sdl2;
             _logger = sdl2._logger;

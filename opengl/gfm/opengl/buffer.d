@@ -1,6 +1,6 @@
 module gfm.opengl.buffer;
 
-import derelict.opengl3.gl3;
+import derelict.opengl;
 
 import gfm.opengl.opengl;
 

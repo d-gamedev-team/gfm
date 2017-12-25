@@ -3,7 +3,7 @@ module gfm.opengl.texture;
 
 import std.string;
 
-import derelict.opengl3.gl3;
+import derelict.opengl;
 
 import gfm.opengl.opengl;
 
@@ -182,7 +182,7 @@ class GLTexture
         final void setMaxAnisotropy(float f)
         {
 			bind();
-            glTexParameterf(_target, GL_TEXTURE_MAX_ANISOTROPY_EXT, f);
+            glTexParameterf(_target, /* GL_TEXTURE_MAX_ANISOTROPY_EXT */ 0x84FE, f);
             _gl.runtimeCheck();
         }
 
