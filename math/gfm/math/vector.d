@@ -300,7 +300,8 @@ nothrow:
         }
 
         /// Returns: squared length.
-        @nogc T squaredLength() pure const nothrow
+        deprecated("Use squaredMagnitude instead") alias squaredLength = squaredMagnitude;
+        @nogc T squaredMagnitude() pure const nothrow
         {
             T sumSquares = 0;
             mixin(generateLoopCode!("sumSquares += v[@] * v[@];", N)());
@@ -310,41 +311,44 @@ nothrow:
         // Returns: squared Euclidean distance.
         @nogc T squaredDistanceTo(Vector v) pure const nothrow
         {
-            return (v - this).squaredLength();
+            return (v - this).squaredMagnitude();
         }
 
         static if (isFloatingPoint!T)
         {
             /// Returns: Euclidean length
-            @nogc T length() pure const nothrow
+            deprecated("Use magnitude instead") alias length = magnitude;
+            @nogc T magnitude() pure const nothrow
             {
-                return sqrt(squaredLength());
+                return sqrt(squaredMagnitude());
             }
 
             /// Returns: Inverse of Euclidean length.
-            @nogc T inverseLength() pure const nothrow
+            deprecated("Use inverseMagnitude instead") alias inverseLength = inverseMagnitude;
+            @nogc T inverseMagnitude() pure const nothrow
             {
-                return 1 / sqrt(squaredLength());
+                return 1 / sqrt(squaredMagnitude());
             }
 
             /// Faster but less accurate inverse of Euclidean length.
             /// Returns: Inverse of Euclidean length.
-            @nogc T fastInverseLength() pure const nothrow
+            deprecated("Use fastInverseMagnitude instead") alias fastInverseLength = fastInverseMagnitude;
+            @nogc T fastInverseMagnitude() pure const nothrow
             {
-                return inverseSqrt(squaredLength());
+                return inverseSqrt(squaredMagnitude());
             }
 
             /// Returns: Euclidean distance between this and other.
             @nogc T distanceTo(Vector other) pure const nothrow
             {
-                return (other - this).length();
+                return (other - this).magnitude();
             }
 
             /// In-place normalization.
             @nogc void normalize() pure nothrow
             {
-                auto invLength = inverseLength();
-                mixin(generateLoopCode!("v[@] *= invLength;", N)());
+                auto invMag = inverseMagnitude();
+                mixin(generateLoopCode!("v[@] *= invMag;", N)());
             }
 
             /// Returns: Normalized vector.
@@ -358,7 +362,7 @@ nothrow:
             /// Faster but less accurate in-place normalization.
             @nogc void fastNormalize() pure nothrow
             {
-                auto invLength = fastInverseLength();
+                auto invLength = fastInverseMagnitude();
                 mixin(generateLoopCode!("v[@] *= invLength;", N)());
             }
 
