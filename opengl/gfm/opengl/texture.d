@@ -6,6 +6,7 @@ import std.string;
 import derelict.opengl;
 
 import gfm.opengl.opengl;
+import gfm.math.vector;
 
 /// OpenGL Texture wrapper.
 ///
@@ -181,8 +182,35 @@ class GLTexture
         /// Throws: $(D OpenGLException) on error.
         final void setMaxAnisotropy(float f)
         {
-			bind();
+            bind();
             glTexParameterf(_target, /* GL_TEXTURE_MAX_ANISOTROPY_EXT */ 0x84FE, f);
+            _gl.runtimeCheck();
+        }
+
+        /// Sets the texture border color.
+        /// Throws: $(D OpenGLException) on error.
+        final void setBorderColor(vec4f color)
+        {
+            bind();
+            glTexParameterfv(_target, GL_TEXTURE_BORDER_COLOR, color.ptr);
+            _gl.runtimeCheck();
+        }
+
+        /// Sets the texture compare mode.
+        /// Throws: $(D OpenGLException) on error.
+        final void setCompareMode(GLenum compareMode)
+        {
+            bind();
+            glTexParameteri(_target, GL_TEXTURE_COMPARE_MODE, compareMode);
+            _gl.runtimeCheck();
+        }
+
+        /// Sets the texture compare mode.
+        /// Throws: $(D OpenGLException) on error.
+        final void setCompareFunc(GLenum compareFunc)
+        {
+            bind();
+            glTexParameteri(_target, GL_TEXTURE_COMPARE_FUNC, compareFunc);
             _gl.runtimeCheck();
         }
 

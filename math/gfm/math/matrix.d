@@ -489,7 +489,7 @@ struct Matrix(T, int R, int C)
                 Matrix res = void;
                 for (int i = 0; i < R; ++i)
                     for (int j = 0; j < C; ++j)
-                        res.c[i][j] = (i == j) ? v[i] : 0;
+                        res.c[i][j] = (i == j) ? v.v[i] : 0;
                 return res;
             }
 
