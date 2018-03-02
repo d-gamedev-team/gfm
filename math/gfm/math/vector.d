@@ -667,7 +667,6 @@ static assert(vec2f.sizeof == 8);
 static assert(vec3d.sizeof == 24);
 static assert(vec4i.sizeof == 16);
 
-
 unittest
 {
     static assert(vec2i.isValidSwizzle!"xyx");
