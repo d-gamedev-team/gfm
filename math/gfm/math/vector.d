@@ -1,3 +1,4 @@
+/// N-dimension vector mathematical object
 module gfm.math.vector;
 
 import std.traits,
@@ -50,6 +51,7 @@ nothrow:
             }
         }
 
+        /// Construct a Vector with a `T[]` or the values as arguments
         @nogc this(Args...)(Args args) pure nothrow
         {
             static if (args.length == 1)
@@ -287,20 +289,22 @@ nothrow:
             return N;
         }
 
+        /// Slice containing vector values
         /// Returns: a slice which covers the whole Vector.
         @nogc T[] opSlice() pure nothrow
         {
             return v[];
         }
 
-        // vec[a..b]
+        /// vec[a..b]
         @nogc T[] opSlice(int a, int b) pure nothrow
         {
             return v[a..b];
         }
 
-        /// Returns: squared length.
         deprecated("Use squaredMagnitude instead") alias squaredLength = squaredMagnitude;
+        /// Squared Euclidean length of the Vector
+        /// Returns: squared length.
         @nogc T squaredMagnitude() pure const nothrow
         {
             T sumSquares = 0;
@@ -308,7 +312,8 @@ nothrow:
             return sumSquares;
         }
 
-        // Returns: squared Euclidean distance.
+        /// Squared Euclidean distance between this vector and another one
+        /// Returns: squared Euclidean distance.
         @nogc T squaredDistanceTo(Vector v) pure const nothrow
         {
             return (v - this).squaredMagnitude();
@@ -316,28 +321,31 @@ nothrow:
 
         static if (isFloatingPoint!T)
         {
-            /// Returns: Euclidean length
             deprecated("Use magnitude instead") alias length = magnitude;
+            /// Euclidean length of the vector
+            /// Returns: Euclidean length
             @nogc T magnitude() pure const nothrow
             {
                 return sqrt(squaredMagnitude());
             }
 
-            /// Returns: Inverse of Euclidean length.
             deprecated("Use inverseMagnitude instead") alias inverseLength = inverseMagnitude;
+            /// Inverse Euclidean length of the vector
+            /// Returns: Inverse of Euclidean length.
             @nogc T inverseMagnitude() pure const nothrow
             {
                 return 1 / sqrt(squaredMagnitude());
             }
 
+            deprecated("Use fastInverseMagnitude instead") alias fastInverseLength = fastInverseMagnitude;
             /// Faster but less accurate inverse of Euclidean length.
             /// Returns: Inverse of Euclidean length.
-            deprecated("Use fastInverseMagnitude instead") alias fastInverseLength = fastInverseMagnitude;
             @nogc T fastInverseMagnitude() pure const nothrow
             {
                 return inverseSqrt(squaredMagnitude());
             }
 
+            /// Euclidean distance between this vector and another one
             /// Returns: Euclidean distance between this and other.
             @nogc T distanceTo(Vector other) pure const nothrow
             {
@@ -351,6 +359,7 @@ nothrow:
                 mixin(generateLoopCode!("v[@] *= invMag;", N)());
             }
 
+            /// Returns a normalized copy of this Vector
             /// Returns: Normalized vector.
             @nogc Vector normalized() pure const nothrow
             {
@@ -521,42 +530,45 @@ unittest
     static assert(is(DimensionType!vec3d == double));
 }
 
+///
 template vec2(T) { alias Vector!(T, 2) vec2; }
+///
 template vec3(T) { alias Vector!(T, 3) vec3; }
+///
 template vec4(T) { alias Vector!(T, 4) vec4; }
 
-alias vec2!byte   vec2b;
-alias vec2!ubyte  vec2ub;
-alias vec2!short  vec2s;
-alias vec2!ushort vec2us;
-alias vec2!int    vec2i;
-alias vec2!uint   vec2ui;
-alias vec2!long   vec2l;
-alias vec2!ulong  vec2ul;
-alias vec2!float  vec2f;
-alias vec2!double vec2d;
+alias vec2!byte   vec2b;  ///
+alias vec2!ubyte  vec2ub; ///
+alias vec2!short  vec2s;  ///
+alias vec2!ushort vec2us; ///
+alias vec2!int    vec2i;  ///
+alias vec2!uint   vec2ui; ///
+alias vec2!long   vec2l;  ///
+alias vec2!ulong  vec2ul; ///
+alias vec2!float  vec2f;  ///
+alias vec2!double vec2d;  ///
 
-alias vec3!byte   vec3b;
-alias vec3!ubyte  vec3ub;
-alias vec3!short  vec3s;
-alias vec3!ushort vec3us;
-alias vec3!int    vec3i;
-alias vec3!uint   vec3ui;
-alias vec3!long   vec3l;
-alias vec3!ulong  vec3ul;
-alias vec3!float  vec3f;
-alias vec3!double vec3d;
+alias vec3!byte   vec3b;  ///
+alias vec3!ubyte  vec3ub; ///
+alias vec3!short  vec3s;  ///
+alias vec3!ushort vec3us; ///
+alias vec3!int    vec3i;  ///
+alias vec3!uint   vec3ui; ///
+alias vec3!long   vec3l;  ///
+alias vec3!ulong  vec3ul; ///
+alias vec3!float  vec3f;  ///
+alias vec3!double vec3d;  ///
 
-alias vec4!byte   vec4b;
-alias vec4!ubyte  vec4ub;
-alias vec4!short  vec4s;
-alias vec4!ushort vec4us;
-alias vec4!int    vec4i;
-alias vec4!uint   vec4ui;
-alias vec4!long   vec4l;
-alias vec4!ulong  vec4ul;
-alias vec4!float  vec4f;
-alias vec4!double vec4d;
+alias vec4!byte   vec4b;  ///
+alias vec4!ubyte  vec4ub; ///
+alias vec4!short  vec4s;  ///
+alias vec4!ushort vec4us; ///
+alias vec4!int    vec4i;  ///
+alias vec4!uint   vec4ui; ///
+alias vec4!long   vec4l;  ///
+alias vec4!ulong  vec4ul; ///
+alias vec4!float  vec4f;  ///
+alias vec4!double vec4d;  ///
 
 private
 {
@@ -610,6 +622,7 @@ private
     return res;
 }
 
+/// Dot product of two vectors
 /// Returns: Dot product.
 @nogc T dot(T, int N)(const Vector!(T, N) a, const Vector!(T, N) b) pure nothrow
 {
@@ -618,6 +631,7 @@ private
     return sum;
 }
 
+/// Cross product of two 3D vectors
 /// Returns: 3D cross product.
 /// Thanks to vuaru for corrections.
 @nogc Vector!(T, 3) cross(T)(const Vector!(T, 3) a, const Vector!(T, 3) b) pure nothrow
@@ -649,6 +663,7 @@ private
     assert(vec3f(2,3,-0.5).reflect(vec3f(0,0,1)) == vec3f(2,3,0.5));
 }
 
+/// Angle between two vectors
 /// Returns: angle between vectors.
 /// See_also: "The Right Way to Calculate Stuff" at $(WEB www.plunk.org/~hatch/rightway.php)
 @nogc T angleBetween(T, int N)(const Vector!(T, N) a, const Vector!(T, N) b) pure nothrow

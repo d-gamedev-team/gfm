@@ -1,3 +1,4 @@
+/// Custom sized 2-dimension Matrices
 module gfm.math.matrix;
 
 import std.math,
@@ -130,6 +131,7 @@ struct Matrix(T, int R, int C)
             return v.ptr;
         }
 
+        /// Returns a column as a vector
         /// Returns: column j as a vector.
         @nogc column_t column(int j) pure const nothrow
         {
@@ -139,6 +141,7 @@ struct Matrix(T, int R, int C)
             return res;
         }
 
+        /// Returns a row as a vector
         /// Returns: row i as a vector.
         @nogc row_t row(int i) pure const nothrow
         {
@@ -353,11 +356,11 @@ struct Matrix(T, int R, int C)
             return cast(U)(m3);
         }
 
-        /// Matrix inversion is provided for 1x1, 2x2, 3x3 and 4x4 floating point matrices.
-
         static if (isSquare && isFloatingPoint!T && R == 1)
         {
+            /// Returns an inverted copy of this matrix
             /// Returns: inverse of matrix.
+            /// Note: Matrix inversion is provided for 1x1, 2x2, 3x3 and 4x4 floating point matrices.
             @nogc Matrix inverse() pure const nothrow
             {
                 return Matrix( 1 / c[0][0]);
@@ -366,7 +369,9 @@ struct Matrix(T, int R, int C)
 
         static if (isSquare && isFloatingPoint!T && R == 2)
         {
+            /// Returns an inverted copy of this matrix
             /// Returns: inverse of matrix.
+            /// Note: Matrix inversion is provided for 1x1, 2x2, 3x3 and 4x4 floating point matrices.
             @nogc Matrix inverse() pure const nothrow
             {
                 T invDet = 1 / (c[0][0] * c[1][1] - c[0][1] * c[1][0]);
@@ -377,7 +382,9 @@ struct Matrix(T, int R, int C)
 
         static if (isSquare && isFloatingPoint!T && R == 3)
         {
+            /// Returns an inverted copy of this matrix
             /// Returns: inverse of matrix.
+            /// Note: Matrix inversion is provided for 1x1, 2x2, 3x3 and 4x4 floating point matrices.
             @nogc Matrix inverse() pure const nothrow
             {
                 T det = c[0][0] * (c[1][1] * c[2][2] - c[2][1] * c[1][2])
@@ -401,7 +408,9 @@ struct Matrix(T, int R, int C)
 
         static if (isSquare && isFloatingPoint!T && R == 4)
         {
+            /// Returns an inverted copy of this matrix
             /// Returns: inverse of matrix.
+            /// Note: Matrix inversion is provided for 1x1, 2x2, 3x3 and 4x4 floating point matrices.
             @nogc Matrix inverse() pure const nothrow
             {
                 T det2_01_01 = c[0][0] * c[1][1] - c[0][1] * c[1][0];
@@ -471,6 +480,7 @@ struct Matrix(T, int R, int C)
             }
         }
 
+        /// Returns a transposed copy of this matrix
         /// Returns: transposed matrice.
         @nogc Matrix!(T, C, R) transposed() pure const nothrow
         {
@@ -548,12 +558,15 @@ struct Matrix(T, int R, int C)
                 return res;
             }
 
+            /// Rotate along X axis
             /// Returns: rotation matrix along axis X
             alias rotateAxis!(1, 2) rotateX;
 
+            /// Rotate along Y axis
             /// Returns: rotation matrix along axis Y
             alias rotateAxis!(2, 0) rotateY;
 
+            /// Rotate along Z axis
             /// Returns: rotation matrix along axis Z
             alias rotateAxis!(0, 1) rotateZ;
 
@@ -589,6 +602,7 @@ struct Matrix(T, int R, int C)
         // 4x4 specific transformations for 3D usage
         static if (isSquare && R == 4 && isFloatingPoint!T)
         {
+            /// Orthographic projection
             /// Returns: orthographic projection.
             @nogc static Matrix orthographic(T left, T right, T bottom, T top, T near, T far) pure nothrow
             {
@@ -606,6 +620,7 @@ struct Matrix(T, int R, int C)
                                 0,      0,      0,     1);
             }
 
+            /// Perspective projection
             /// Returns: perspective projection.
             @nogc static Matrix perspective(T FOVInRadians, T aspect, T zNear, T zFar) pure nothrow
             {
@@ -618,6 +633,7 @@ struct Matrix(T, int R, int C)
                                        0, 0,                 -1,                    0);
             }
 
+            /// Look At projection
             /// Returns: "lookAt" projection.
             /// Thanks to vuaru for corrections.
             @nogc static Matrix lookAt(vec3!T eye, vec3!T target, vec3!T up) pure nothrow
@@ -684,7 +700,8 @@ struct Matrix(T, int R, int C)
 
     public
     {
-        /// Returns: an identity matrice.
+        /// Construct an identity matrix
+        /// Returns: an identity matrix.
         /// Note: the identity matrix, while only meaningful for square matrices,
         /// is also defined for non-square ones.
         @nogc static Matrix identity() pure nothrow
@@ -696,6 +713,7 @@ struct Matrix(T, int R, int C)
             return res;
         }
 
+        /// Construct an constant matrix
         /// Returns: a constant matrice.
         @nogc static Matrix constant(U)(U x) pure nothrow
         {
@@ -719,110 +737,122 @@ template isMatrixInstantiation(U)
 
 // GLSL is a big inspiration here
 // we defines types with more or less the same names
+
+///
 template mat2x2(T) { alias Matrix!(T, 2, 2) mat2x2; }
+///
 template mat3x3(T) { alias Matrix!(T, 3, 3) mat3x3; }
+///
 template mat4x4(T) { alias Matrix!(T, 4, 4) mat4x4; }
 
 // WARNING: in GLSL, first number is _columns_, second is rows
 // It is the opposite here: first number is rows, second is columns
 // With this convention mat2x3 * mat3x4 -> mat2x4.
+
+///
 template mat2x3(T) { alias Matrix!(T, 2, 3) mat2x3; }
+///
 template mat2x4(T) { alias Matrix!(T, 2, 4) mat2x4; }
+///
 template mat3x2(T) { alias Matrix!(T, 3, 2) mat3x2; }
+///
 template mat3x4(T) { alias Matrix!(T, 3, 4) mat3x4; }
+///
 template mat4x2(T) { alias Matrix!(T, 4, 2) mat4x2; }
+///
 template mat4x3(T) { alias Matrix!(T, 4, 3) mat4x3; }
 
-alias mat2x2 mat2;
-alias mat3x3 mat3;  // shorter names for most common matrices
-alias mat4x4 mat4;
+// shorter names for most common matrices
+alias mat2x2 mat2;///
+alias mat3x3 mat3;///
+alias mat4x4 mat4;///
 
 // Define a lot of type names
 // Most useful are probably mat4f and mat4d
 
-alias mat2!byte   mat2b;
-alias mat2!short  mat2s;
-alias mat2!int    mat2i;
-alias mat2!long   mat2l;
-alias mat2!float  mat2f;
-alias mat2!double mat2d;
+alias mat2!byte   mat2b;///
+alias mat2!short  mat2s;///
+alias mat2!int    mat2i;///
+alias mat2!long   mat2l;///
+alias mat2!float  mat2f;///
+alias mat2!double mat2d;///
 
-alias mat3!byte   mat3b;
-alias mat3!short  mat3s;
-alias mat3!int    mat3i;
-alias mat3!long   mat3l;
-alias mat3!float  mat3f;
-alias mat3!double mat3d;
+alias mat3!byte   mat3b;///
+alias mat3!short  mat3s;///
+alias mat3!int    mat3i;///
+alias mat3!long   mat3l;///
+alias mat3!float  mat3f;///
+alias mat3!double mat3d;///
 
-alias mat4!byte   mat4b;
-alias mat4!short  mat4s;
-alias mat4!int    mat4i;
-alias mat4!long   mat4l;
-alias mat4!float  mat4f;
-alias mat4!double mat4d;
+alias mat4!byte   mat4b;///
+alias mat4!short  mat4s;///
+alias mat4!int    mat4i;///
+alias mat4!long   mat4l;///
+alias mat4!float  mat4f;///
+alias mat4!double mat4d;///
 
-alias mat2x2!byte   mat2x2b;
-alias mat2x2!short  mat2x2s;
-alias mat2x2!int    mat2x2i;
-alias mat2x2!long   mat2x2l;
-alias mat2x2!float  mat2x2f;
-alias mat2x2!double mat2x2d;
+alias mat2x2!byte   mat2x2b;///
+alias mat2x2!short  mat2x2s;///
+alias mat2x2!int    mat2x2i;///
+alias mat2x2!long   mat2x2l;///
+alias mat2x2!float  mat2x2f;///
+alias mat2x2!double mat2x2d;///
 
-alias mat2x3!byte   mat2x3b;
-alias mat2x3!short  mat2x3s;
-alias mat2x3!int    mat2x3i;
-alias mat2x3!long   mat2x3l;
-alias mat2x3!float  mat2x3f;
-alias mat2x3!double mat2x3d;
+alias mat2x3!byte   mat2x3b;///
+alias mat2x3!short  mat2x3s;///
+alias mat2x3!int    mat2x3i;///
+alias mat2x3!long   mat2x3l;///
+alias mat2x3!float  mat2x3f;///
+alias mat2x3!double mat2x3d;///
 
-alias mat2x4!byte   mat2x4b;
-alias mat2x4!short  mat2x4s;
-alias mat2x4!int    mat2x4i;
-alias mat2x4!long   mat2x4l;
-alias mat2x4!float  mat2x4f;
-alias mat2x4!double mat2x4d;
+alias mat2x4!byte   mat2x4b;///
+alias mat2x4!short  mat2x4s;///
+alias mat2x4!int    mat2x4i;///
+alias mat2x4!long   mat2x4l;///
+alias mat2x4!float  mat2x4f;///
+alias mat2x4!double mat2x4d;///
 
-alias mat3x2!byte   mat3x2b;
-alias mat3x2!short  mat3x2s;
-alias mat3x2!int    mat3x2i;
-alias mat3x2!long   mat3x2l;
-alias mat3x2!float  mat3x2f;
-alias mat3x2!double mat3x2d;
+alias mat3x2!byte   mat3x2b;///
+alias mat3x2!short  mat3x2s;///
+alias mat3x2!int    mat3x2i;///
+alias mat3x2!long   mat3x2l;///
+alias mat3x2!float  mat3x2f;///
+alias mat3x2!double mat3x2d;///
 
-alias mat3x3!byte   mat3x3b;
-alias mat3x3!short  mat3x3s;
-alias mat3x3!int    mat3x3i;
-alias mat3x3!long   mat3x3l;
-alias mat3x3!float  mat3x3f;
-alias mat3x3!double mat3x3d;
+alias mat3x3!byte   mat3x3b;///
+alias mat3x3!short  mat3x3s;///
+alias mat3x3!int    mat3x3i;///
+alias mat3x3!long   mat3x3l;///
+alias mat3x3!float  mat3x3f;///
+alias mat3x3!double mat3x3d;///
 
-alias mat3x4!byte   mat3x4b;
-alias mat3x4!short  mat3x4s;
-alias mat3x4!int    mat3x4i;
-alias mat3x4!long   mat3x4l;
-alias mat3x4!float  mat3x4f;
-alias mat3x4!double mat3x4d;
+alias mat3x4!byte   mat3x4b;///
+alias mat3x4!short  mat3x4s;///
+alias mat3x4!int    mat3x4i;///
+alias mat3x4!long   mat3x4l;///
+alias mat3x4!float  mat3x4f;///
+alias mat3x4!double mat3x4d;///
 
-alias mat4x2!byte   mat4x2b;
-alias mat4x2!short  mat4x2s;
-alias mat4x2!int    mat4x2i;
-alias mat4x2!long   mat4x2l;
-alias mat4x2!float  mat4x2f;
-alias mat4x2!double mat4x2d;
+alias mat4x2!byte   mat4x2b;///
+alias mat4x2!short  mat4x2s;///
+alias mat4x2!int    mat4x2i;///
+alias mat4x2!long   mat4x2l;///
+alias mat4x2!float  mat4x2f;///
+alias mat4x2!double mat4x2d;///
 
-alias mat4x3!byte   mat4x3b;
-alias mat4x3!short  mat4x3s;
-alias mat4x3!int    mat4x3i;
-alias mat4x3!long   mat4x3l;
-alias mat4x3!float  mat4x3f;
-alias mat4x3!double mat4x3d;
+alias mat4x3!byte   mat4x3b;///
+alias mat4x3!short  mat4x3s;///
+alias mat4x3!int    mat4x3i;///
+alias mat4x3!long   mat4x3l;///
+alias mat4x3!float  mat4x3f;///
+alias mat4x3!double mat4x3d;///
 
-alias mat4x4!byte   mat4x4b;
-alias mat4x4!short  mat4x4s;
-alias mat4x4!int    mat4x4i;
-alias mat4x4!long   mat4x4l;
-alias mat4x4!float  mat4x4f;
-alias mat4x4!double mat4x4d;
+alias mat4x4!byte   mat4x4b;///
+alias mat4x4!short  mat4x4s;///
+alias mat4x4!int    mat4x4i;///
+alias mat4x4!long   mat4x4l;///
+alias mat4x4!float  mat4x4f;///
+alias mat4x4!double mat4x4d;///
 
 unittest
 {
@@ -859,6 +889,6 @@ unittest
         mat2x4f C = A * B;
     }
 
-    assert(mat2i.diag(vec2i(1, 2)) == mat2i(1, 0, 
+    assert(mat2i.diag(vec2i(1, 2)) == mat2i(1, 0,
                                             0, 2));
 }

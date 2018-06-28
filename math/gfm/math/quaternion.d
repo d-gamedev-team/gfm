@@ -1,3 +1,4 @@
+///
 module gfm.math.quaternion;
 
 import std.math,
@@ -223,7 +224,7 @@ struct Quaternion(T)
             return cast(U)(m3);
         }
 
-        // Workaround Vector not being constructable through CTFE
+        /// Workaround Vector not being constructable through CTFE
         @nogc static Quaternion identity() pure nothrow @property
         {
             Quaternion q;
@@ -264,8 +265,8 @@ template isQuaternionInstantiation(U)
     enum bool isQuaternionInstantiation = is(typeof(isQuaternion(U.init)));
 }
 
-alias Quaternion!float quatf;
-alias Quaternion!double quatd;
+alias Quaternion!float quatf;///
+alias Quaternion!double quatd;///
 
 /// Linear interpolation, for quaternions.
 @nogc Quaternion!T lerp(T)(Quaternion!T a, Quaternion!T b, float t) pure nothrow
@@ -275,7 +276,7 @@ alias Quaternion!double quatd;
     return res;
 }
 
-
+/// Nlerp of quaternions
 /// Returns: Nlerp of quaternions.
 /// See_also: $(WEB keithmaggio.wordpress.com/2011/02/15/math-magician-lerp-slerp-and-nlerp/, Math Magician – Lerp, Slerp, and Nlerp)
 @nogc Quaternion!T Nlerp(T)(Quaternion!T a, Quaternion!T b, float t) pure nothrow
@@ -287,6 +288,7 @@ alias Quaternion!double quatd;
     return res;
 }
 
+/// Slerp of quaternions
 /// Returns: Slerp of quaternions. Slerp is more expensive than Nlerp.
 /// See_also: "Understanding Slerp, Then Not Using It"
 @nogc Quaternion!T slerp(T)(Quaternion!T a, Quaternion!T b, T t) pure nothrow
