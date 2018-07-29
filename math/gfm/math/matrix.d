@@ -83,6 +83,14 @@ struct Matrix(T, int R, int C)
                 v[i] = x;
         }
 
+        /// Assign with a scalar.
+        @nogc ref Matrix opAssign(U : T)(U x) pure nothrow
+        {
+            for (int i = 0; i < R * C; ++i)
+                v[i] = x;
+            return this;
+        }
+
         /// Assign with a samey matrice.
         @nogc ref Matrix opAssign(U : Matrix)(U x) pure nothrow
         {
@@ -891,4 +899,7 @@ unittest
 
     assert(mat2i.diag(vec2i(1, 2)) == mat2i(1, 0,
                                             0, 2));
+
+    // Construct with a single scalar
+    auto D = mat4f(1.0f);
 }
