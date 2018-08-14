@@ -673,9 +673,9 @@ private
     auto dp = dot(aN, bN);
 
     if (dp < 0)
-        return PI - 2 * asin((-bN-aN).length / 2);
+        return PI - 2 * asin((-bN-aN).magnitude / 2);
     else
-        return 2 * asin((bN-aN).length / 2);
+        return 2 * asin((bN-aN).magnitude / 2);
 }
 
 static assert(vec2f.sizeof == 8);
