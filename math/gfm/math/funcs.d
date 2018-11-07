@@ -10,6 +10,8 @@ import std.math,
        std.range,
        std.math;
 
+import gfm.math.vector : Vector;
+
 version( D_InlineAsm_X86 )
 {
     version = AsmX86;
@@ -20,15 +22,23 @@ else version( D_InlineAsm_X86_64 )
 }
 
 /// Convert from radians to degrees.
-@nogc T degrees(T)(T x) pure nothrow if (!isIntegral!T)
+@nogc T degrees(T)(in T x) pure nothrow
+if (isFloatingPoint!T || (is(T : Vector!(U, n), U, int n) && isFloatingPoint!U))
 {
-    return x * (180 / PI);
+    static if (is(T : Vector!(U, n), U, int n))
+        return x * U(180 / PI);
+    else
+        return x * T(180 / PI);
 }
 
 /// Convert from degrees to radians.
-@nogc T radians(T)(T x) pure nothrow if (!isIntegral!T)
+@nogc T radians(T)(in T x) pure nothrow
+if (isFloatingPoint!T || (is(T : Vector!(U, n), U, int n) && isFloatingPoint!U))
 {
-    return x * (PI / 180);
+    static if (is(T : Vector!(U, n), U, int n))
+        return x * U(PI / 180);
+    else
+        return x * T(PI / 180);
 }
 
 /// Linear interpolation, akin to GLSL's mix.
