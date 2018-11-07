@@ -51,7 +51,7 @@ void main()
 
     // create a shader program made of a single fragment shader
     string tunnelProgramSource =
-        q{#version 330 core
+        `#version 330 core
 
         #if VERTEX_SHADER
         in vec3 position;
@@ -83,7 +83,7 @@ void main()
             color = vec4(col * intensity * (u * 4.0), 1.0);
         }
         #endif
-    };
+    `;
 
     auto program = scoped!GLProgram(gl, tunnelProgramSource);
 
@@ -224,7 +224,7 @@ public:
 
         // create a shader program made of a single fragment shader
         string postprocProgramSource =
-            q{#version 330 core
+            `#version 330 core
 
                 #if VERTEX_SHADER
                 in vec3 position;
@@ -255,7 +255,7 @@ public:
 
                 }
                 #endif
-            };
+            `;
 
         _program = new GLProgram(gl, postprocProgramSource);
     }
