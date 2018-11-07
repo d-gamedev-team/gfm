@@ -20,11 +20,11 @@ double randNormal(RNG)(ref RNG rng, double mean = 0.0, double standardDeviation 
 
     do
     {
-        u1 = uniform(0.0, 1.0, rng);
+        u1 = uniform01(rng);
     } while (u1 == 0); // u1 must not be zero
-    double u2 = uniform(0.0, 1.0, rng);
+    double u2 = uniform01(rng);
     double r = sqrt(-2.0 * log(u1));
-    double theta = 2.0 * PI * u2;
+    double theta = 2.0 * double(PI) * u2;
     return mean + standardDeviation * r * sin(theta);
 }
 
@@ -32,7 +32,7 @@ double randNormal(RNG)(ref RNG rng, double mean = 0.0, double standardDeviation 
 double randExponential(RNG)(ref RNG rng, double mean = 1.0)
 {
     assert(mean > 0);
-    return -mean*log(uniform(0.0, 1.0, rng));
+    return -mean*log(uniform01(rng));
 }
 
 /// Returns: Gamma random sample.
@@ -56,7 +56,7 @@ double randGamma(RNG)(ref RNG rng, double shape, double scale)
             }
             while (v <= 0.0);
             v = v*v*v;
-            u = uniform(0.0, 1.0, rng);
+            u = uniform01(rng);
             xsquared = x*x;
             if (u < 1.0 -.0331*xsquared*xsquared || log(u) < 0.5*xsquared + d*(1.0 - v + log(v)))
                 return scale*d*v;
@@ -66,7 +66,7 @@ double randGamma(RNG)(ref RNG rng, double shape, double scale)
     {
         assert(shape > 0);
         double g = randGamma(rng, shape+1.0, 1.0);
-        double w = uniform(0.0, 1.0, rng);
+        double w = uniform01(rng);
         return scale*g*pow(w, 1.0/shape);
     }
 }
@@ -91,17 +91,17 @@ double randInverseGamma(RNG)(ref RNG rng, double shape, double scale)
 double randWeibull(RNG)(ref RNG rng, double shape, double scale)
 {
     assert(shape > 0 && scale > 0);
-    return scale * pow(-log(uniform(0.0, 1.0, rng)), 1.0 / shape);
+    return scale * pow(-log(uniform01(rng)), 1.0 / shape);
 }
 
 /// Returns: Cauchy sample.
 double randCauchy(RNG)(ref RNG rng, double median, double scale)
 {
     assert(scale > 0);
-    double p = uniform(0.0, 1.0, rng);
+    double p = uniform01(rng);
 
     // Apply inverse of the Cauchy distribution function to a uniform
-    return median + scale*tan(PI*(p - 0.5));
+    return median + scale*tan(double(PI)*(p - 0.5));
 }
 
 /// Returns: Student-t sample.
@@ -119,7 +119,7 @@ double randStudentT(RNG)(ref RNG rng, double degreesOfFreedom)
 /// Returns: Laplace distribution random sample (also known as the double exponential distribution).
 double randLaplace(RNG)(ref RNG rng, double mean, double scale)
 {
-    double u = uniform(0.0, 1.0, rng);
+    double u = uniform01(rng);
     return (u < 0.5) ? (mean + scale*log(2.0*u))
                         : (mean - scale*log(2*(1-u)));
 }
@@ -161,7 +161,7 @@ private
         do
         {
             k++;
-            p *= uniform(0.0, 1.0, rng);
+            p *= uniform01(rng);
         }
         while (p > L);
         return k - 1;
@@ -174,18 +174,18 @@ private
         // The article is on pages 29-35. The algorithm given here is on page 32.
 
         double c = 0.767 - 3.36/lambda;
-        double beta = PI/sqrt(3.0*lambda);
+        double beta = double(PI)/sqrt(3.0*lambda);
         double alpha = beta*lambda;
         double k = log(c) - lambda - log(beta);
 
         for(;;)
         {
-            double u = uniform(0.0, 1.0, rng);
+            double u = uniform01(rng);
             double x = (alpha - log((1.0 - u)/u))/beta;
             int n = cast(int)(floor(x + 0.5));
             if (n < 0)
                 continue;
-            double v = uniform(0.0, 1.0, rng);
+            double v = uniform01(rng);
             double y = alpha - beta*x;
             double temp = 1.0 + exp(y);
             double lhs = y + log(v/(temp*temp));
@@ -201,7 +201,7 @@ private
         if (n > 254)
         {
             double x = n + 1;
-            return (x - 0.5)*log(x) - x + 0.5*log(2*PI) + 1.0/(12.0*x);
+            return (x - 0.5)*log(x) - x + 0.5*log(2*double(PI)) + 1.0/(12.0*x);
         }
         else
         {
