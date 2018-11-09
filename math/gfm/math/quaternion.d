@@ -92,7 +92,7 @@ struct Quaternion(T)
             }
             else
             {
-                pitch = m.c[2][0] < 0.0f ? PI /2 : -PI / 2;
+                pitch = m.c[2][0] < 0.0f ? T(PI) /2 : -T(PI) / 2;
                 yaw = -atan2(m.c[0][1], m.c[1][1]);
                 roll = 0.0f;
             }

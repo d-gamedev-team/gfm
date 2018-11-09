@@ -673,7 +673,7 @@ private
     auto dp = dot(aN, bN);
 
     if (dp < 0)
-        return PI - 2 * asin((-bN-aN).magnitude / 2);
+        return T(PI) - 2 * asin((-bN-aN).magnitude / 2);
     else
         return 2 * asin((bN-aN).magnitude / 2);
 }
