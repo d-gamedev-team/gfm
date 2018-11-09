@@ -285,8 +285,8 @@ unittest
         T sqrtQ = sqrt(Q);
 
         outRoots[0] = -2 * sqrtQ * cos(theta / 3) - a1 / 3;
-        outRoots[1] = -2 * sqrtQ * cos((theta + 2 * PI) / 3) - a1 / 3;
-        outRoots[2] = -2 * sqrtQ * cos((theta + 4 * PI) / 3) - a1 / 3;
+        outRoots[1] = -2 * sqrtQ * cos((theta + 2 * T(PI)) / 3) - a1 / 3;
+        outRoots[2] = -2 * sqrtQ * cos((theta + 4 * T(PI)) / 3) - a1 / 3;
         return 3;
     }
     else

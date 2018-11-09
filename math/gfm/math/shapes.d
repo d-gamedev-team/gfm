@@ -165,7 +165,7 @@ struct Sphere(T, int N)
                 /// Returns: Circle area.
                 @nogc T area() pure const nothrow
                 {
-                    return PI * (radius * radius);
+                    return T(PI) * (radius * radius);
                 }
             }
         }
