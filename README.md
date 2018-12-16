@@ -1,6 +1,6 @@
 # GFM [![Build Status](https://travis-ci.org/d-gamedev-team/gfm.png?branch=master)](https://travis-ci.org/d-gamedev-team/gfm)
 
-<img alt="logo" src="https://cdn.rawgit.com/p0nce/gfm/master/logo.svg" width="200">
+<img alt="logo" src="https://cdn.combinatronics.com/p0nce/gfm/master/logo.svg" width="200">
 
 GFM is a lightweight library to ease the creation of video games / multimedia applications with the D programming language.
 
