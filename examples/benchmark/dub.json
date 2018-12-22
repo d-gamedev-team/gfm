@@ -1,0 +1,12 @@
+{
+    "targetType": "executable",
+    "name": "benchmark",
+    "sourcePaths": [ "." ],
+    "importPaths": [ "." ],
+    "mainSourceFile": "main.d",
+
+    "dependencies":
+    {
+        "gfm:math": {"path": "../../"}
+    }
+}
