@@ -91,6 +91,50 @@ void main()
         }
     }, 100);
 
+    benchmark("scalar+vec4f",
+    {
+        for (int k = 0; k < 1024*32; ++k)
+        {
+            for (int i = 0; i < N4; ++i)
+            {
+                pCf[i] = A[i] + pBf[i];
+            }
+        }
+    }, 100);
+
+    benchmark("scalar*vec4f",
+    {
+        for (int k = 0; k < 1024*32; ++k)
+        {
+            for (int i = 0; i < N4; ++i)
+            {
+                pCf[i] = A[i] * pBf[i];
+            }
+        }
+    }, 100);
+
+    benchmark("scalar-vec4f-",
+    {
+        for (int k = 0; k < 1024*32; ++k)
+        {
+            for (int i = 0; i < N4; ++i)
+            {
+                pCf[i] = A[i] - pBf[i];
+            }
+        }
+    }, 100);
+
+    benchmark("scalar/vec4f",
+    {
+        for (int k = 0; k < 1024*32; ++k)
+        {
+            for (int i = 0; i < N4; ++i)
+            {
+                pCf[i] = A[i] / pBf[i];
+            }
+        }
+    }, 100);
+
     benchmark("vec4f+vec4f",
     {
         for (int k = 0; k < 1024*32; ++k)
@@ -101,6 +145,29 @@ void main()
             }
         }
     }, 100);
+
+    benchmark("vec4f+=vec4f",
+    {
+    for (int k = 0; k < 1024*32; ++k)
+    {
+        for (int i = 0; i < N4; ++i)
+        {
+            pCf[i] += pAf[i];
+        }
+    }
+    }, 100);
+
+    benchmark("vec4f*=vec4f",
+    {
+    for (int k = 0; k < 1024*32; ++k)
+    {
+        for (int i = 0; i < N4; ++i)
+        {
+            pCf[i] *= pAf[i];
+        }
+    }
+    }, 100);
+
 
     benchmark("vec4f*vec4f",
     {
