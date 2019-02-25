@@ -1,14 +1,30 @@
 module gfm.opengl.uniform;
 
-import std.conv, 
+import std.conv,
        std.string,
        core.stdc.string;
 
 import derelict.opengl;
 
-import gfm.math.vector, 
+import gfm.math.vector,
        gfm.math.matrix,
        gfm.opengl.opengl;
+
+alias vec2ui = vec2!uint;
+alias vec3ui = vec3!uint;
+alias vec4ui = vec4!uint;
+alias mat3x2f = mat3x2!float;
+alias mat4x2f = mat4x2!float;
+alias mat2x3f = mat2x3!float;
+alias mat4x3f = mat4x3!float;
+alias mat2x4f = mat2x4!float;
+alias mat3x4f = mat3x4!float;
+alias mat3x2d = mat3x2!double;
+alias mat4x2d = mat4x2!double;
+alias mat2x3d = mat2x3!double;
+alias mat4x3d = mat4x3!double;
+alias mat2x4d = mat2x4!double;
+alias mat3x4d = mat3x4!double;
 
 
 /// Represents an OpenGL program uniform. Owned by a GLProgram.
@@ -51,7 +67,7 @@ final class GLUniform
             }
         }
 
-        /// Creates a fake disabled uniform variable, designed to cope with variables 
+        /// Creates a fake disabled uniform variable, designed to cope with variables
         /// that have been optimized out by the OpenGL driver, or those which do not exist.
         this(OpenGL gl, string name)
         {
@@ -93,11 +109,11 @@ final class GLUniform
             else
             {
                 if (!typeIsCompliant!T(_type))
-                    throw new OpenGLException(format("using type %s for setting uniform '%s' which has GLSL type '%s'", 
+                    throw new OpenGLException(format("using type %s for setting uniform '%s' which has GLSL type '%s'",
                                                      T.stringof, _name, GLSLTypeNameArray(_type, _size)));
 
                 if (count != _size)
-                    throw new OpenGLException(format("cannot set uniform '%s' of size %s with a value of size %s", 
+                    throw new OpenGLException(format("cannot set uniform '%s' of size %s with a value of size %s",
                                                      _name, _size, count));
 
                 // if first time or different value incoming
@@ -113,13 +129,13 @@ final class GLUniform
                 _firstSet = false;
             }
         }
-    
+
         /// Updates the uniform value.
         void use()
         {
             _shouldUpdateImmediately = true;
             update();
-        }       
+        }
 
         /// Unuses this uniform.
         void unuse()
@@ -259,7 +275,7 @@ final class GLUniform
                     glUniform1iv(_location, _size, cast(GLint*)_value);
                     break;
 
-                default: 
+                default:
                     break;
             }
             _gl.runtimeCheck();

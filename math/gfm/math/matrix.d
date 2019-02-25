@@ -778,92 +778,97 @@ alias mat4x4 mat4;///
 // Define a lot of type names
 // Most useful are probably mat4f and mat4d
 
-alias mat2!byte   mat2b;///
-alias mat2!short  mat2s;///
-alias mat2!int    mat2i;///
-alias mat2!long   mat2l;///
+deprecated alias mat2!byte   mat2b;///
+deprecated alias mat2!short  mat2s;///
+deprecated alias mat2!int    mat2i;///
+deprecated alias mat2!long   mat2l;///
 alias mat2!float  mat2f;///
 alias mat2!double mat2d;///
 
-alias mat3!byte   mat3b;///
-alias mat3!short  mat3s;///
-alias mat3!int    mat3i;///
-alias mat3!long   mat3l;///
+deprecated alias mat3!byte   mat3b;///
+deprecated alias mat3!short  mat3s;///
+deprecated alias mat3!int    mat3i;///
+deprecated alias mat3!long   mat3l;///
 alias mat3!float  mat3f;///
 alias mat3!double mat3d;///
 
-alias mat4!byte   mat4b;///
-alias mat4!short  mat4s;///
-alias mat4!int    mat4i;///
-alias mat4!long   mat4l;///
+deprecated alias mat4!byte   mat4b;///
+deprecated alias mat4!short  mat4s;///
+deprecated alias mat4!int    mat4i;///
+deprecated alias mat4!long   mat4l;///
 alias mat4!float  mat4f;///
 alias mat4!double mat4d;///
 
-alias mat2x2!byte   mat2x2b;///
-alias mat2x2!short  mat2x2s;///
-alias mat2x2!int    mat2x2i;///
-alias mat2x2!long   mat2x2l;///
+deprecated alias mat2x2!byte   mat2x2b;///
+deprecated alias mat2x2!short  mat2x2s;///
+deprecated alias mat2x2!int    mat2x2i;///
+deprecated alias mat2x2!long   mat2x2l;///
 alias mat2x2!float  mat2x2f;///
 alias mat2x2!double mat2x2d;///
 
-alias mat2x3!byte   mat2x3b;///
-alias mat2x3!short  mat2x3s;///
-alias mat2x3!int    mat2x3i;///
-alias mat2x3!long   mat2x3l;///
-alias mat2x3!float  mat2x3f;///
-alias mat2x3!double mat2x3d;///
+deprecated alias mat2x3!byte   mat2x3b;///
+deprecated alias mat2x3!short  mat2x3s;///
+deprecated alias mat2x3!int    mat2x3i;///
+deprecated alias mat2x3!long   mat2x3l;///
+deprecated alias mat2x3!float  mat2x3f;///
+deprecated alias mat2x3!double mat2x3d;///
 
-alias mat2x4!byte   mat2x4b;///
-alias mat2x4!short  mat2x4s;///
-alias mat2x4!int    mat2x4i;///
-alias mat2x4!long   mat2x4l;///
-alias mat2x4!float  mat2x4f;///
-alias mat2x4!double mat2x4d;///
+deprecated alias mat2x4!byte   mat2x4b;///
+deprecated alias mat2x4!short  mat2x4s;///
+deprecated alias mat2x4!int    mat2x4i;///
+deprecated alias mat2x4!long   mat2x4l;///
+deprecated alias mat2x4!float  mat2x4f;///
+deprecated alias mat2x4!double mat2x4d;///
 
-alias mat3x2!byte   mat3x2b;///
-alias mat3x2!short  mat3x2s;///
-alias mat3x2!int    mat3x2i;///
-alias mat3x2!long   mat3x2l;///
-alias mat3x2!float  mat3x2f;///
-alias mat3x2!double mat3x2d;///
+deprecated alias mat3x2!byte   mat3x2b;///
+deprecated alias mat3x2!short  mat3x2s;///
+deprecated alias mat3x2!int    mat3x2i;///
+deprecated alias mat3x2!long   mat3x2l;///
+deprecated alias mat3x2!float  mat3x2f;///
+deprecated alias mat3x2!double mat3x2d;///
 
-alias mat3x3!byte   mat3x3b;///
-alias mat3x3!short  mat3x3s;///
-alias mat3x3!int    mat3x3i;///
-alias mat3x3!long   mat3x3l;///
+deprecated alias mat3x3!byte   mat3x3b;///
+deprecated alias mat3x3!short  mat3x3s;///
+deprecated alias mat3x3!int    mat3x3i;///
+deprecated alias mat3x3!long   mat3x3l;///
 alias mat3x3!float  mat3x3f;///
 alias mat3x3!double mat3x3d;///
 
-alias mat3x4!byte   mat3x4b;///
-alias mat3x4!short  mat3x4s;///
-alias mat3x4!int    mat3x4i;///
-alias mat3x4!long   mat3x4l;///
-alias mat3x4!float  mat3x4f;///
-alias mat3x4!double mat3x4d;///
+deprecated alias mat3x4!byte   mat3x4b;///
+deprecated alias mat3x4!short  mat3x4s;///
+deprecated alias mat3x4!int    mat3x4i;///
+deprecated alias mat3x4!long   mat3x4l;///
+deprecated alias mat3x4!float  mat3x4f;///
+deprecated alias mat3x4!double mat3x4d;///
 
-alias mat4x2!byte   mat4x2b;///
-alias mat4x2!short  mat4x2s;///
-alias mat4x2!int    mat4x2i;///
-alias mat4x2!long   mat4x2l;///
-alias mat4x2!float  mat4x2f;///
-alias mat4x2!double mat4x2d;///
+deprecated alias mat4x2!byte   mat4x2b;///
+deprecated alias mat4x2!short  mat4x2s;///
+deprecated alias mat4x2!int    mat4x2i;///
+deprecated alias mat4x2!long   mat4x2l;///
+deprecated alias mat4x2!float  mat4x2f;///
+deprecated alias mat4x2!double mat4x2d;///
 
-alias mat4x3!byte   mat4x3b;///
-alias mat4x3!short  mat4x3s;///
-alias mat4x3!int    mat4x3i;///
-alias mat4x3!long   mat4x3l;///
-alias mat4x3!float  mat4x3f;///
-alias mat4x3!double mat4x3d;///
+deprecated alias mat4x3!byte   mat4x3b;///
+deprecated alias mat4x3!short  mat4x3s;///
+deprecated alias mat4x3!int    mat4x3i;///
+deprecated alias mat4x3!long   mat4x3l;///
+deprecated alias mat4x3!float  mat4x3f;///
+deprecated alias mat4x3!double mat4x3d;///
 
-alias mat4x4!byte   mat4x4b;///
-alias mat4x4!short  mat4x4s;///
-alias mat4x4!int    mat4x4i;///
-alias mat4x4!long   mat4x4l;///
+deprecated alias mat4x4!byte   mat4x4b;///
+deprecated alias mat4x4!short  mat4x4s;///
+deprecated alias mat4x4!int    mat4x4i;///
+deprecated alias mat4x4!long   mat4x4l;///
 alias mat4x4!float  mat4x4f;///
 alias mat4x4!double mat4x4d;///
 
 unittest
 {
+    alias mat2i = mat2!int;
+    alias mat2x3f = mat2x3!float;
+    alias mat3x4f = mat3x4!float;
+    alias mat2x4f = mat2x4!float;
+
     mat2i x = mat2i(0, 1,
                     2, 3);
     assert(x.c[0][0] == 0 && x.c[0][1] == 1 && x.c[1][0] == 2 && x.c[1][1] == 3);

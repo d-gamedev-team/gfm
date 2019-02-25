@@ -127,7 +127,7 @@ final class GLProgram
             int versionLine = -1;
 
             // scan source for #version and usage of shader macros in preprocessor lines
-            foreach(int lineIndex, string line; sourceLines)
+            foreach(size_t lineIndex, string line; sourceLines)
             {
                 // if the line is a preprocessor directive
                 if (match(line, directiveRegexp))
@@ -151,7 +151,7 @@ final class GLProgram
                             if (lineIndex != 0)
                                 gl._logger.warning("For maximum compatibility, #version directive should be the first line of your shader.");
 
-                            versionLine = lineIndex;
+                            versionLine = cast(int)lineIndex;
                         }
                     }
                 }
@@ -175,8 +175,8 @@ final class GLProgram
                             newSource ~= format("#define %s %d\n", define2, i == j ? 1 : 0);
 
                     // add all lines except the #version one
-                    foreach (int l, string line; sourceLines)
-                        if (l != versionLine)
+                    foreach (size_t l, string line; sourceLines)
+                        if (cast(int)l != versionLine)
                             newSource ~= line;
 
                     shaders ~= new GLShader(_gl, shaderTypes[i], newSource);
