@@ -53,7 +53,7 @@ https://github.com/d-gamedev-team/gfm/wiki/Changelog
 
 ## Dependencies
 
-You absolutely don't need to use the whole of GFM. Pick just what you need to minimize the amount of dependencies.
+You absolutely don't need to use the whole of GFM. Pick just the **sub-package** you need to minimize the amount of dependencies and code compiled.
 
 There is an ongoing work to delete things in GFM that exist elsewhere but better.
 See http://code.dlang.org to discover lots of useful libraries for your programs.
