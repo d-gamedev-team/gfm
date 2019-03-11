@@ -231,15 +231,26 @@ struct Matrix(T, int R, int C)
             return result;
         }
 
+        // matrix *= scalar
+        @nogc ref Matrix opOpAssign(string op, U : T)(U x) pure nothrow if (op == "*")
+        {
+            for (int i = 0; i < R * C; ++i)
+                v[i] *= x;
+            return this;
+        }
+
         /// Assignment operator with another samey matrix.
-        @nogc ref Matrix opOpAssign(string op, U)(U operand) pure nothrow if (is(U : Matrix))
+        @nogc ref Matrix opOpAssign(string op, U)(U operand) pure nothrow 
+            if (is(U : Matrix) && (op == "*" || op == "+" || op == "-"))
         {
             mixin("Matrix result = this " ~ op ~ " operand;");
             return opAssign!Matrix(result);
         }
 
-        /// Assignment operator with another samey matrix.
-        @nogc ref Matrix opOpAssign(string op, U)(U operand) pure nothrow if (isConvertible!U)
+        /// Matrix += <something convertible to a Matrix>
+        /// Matrix -= <something convertible to a Matrix>
+        @nogc ref Matrix opOpAssign(string op, U)(U operand) pure nothrow 
+            if ((isConvertible!U) && (op == "*" || op == "+" || op == "-"))
         {
             Matrix conv = operand;
             return opOpAssign!op(conv);
@@ -907,4 +918,35 @@ unittest
 
     // Construct with a single scalar
     auto D = mat4f(1.0f);
+}
+
+// Issue #206 (matrix *= scalar) not yielding matrix * scalar but matrix * matrix(scalar)
+unittest
+{
+    mat4f mvp = mat4f.identity;
+    mvp *= 2;
+    assert(mvp == mat4f(2, 0, 0, 0,
+                        0, 2, 0, 0,
+                        0, 0, 2, 0,
+                        0, 0, 0, 2));
+
+    mvp = mat4f.identity * 2;
+    assert(mvp == mat4f(2, 0, 0, 0,
+                        0, 2, 0, 0,
+                        0, 0, 2, 0,
+                        0, 0, 0, 2));
+
+
+    mvp = mat4f(1) * mat4f(1);
+    assert(mvp == mat4f(4, 4, 4, 4,
+                        4, 4, 4, 4,
+                        4, 4, 4, 4,
+                        4, 4, 4, 4));
+
+    mvp = mat4f(1);
+    mvp *= mat4f(1);
+    assert(mvp == mat4f(4, 4, 4, 4,
+                        4, 4, 4, 4,
+                        4, 4, 4, 4,
+                        4, 4, 4, 4));
 }
