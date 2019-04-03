@@ -9,7 +9,9 @@
 module gfm.math.simplerng;
 
 public import std.random;
-import std.math;
+import std.math : tan, PI;
+
+import gfm.math.common;
 
 /// Returns: Normal (Gaussian) random sample.
 /// See_also: Box-Muller algorithm.

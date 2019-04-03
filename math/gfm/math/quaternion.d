@@ -1,10 +1,11 @@
 ///
 module gfm.math.quaternion;
 
-import std.math,
-       std.string;
+import std.string,
+       std.math : atan2, PI;
 
-import gfm.math.vector,
+import gfm.math.common,
+       gfm.math.vector,
        gfm.math.matrix,
        funcs = gfm.math.funcs;
 

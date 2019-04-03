@@ -2,12 +2,13 @@
 module gfm.math.vector;
 
 import std.traits,
-       std.math,
        std.conv,
        std.array,
-       std.string;
+       std.string,
+       std.math : abs;
 
-import gfm.math.funcs;
+import gfm.math.common,
+       gfm.math.funcs;
 
 /**
  * Generic 1D small vector.

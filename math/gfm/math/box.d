@@ -3,12 +3,12 @@
  */
 module gfm.math.box;
 
-import std.math,
-       std.traits,
+import std.traits,
        std.conv,
        std.string;
 
-import gfm.math.vector,
+import gfm.math.common,
+       gfm.math.vector,
        gfm.math.funcs;
 
 /// N-dimensional half-open interval [a, b[.

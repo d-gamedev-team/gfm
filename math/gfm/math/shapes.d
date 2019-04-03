@@ -11,10 +11,11 @@
  */
 module gfm.math.shapes;
 
-import std.math,
-       std.traits;
+import std.traits,
+       std.math : abs, approxEqual, PI;
 
-import gfm.math.vector,
+import gfm.math.common,
+       gfm.math.vector,
        gfm.math.box;
 
 /// A Segment is 2 points.

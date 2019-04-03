@@ -1,14 +1,15 @@
 /// Custom sized 2-dimension Matrices
 module gfm.math.matrix;
 
-import std.math,
-       std.typetuple,
+import std.typetuple,
        std.traits,
        std.string,
        std.typecons,
-       std.conv;
+       std.conv,
+       std.math : tan;
 
-import gfm.math.vector,
+import gfm.math.common,
+       gfm.math.vector,
        gfm.math.shapes,
        gfm.math.quaternion;
 

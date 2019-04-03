@@ -5,12 +5,12 @@
  */
 module gfm.math.funcs;
 
-import std.math,
-       std.traits,
+import std.traits,
        std.range,
-       std.math;
+       std.math : abs, acos, asin, PI;
 
-import gfm.math.vector : Vector;
+import gfm.math.common,
+       gfm.math.vector : Vector;
 
 version( D_InlineAsm_X86 )
 {
