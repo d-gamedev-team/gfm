@@ -2,10 +2,12 @@
 module gfm.math.vector;
 
 import std.traits,
-       std.math,
        std.conv,
        std.array,
-       std.string;
+       std.string,
+       std.math : abs;
+
+import mir.math.common;
 
 import gfm.math.funcs;
 

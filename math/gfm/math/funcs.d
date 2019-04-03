@@ -5,10 +5,12 @@
  */
 module gfm.math.funcs;
 
-import std.math,
-       std.traits,
+import std.traits,
        std.range,
-       std.math;
+       std.math : abs, acos, asin;
+
+import mir.math.common,
+       mir.math.constant;
 
 import gfm.math.vector : Vector;
 

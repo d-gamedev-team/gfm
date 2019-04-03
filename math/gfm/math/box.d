@@ -3,10 +3,11 @@
  */
 module gfm.math.box;
 
-import std.math,
-       std.traits,
+import std.traits,
        std.conv,
        std.string;
+
+import mir.math.common;
 
 import gfm.math.vector,
        gfm.math.funcs;

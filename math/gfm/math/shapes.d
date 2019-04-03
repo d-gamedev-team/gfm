@@ -11,8 +11,11 @@
  */
 module gfm.math.shapes;
 
-import std.math,
-       std.traits;
+import std.traits,
+       std.math : abs, approxEqual;
+
+import mir.math.common,
+       mir.math.constant;
 
 import gfm.math.vector,
        gfm.math.box;

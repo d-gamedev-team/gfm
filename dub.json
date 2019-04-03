@@ -42,7 +42,10 @@
         {
             "name": "math",
             "sourcePaths": [ "math/gfm/math" ],
-            "importPaths": [ "math" ]
+            "importPaths": [ "math" ],
+            "dependencies": {
+                "mir-core": "~>0.2.0"
+            }
         },
         {
             "name": "integers",
