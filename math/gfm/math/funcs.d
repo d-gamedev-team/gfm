@@ -119,18 +119,12 @@ if (isFloatingPoint!T || (is(T : Vector!(U, n), U, int n) && isFloatingPoint!U))
 }
 
 /// Integer log2
-/// TODO: use bt intrinsics
 @nogc int ilog2(T)(T i) nothrow if (isIntegral!T)
 {
     assert(i > 0);
     assert(isPowerOf2(i));
-    int result = 0;
-    while (i > 1)
-    {
-        i = i / 2;
-        result = result + 1;
-    }
-    return result;
+    import core.bitop : bsr;
+    return bsr(i);
 }
 
 /// Computes next power of 2.
