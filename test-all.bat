@@ -1,11 +1,2 @@
-dub test gfm:core
 dub test gfm:math
-dub test gfm:net
-dub test gfm:enet
-dub test gfm:sdl2
-dub test gfm:opengl
-dub test gfm:assimp
-dub test gfm:freeimage
-dub test gfm:image
 dub test gfm:integers
-dub test gfm:logger
