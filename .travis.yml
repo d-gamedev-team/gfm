@@ -26,11 +26,7 @@ matrix:
    - d: gdc
 
 script:
-  - dub test --compiler=${DC} gfm:core
   - dub test --compiler=${DC} gfm:math
-  - dub test --compiler=${DC} gfm:sdl2
-  - dub test --compiler=${DC} gfm:opengl
-  - dub test --compiler=${DC} gfm:assimp
-  - dub test --compiler=${DC} gfm:freeimage
   - dub test --compiler=${DC} gfm:integers
-  - dub test --compiler=${DC} gfm:logger
+  - dub test -b unittest-opt --compiler=${DC} gfm:math
+  - dub test -b unittest-opt --compiler=${DC} gfm:integers

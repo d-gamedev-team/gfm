@@ -38,5 +38,13 @@
             "sourcePaths": [ "integers/gfm/integers" ],
             "importPaths": [ "integers" ]
         }
-    ]
+    ],
+
+    "buildTypes": 
+    {
+        "unittest-opt": 
+        {
+            "buildOptions": ["unittests", "optimize", "inline"]
+        }
+    }
 }

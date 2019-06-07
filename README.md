@@ -33,12 +33,7 @@ https://github.com/d-gamedev-team/gfm/wiki/Changelog
   * Also provide arbitrary sized integers, fixed point numbers, and half-float numbers in `gfm:integers`,
 
 
-## Dependencies
+## This library is really small now
 
-You absolutely don't need to use the whole of GFM. Pick just the **sub-package** you need to minimize the amount of dependencies and code compiled.
-
-There is an ongoing work to delete things in GFM that exist elsewhere but better.
+There used to be a lot more stuff in GFM previously.
 See http://code.dlang.org to discover lots of useful libraries for your programs.
-
-So you'll find that GFM actually decreases in size over time.
-
