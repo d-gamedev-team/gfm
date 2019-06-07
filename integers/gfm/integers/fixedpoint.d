@@ -152,7 +152,7 @@ struct FixedPoint(int M, int N)
         enum value_t ONE = cast(value_t)1 << N;
         enum value_t HALF = ONE >>> 1;
         enum value_t LOW_MASK = ONE - 1;
-        enum value_t HIGH_MASK = ~LOW_MASK;
+        enum value_t HIGH_MASK = ~cast(int)(LOW_MASK);
         static assert((ONE & LOW_MASK) == 0);
 
         // define types that can be converted to FixedPoint, but are not FixedPoint
