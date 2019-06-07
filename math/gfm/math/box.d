@@ -124,6 +124,36 @@ struct Box(T, int N)
             return true;
         }
 
+        static if (N >= 2)
+        {
+            /// Returns: true if it contains point `x`, `y`.
+            @nogc bool contains(T x, T y) pure const nothrow
+            {
+                assert(isSorted());
+                if ( !(x >= min.x && x < max.x) )
+                    return false;
+                if ( !(y >= min.y && y < max.y) )
+                    return false;
+                return true;
+            }
+        }
+
+        static if (N >= 3)
+        {
+            /// Returns: true if it contains point `x`, `y`, `z`.
+            @nogc bool contains(T x, T y, T z) pure const nothrow
+            {
+                assert(isSorted());
+                if ( !(x >= min.x && x < max.x) )
+                    return false;
+                if ( !(y >= min.y && y < max.y) )
+                    return false;
+                if ( !(z >= min.z && z < max.z) )
+                    return false;
+                return true;
+            }
+        }
+
         /// Returns: true if it contains box other.
         @nogc bool contains(Box other) pure const nothrow
         {
@@ -243,6 +273,36 @@ struct Box(T, int N)
         @nogc Box translate(bound_t offset) pure const nothrow
         {
             return Box(min + offset, max + offset);
+        }
+
+        static if (N >= 2)
+        {
+            /// Translate this Box by `x`, `y`.
+            @nogc Box translate(T x, T y) pure const nothrow
+            {
+                Box res = this;
+                res.min.x += x;
+                res.min.y += y;
+                res.max.x += x;
+                res.max.y += y;
+                return res;
+            }
+        }
+
+        static if (N >= 3)
+        {
+            /// Translate this Box by `x`, `y`.
+            @nogc Box translate(T x, T y, T z) pure const nothrow
+            {
+                Box res = this;
+                res.min.x += x;
+                res.min.y += y;
+                res.min.z += z;
+                res.max.x += x;
+                res.max.y += y;
+                res.max.z += z;
+                return res;
+            }
         }
 
         /// Shrinks the area of this Box.
@@ -373,6 +433,25 @@ alias box3!float box3f; /// 3D box with float coordinates.
 alias box2!double box2d; /// 2D box with double coordinates.
 alias box3!double box3d; /// 3D box with double coordinates.
 
+/// Returns: A 2D rectangle with point `x`,`y`, `width` and `height`.
+box2i rectangle(int x, int y, int width, int height) pure nothrow @nogc
+{
+    return box2i(x, y, x + width, y + height);
+}
+
+/// Returns: A 2D rectangle with point `x`,`y`, `width` and `height`.
+box2f rectanglef(float x, float y, float width, float height) pure nothrow @nogc
+{
+    return box2f(x, y, x + width, y + height);
+}
+
+/// Returns: A 2D rectangle with point `x`,`y`, `width` and `height`.
+box2d rectangled(double x, double y, double width, double height) pure nothrow @nogc
+{
+    return box2d(x, y, x + width, y + height);
+}
+
+
 unittest
 {
     box2i a = box2i(1, 2, 3, 4);
@@ -387,8 +466,11 @@ unittest
 
     box2i c = box2i(0, 0, 1,1);
     assert(c.translate(vec2i(3, 3)) == box2i(3, 3, 4, 4));
+    assert(c.translate(3, 3) == box2i(3, 3, 4, 4));
     assert(c.contains(vec2i(0, 0)));
+    assert(c.contains(0, 0));
     assert(!c.contains(vec2i(1, 1)));
+    assert(!c.contains(1, 1));
     assert(b.contains(b));
     box2i d = c.expand(vec2i(3, 3));
     assert(d.contains(vec2i(2, 2)));
@@ -410,6 +492,9 @@ unittest
     assert(a.intersection(box2i(10, 4, 10, 6)).empty);
 
     assert(box2i.rectangle(1, 2, 3, 4) == box2i(1, 2, 4, 6));
+    assert(rectangle(1, 2, 3, 4) == box2i(1, 2, 4, 6));
+    assert(rectanglef(1, 2, 3, 4) == box2f(1, 2, 4, 6));
+    assert(rectangled(1, 2, 3, 4) == box2d(1, 2, 4, 6));
 }
 
 /// True if `T` is a kind of Box
