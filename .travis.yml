@@ -28,5 +28,4 @@ matrix:
 script:
   - dub test --compiler=${DC} gfm:math
   - dub test --compiler=${DC} gfm:integers
-  - dub test -b unittest-opt --compiler=${DC} gfm:math
-  - dub test -b unittest-opt --compiler=${DC} gfm:integers
+
