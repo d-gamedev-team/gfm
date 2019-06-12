@@ -302,7 +302,6 @@ nothrow:
             return v[a..b];
         }
 
-        deprecated("Use squaredMagnitude instead") alias squaredLength = squaredMagnitude;
         /// Squared Euclidean length of the Vector
         /// Returns: squared length.
         @nogc T squaredMagnitude() pure const nothrow
@@ -321,7 +320,6 @@ nothrow:
 
         static if (isFloatingPoint!T)
         {
-            deprecated("Use magnitude instead") alias length = magnitude;
             /// Euclidean length of the vector
             /// Returns: Euclidean length
             @nogc T magnitude() pure const nothrow
@@ -329,7 +327,6 @@ nothrow:
                 return sqrt(squaredMagnitude());
             }
 
-            deprecated("Use inverseMagnitude instead") alias inverseLength = inverseMagnitude;
             /// Inverse Euclidean length of the vector
             /// Returns: Inverse of Euclidean length.
             @nogc T inverseMagnitude() pure const nothrow
@@ -337,7 +334,7 @@ nothrow:
                 return 1 / sqrt(squaredMagnitude());
             }
 
-            deprecated("Use fastInverseMagnitude instead") alias fastInverseLength = fastInverseMagnitude;
+            alias fastInverseLength = fastInverseMagnitude;
             /// Faster but less accurate inverse of Euclidean length.
             /// Returns: Inverse of Euclidean length.
             @nogc T fastInverseMagnitude() pure const nothrow
@@ -508,9 +505,6 @@ nothrow:
 /// True if `T` is some kind of `Vector`
 enum isVector(T) = is(T : Vector!U, U...);
 
-// Previous name, but the alias doesn't seem to show deprecation messages
-deprecated("Use isVector instead") alias isVectorInstantiation(T) = isVector!T;
-
 ///
 unittest
 {
@@ -537,36 +531,15 @@ template vec3(T) { alias Vector!(T, 3) vec3; }
 ///
 template vec4(T) { alias Vector!(T, 4) vec4; }
 
-deprecated alias vec2!byte   vec2b;  ///
-deprecated alias vec2!ubyte  vec2ub; ///
-deprecated alias vec2!short  vec2s;  ///
-deprecated alias vec2!ushort vec2us; ///
 alias vec2!int    vec2i;  ///
-deprecated alias vec2!uint   vec2ui; ///
-deprecated alias vec2!long   vec2l;  ///
-deprecated alias vec2!ulong  vec2ul; ///
 alias vec2!float  vec2f;  ///
 alias vec2!double vec2d;  ///
 
-deprecated alias vec3!byte   vec3b;  ///
-deprecated alias vec3!ubyte  vec3ub; ///
-deprecated alias vec3!short  vec3s;  ///
-deprecated alias vec3!ushort vec3us; ///
 alias vec3!int    vec3i;  ///
-deprecated alias vec3!uint   vec3ui; ///
-deprecated alias vec3!long   vec3l;  ///
-deprecated alias vec3!ulong  vec3ul; ///
 alias vec3!float  vec3f;  ///
 alias vec3!double vec3d;  ///
 
-deprecated alias vec4!byte   vec4b;  ///
-deprecated alias vec4!ubyte  vec4ub; ///
-deprecated alias vec4!short  vec4s;  ///
-deprecated alias vec4!ushort vec4us; ///
 alias vec4!int    vec4i;  ///
-deprecated alias vec4!uint   vec4ui; ///
-deprecated alias vec4!long   vec4l;  ///
-deprecated alias vec4!ulong  vec4ul; ///
 alias vec4!float  vec4f;  ///
 alias vec4!double vec4d;  ///
 
