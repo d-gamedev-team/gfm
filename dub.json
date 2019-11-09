@@ -31,7 +31,12 @@
         {
             "name": "math",
             "sourcePaths": [ "math/gfm/math" ],
-            "importPaths": [ "math" ]
+            "importPaths": [ "math" ],
+
+            "dependencies":
+            {
+                "intel-intrinsics": "~>1.0"
+            }
         },
         {
             "name": "integers",

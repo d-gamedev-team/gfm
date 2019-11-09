@@ -10,16 +10,9 @@ import std.math,
        std.range,
        std.math;
 
-import gfm.math.vector : Vector;
+import inteli.xmmintrin;
 
-version( D_InlineAsm_X86 )
-{
-    version = AsmX86;
-}
-else version( D_InlineAsm_X86_64 )
-{
-    version = AsmX86;
-}
+import gfm.math.vector : Vector;
 
 /// Convert from radians to degrees.
 @nogc T degrees(T)(in T x) pure nothrow
@@ -478,25 +471,16 @@ private
 /// SSE approximation of reciprocal square root.
 @nogc T inverseSqrt(T)(T x) pure nothrow if (isFloatingPoint!T)
 {
-    version(AsmX86)
+    static if (is(T == float))
     {
-        static if (is(T == float))
-        {
-            float result;
-
-            asm pure nothrow @nogc 
-            {
-                movss XMM0, x; 
-                rsqrtss XMM0, XMM0; 
-                movss result, XMM0; 
-            }
-            return result;
-        }
-        else
-            return 1 / sqrt(x);
+        __m128 V = _mm_set_ss(x);
+        V = _mm_rsqrt_ss(V);
+        return _mm_cvtss_f32(V);
     }
     else
+    {
         return 1 / sqrt(x);
+    }
 }
 
 unittest
