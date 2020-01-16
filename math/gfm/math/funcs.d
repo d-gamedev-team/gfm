@@ -167,7 +167,7 @@ in
 {
     assert(b > 0);
 }
-body
+do
 {
     if (a >= 0)
         a = a % b;
