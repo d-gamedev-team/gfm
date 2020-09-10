@@ -122,6 +122,18 @@ struct Matrix(T, int R, int C)
             return this;
         }
 
+        /// Assign with a static array of shape (R, C).
+        @nogc ref Matrix opAssign(U)(U x) pure nothrow
+            if ((isStaticArray!U) && isStaticArray!(typeof(x[0]))
+                && is(typeof(x[0][0]) : T)
+                && (U.length == R)
+                && (x[0].length == C))
+        {
+            foreach (i; 0..R)
+                rows[i] = x[i];
+            return this;
+        }
+
         /// Assign with a dynamic array of size R * C.
         @nogc ref Matrix opAssign(U)(U x) pure nothrow
             if ((isDynamicArray!U)
@@ -130,6 +142,20 @@ struct Matrix(T, int R, int C)
             assert(x.length == R * C);
             for (int i = 0; i < R * C; ++i)
                 v[i] = x[i];
+            return this;
+        }
+
+        /// Assign with a dynamic array of shape (R, C).
+        @nogc ref Matrix opAssign(U)(U x) pure nothrow
+            if ((isDynamicArray!U) && isDynamicArray!(typeof(x[0]))
+                && is(typeof(x[0][0]) : T))
+        {
+            assert(x.length == R);
+            foreach (i; 0..R)
+            {
+                assert(x[i].length == C);
+                rows[i] = x[i];
+            }
             return this;
         }
 
@@ -852,6 +878,37 @@ unittest
 
     // Construct with a single scalar
     auto D = mat4f(1.0f);
+    assert(D.v[] == [1, 1, 1, 1,   1, 1, 1, 1,   1, 1, 1, 1,   1, 1, 1, 1, ]);
+
+    {
+        double[4][3] starray = [
+            [ 0,  1,  2,  3],
+            [ 4,  5,  6,  7,],
+            [ 8,  9, 10, 11,],
+        ];
+
+        // starray has the shape 3x4
+        assert(starray.length == 3);
+        assert(starray[0].length == 4);
+
+        auto m = mat3x4(starray);
+        assert(m.v[] == [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, ]);
+    }
+
+    {
+        auto dynarray = [
+            [ 0,  1,  2,  3],
+            [ 4,  5,  6,  7,],
+            [ 8,  9, 10, 11,],
+        ];
+
+        // dynarray has the shape 3x4
+        assert(dynarray.length == 3);
+        assert(dynarray[0].length == 4);
+
+        auto m = mat3x4(dynarray);
+        assert(m.v[] == [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, ]);
+    }
 }
 
 // Issue #206 (matrix *= scalar) not yielding matrix * scalar but matrix * matrix(scalar)
