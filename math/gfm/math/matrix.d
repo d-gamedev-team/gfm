@@ -408,6 +408,7 @@ struct Matrix(T, int R, int C)
             /// Note: Matrix inversion is provided for 1x1, 2x2, 3x3 and 4x4 floating point matrices.
             @nogc Matrix inverse() pure const nothrow
             {
+                assert(c[0][0] != 0); // Programming error if matrix is not invertible.
                 return Matrix( 1 / c[0][0]);
             }
         }
@@ -419,7 +420,9 @@ struct Matrix(T, int R, int C)
             /// Note: Matrix inversion is provided for 1x1, 2x2, 3x3 and 4x4 floating point matrices.
             @nogc Matrix inverse() pure const nothrow
             {
-                T invDet = 1 / (c[0][0] * c[1][1] - c[0][1] * c[1][0]);
+                T det = (c[0][0] * c[1][1] - c[0][1] * c[1][0]);
+                assert(det != 0); // Programming error if matrix is not invertible.
+                T invDet = 1 / det;
                 return Matrix( c[1][1] * invDet, -c[0][1] * invDet,
                                    -c[1][0] * invDet,  c[0][0] * invDet);
             }
@@ -435,6 +438,7 @@ struct Matrix(T, int R, int C)
                 T det = c[0][0] * (c[1][1] * c[2][2] - c[2][1] * c[1][2])
                       - c[0][1] * (c[1][0] * c[2][2] - c[1][2] * c[2][0])
                       + c[0][2] * (c[1][0] * c[2][1] - c[1][1] * c[2][0]);
+                assert(det != 0); // Programming error if matrix is not invertible.
                 T invDet = 1 / det;
 
                 Matrix res = void;
@@ -471,6 +475,7 @@ struct Matrix(T, int R, int C)
                 T det3_201_123 = c[2][1] * det2_01_23 - c[2][2] * det2_01_13 + c[2][3] * det2_01_12;
 
                 T det = - det3_201_123 * c[3][0] + det3_201_023 * c[3][1] - det3_201_013 * c[3][2] + det3_201_012 * c[3][3];
+                assert(det != 0); // Programming error if matrix is not invertible.
                 T invDet = 1 / det;
 
                 T det2_03_01 = c[0][0] * c[3][1] - c[0][1] * c[3][0];
