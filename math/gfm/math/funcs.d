@@ -163,12 +163,8 @@ if (isFloatingPoint!T || (is(T : Vector!(U, n), U, int n) && isFloatingPoint!U))
 /// Signed integer modulo a/b where the remainder is guaranteed to be in [0..b[,
 /// even if a is negative. Only support positive dividers.
 @nogc T moduloWrap(T)(T a, T b) pure nothrow if (isSigned!T)
-in
 {
     assert(b > 0);
-}
-do
-{
     if (a >= 0)
         a = a % b;
     else
