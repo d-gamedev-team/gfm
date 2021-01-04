@@ -18,7 +18,7 @@ struct Box(T, int N)
 
     public
     {
-        alias Vector!(T, N) bound_t;
+        alias bound_t = Vector!(T, N);
 
         bound_t min; // not enforced, the box can have negative volume
         bound_t max;
@@ -58,7 +58,6 @@ struct Box(T, int N)
             }
         }
 
-
         @property
         {
             /// Returns: Dimensions of the box.
@@ -67,31 +66,69 @@ struct Box(T, int N)
                 return max - min;
             }
 
+            /// Sets size of the box assuming min point is the pivot.
+            /// Returns: Dimensions of the box.
+            @nogc bound_t size(bound_t value) pure nothrow
+            {
+                max = min + value;
+                return value;
+            }
+
             /// Returns: Center of the box.
             @nogc bound_t center() pure const nothrow
             {
                 return (min + max) / 2;
             }
 
-            /// Returns: Width of the box, always applicable.
             static if (N >= 1)
-            @nogc T width() pure const nothrow @property
             {
-                return max.x - min.x;
+                /// Returns: Width of the box, always applicable.
+                @nogc T width() pure const nothrow @property
+                {
+                    return max.x - min.x;
+                }
+
+                /// Sets width of the box assuming min point is the pivot.
+                /// Returns: Width of the box, always applicable.
+                @nogc T width(T value) pure nothrow @property
+                {
+                    max.x = min.x + value;
+                    return value;
+                }
             }
 
-            /// Returns: Height of the box, if applicable.
             static if (N >= 2)
-            @nogc T height() pure const nothrow @property
             {
-                return max.y - min.y;
+                /// Returns: Height of the box, if applicable.
+                @nogc T height() pure const nothrow @property
+                {
+                    return max.y - min.y;
+                }
+
+                /// Sets height of the box assuming min point is the pivot.
+                /// Returns: Height of the box, if applicable.
+                @nogc T height(T value) pure nothrow @property
+                {
+                    max.y = min.y + value;
+                    return value;
+                }
             }
 
-            /// Returns: Depth of the box, if applicable.
             static if (N >= 3)
-            @nogc T depth() pure const nothrow @property
             {
-                return max.z - min.z;
+                /// Returns: Depth of the box, if applicable.
+                @nogc T depth() pure const nothrow @property
+                {
+                    return max.z - min.z;
+                }
+
+                /// Sets depth of the box assuming min point is the pivot.
+                /// Returns: Depth of the box, if applicable.
+                @nogc T depth(T value) pure nothrow @property
+                {
+                    max.z = min.z + value;
+                    return value;
+                }
             }
 
             /// Returns: Signed volume of the box.
@@ -356,6 +393,23 @@ struct Box(T, int N)
             return true;
         }
 
+        /// Returns: Absolute value of the Box to ensure each dimension of the
+        /// box is >= 0.
+        @nogc Box abs() pure const nothrow
+        {
+            Box!(T, N) s = this;
+            for (int i = 0; i < N; ++i)
+            {
+                if (s.min.v[i] > s.max.v[i])
+                {
+                    T tmp = s.min.v[i];
+                    s.min.v[i] = s.max.v[i];
+                    s.max.v[i] = tmp;
+                }
+            }
+            return s;
+        }
+
         /// Assign with another box.
         @nogc ref Box opAssign(U)(U x) nothrow if (isBox!U)
         {
@@ -461,8 +515,69 @@ unittest
     box2i b = box2i(vec2i(1, 2), vec2i(3, 4));
     assert(a == b);
 
+    box3i q = box3i(-3, -2, -1, 0, 1, 2);
+    q.bound_t s = q.bound_t(11, 17, 19);
+    q.bound_t q_min = q.min;
+    assert((q.size = s) == s);
+    assert(q.size == s);
+    assert(q.min == q_min);
+    assert(q.max == q.min + s);
+    assert(q.max -  q.min == s);
+
+    assert((q.width = s.z) == s.z);
+    assert(q.width == s.z);
+    assert(q.min.x == q_min.x);
+    assert(q.max.x == q.min.x + s.z);
+    assert(q.max.x -  q.min.x == s.z);
+
+    assert((q.height = s.y) == s.y);
+    assert(q.height == s.y);
+    assert(q.min.y == q_min.y);
+    assert(q.max.y == q.min.y + s.y);
+    assert(q.max.y -  q.min.y == s.y);
+
+    assert((q.depth = s.x) == s.x);
+    assert(q.depth == s.x);
+    assert(q.min.z == q_min.z);
+    assert(q.max.z == q.min.z + s.x);
+    assert(q.max.z -  q.min.z == s.x);
+
+    assert(q.size == s.zyx);
+
+    box3i n = box3i(2, 1, 0, -1, -2, -3);
+    assert(n.abs == box3i(-1, -2, -3, 2, 1, 0));
+
     box2f bf = cast(box2f)b;
     assert(bf == box2f(1.0f, 2.0f, 3.0f, 4.0f));
+
+    box3f qf = box3f(-0, 1f, 2.5f, 3.25f, 5.125f, 7.0625f);
+    qf.bound_t sf = qf.bound_t(-11.5f, -17.25f, -19.125f);
+    qf.bound_t qf_min = qf.min;
+    assert((qf.size = sf) == sf);
+    assert(qf.size == sf);
+    assert(qf.min == qf_min);
+    assert(qf.max == qf.min + sf);
+    assert(qf.max -  qf.min == sf);
+
+    assert((qf.width = sf.z) == sf.z);
+    assert(qf.width == sf.z);
+    assert(qf.min.x == qf_min.x);
+    assert(qf.max.x == qf.min.x + sf.z);
+    assert(qf.max.x -  qf.min.x == sf.z);
+
+    assert((qf.height = sf.y) == sf.y);
+    assert(qf.height == sf.y);
+    assert(qf.min.y == qf_min.y);
+    assert(qf.max.y == qf.min.y + sf.y);
+    assert(qf.max.y -  qf.min.y == sf.y);
+
+    assert((qf.depth = sf.x) == sf.x);
+    assert(qf.depth == sf.x);
+    assert(qf.min.z == qf_min.z);
+    assert(qf.max.z == qf.min.z + sf.x);
+    assert(qf.max.z -  qf.min.z == sf.x);
+
+    assert(qf.size == sf.zyx);
 
     box2i c = box2i(0, 0, 1,1);
     assert(c.translate(vec2i(3, 3)) == box2i(3, 3, 4, 4));
