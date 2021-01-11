@@ -168,6 +168,20 @@ nothrow:
             return opEquals(conv);
         }
 
+        @nogc int opCmp(U)(in U other) pure const nothrow
+            if (is(U : Vector))
+        {
+            int difference = 0;
+            for (int i = 0; i < N; ++i)
+            {
+                if (v[i] > other.v[i])
+                    difference += 1;
+                else if (v[i] < other.v[i])
+                    difference += -1;
+            }
+            return difference;
+        }
+
         @nogc Vector opUnary(string op)() pure const nothrow
             if (op == "+" || op == "-" || op == "~" || op == "!")
         {
@@ -684,6 +698,9 @@ unittest
     assert(a == c);
     assert(vec2l(a) == vec2l(a));
     assert(vec2l(a) == d);
+    vec2i e = vec2i(0, 2);
+    assert(a < e);
+    assert(a2 < e);
 
     vec4i x = [4, 5, 6, 7];
     assert(x == x);
