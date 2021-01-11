@@ -698,9 +698,9 @@ unittest
     assert(a == c);
     assert(vec2l(a) == vec2l(a));
     assert(vec2l(a) == d);
-    vec2i e = vec2i(0, 2);
-    assert(a < e);
-    assert(a2 < e);
+    vec2i aDoubled = vec2i(0, 2);
+    assert(a < aDoubled);
+    assert(a2 < aDoubled);
 
     vec4i x = [4, 5, 6, 7];
     assert(x == x);
