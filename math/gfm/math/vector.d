@@ -21,7 +21,7 @@ struct Vector(T, ubyte N)
 nothrow:
     public
     {
-        static assert(N >= 1);
+        static assert(N > 0);
 
         // fields definition
         union
@@ -32,22 +32,26 @@ nothrow:
                 static if (N >= 1)
                 {
                     T x;
-                    alias x r;
+                    alias r = x;
+                    alias s = x;
                 }
                 static if (N >= 2)
                 {
                     T y;
-                    alias y g;
+                    alias g = y;
+                    alias t = y;
                 }
                 static if (N >= 3)
                 {
                     T z;
-                    alias z b;
+                    alias b = z;
+                    alias p = z;
                 }
                 static if (N >= 4)
                 {
                     T w;
-                    alias w a;
+                    alias a = w;
+                    alias q = w;
                 }
             }
         }
@@ -240,14 +244,97 @@ nothrow:
         /// vec4i vi = [4, 1, 83, 10];
         /// assert(vi.zxxyw == [83, 4, 4, 1, 10]);
         /// ---
-        @nogc @property auto opDispatch(string op, U = void)() pure const nothrow if (isValidSwizzle!(op))
+        @nogc @property auto opDispatch(string name)() pure const nothrow
+            if (name.length > 1)
         {
-            alias Vector!(T, op.length) returnType;
-            returnType res = void;
-            enum indexTuple = swizzleTuple!op;
-            foreach(i, index; indexTuple)
-                res.v[i] = v[index];
-            return res;
+            Vector!(T, name.length) result = void;
+
+            static foreach (i, c; name)
+            {
+                static if (c == 'x')
+                {
+                    result.v[i] = this.x;
+                }
+                else static if (c == 'y')
+                {
+                    result.v[i] = this.y;
+                }
+                else static if (c == 'z')
+                {
+                    result.v[i] = this.z;
+                }
+                else static if (c == 'w')
+                {
+                    result.v[i] = this.w;
+                }
+                else
+                    static assert(0, "Invalid vector swizzle.");
+                    // Silent error, need to fix the compiler
+            }
+
+            return result;
+        }
+
+        @nogc @property auto opDispatch(string name)() pure const nothrow
+            if (name.length > 1)
+        {
+            Vector!(T, name.length) result = void;
+
+            static foreach (i, c; name)
+            {
+                static if (c == 'r')
+                {
+                    result.v[i] = this.r;
+                }
+                else static if (c == 'g')
+                {
+                    result.v[i] = this.g;
+                }
+                else static if (c == 'b')
+                {
+                    result.v[i] = this.b;
+                }
+                else static if (c == 'a')
+                {
+                    result.v[i] = this.a;
+                }
+                else
+                    static assert(0, "Invalid vector swizzle.");
+                    // Silent error, need to fix the compiler
+            }
+
+            return result;
+        }
+
+        @nogc @property auto opDispatch(string name)() pure const nothrow
+            if (name.length > 1)
+        {
+            Vector!(T, name.length) result = void;
+
+            static foreach (i, c; name)
+            {
+                static if (c == 's')
+                {
+                    result.v[i] = this.s;
+                }
+                else static if (c == 't')
+                {
+                    result.v[i] = this.t;
+                }
+                else static if (c == 'p')
+                {
+                    result.v[i] = this.p;
+                }
+                else static if (c == 'q')
+                {
+                    result.v[i] = this.q;
+                }
+                else
+                    static assert(0, "Invalid vector swizzle.");
+                    // Silent error, need to fix the compiler
+            }
+
+            return result;
         }
 
         /// Support swizzling assignment like in shader languages.
@@ -258,15 +345,85 @@ nothrow:
         /// v.yz = v.zx;
         /// assert(v == [0, 2, 0]);
         /// ---
-        @nogc @property void opDispatch(string op, U)(U x) pure
-            if ((op.length >= 2)
-                && (isValidSwizzleUnique!op)                   // v.xyy will be rejected
-                && is(typeof(Vector!(T, op.length)(x)))) // can be converted to a small vector of the right size
+        @nogc @property void opDispatch(string name, U, size_t M)(Vector!(U, M) vec) pure
+            if (name.length == M)
         {
-            Vector!(T, op.length) conv = x;
-            enum indexTuple = swizzleTuple!op;
-            foreach(i, index; indexTuple)
-                v[index] = conv[i];
+            static foreach (i, c; name)
+            {
+                static if (c == 'x')
+                {
+                    this.x = vec.v[i];
+                }
+                else static if (c == 'y')
+                {
+                    this.y = vec.v[i];
+                }
+                else static if (c == 'z')
+                {
+                    this.z = vec.v[i];
+                }
+                else static if (c == 'w')
+                {
+                    this.w = vec.v[i];
+                }
+                else
+                    static assert(0, "Invalid vector swizzle.");
+                    // Silent error, need to fix the compiler
+            }
+        }
+
+        @nogc @property void opDispatch(string name, U, size_t M)(Vector!(U, M) vec) pure
+            if (name.length == M)
+        {
+            static foreach (i, c; name)
+            {
+                static if (c == 'r')
+                {
+                    this.x = vec.v[i];
+                }
+                else static if (c == 'g')
+                {
+                    this.y = vec.v[i];
+                }
+                else static if (c == 'b')
+                {
+                    this.z = vec.v[i];
+                }
+                else static if (c == 'a')
+                {
+                    this.w = vec.v[i];
+                }
+                else
+                    static assert(0, "Invalid vector swizzle.");
+                    // Silent error, need to fix the compiler
+            }
+        }
+
+        @nogc @property void opDispatch(string name, U, size_t M)(Vector!(U, M) vec) pure
+            if (name.length == M)
+        {
+            static foreach (i, c; name)
+            {
+                static if (c == 's')
+                {
+                    this.x = vec.v[i];
+                }
+                else static if (c == 't')
+                {
+                    this.y = vec.v[i];
+                }
+                else static if (c == 'p')
+                {
+                    this.z = vec.v[i];
+                }
+                else static if (c == 'q')
+                {
+                    this.w = vec.v[i];
+                }
+                else
+                    static assert(0, "Invalid vector swizzle.");
+                    // Silent error, need to fix the compiler
+            }
         }
 
         /// Casting to small vectors of the same size.
@@ -416,89 +573,6 @@ nothrow:
         template isForeign(T)
         {
             enum bool isForeign = (!isConvertible!T) && (!is(T: Vector));
-        }
-
-        template isValidSwizzle(string op, int lastSwizzleClass = -1)
-        {
-            static if (op.length == 0)
-                enum bool isValidSwizzle = true;
-            else
-            {
-                enum len = op.length;
-                enum int swizzleClass = swizzleClassify!(op[0]);
-                enum bool swizzleClassValid = (lastSwizzleClass == -1 || (swizzleClass == lastSwizzleClass));
-                enum bool isValidSwizzle = (swizzleIndex!(op[0]) != -1)
-                                         && swizzleClassValid
-                                         && isValidSwizzle!(op[1..len], swizzleClass);
-            }
-        }
-
-        template searchElement(char c, string s)
-        {
-            static if (s.length == 0)
-            {
-                enum bool result = false;
-            }
-            else
-            {
-                enum string tail = s[1..s.length];
-                enum bool result = (s[0] == c) || searchElement!(c, tail).result;
-            }
-        }
-
-        template hasNoDuplicates(string s)
-        {
-            static if (s.length == 1)
-            {
-                enum bool result = true;
-            }
-            else
-            {
-                enum tail = s[1..s.length];
-                enum bool result = !(searchElement!(s[0], tail).result) && hasNoDuplicates!(tail).result;
-            }
-        }
-
-        // true if the swizzle has at the maximum one time each letter
-        template isValidSwizzleUnique(string op)
-        {
-            static if (isValidSwizzle!op)
-                enum isValidSwizzleUnique = hasNoDuplicates!op.result;
-            else
-                enum bool isValidSwizzleUnique = false;
-        }
-
-        template swizzleIndex(char c)
-        {
-            static if((c == 'x' || c == 'r') && N >= 1)
-                enum swizzleIndex = 0;
-            else static if((c == 'y' || c == 'g') && N >= 2)
-                enum swizzleIndex = 1;
-            else static if((c == 'z' || c == 'b') && N >= 3)
-                enum swizzleIndex = 2;
-            else static if ((c == 'w' || c == 'a') && N >= 4)
-                enum swizzleIndex = 3;
-            else
-                enum swizzleIndex = -1;
-        }
-
-        template swizzleClassify(char c)
-        {
-            static if(c == 'x' || c == 'y' || c == 'z' || c == 'w')
-                enum swizzleClassify = 0;
-            else static if(c == 'r' || c == 'g' || c == 'b' || c == 'a')
-                enum swizzleClassify = 1;
-            else
-                enum swizzleClassify = -1;
-        }
-
-        template swizzleTuple(string op)
-        {
-            enum opLength = op.length;
-            static if (op.length == 0)
-                enum swizzleTuple = [];
-            else
-                enum swizzleTuple = [ swizzleIndex!(op[0]) ] ~ swizzleTuple!(op[1..op.length]);
         }
     }
 }
