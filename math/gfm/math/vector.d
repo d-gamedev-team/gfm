@@ -56,46 +56,35 @@ nothrow:
             }
         }
 
-        /// Construct a Vector with a `T[]` or the values as arguments
-        @nogc this(Args...)(Args args) pure nothrow
+        alias ElementType = T;
+        enum ubyte elementCount = N;
+
+        this(Args...)(Args args) pure nothrow
         {
-            static if (args.length == 1)
+            // We rely on compiler to unroll those loops
+            ubyte i = 0;
+            foreach (arg; args)
             {
-                // Construct a Vector from a single value.
-                opAssign!(Args[0])(args[0]);
-            }
-            else
-            {
-                // validate the total argument count across scalars and vectors
-                template argCount(T...) {
-                    static if(T.length == 0)
-                        enum argCount = 0; // done recursing
-                    else static if(isVector!(T[0]))
-                        enum argCount = T[0]._N + argCount!(T[1..$]);
-                    else
-                        enum argCount = 1 + argCount!(T[1..$]);
-                }
-
-                static assert(argCount!Args <= N, "Too many arguments in vector constructor");
-
-                int index = 0;
-                foreach(arg; args)
+                static if ( is(typeof(arg) : Vector!(U, M), U : T, size_t M) ||
+                            is(typeof(arg) : U[M], U : T, size_t M) ||
+                            is(typeof(arg) : U[], U : T))
                 {
-                    static if (isAssignable!(T, typeof(arg)))
+                    foreach (e; arg)
                     {
-                        v[index] = arg;
-                        index++; // has to be on its own line (DMD 2.068)
+                        assert(i < N, "Too many arguments in vector constructor.");
+                        this.v[i++] = e;
                     }
-                    else static if (isVector!(typeof(arg)) && isAssignable!(T, arg._T))
-                    {
-                        mixin(generateLoopCode!("v[index + @] = arg[@];", arg._N)());
-                        index += arg._N;
-                    }
-                    else
-                        static assert(false, "Unrecognized argument in Vector constructor");
                 }
-                assert(index == N, "Bad arguments in Vector constructor");
+                else static if (is(typeof(arg) : U, U : T))
+                {
+                    assert(i < N, "Too many arguments in vector constructor.");
+                    this.v[i++] = arg;
+                }
+                else
+                    static assert(0, "Incompatible arguments in vector constructor.");
             }
+
+            assert(i == N, "Not enough arguments in vector constructor.");
         }
 
         /// Assign a Vector from a compatible type.
