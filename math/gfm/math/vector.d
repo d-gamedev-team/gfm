@@ -10,12 +10,13 @@ import std.traits,
 import gfm.math.funcs;
 
 /**
- * Generic 1D small vector.
+ * Generic N-Dimensional vector.
  * Params:
- *    N = number of elements
  *    T = type of elements
+ *    N = number of elements
  */
-struct Vector(T, int N)
+struct Vector(T, ubyte N)
+    if (isNumeric!T)
 {
 nothrow:
     public
