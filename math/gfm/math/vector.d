@@ -177,12 +177,16 @@ struct Vector(T, ubyte N)
                 static assert(0, "Cannot check equality between " ~ V.stringof ~ " and " ~ Vector.stringof);
         }
 
-        @nogc Vector opUnary(string op)() pure const nothrow
+        @nogc auto opUnary(string op)() pure const nothrow
             if (op == "+" || op == "-" || op == "~" || op == "!")
         {
-            Vector res = void;
-            mixin(generateLoopCode!("res.v[@] = " ~ op ~ " v[@];", N)());
-            return res;
+            alias U = Unqual!(typeof(mixin(op ~ "this.x")));
+            Vector!(U, N) result = void;
+
+            foreach (i, e; this.v)
+                mixin("result.v[i] = " ~ op ~ "e;");
+
+            return result;
         }
 
         @nogc ref Vector opOpAssign(string op, U)(U operand) pure nothrow
