@@ -707,9 +707,9 @@ struct Vector(T, ubyte N)
 
         /// Squared Euclidean distance between this vector and another one
         /// Returns: squared Euclidean distance.
-        @nogc T squaredDistanceTo(Vector v) pure const nothrow
+        @nogc T squaredDistanceTo(Vector vec) pure const nothrow
         {
-            return (v - this).squaredMagnitude();
+            return cast(T)(vec - this).squaredMagnitude();
         }
 
         static if (isFloatingPoint!T)
@@ -795,24 +795,7 @@ struct Vector(T, ubyte N)
     private
     {
         enum _N = N;
-        alias T _T;
-
-        // define types that can be converted to this, but are not the same type
-        template isConvertible(T)
-        {
-            enum bool isConvertible = (!is(T : Vector))
-            && is(typeof(
-                {
-                    T x;
-                    Vector v = x;
-                }()));
-        }
-
-        // define types that can't be converted to this
-        template isForeign(T)
-        {
-            enum bool isForeign = (!isConvertible!T) && (!is(T: Vector));
-        }
+        alias _T = T;
     }
 }
 
@@ -822,14 +805,14 @@ enum isVector(T) = is(T : Vector!U, U...);
 ///
 unittest
 {
-    static assert(isVector!vec2f);
-    static assert(isVector!vec3d);
-    static assert(isVector!(vec4!real));
+    static assert( isVector!vec2f);
+    static assert( isVector!vec3d);
+    static assert( isVector!(vec4!real));
     static assert(!isVector!float);
 }
 
 /// Get the numeric type used to measure a vectors's coordinates.
-alias DimensionType(T : Vector!U, U...) = U[0];
+alias DimensionType(T : Vector!(U, M), U, size_t M) = U;
 
 ///
 unittest
@@ -1035,7 +1018,7 @@ unittest
     static assert(!is(typeof(h.xx = h.yz)));
     vec4ub j;
 
-    assert(lerp(vec2f(-10, -1), vec2f(10, 1), 0.5) == vec2f(0, 0));
+    assert(lerp(vec2f(-10, -1), vec2f(10, 1), 0.5f) == vec2f(0, 0));
 
     // larger vectors
     alias Vector!(float, 5) vec5f;
@@ -1058,4 +1041,3 @@ unittest
 
     assert(absByElem(vec3i(-1, 0, 2)) == vec3i(1, 0, 2));
 }
-
