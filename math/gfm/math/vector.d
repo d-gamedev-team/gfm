@@ -908,6 +908,9 @@ static assert(vec4i.sizeof == 16);
 
 unittest
 {
+    import core.exception;
+    import std.exception;
+
     assert( vec2i.isValidSwizzle("xyx"));
     assert(!vec2i.isValidSwizzle("xyz"));
     assert( vec4i.isValidSwizzle("brra"));
@@ -964,11 +967,11 @@ unittest
     //g[0..2] = 1u;
     //assert(g == [2, 1, 0]);
 
-    assert(vec2i(4, 5) + 1 == vec2i(5,6));
-    assert(vec2i(4, 5) - 1 == vec2i(3,4));
-    assert(1 + vec2i(4, 5) == vec2i(5,6));
+    assert(vec2i(4, 5) + 1 == vec2i(5, 6));
+    assert(vec2i(4, 5) - 1 == vec2i(3, 4));
+    assert(1 + vec2i(4, 5) == vec2i(5, 6));
     assert(vec3f(1,1,1) * 0 == 0);
-    assert(1.0 * vec3d(4,5,6) == vec3f(4,5.0f,6.0));
+    assert(1.0 * vec3d(4,5,6) == vec3f(4, 5.0f, 6.0));
 
     auto dx = vec2i(1,2);
     auto dy = vec2i(4,5);
@@ -1000,9 +1003,17 @@ unittest
 
     // the ctor should not compile if given too many arguments
     static assert(!is(typeof(vec2f(1, 2, 3))));
-    static assert(!is(typeof(vec2f(vec2f(1, 2), 3))));
-    static assert( is(typeof(vec3f(vec2f(1, 2), 3))));
-    static assert( is(typeof(vec3f(1, 2, 3))));
+    bool thrown = false;
+    try
+    {
+        vec2f(vec2f(1, 2), 3);
+    }
+    catch (AssertError)
+        thrown = true;
+    assert(thrown); // Should throw
+
+    vec3f(vec2f(1, 2), 3);
+    vec3f(1, 2, 3);
 
     assert(absByElem(vec3i(-1, 0, 2)) == vec3i(1, 0, 2));
 }
