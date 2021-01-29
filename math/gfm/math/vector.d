@@ -143,36 +143,38 @@ struct Vector(T, ubyte N)
         /// Returns: a pointer to content.
         @nogc inout(T)* ptr() pure inout nothrow @property
         {
-            return v.ptr;
+            return this.v.ptr;
         }
 
         /// Converts to a pretty string.
         string toString() const nothrow
         {
             try
-                return format("%s", v);
+                return format("%s", this.v);
             catch (Exception e)
                 assert(false); // should not happen since format is right
         }
 
-        @nogc bool opEquals(U)(U other) pure const nothrow
-            if (is(U : Vector))
+        @nogc bool opEquals(V)(V arg) pure const nothrow
         {
-            for (int i = 0; i < N; ++i)
+            static if (is(V : Vector!(U, M), U, size_t M))
             {
-                if (v[i] != other.v[i])
-                {
-                    return false;
-                }
+                return this.v == arg.v;
             }
-            return true;
-        }
-
-        @nogc bool opEquals(U)(U other) pure const nothrow
-            if (isConvertible!U)
-        {
-            Vector conv = other;
-            return opEquals(conv);
+            else static if (is(V : U[M], U, size_t M) ||
+                            is(V : U[], U))
+            {
+                return this.v == arg;
+            }
+            else static if (is(V : T))
+            {
+                foreach (e; this.v)
+                    if (e != arg)
+                        return false;
+                return true;
+            }
+            else
+                static assert(0, "Cannot check equality between " ~ V.stringof ~ " and " ~ Vector.stringof);
         }
 
         @nogc Vector opUnary(string op)() pure const nothrow
