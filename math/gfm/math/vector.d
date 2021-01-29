@@ -189,43 +189,121 @@ struct Vector(T, ubyte N)
             return result;
         }
 
-        @nogc ref Vector opOpAssign(string op, U)(U operand) pure nothrow
-            if (is(U : Vector))
+        @nogc ref Vector opOpAssign(string op, V)(V arg) pure nothrow
         {
-            mixin(generateLoopCode!("v[@] " ~ op ~ "= operand.v[@];", N)());
+            static if (is(V : Vector!(U, M), U, size_t M))
+            {
+                static assert(N == M, "Vector lengths don't match.");
+
+                foreach (i, e; arg.v)
+                    mixin("this.v[i] " ~ op ~ "= e;");
+            }
+            else static if (is(V : U[M], U, size_t M))
+            {
+                static assert(N == M, "Vector and array lengths don't match.");
+
+                foreach (i, e; arg)
+                    mixin("this.v[i] " ~ op ~ "= e;");
+            }
+            else static if (is(V : U[], U))
+            {
+                assert(N == arg.length, "Vector and array lengths don't match.");
+
+                foreach (i, e; arg)
+                    mixin("this.v[i] " ~ op ~ "= e;");
+            }
+            else static if (isNumeric!V)
+            {
+                foreach (i; 0 .. N)
+                    mixin("this.v[i] " ~ op ~ "= arg;");
+            }
+            else
+                static assert(0, "Cannot apply operator \"" ~ op ~ "\" to types " ~ V.stringof ~ " and " ~ Vector.stringof);
+
             return this;
         }
 
-        @nogc ref Vector opOpAssign(string op, U)(U operand) pure nothrow if (isConvertible!U)
+        @nogc auto opBinary(string op, V)(V arg) pure const nothrow
         {
-            Vector conv = operand;
-            return opOpAssign!op(conv);
-        }
-
-        @nogc Vector opBinary(string op, U)(U operand) pure const nothrow
-            if (is(U: Vector) || (isConvertible!U))
-        {
-            Vector result = void;
-            static if (is(U: T))
-                mixin(generateLoopCode!("result.v[@] = cast(T)(v[@] " ~ op ~ " operand);", N)());
-            else
+            static if (is(V : Vector!(U, M), U, size_t M))
             {
-                Vector other = operand;
-                mixin(generateLoopCode!("result.v[@] = cast(T)(v[@] " ~ op ~ " other.v[@]);", N)());
+                static assert(N == M, "Vector lengths don't match.");
+
+                alias E = Unqual!(typeof(mixin("this.v[0] " ~ op ~ " arg.v[0]")));
+                Vector!(E, N) result = void;
+
+                foreach (i, e; arg.v)
+                    mixin("result.v[i] = this.v[i] " ~ op ~ " e;");
             }
+            else static if (is(V : U[M], U, size_t M))
+            {
+                static assert(N == M, "Vector and array lengths don't match.");
+
+                alias E = Unqual!(typeof(mixin("this.v[0] " ~ op ~ " arg[0]")));
+                Vector!(E, N) result = void;
+
+                foreach (i, e; arg)
+                    mixin("result.v[i] = this.v[i] " ~ op ~ " e;");
+            }
+            else static if (is(V : U[], U))
+            {
+                assert(N == arg.length, "Vector and array lengths don't match.");
+
+                alias E = Unqual!(typeof(mixin("this.v[0] " ~ op ~ " arg[0]")));
+                Vector!(E, N) result = void;
+
+                foreach (i, e; arg)
+                    mixin("result.v[i] = this.v[i] " ~ op ~ " e;");
+            }
+            else static if (isNumeric!V)
+            {
+                alias E = Unqual!(typeof(mixin("this.v[0] " ~ op ~ " arg")));
+                Vector!(E, N) result = void;
+
+                foreach (i; 0 .. N)
+                    mixin("result.v[i] = this.v[i] " ~ op ~ " arg;");
+            }
+            else
+                static assert(0, "Cannot apply operator \"" ~ op ~ "\" to types " ~ V.stringof ~ " and " ~ Vector.stringof);
+
             return result;
         }
 
-        @nogc Vector opBinaryRight(string op, U)(U operand) pure const nothrow if (isConvertible!U)
+        @nogc auto opBinaryRight(string op, V)(V arg) pure const nothrow
         {
-            Vector result = void;
-            static if (is(U: T))
-                mixin(generateLoopCode!("result.v[@] = cast(T)(operand " ~ op ~ " v[@]);", N)());
-            else
+            // Don't need is(V : Vector!(U, M)) branch because the compiler tries both opBinary and opBinaryRight
+
+            static if (is(V : U[M], U, size_t M))
             {
-                Vector other = operand;
-                mixin(generateLoopCode!("result.v[@] = cast(T)(other.v[@] " ~ op ~ " v[@]);", N)());
+                static assert(N == M, "Vector and array lengths don't match.");
+
+                alias E = Unqual!(typeof(mixin("arg[0] " ~ op ~ " this.v[0]")));
+                Vector!(E, N) result = void;
+
+                foreach (i, e; arg)
+                    mixin("result.v[i] = e " ~ op ~ " this.v[i];");
             }
+            else static if (is(V : U[], U))
+            {
+                assert(N == arg.length, "Vector and array lengths don't match.");
+
+                alias E = Unqual!(typeof(mixin("arg[0] " ~ op ~ " this.v[0]")));
+                Vector!(E, N) result = void;
+
+                foreach (i, e; arg)
+                    mixin("result.v[i] = e " ~ op ~ " this.v[i];");
+            }
+            else static if (isNumeric!V)
+            {
+                alias E = Unqual!(typeof(mixin("arg " ~ op ~ " this.v[0]")));
+                Vector!(E, N) result = void;
+
+                foreach (i; 0 .. N)
+                    mixin("result.v[i] = arg " ~ op ~ " this.v[i];");
+            }
+            else
+                static assert(0, "Cannot apply operator \"" ~ op ~ "\" to types " ~ Vector.stringof ~ " and " ~ V.stringof);
+
             return result;
         }
 
