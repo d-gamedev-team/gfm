@@ -9,16 +9,13 @@ import std.traits,
 
 import gfm.math.funcs;
 
-/**
- * Generic N-Dimensional vector.
- * Params:
- *    T = type of elements
- *    N = number of elements
- */
+/// Generic N-Dimensional vector.
+/// Params:
+///    T = type of elements
+///    N = number of elements
 struct Vector(T, ubyte N)
     if (isNumeric!T)
 {
-nothrow:
     public
     {
         static assert(N > 0);
@@ -59,32 +56,48 @@ nothrow:
         alias ElementType = T;
         enum ubyte elementCount = N;
 
+        /// Construct a Vector with a `T[]` or the values as arguments
         this(Args...)(Args args) pure nothrow
         {
-            // We rely on compiler to unroll those loops
-            ubyte i = 0;
-            foreach (arg; args)
+            static if (args.length == 1 && is(typeof(args[0]) : T))
             {
-                static if ( is(typeof(arg) : Vector!(U, M), U : T, size_t M) ||
-                            is(typeof(arg) : U[M], U : T, size_t M) ||
-                            is(typeof(arg) : U[], U : T))
-                {
-                    foreach (e; arg)
-                    {
-                        assert(i < N, "Too many arguments in vector constructor.");
-                        this.v[i++] = e;
-                    }
-                }
-                else static if (is(typeof(arg) : U, U : T))
-                {
-                    assert(i < N, "Too many arguments in vector constructor.");
-                    this.v[i++] = arg;
-                }
-                else
-                    static assert(0, "Incompatible arguments in vector constructor.");
+                foreach (i; 0 .. N)
+                    this.v[i++] = args[0];
             }
+            else
+            {
+                // We rely on compiler to unroll these loops
+                size_t i = 0;
+                foreach (arg; args)
+                {
+                    static if (is(typeof(arg) : Vector!(U, M), U : T, size_t M))
+                    {
+                        foreach (e; arg.v)
+                        {
+                            assert(i < N, "Too many elements in vector constructor.");
+                            this.v[i++] = e;
+                        }
+                    }
+                    else static if (is(typeof(arg) : U[M], U : T, size_t M) ||
+                                    is(typeof(arg) : U[], U : T))
+                    {
+                        foreach (e; arg)
+                        {
+                            assert(i < N, "Too many elements in vector constructor.");
+                            this.v[i++] = e;
+                        }
+                    }
+                    else static if (is(typeof(arg) : T))
+                    {
+                        assert(i < N, "Too many elements in vector constructor.");
+                        this.v[i++] = arg;
+                    }
+                    else
+                        static assert(0, "Incompatible arguments in vector constructor.");
+                }
 
-            assert(i == N, "Not enough arguments in vector constructor.");
+                assert(i == N, "Not enough elements in vector constructor.");
+            }
         }
 
         /// Assign a Vector from a compatible type.
