@@ -430,91 +430,106 @@ struct Vector(T, ubyte N)
         @nogc @property auto opDispatch(string name)() pure const nothrow
             if (name.length > 1)
         {
-            Vector!(T, name.length) result = void;
-
-            static foreach (i, c; name)
+            static if (N >= 1 && name[0] == 'x' ||
+                       N >= 2 && name[0] == 'y' ||
+                       N >= 3 && name[0] == 'z' ||
+                       N >= 4 && name[0] == 'w')
             {
-                static if (c == 'x')
-                {
-                    result.v[i] = this.x;
-                }
-                else static if (c == 'y')
-                {
-                    result.v[i] = this.y;
-                }
-                else static if (c == 'z')
-                {
-                    result.v[i] = this.z;
-                }
-                else static if (c == 'w')
-                {
-                    result.v[i] = this.w;
-                }
-                else
-                    static assert(0, "Invalid vector swizzle.");
-                    // Silent error, need to fix the compiler
+                enum swizzleType = 1;
             }
-
-            return result;
-        }
-
-        @nogc @property auto opDispatch(string name)() pure const nothrow
-            if (name.length > 1)
-        {
-            Vector!(T, name.length) result = void;
-
-            static foreach (i, c; name)
+            else static if (N >= 1 && name[0] == 'r' ||
+                            N >= 2 && name[0] == 'g' ||
+                            N >= 3 && name[0] == 'b' ||
+                            N >= 4 && name[0] == 'a')
             {
-                static if (c == 'r')
-                {
-                    result.v[i] = this.r;
-                }
-                else static if (c == 'g')
-                {
-                    result.v[i] = this.g;
-                }
-                else static if (c == 'b')
-                {
-                    result.v[i] = this.b;
-                }
-                else static if (c == 'a')
-                {
-                    result.v[i] = this.a;
-                }
-                else
-                    static assert(0, "Invalid vector swizzle.");
-                    // Silent error, need to fix the compiler
+                enum swizzleType = 2;
             }
+            else static if (N >= 1 && name[0] == 's' ||
+                            N >= 2 && name[0] == 't' ||
+                            N >= 3 && name[0] == 'p' ||
+                            N >= 4 && name[0] == 'q')
+            {
+                enum swizzleType = 3;
+            }
+            else
+                static assert(0);
 
-            return result;
-        }
-
-        @nogc @property auto opDispatch(string name)() pure const nothrow
-            if (name.length > 1)
-        {
             Vector!(T, name.length) result = void;
 
-            static foreach (i, c; name)
+            static if (swizzleType == 1)
             {
-                static if (c == 's')
+                static foreach (i, c; name)
                 {
-                    result.v[i] = this.s;
+                    static if (N >= 1 && c == 'x')
+                    {
+                        result.v[i] = this.x;
+                    }
+                    else static if (N >= 2 && c == 'y')
+                    {
+                        result.v[i] = this.y;
+                    }
+                    else static if (N >= 3 && c == 'z')
+                    {
+                        result.v[i] = this.z;
+                    }
+                    else static if (N >= 4 && c == 'w')
+                    {
+                        result.v[i] = this.w;
+                    }
+                    else
+                        static assert(0, "Invalid vector swizzle.");
+                        // Silent error, need to fix the compiler
                 }
-                else static if (c == 't')
+            }
+            else static if (swizzleType == 2)
+            {
+                static foreach (i, c; name)
                 {
-                    result.v[i] = this.t;
+                    static if (N >= 1 && c == 'r')
+                    {
+                        result.v[i] = this.r;
+                    }
+                    else static if (N >= 2 && c == 'g')
+                    {
+                        result.v[i] = this.g;
+                    }
+                    else static if (N >= 3 && c == 'b')
+                    {
+                        result.v[i] = this.b;
+                    }
+                    else static if (N >= 4 && c == 'a')
+                    {
+                        result.v[i] = this.a;
+                    }
+                    else
+                        static assert(0, "Invalid vector swizzle.");
+                        // Silent error, need to fix the compiler
                 }
-                else static if (c == 'p')
+            }
+            else static if (swizzleType == 3)
+            {
+                static foreach (i, c; name)
                 {
-                    result.v[i] = this.p;
+                    static if (N >= 1 && c == 's')
+                    {
+                        result.v[i] = this.s;
+                    }
+                    else static if (N >= 2 && c == 't')
+                    {
+                        result.v[i] = this.t;
+                    }
+                    else static if (N >= 3 && c == 'p')
+                    {
+                        result.v[i] = this.p;
+                    }
+                    else static if (N >= 4 && c == 'q')
+                    {
+                        result.v[i] = this.q;
+                    }
+                    else
+                        static assert(0, "Invalid vector swizzle.");
+                        // Silent error, need to fix the compiler
                 }
-                else static if (c == 'q')
-                {
-                    result.v[i] = this.q;
-                }
-                else
-                    static assert(0, "Invalid vector swizzle.");
-                    // Silent error, need to fix the compiler
             }
 
             return result;
@@ -528,85 +543,124 @@ struct Vector(T, ubyte N)
         /// v.yz = v.zx;
         /// assert(v == [0, 2, 0]);
         /// ---
-        @nogc @property void opDispatch(string name, U, size_t M)(Vector!(U, M) vec) pure
+        @nogc @property V opDispatch(string name, V : Vector!(U, M), U : T, size_t M)(V vec) pure nothrow
             if (name.length == M)
         {
-            static foreach (i, c; name)
-            {
-                static if (c == 'x')
-                {
-                    this.x = vec.v[i];
-                }
-                else static if (c == 'y')
-                {
-                    this.y = vec.v[i];
-                }
-                else static if (c == 'z')
-                {
-                    this.z = vec.v[i];
-                }
-                else static if (c == 'w')
-                {
-                    this.w = vec.v[i];
-                }
-                else
-                    static assert(0, "Invalid vector swizzle.");
-                    // Silent error, need to fix the compiler
-            }
-        }
+            // TODO: Maybe support array overloads as well?
 
-        @nogc @property void opDispatch(string name, U, size_t M)(Vector!(U, M) vec) pure
-            if (name.length == M)
-        {
-            static foreach (i, c; name)
+            static if (N >= 1 && name[0] == 'x' ||
+                       N >= 2 && name[0] == 'y' ||
+                       N >= 3 && name[0] == 'z' ||
+                       N >= 4 && name[0] == 'w')
             {
-                static if (c == 'r')
-                {
-                    this.x = vec.v[i];
-                }
-                else static if (c == 'g')
-                {
-                    this.y = vec.v[i];
-                }
-                else static if (c == 'b')
-                {
-                    this.z = vec.v[i];
-                }
-                else static if (c == 'a')
-                {
-                    this.w = vec.v[i];
-                }
-                else
-                    static assert(0, "Invalid vector swizzle.");
-                    // Silent error, need to fix the compiler
+                enum swizzleType = 1;
             }
-        }
+            else static if (N >= 1 && name[0] == 'r' ||
+                            N >= 2 && name[0] == 'g' ||
+                            N >= 3 && name[0] == 'b' ||
+                            N >= 4 && name[0] == 'a')
+            {
+                enum swizzleType = 2;
+            }
+            else static if (N >= 1 && name[0] == 's' ||
+                            N >= 2 && name[0] == 't' ||
+                            N >= 3 && name[0] == 'p' ||
+                            N >= 4 && name[0] == 'q')
+            {
+                enum swizzleType = 3;
+            }
+            else
+                static assert(0);
 
-        @nogc @property void opDispatch(string name, U, size_t M)(Vector!(U, M) vec) pure
-            if (name.length == M)
-        {
-            static foreach (i, c; name)
+            static if (swizzleType == 1)
             {
-                static if (c == 's')
+                static foreach (i, c; name)
                 {
-                    this.x = vec.v[i];
+                    static if (N >= 1 && c == 'x' && !is(typeof(sx)))
+                    {
+                        this.x = vec.v[i];
+                        enum sx = true;
+                    }
+                    else static if (N >= 2 && c == 'y' && !is(typeof(sy)))
+                    {
+                        this.y = vec.v[i];
+                        enum sy = true;
+                    }
+                    else static if (N >= 3 && c == 'z' && !is(typeof(sz)))
+                    {
+                        this.z = vec.v[i];
+                        enum sz = true;
+                    }
+                    else static if (N >= 4 && c == 'w' && !is(typeof(sw)))
+                    {
+                        this.w = vec.v[i];
+                        enum sw = true;
+                    }
+                    else
+                        static assert(0, "Invalid vector swizzle.");
+                        // Silent error, need to fix the compiler
                 }
-                else static if (c == 't')
-                {
-                    this.y = vec.v[i];
-                }
-                else static if (c == 'p')
-                {
-                    this.z = vec.v[i];
-                }
-                else static if (c == 'q')
-                {
-                    this.w = vec.v[i];
-                }
-                else
-                    static assert(0, "Invalid vector swizzle.");
-                    // Silent error, need to fix the compiler
             }
+            else static if (swizzleType == 2)
+            {
+                static foreach (i, c; name)
+                {
+                    static if (N >= 1 && c == 'r' && !is(typeof(sr)))
+                    {
+                        this.r = vec.v[i];
+                        enum sr = true;
+                    }
+                    else static if (N >= 2 && c == 'g' && !is(typeof(sg)))
+                    {
+                        this.g = vec.v[i];
+                        enum sg = true;
+                    }
+                    else static if (N >= 3 && c == 'b' && !is(typeof(sb)))
+                    {
+                        this.b = vec.v[i];
+                        enum sb = true;
+                    }
+                    else static if (N >= 4 && c == 'a' && !is(typeof(sa)))
+                    {
+                        this.a = vec.v[i];
+                        enum sa = true;
+                    }
+                    else
+                        static assert(0, "Invalid vector swizzle.");
+                        // Silent error, need to fix the compiler
+                }
+            }
+            else static if (swizzleType == 3)
+            {
+                static foreach (i, c; name)
+                {
+                    static if (N >= 1 && c == 's' && !is(typeof(sa)))
+                    {
+                        this.s = vec.v[i];
+                        enum ss = true;
+                    }
+                    else static if (N >= 2 && c == 't' && !is(typeof(st)))
+                    {
+                        this.t = vec.v[i];
+                        enum st = true;
+                    }
+                    else static if (N >= 3 && c == 'p' && !is(typeof(sp)))
+                    {
+                        this.p = vec.v[i];
+                        enum sp = true;
+                    }
+                    else static if (N >= 4 && c == 'q' && !is(typeof(sq)))
+                    {
+                        this.q = vec.v[i];
+                        enum sq = true;
+                    }
+                    else
+                        static assert(0, "Invalid vector swizzle.");
+                        // Silent error, need to fix the compiler
+                }
+            }
+
+            return vec;
         }
 
         /// Casting to small vectors of the same size.
