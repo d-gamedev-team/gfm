@@ -307,19 +307,66 @@ struct Vector(T, ubyte N)
             return result;
         }
 
-        @nogc ref T opIndex(size_t i) pure nothrow
+        @nogc inout(T)[] opIndex() pure inout nothrow
         {
-            return v[i];
+            return this.v[];
         }
 
-        @nogc ref const(T) opIndex(size_t i) pure const nothrow
+        @nogc ref inout(T) opIndex(size_t i) pure inout nothrow
         {
-            return v[i];
+            return this.v[i];
         }
 
-        @nogc T opIndexAssign(U : T)(U x, size_t i) pure nothrow
+        @nogc inout(T)[] opIndex(size_t[2] s) pure inout nothrow
         {
-            return v[i] = x;
+            return this.v[s[0] .. s[1]];
+        }
+
+        @nogc T opIndexAssign(U : T)(U arg) pure nothrow
+        {
+            this.opIndexAssign!U(arg, [0, N]);
+            return arg;
+        }
+
+        @nogc ref T opIndexAssign(U : T)(U arg, size_t i) pure nothrow
+        {
+            return this.v[i] = arg;
+        }
+
+        @nogc T opIndexAssign(V)(V arg, size_t[2] s) pure nothrow
+        {
+            size_t slice = s[1] - s[0];
+
+            static if (is(V : Vector!(U, M), U, size_t M))
+            {
+                assert(slice == M, "Length mismatch in vector slice assignment.");
+
+                foreach (i; 0 .. slice)
+                    this.v[i + s[0]] = arg.v[i];
+            }
+            else static if (is(V : U[M], U, size_t M))
+            {
+                assert(slice == M, "Length mismatch in vector slice assignment.");
+
+                foreach (i; 0 .. slice)
+                    this.v[i + s[0]] = arg[i];
+            }
+            else static if (is(V : U[], U))
+            {
+                assert(slice == arg.length, "Length mismatch in vector slice assignment.");
+
+                foreach (i; 0 .. slice)
+                    this.v[i + s[0]] = arg[i];
+            }
+            else static if (isNumeric!V)
+            {
+                foreach (i; 0 .. slice)
+                    this.v[i + s[0]] = arg;
+            }
+            else
+                static assert(0, "Cannot apply operator \"" ~ op ~ "\" to types " ~ V.stringof ~ " and " ~ Vector.stringof);
+
+            return this.v[s[0] .. s[1]];
         }
 
 
@@ -528,22 +575,15 @@ struct Vector(T, ubyte N)
         /// Implement slices operator overloading.
         /// Allows to go back to slice world.
         /// Returns: length.
-        @nogc int opDollar() pure const nothrow
+        @nogc @property size_t opDollar() pure const nothrow
         {
             return N;
         }
 
-        /// Slice containing vector values
-        /// Returns: a slice which covers the whole Vector.
-        @nogc T[] opSlice() pure nothrow
-        {
-            return v[];
-        }
-
         /// vec[a..b]
-        @nogc T[] opSlice(int a, int b) pure nothrow
+        @nogc size_t[2] opSlice(size_t dim : 0)(size_t start, size_t end) pure const nothrow
         {
-            return v[a..b];
+            return [start, end];
         }
 
         /// Squared Euclidean length of the Vector
