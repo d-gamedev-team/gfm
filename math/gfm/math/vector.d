@@ -64,6 +64,11 @@ struct Vector(T, ubyte N)
                 foreach (i; 0 .. N)
                     this.v[i++] = args[0];
             }
+            else static if (args.length > N)
+            {
+                // This doesn't cover every case but still useful
+                static assert(0, "Too many elements in vector constructor.");
+            }
             else
             {
                 // We rely on compiler to unroll these loops
