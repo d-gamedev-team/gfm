@@ -57,7 +57,7 @@ struct Vector(T, ubyte N)
         enum ubyte elementCount = N;
 
         /// Construct a Vector with a `T[]` or the values as arguments
-        this(Args...)(Args args) pure nothrow
+        @nogc this(Args...)(Args args) pure nothrow
         {
             static if (args.length == 1 && is(typeof(args[0]) : T))
             {
