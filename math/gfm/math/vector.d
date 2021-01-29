@@ -369,6 +369,56 @@ struct Vector(T, ubyte N)
             return this.v[s[0] .. s[1]];
         }
 
+        static bool isValidSwizzle(const(char)[] swizzle) pure nothrow
+        {
+            ubyte n = cast(ubyte)clamp(N, 0, 4);
+            const(char)[] xyzw = "xyzw"[0 .. n];
+            const(char)[] rgba = "rgba"[0 .. n];
+            const(char)[] stpq = "stpq"[0 .. n];
+
+            import std.algorithm.searching;
+
+            try
+            {
+                return swizzle.all!(e => xyzw.canFind(e)) ||
+                       swizzle.all!(e => rgba.canFind(e)) ||
+                       swizzle.all!(e => stpq.canFind(e));
+            }
+            catch (Exception)
+                return false;
+        }
+
+        /// Returns: true if the swizzle has each letter no more than once
+        static bool isUniqueSwizzle(const(char)[] swizzle) pure nothrow
+        {
+            ubyte n = cast(ubyte)clamp(N, 0, 4);
+            const(char)[] xyzw = "xyzw"[0 .. n];
+            const(char)[] rgba = "rgba"[0 .. n];
+            const(char)[] stpq = "stpq"[0 .. n];
+
+            import std.algorithm.searching;
+
+            try
+            {
+                if (!swizzle.all!(e => xyzw.canFind(e)) &&
+                    !swizzle.all!(e => rgba.canFind(e)) &&
+                    !swizzle.all!(e => stpq.canFind(e)))
+                     return false;
+            }
+            catch (Exception)
+                return false;
+
+            for (size_t i = 0; i < swizzle.length; i++)
+            {
+                for (size_t ii = i + 1; ii < swizzle.length; ii++)
+                {
+                    if (swizzle[i] == swizzle[ii])
+                        return false;
+                }
+            }
+
+            return true;
+        }
 
         /// Implements swizzling.
         ///
@@ -858,13 +908,14 @@ static assert(vec4i.sizeof == 16);
 
 unittest
 {
-    static assert(vec2i.isValidSwizzle!"xyx");
-    static assert(!vec2i.isValidSwizzle!"xyz");
-    static assert(vec4i.isValidSwizzle!"brra");
-    static assert(!vec4i.isValidSwizzle!"rgyz");
-    static assert(vec2i.isValidSwizzleUnique!"xy");
-    static assert(vec2i.isValidSwizzleUnique!"yx");
-    static assert(!vec2i.isValidSwizzleUnique!"xx");
+    assert( vec2i.isValidSwizzle("xyx"));
+    assert(!vec2i.isValidSwizzle("xyz"));
+    assert( vec4i.isValidSwizzle("brra"));
+    assert(!vec4i.isValidSwizzle("rgyz"));
+    
+    assert( vec2i.isUniqueSwizzle("xy"));
+    assert( vec2i.isUniqueSwizzle("yx"));
+    assert(!vec2i.isUniqueSwizzle("xx"));
 
     alias vec2l = vec2!long;
     alias vec3ui = vec3!uint;
@@ -937,7 +988,7 @@ unittest
     assert(++h[0] == 3);
 
     //assert(h == [-2, 1, 0]);
-    assert(!__traits(compiles, h.xx = h.yy));
+    static assert(!is(typeof(h.xx = h.yz)));
     vec4ub j;
 
     assert(lerp(vec2f(-10, -1), vec2f(10, 1), 0.5) == vec2f(0, 0));
