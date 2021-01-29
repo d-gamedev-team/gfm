@@ -106,42 +106,37 @@ struct Vector(T, ubyte N)
         }
 
         /// Assign a Vector from a compatible type.
-        @nogc ref Vector opAssign(U)(U x) pure nothrow if (isAssignable!(T, U))
+        @nogc ref Vector opAssign(V)(V arg) pure nothrow
         {
-            mixin(generateLoopCode!("v[@] = x;", N)()); // copy to each component
-            return this;
-        }
+            static if (is(V : Vector!(U, M), U : T, size_t M))
+            {
+                static assert(N == M, "Vector lengths don't match.");
 
-        /// Assign a Vector with a static array type.
-        @nogc ref Vector opAssign(U)(U arr) pure nothrow if ((isStaticArray!(U) && isAssignable!(T, typeof(arr[0])) && (arr.length == N)))
-        {
-            mixin(generateLoopCode!("v[@] = arr[@];", N)());
-            return this;
-        }
+                foreach (i, e; arg.v)
+                    this.v[i] = e;
+            }
+            else static if (is(V : U[M], U : T, size_t M))
+            {
+                static assert(N == M, "Vector lengths don't match.");
 
-        /// Assign with a dynamic array.
-        /// Size is checked in debug-mode.
-        @nogc ref Vector opAssign(U)(U arr) pure nothrow if (isDynamicArray!(U) && isAssignable!(T, typeof(arr[0])))
-        {
-            assert(arr.length == N);
-            mixin(generateLoopCode!("v[@] = arr[@];", N)());
-            return this;
-        }
+                foreach (i, e; arg)
+                    this.v[i] = e;
+            }
+            else static if (is(V : U[], U : T))
+            {
+                assert(N == arg.length, "Vector lengths don't match.");
 
-        /// Assign from a samey Vector.
-        @nogc ref Vector opAssign(U)(U u) pure nothrow if (is(U : Vector))
-        {
-            v[] = u.v[];
-            return this;
-        }
+                foreach (i, e; arg)
+                    this.v[i] = e;
+            }
+            else static if (isNumeric!V)
+            {
+                foreach (i; 0 .. N)
+                    this.v[i] = arg;
+            }
+            else
+                static assert(0, "Cannot assign " ~ V.stringof ~ " to " ~ Vector.stringof);
 
-        /// Assign from other vectors types (same size, compatible type).
-        @nogc ref Vector opAssign(U)(U x) pure nothrow if (isVector!U
-                                                       && isAssignable!(T, U._T)
-                                                       && (!is(U: Vector))
-                                                       && (U._N == _N))
-        {
-            mixin(generateLoopCode!("v[@] = x.v[@];", N)());
             return this;
         }
 
