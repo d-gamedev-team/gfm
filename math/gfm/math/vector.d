@@ -669,11 +669,14 @@ struct Vector(T, ubyte N)
         /// vec4f vf;
         /// vec4d vd = cast!(vec4d)vf;
         /// ---
-        @nogc U opCast(U)() pure const nothrow if (isVector!U && (U._N == _N))
+        @nogc V opCast(V : Vector!(U, N), U)() pure const nothrow
         {
-            U res = void;
-            mixin(generateLoopCode!("res.v[@] = cast(U._T)v[@];", N)());
-            return res;
+            V result = void;
+
+            foreach (i, e; this.v)
+                result.v[i] = cast(U)e;
+
+            return result;
         }
 
         /// Implement slices operator overloading.
@@ -695,7 +698,10 @@ struct Vector(T, ubyte N)
         @nogc T squaredMagnitude() pure const nothrow
         {
             T sumSquares = 0;
-            mixin(generateLoopCode!("sumSquares += v[@] * v[@];", N)());
+
+            foreach (e; this.v)
+                sumSquares += e * e;
+
             return sumSquares;
         }
 
@@ -740,8 +746,10 @@ struct Vector(T, ubyte N)
             /// In-place normalization.
             @nogc void normalize() pure nothrow
             {
-                auto invMag = inverseMagnitude();
-                mixin(generateLoopCode!("v[@] *= invMag;", N)());
+                T invMag = inverseMagnitude();
+
+                foreach (ref e; this.v)
+                    e *= invMag;
             }
 
             /// Returns a normalized copy of this Vector
@@ -756,8 +764,9 @@ struct Vector(T, ubyte N)
             /// Faster but less accurate in-place normalization.
             @nogc void fastNormalize() pure nothrow
             {
-                auto invLength = fastInverseMagnitude();
-                mixin(generateLoopCode!("v[@] *= invLength;", N)());
+                T invLength = fastInverseMagnitude();
+                foreach (ref e; this.v)
+                    e *= invLength;
             }
 
             /// Faster but less accurate vector normalization.
@@ -848,56 +857,33 @@ alias vec4!int    vec4i;  ///
 alias vec4!float  vec4f;  ///
 alias vec4!double vec4d;  ///
 
-private
-{
-    static string generateLoopCode(string formatString, int N)() pure nothrow
-    {
-        string result;
-        for (int i = 0; i < N; ++i)
-        {
-            string index = ctIntToString(i);
-            // replace all @ by indices
-            result ~= formatString.replace("@", index);
-        }
-        return result;
-    }
-
-    // Speed-up CTFE conversions
-    static string ctIntToString(int n) pure nothrow
-    {
-        static immutable string[16] table = ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9"];
-        if (n < 10)
-            return table[n];
-        else
-            return to!string(n);
-    }
-}
-
-
 /// Element-wise minimum.
 @nogc Vector!(T, N) minByElem(T, int N)(const Vector!(T, N) a, const Vector!(T, N) b) pure nothrow
 {
-    import std.algorithm: min;
-    Vector!(T, N) res = void;
-    mixin(generateLoopCode!("res.v[@] = min(a.v[@], b.v[@]);", N)());
-    return res;
+    import std.algorithm : min;
+    Vector!(T, N) result = void;
+    foreach (i; 0 .. N)
+        result.v[i] = min(a.v[i], b.v[i]);
+    return result;
 }
 
 /// Element-wise maximum.
 @nogc Vector!(T, N) maxByElem(T, int N)(const Vector!(T, N) a, const Vector!(T, N) b) pure nothrow
 {
     import std.algorithm: max;
-    Vector!(T, N) res = void;
-    mixin(generateLoopCode!("res.v[@] = max(a.v[@], b.v[@]);", N)());
-    return res;
+    Vector!(T, N) result = void;
+    foreach (i; 0 .. N)
+        result.v[i] = max(a.v[i], b.v[i]);
+    return result;
 }
 
 /// Element-wise absolute value.
 @nogc Vector!(T, N) absByElem(T, int N)(const Vector!(T, N) a) pure nothrow
 {
-    Vector!(T, N) res = void;
-    mixin(generateLoopCode!("res.v[@] = abs(a.v[@]);", N)());
-    return res;
+    Vector!(T, N) result = void;
+    foreach (i; 0 .. N)
+        result.v[i] = abs(a.v[i]);
+    return result;
 }
 
 /// Dot product of two vectors
@@ -905,7 +891,8 @@ private
 @nogc T dot(T, int N)(const Vector!(T, N) a, const Vector!(T, N) b) pure nothrow
 {
     T sum = 0;
-    mixin(generateLoopCode!("sum += a.v[@] * b.v[@];", N)());
+    foreach (i; 0 .. N)
+        sum += a.v[i] * b.v[i];
     return sum;
 }
 
