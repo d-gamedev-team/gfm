@@ -2,10 +2,7 @@
 module gfm.math.vector;
 
 import std.traits,
-       std.math,
-       std.conv,
-       std.array,
-       std.string;
+       std.math;
 
 import gfm.math.funcs;
 
@@ -149,10 +146,38 @@ struct Vector(T, ubyte N)
         /// Converts to a pretty string.
         string toString() const nothrow
         {
-            try
-                return format("%s", this.v);
-            catch (Exception e)
-                assert(false); // should not happen since format is right
+            // You may think that this function is disgusting but it's actually far better than using std.format
+
+            import core.stdc.stdio : snprintf;
+            import core.stdc.stdint : intmax_t, uintmax_t;
+
+            static if (is(T == byte) || is(T == short) || is(T == int) || is(T == long))
+            {
+                enum fmt = "%jd";
+                alias F = intmax_t;
+            }
+            else static if (is(T == ubyte) || is(T == ushort) || is(T == uint) || is(T == ulong))
+            {
+                enum fmt = "%ju";
+                alias F = uintmax_t;
+            }
+            else static if (is(T : double))
+            {
+                enum fmt = "%f";
+                alias F = double;
+            }
+            else
+                static assert(0);
+
+            char[] result = new char[(64 + 2) * N + 2];
+            result[0] = '[';
+            size_t length = 1;
+
+            for (size_t i = 0; i < N - 1; i++)
+                assert((length += snprintf(result.ptr + length, result.length - length, fmt ~ ", ", cast(F)this.v[i])) <= result.length);
+            assert((length += snprintf(result.ptr + length, result.length - length, fmt ~ "]", cast(F)this.v[$ - 1])) <= result.length);
+
+            return cast(immutable)result[0 .. length];
         }
 
         @nogc bool opEquals(V)(V arg) pure const nothrow
@@ -369,6 +394,28 @@ struct Vector(T, ubyte N)
             return this.v[s[0] .. s[1]];
         }
 
+        private static bool consistsOf(const(char)[] str, const(char)[] chars) pure nothrow
+        {
+            outer:
+            foreach (ubyte s; cast(const(ubyte)[])str)
+            {
+                foreach (ubyte c; cast(const(ubyte)[])chars)
+                    if (s == c)
+                        continue outer;
+                return false;
+            }
+            return true;
+        }
+
+        private static bool isUnique(const(char)[] str) pure nothrow
+        {
+            for (size_t i = 0; i < str.length; i++)
+                for (size_t ii = i + 1; ii < str.length; ii++)
+                    if (str[i] == str[ii])
+                        return false;
+            return true;
+        }
+
         static bool isValidSwizzle(const(char)[] swizzle) pure nothrow
         {
             ubyte n = cast(ubyte)clamp(N, 0, 4);
@@ -376,48 +423,15 @@ struct Vector(T, ubyte N)
             const(char)[] rgba = "rgba"[0 .. n];
             const(char)[] stpq = "stpq"[0 .. n];
 
-            import std.algorithm.searching;
-
-            try
-            {
-                return swizzle.all!(e => xyzw.canFind(e)) ||
-                       swizzle.all!(e => rgba.canFind(e)) ||
-                       swizzle.all!(e => stpq.canFind(e));
-            }
-            catch (Exception)
-                return false;
+            return consistsOf(swizzle, xyzw) ||
+                   consistsOf(swizzle, rgba) ||
+                   consistsOf(swizzle, stpq);
         }
 
         /// Returns: true if the swizzle has each letter no more than once
         static bool isUniqueSwizzle(const(char)[] swizzle) pure nothrow
         {
-            ubyte n = cast(ubyte)clamp(N, 0, 4);
-            const(char)[] xyzw = "xyzw"[0 .. n];
-            const(char)[] rgba = "rgba"[0 .. n];
-            const(char)[] stpq = "stpq"[0 .. n];
-
-            import std.algorithm.searching;
-
-            try
-            {
-                if (!swizzle.all!(e => xyzw.canFind(e)) &&
-                    !swizzle.all!(e => rgba.canFind(e)) &&
-                    !swizzle.all!(e => stpq.canFind(e)))
-                     return false;
-            }
-            catch (Exception)
-                return false;
-
-            for (size_t i = 0; i < swizzle.length; i++)
-            {
-                for (size_t ii = i + 1; ii < swizzle.length; ii++)
-                {
-                    if (swizzle[i] == swizzle[ii])
-                        return false;
-                }
-            }
-
-            return true;
+            return isValidSwizzle(swizzle) && isUnique(swizzle);
         }
 
         /// Implements swizzling.
@@ -939,7 +953,7 @@ unittest
     assert(!vec2i.isValidSwizzle("xyz"));
     assert( vec4i.isValidSwizzle("brra"));
     assert(!vec4i.isValidSwizzle("rgyz"));
-    
+
     assert( vec2i.isUniqueSwizzle("xy"));
     assert( vec2i.isUniqueSwizzle("yx"));
     assert(!vec2i.isUniqueSwizzle("xx"));
