@@ -93,6 +93,15 @@ nothrow:
             }
         }
 
+        size_t toHash() const nothrow @safe
+        {
+            size_t hash = 0;
+            foreach (elem; v) {
+                hash = elem.hashOf(hash);
+            }
+            return hash;
+        }
+
         /// Assign a Vector from a compatible type.
         @nogc ref Vector opAssign(U)(U x) pure nothrow if (isAssignable!(T, U))
         {
@@ -684,6 +693,10 @@ unittest
     assert(a == c);
     assert(vec2l(a) == vec2l(a));
     assert(vec2l(a) == d);
+
+    int[vec2i] hashMap;
+    hashMap[a] = (c - a).squaredMagnitude;
+    assert(hashMap[a] == (c - a).squaredMagnitude);
 
     vec4i x = [4, 5, 6, 7];
     assert(x == x);
