@@ -6,13 +6,13 @@
 **IMPORTANT 2: GFM has been deprecated in favor of dplug:math. Use version 8 if you want the former content gfm:integer and gfm:math content.**
 
 
-_Hello,_
-
-_Here is something I wanted to do for a while._
-_I'm abandoning `gfm` in favor of `dplug:math` (vectors, matrices, and box), which will be tailored for Dplug needs._
-_I know `gfm` has been a reliable and stable library over the years but there should be much better libraries around nowadays. `gfm` has never been super good in usability and purpose; and I just have no need for such a generic library anymore. I hope you understand and go build a better library._
-_Overstretching with too many libraries to maintain is not very good for me._
- - p0nce
+> _Hello,_
+>
+> _Here is something I wanted to do for a while._
+> _I'm abandoning `gfm` in favor of `dplug:math` (vectors, matrices, and box), which will be tailored for Dplug needs._
+> _I know `gfm` has been a reliable and stable library over the years but there should be much better libraries around nowadays. `gfm` has never been super good in usability and purpose; and I just have no need for such a generic library anymore. I hope you understand and go build a better library._
+> _Overstretching with too many libraries to maintain is not very good for me._
+> p0nce
 
 **IMPORTANT: GFMv8 has been stripped down to gfm:math and gfm:integers only. Use version 7 if you want the former content.**
 
