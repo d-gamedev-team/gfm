@@ -3,7 +3,7 @@
 <img alt="logo" src="https://cdn.combinatronics.com/p0nce/gfm/master/logo.svg" width="200">
 
 
-**IMPORTANT 2: GFM has been deprecated in favor of dplug:math. Use version 8 if you want the former content gfm:integer and gfm:math content.**
+**IMPORTANT 2: GFM has been deprecated in favor of dplug:math. Use version 8 if you want the former content gfm:integer and gfm:math content. No PR will be accepted.**
 
 
 > _Hello,_
