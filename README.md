@@ -1,9 +1,11 @@
-# GFM [![Build Status](https://travis-ci.org/d-gamedev-team/gfm.png?branch=master)](https://travis-ci.org/d-gamedev-team/gfm)
+# GFM
 
 <img alt="logo" src="https://cdn.combinatronics.com/p0nce/gfm/master/logo.svg" width="200">
 
 
-**IMPORTANT: GFM has been stripped down to gfm:math and gfm:integers only. Use version 7 if you want the former content.**
+**IMPORTANT 2: GFM has been deprecated in favor of dplug:math. Use version 8 if you want the former content gfm:integer and gfm:math content.**
+
+**IMPORTANT: GFMv8 has been stripped down to gfm:math and gfm:integers only. Use version 7 if you want the former content.**
 
 See the changelog here to upgrade: [https://github.com/d-gamedev-team/gfm/wiki/Changelog](https://github.com/d-gamedev-team/gfm/wiki/Changelog)
 
